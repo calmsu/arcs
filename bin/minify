@@ -1,0 +1,6 @@
+#!/usr/bin/env bash
+#
+# Alias to running `make js` and `make css` with the Makefile
+
+DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+(cd ${DIR}/../; make css > /dev/null && make js > /dev/null)

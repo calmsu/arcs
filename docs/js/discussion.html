@@ -1,0 +1,41 @@
+<!DOCTYPE html>  <html> <head>   <title>discussion.coffee</title>   <meta http-equiv="content-type" content="text/html; charset=UTF-8">   <link rel="stylesheet" media="all" href="docco.css" /> </head> <body>   <div id="container">     <div id="background"></div>            <div id="jump_to">         Jump To &hellip;         <div id="jump_wrapper">           <div id="jump_page">                                           <a class="source" href="discussion.html">                 discussion.coffee               </a>                                           <a class="source" href="hotspot.html">                 hotspot.coffee               </a>                                           <a class="source" href="resource.html">                 resource.coffee               </a>                                           <a class="source" href="search.html">                 search.coffee               </a>                                           <a class="source" href="tag.html">                 tag.coffee               </a>                                           <a class="source" href="toolbar.html">                 toolbar.coffee               </a>                        </div>         </div>       </div>          <table cellpadding="0" cellspacing="0">       <thead>         <tr>           <th class="docs">             <h1>               discussion.coffee             </h1>           </th>           <th class="code">           </th>         </tr>       </thead>       <tbody>                               <tr id="section-1">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-1">&#182;</a>               </div>                            </td>             <td class="code">               <div class="highlight"><pre><span class="k">class</span> <span class="nx">arcs</span><span class="p">.</span><span class="nx">views</span><span class="p">.</span><span class="nx">Discussion</span> <span class="k">extends</span> <span class="nx">Backbone</span><span class="p">.</span><span class="nx">View</span>
+
+    <span class="nv">events:</span>
+        <span class="s1">&#39;click #comment-button&#39;</span><span class="o">:</span> <span class="s1">&#39;saveComment&#39;</span>
+
+    <span class="nv">initialize: </span><span class="o">-&gt;</span>
+        <span class="vi">@collection = </span><span class="k">new</span> <span class="nx">arcs</span><span class="p">.</span><span class="nx">collections</span><span class="p">.</span><span class="nx">Discussion</span>
+
+        <span class="nx">arcs</span><span class="p">.</span><span class="nx">bind</span> <span class="s1">&#39;resourceChange&#39;</span><span class="p">,</span> <span class="o">=&gt;</span>
+            <span class="err">@</span><span class="p">.</span><span class="nx">update</span><span class="p">()</span>
+
+        <span class="nx">_</span><span class="p">.</span><span class="nx">bindAll</span> <span class="err">@</span><span class="p">,</span> <span class="s1">&#39;render&#39;</span>
+
+        <span class="nx">@collection</span><span class="p">.</span><span class="nx">bind</span> <span class="s1">&#39;add&#39;</span><span class="p">,</span> <span class="err">@</span><span class="p">.</span><span class="nx">render</span><span class="p">,</span> <span class="err">@</span>
+        <span class="nx">@collection</span><span class="p">.</span><span class="nx">bind</span> <span class="s1">&#39;remove&#39;</span><span class="p">,</span> <span class="err">@</span><span class="p">.</span><span class="nx">render</span><span class="p">,</span> <span class="err">@</span>
+
+        <span class="err">@</span><span class="p">.</span><span class="nx">update</span><span class="p">()</span>
+
+    <span class="nv">saveComment: </span><span class="o">-&gt;</span>
+        <span class="nv">$textarea = </span><span class="nx">@el</span><span class="p">.</span><span class="nx">find</span><span class="p">(</span><span class="s1">&#39;textarea#content&#39;</span><span class="p">)</span>
+        <span class="nv">comment = </span><span class="k">new</span> <span class="nx">arcs</span><span class="p">.</span><span class="nx">models</span><span class="p">.</span><span class="nx">Comment</span>
+            <span class="nv">resource_id: </span><span class="nx">arcs</span><span class="p">.</span><span class="nx">resource</span><span class="p">.</span><span class="nx">id</span>
+            <span class="nv">content: </span><span class="nx">$textarea</span><span class="p">.</span><span class="nx">val</span><span class="p">()</span></pre></div>             </td>           </tr>                               <tr id="section-2">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-2">&#182;</a>               </div>               <p>These next two are just temporary values so we don't need to 
+fetch the collection again to get them.</p>             </td>             <td class="code">               <div class="highlight"><pre>            <span class="nv">_name: </span><span class="s1">&#39;You&#39;</span>
+            <span class="nv">_created: </span><span class="s1">&#39;just now&#39;</span>
+        <span class="nx">$textarea</span><span class="p">.</span><span class="nx">val</span> <span class="s1">&#39;&#39;</span>
+        <span class="nx">comment</span><span class="p">.</span><span class="nx">save</span><span class="p">()</span>
+        <span class="nx">@collection</span><span class="p">.</span><span class="nx">add</span><span class="p">(</span><span class="nx">comment</span><span class="p">)</span>
+
+    <span class="nv">update: </span><span class="o">-&gt;</span>
+        <span class="nx">@collection</span><span class="p">.</span><span class="nx">fetch</span>
+            <span class="nv">success: </span><span class="o">=&gt;</span>
+                <span class="err">@</span><span class="p">.</span><span class="nx">render</span><span class="p">()</span>
+
+    <span class="nv">render: </span><span class="o">-&gt;</span>
+        <span class="nv">$discussion = </span><span class="nx">$</span><span class="p">(</span><span class="s1">&#39;#comment-wrapper&#39;</span><span class="p">)</span>
+        <span class="nx">$discussion</span><span class="p">.</span><span class="nx">html</span> <span class="nx">Mustache</span><span class="p">.</span><span class="nx">render</span> <span class="nx">arcs</span><span class="p">.</span><span class="nx">templates</span><span class="p">.</span><span class="nx">discussion</span><span class="p">,</span>
+            <span class="nv">comments: </span><span class="nx">@collection</span><span class="p">.</span><span class="nx">toJSON</span><span class="p">()</span>
+        <span class="err">@</span>
+
+</pre></div>             </td>           </tr>                </tbody>     </table>   </div> </body> </html> 

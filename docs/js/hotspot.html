@@ -1,0 +1,90 @@
+<!DOCTYPE html>  <html> <head>   <title>hotspot.coffee</title>   <meta http-equiv="content-type" content="text/html; charset=UTF-8">   <link rel="stylesheet" media="all" href="docco.css" /> </head> <body>   <div id="container">     <div id="background"></div>            <div id="jump_to">         Jump To &hellip;         <div id="jump_wrapper">           <div id="jump_page">                                           <a class="source" href="discussion.html">                 discussion.coffee               </a>                                           <a class="source" href="hotspot.html">                 hotspot.coffee               </a>                                           <a class="source" href="resource.html">                 resource.coffee               </a>                                           <a class="source" href="search.html">                 search.coffee               </a>                                           <a class="source" href="tag.html">                 tag.coffee               </a>                                           <a class="source" href="toolbar.html">                 toolbar.coffee               </a>                        </div>         </div>       </div>          <table cellpadding="0" cellspacing="0">       <thead>         <tr>           <th class="docs">             <h1>               hotspot.coffee             </h1>           </th>           <th class="code">           </th>         </tr>       </thead>       <tbody>                               <tr id="section-1">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-1">&#182;</a>               </div>                            </td>             <td class="code">               <div class="highlight"><pre><span class="k">class</span> <span class="nx">arcs</span><span class="p">.</span><span class="nx">views</span><span class="p">.</span><span class="nx">Hotspot</span> <span class="k">extends</span> <span class="nx">Backbone</span><span class="p">.</span><span class="nx">View</span>
+
+    <span class="nv">initialize: </span><span class="o">-&gt;</span>
+        <span class="vi">@collection = </span><span class="k">new</span> <span class="nx">arcs</span><span class="p">.</span><span class="nx">collections</span><span class="p">.</span><span class="nx">HotspotMap</span></pre></div>             </td>           </tr>                               <tr id="section-2">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-2">&#182;</a>               </div>               <p>Bind the setup to the resourceLoaded event,
+which is triggered directly after the resource
+is rendered (and after resourceChange).</p>             </td>             <td class="code">               <div class="highlight"><pre>        <span class="nx">arcs</span><span class="p">.</span><span class="nx">bind</span> <span class="s1">&#39;resourceLoaded&#39;</span><span class="p">,</span> <span class="o">=&gt;</span>
+            <span class="err">@</span><span class="p">.</span><span class="nx">setup</span><span class="p">()</span>
+
+        <span class="nx">@collection</span><span class="p">.</span><span class="nx">bind</span> <span class="s1">&#39;add&#39;</span><span class="p">,</span> <span class="o">=&gt;</span>
+            <span class="err">@</span><span class="p">.</span><span class="nx">render</span><span class="p">()</span>
+        <span class="nx">@collection</span><span class="p">.</span><span class="nx">bind</span> <span class="s1">&#39;remove&#39;</span><span class="p">,</span> <span class="o">=&gt;</span>
+            <span class="err">@</span><span class="p">.</span><span class="nx">render</span><span class="p">()</span>
+
+        <span class="err">@</span><span class="p">.</span><span class="nx">setup</span><span class="p">()</span>
+
+    <span class="nv">setup: </span><span class="o">-&gt;</span>
+        <span class="vi">@img = </span><span class="nx">@el</span><span class="p">.</span><span class="nx">find</span><span class="p">(</span><span class="s1">&#39;img&#39;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="nx">@img</span><span class="o">?</span>
+            <span class="err">@</span><span class="p">.</span><span class="nx">startImgAreaSelect</span><span class="p">()</span>
+            <span class="err">@</span><span class="p">.</span><span class="nx">update</span><span class="p">()</span></pre></div>             </td>           </tr>                               <tr id="section-3">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-3">&#182;</a>               </div>               <p>Fire up a new ImgAreaSelect instance.</p>             </td>             <td class="code">               <div class="highlight"><pre>    <span class="nv">startImgAreaSelect: </span><span class="nf">(coords=null) -&gt;</span>
+        <span class="nx">@img</span><span class="p">.</span><span class="nx">imgAreaSelect</span>
+            <span class="nv">handles: </span><span class="kc">true</span>
+            <span class="nv">onSelectEnd: </span><span class="p">(</span><span class="nx">img</span><span class="p">,</span> <span class="nx">sel</span><span class="p">)</span> <span class="o">=&gt;</span></pre></div>             </td>           </tr>                               <tr id="section-4">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-4">&#182;</a>               </div>               <p>Store the hotspot data during the modal
+intermission.</p>             </td>             <td class="code">               <div class="highlight"><pre>                <span class="vi">@currentHotspot = </span>
+                    <span class="nv">img: </span><span class="nx">img</span>
+                    <span class="nv">sel: </span><span class="nx">sel</span>
+                <span class="err">@</span><span class="p">.</span><span class="nx">openModal</span><span class="p">()</span>
+
+    <span class="nv">openModal: </span><span class="o">-&gt;</span>
+        <span class="nx">arcs</span><span class="p">.</span><span class="nx">modal</span>
+            <span class="nv">template: </span><span class="nx">arcs</span><span class="p">.</span><span class="nx">templates</span><span class="p">.</span><span class="nx">hotspot_modal</span>
+            <span class="nv">draggable: </span><span class="kc">true</span>
+            <span class="nv">backdrop: </span><span class="kc">false</span>
+            <span class="nv">inputs: </span><span class="p">[</span><span class="s1">&#39;caption&#39;</span><span class="p">,</span> <span class="s1">&#39;type&#39;</span><span class="p">]</span>
+            <span class="nv">buttons:</span>
+                <span class="nv">save:</span>
+                    <span class="nv">callback: </span><span class="nf">(vals, $modal) -&gt;</span>
+                        <span class="err">@</span><span class="p">.</span><span class="nx">saveHotspot</span> <span class="nx">vals</span>
+                        <span class="nx">@img</span><span class="p">.</span><span class="nx">imgAreaSelect</span> <span class="nx">hide</span><span class="o">:</span><span class="kc">true</span>
+                    <span class="nv">context: </span><span class="err">@</span></pre></div>             </td>           </tr>                               <tr id="section-5">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-5">&#182;</a>               </div>               <p>Save the hotspot after the ImgAreaSelect callback.</p>             </td>             <td class="code">               <div class="highlight"><pre>    <span class="nv">saveHotspot: </span><span class="nf">(data) -&gt;</span>
+        <span class="nv">scaled = </span><span class="err">@</span><span class="p">.</span><span class="nx">_scaleDown</span><span class="p">(</span><span class="nx">@currentHotspot</span><span class="p">.</span><span class="nx">sel</span><span class="p">)</span>
+        <span class="nv">hotspot = </span><span class="k">new</span> <span class="nx">arcs</span><span class="p">.</span><span class="nx">models</span><span class="p">.</span><span class="nx">Hotspot</span>
+            <span class="nv">resource_id: </span><span class="nx">arcs</span><span class="p">.</span><span class="nx">resource</span><span class="p">.</span><span class="nx">id</span>
+            <span class="nv">type: </span><span class="nx">data</span><span class="p">.</span><span class="nx">type</span>
+            <span class="nv">caption: </span><span class="nx">data</span><span class="p">.</span><span class="nx">caption</span>
+            <span class="nv">x1: </span><span class="nx">scaled</span><span class="p">.</span><span class="nx">x1</span>
+            <span class="nv">x2: </span><span class="nx">scaled</span><span class="p">.</span><span class="nx">x2</span>
+            <span class="nv">y1: </span><span class="nx">scaled</span><span class="p">.</span><span class="nx">y1</span>
+            <span class="nv">y2: </span><span class="nx">scaled</span><span class="p">.</span><span class="nx">y2</span>
+        <span class="nx">hotspot</span><span class="p">.</span><span class="nx">save</span><span class="p">()</span>
+        <span class="nx">@collection</span><span class="p">.</span><span class="nx">add</span><span class="p">(</span><span class="nx">hotspot</span><span class="p">)</span></pre></div>             </td>           </tr>                               <tr id="section-6">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-6">&#182;</a>               </div>               <p>We don't store the size the image is displayed at when hotspotted, so 
+actual coordinates are useless. Scale x,y to the range (0,1).</p>             </td>             <td class="code">               <div class="highlight"><pre>    <span class="nv">_scaleDown: </span><span class="nf">(cds) -&gt;</span>
+        <span class="nx">cds</span><span class="p">.</span><span class="nx">x1</span> <span class="err">/= @img.width()</span>
+        <span class="nx">cds</span><span class="p">.</span><span class="nx">y1</span> <span class="err">/= @img.height()</span>
+        <span class="nx">cds</span><span class="p">.</span><span class="nx">x2</span> <span class="err">/= @img.width()</span>
+        <span class="nx">cds</span><span class="p">.</span><span class="nx">y2</span> <span class="err">/= @img.height()</span>
+        <span class="nx">cds</span>
+
+    <span class="nv">_scaleUp: </span><span class="nf">(cds) -&gt;</span>
+        <span class="nx">cds</span><span class="p">.</span><span class="nx">x1</span> <span class="o">*=</span> <span class="nx">@img</span><span class="p">.</span><span class="nx">width</span><span class="p">()</span>
+        <span class="nx">cds</span><span class="p">.</span><span class="nx">y1</span> <span class="o">*=</span> <span class="nx">@img</span><span class="p">.</span><span class="nx">height</span><span class="p">()</span>
+        <span class="nx">cds</span><span class="p">.</span><span class="nx">x2</span> <span class="o">*=</span> <span class="nx">@img</span><span class="p">.</span><span class="nx">width</span><span class="p">()</span>
+        <span class="nx">cds</span><span class="p">.</span><span class="nx">y2</span> <span class="o">*=</span> <span class="nx">@img</span><span class="p">.</span><span class="nx">height</span><span class="p">()</span>
+        <span class="nx">cds</span>
+
+    <span class="nv">update: </span><span class="o">-&gt;</span>
+        <span class="nx">@collection</span><span class="p">.</span><span class="nx">fetch</span>
+            <span class="nv">success: </span><span class="o">=&gt;</span>
+                <span class="err">@</span><span class="p">.</span><span class="nx">render</span><span class="p">()</span>
+
+    <span class="nv">render: </span><span class="o">-&gt;</span>
+        <span class="nv">$hotspots = </span><span class="nx">$</span><span class="p">(</span><span class="s1">&#39;#hotspots-wrapper&#39;</span><span class="p">)</span>
+        <span class="nv">$annotations = </span><span class="nx">$</span><span class="p">(</span><span class="s1">&#39;#annotations-wrapper&#39;</span><span class="p">)</span>
+        <span class="nx">$hotspots</span><span class="p">.</span><span class="nx">html</span> <span class="s1">&#39;&#39;</span>
+        <span class="nx">$annotations</span><span class="p">.</span><span class="nx">html</span> <span class="s1">&#39;&#39;</span>
+
+        <span class="nv">json = </span>
+            <span class="nv">hotspots: </span><span class="p">[]</span>
+        <span class="k">for</span> <span class="nx">hotspot</span> <span class="k">in</span> <span class="nx">@collection</span><span class="p">.</span><span class="nx">models</span>
+            <span class="nv">data = </span><span class="err">@</span><span class="p">.</span><span class="nx">_scaleUp</span><span class="p">(</span><span class="nx">hotspot</span><span class="p">.</span><span class="nx">toJSON</span><span class="p">())</span>
+            <span class="nv">data.left = </span><span class="nx">data</span><span class="p">.</span><span class="nx">x1</span>
+            <span class="nv">data.width = </span><span class="nx">data</span><span class="p">.</span><span class="nx">x2</span> <span class="o">-</span> <span class="nx">data</span><span class="p">.</span><span class="nx">x1</span>
+            <span class="nv">data.top = </span><span class="nx">data</span><span class="p">.</span><span class="nx">y1</span>
+            <span class="nv">data.height = </span><span class="nx">data</span><span class="p">.</span><span class="nx">y2</span> <span class="o">-</span> <span class="nx">data</span><span class="p">.</span><span class="nx">y1</span>
+            <span class="nx">json</span><span class="p">.</span><span class="nx">hotspots</span><span class="p">.</span><span class="nx">push</span> <span class="nx">data</span>
+
+        <span class="nx">$hotspots</span><span class="p">.</span><span class="nx">html</span> <span class="nx">Mustache</span><span class="p">.</span><span class="nx">render</span> <span class="nx">arcs</span><span class="p">.</span><span class="nx">templates</span><span class="p">.</span><span class="nx">hotspot</span><span class="p">,</span> <span class="nx">json</span>
+        <span class="nx">$annotations</span><span class="p">.</span><span class="nx">html</span> <span class="nx">Mustache</span><span class="p">.</span><span class="nx">render</span> <span class="nx">arcs</span><span class="p">.</span><span class="nx">templates</span><span class="p">.</span><span class="nx">annotation</span><span class="p">,</span> <span class="nx">json</span>
+
+</pre></div>             </td>           </tr>                </tbody>     </table>   </div> </body> </html> 
