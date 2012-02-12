@@ -99,7 +99,7 @@ class Resource extends AppModel {
      */
     public function getPath($sha, $make=false) {
         # Get the filestore setting
-        $root = realpath(Configure::read('filestore_path'));
+        $root = realpath(Configure::read('paths.uploads'));
         # Resource paths are relative to the filestore, and are stored 3
         # directories deep, using the first 3 digits of the sha.
         $path = $root . DS . substr($sha, 0, 1) . DS . substr($sha, 1, 1) . 
@@ -120,7 +120,7 @@ class Resource extends AppModel {
      * @param   resource's SHA1
      */
     public function getURL($sha) {
-        $root = Configure::read('filestore_url');
+        $root = Configure::read('urls.uploads');
         $root = rtrim($root, '/');
         return sprintf("%s/%s/%s/%s/%s", $root, substr($sha, 0, 1), 
                        substr($sha, 1, 1), substr($sha, 2, 1), substr($sha, 3));

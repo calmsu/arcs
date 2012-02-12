@@ -1,0 +1,29 @@
+#!/usr/bin/env php
+
+<?php
+
+$app = dirname(__FILE__) . '/../app';
+$assets = parse_ini_file($app . '/Config/assets.ini', true);
+
+function resolvePaths($wilds, $base='') {
+    $paths = array();
+    foreach ($wilds as $w) {
+        foreach (glob($base . $w) as $match) {
+            # Push the match, minus the base path.
+            array_push($paths, str_replace($base, '', $match));
+        }
+    }
+    # Return a unique set.
+    return array_unique($paths);
+}
+
+switch ($argv[1]) {
+    case "--js":
+        $paths = resolvePaths($assets['js']['files'], $app . '/webroot/js/');
+        echo implode(' ', $paths);
+        break;
+    case "--css":
+        $paths = resolvePaths($assets['css']['files'], $app . '/webroot/css/');
+        echo implode(' ', $paths);
+        break;
+}
