@@ -36,8 +36,8 @@ if ($dev == true) {
         # ARCS
         'app',
         'dev',
-        'utils',
         'utils/mime',
+        'utils/ui',
         'utils/keys',
         'utils/modal',
         'utils/hash',
