@@ -65,5 +65,6 @@ Cache::config('default', array('engine' => 'File'));
  */
 
 App::uses('IniReader', 'Configure', 'Security');
-Configure::config('default', new IniReader(ROOT . DS));
+Configure::config('default', new IniReader(APP . 'Config' . DS));
 Configure::load('arcs');
+Configure::load('assets');

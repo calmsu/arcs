@@ -6,7 +6,7 @@
  * @copyright    Copyright 2012, Michigan State University Board of Trustees
  */
 class AppController extends Controller {
-    public $helpers = array('Html', 'Form', 'Session');
+    public $helpers = array('Html', 'Form', 'Session', 'Assets');
 
     public $components = array(
         'Auth' => array(
