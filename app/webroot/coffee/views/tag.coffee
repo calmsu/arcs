@@ -11,8 +11,6 @@ class arcs.views.Tag extends Backbone.View
     initialize: ->
         @collection = new arcs.collections.TagList
 
-        arcs.focusHelper $('#new-tag')
-
         arcs.bind 'resourceChange', =>
             @.update()
 
