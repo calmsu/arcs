@@ -12,6 +12,7 @@ arcs.utils.Search = (function() {
     };
     if (options.facets != null) this.facets = options.facets;
     this.options = _.extend(defaults, options);
+    this.query = this.options.query;
     this.results = new arcs.collections.ResultSet;
     this.vs = VS.init({
       container: this.options.container,
@@ -70,6 +71,7 @@ arcs.utils.Search = (function() {
       success: success || this.options.success,
       error: error || this.options.error
     });
+    this.query = this.vs.searchBox.value();
     return this.results;
   };
 

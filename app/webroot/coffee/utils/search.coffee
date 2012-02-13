@@ -34,6 +34,7 @@ class arcs.utils.Search
             @facets = options.facets
         @options = _.extend defaults, options
 
+        @query = @options.query
         @results = new arcs.collections.ResultSet
 
         @vs = VS.init
@@ -92,5 +93,7 @@ class arcs.utils.Search
             contentType: 'application/json'
             success: success or @options.success
             error: error or @options.error
+
+        @query = @vs.searchBox.value()
 
         @results

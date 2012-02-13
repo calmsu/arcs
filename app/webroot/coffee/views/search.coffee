@@ -11,12 +11,17 @@ class arcs.views.Search extends Backbone.View
 
         # Get the query
         query = arcs.utils.hash.get() or null 
+        if query?
+            query = decodeURIComponent(query)
 
         # Set up search
         @search = new arcs.utils.Search 
             container: $('#search-wrapper')
             query: query
             success: =>
+                # Set the hash.
+                arcs.utils.hash.set encodeURIComponent(@search.query)
+                # Render the our results.
                 @render()
 
         # Bind hotkeys:

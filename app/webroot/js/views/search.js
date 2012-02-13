@@ -17,10 +17,12 @@ arcs.views.Search = (function(_super) {
     });
     this.setupSelect();
     query = arcs.utils.hash.get() || null;
+    if (query != null) query = decodeURIComponent(query);
     this.search = new arcs.utils.Search({
       container: $('#search-wrapper'),
       query: query,
       success: function() {
+        arcs.utils.hash.set(encodeURIComponent(_this.search.query));
         return _this.render();
       }
     });

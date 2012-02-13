@@ -88,7 +88,7 @@ arcs.templates.discussion =
 arcs.templates.tagList =
     """
     {{# tags }}
-    <a class="tag" id="tag-{{ id }}">
+    <a class="tag" id="tag-{{ id }}" href="{{ link  }}">
         {{ tag }}
     </a>
     <br>
