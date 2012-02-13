@@ -16,7 +16,7 @@ arcs.templates = {};
 
 arcs.debug = CAKE_DEBUG > 0;
 
-arcs.version = "0.8.0";
+arcs.version = "0.9.0";
 
 arcs.baseURL = '/';
 

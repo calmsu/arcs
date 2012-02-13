@@ -45,6 +45,14 @@ class AssetsHelper extends AppHelper {
             return $this->Html->script($this->resolvePaths($paths, JS));
         }
     }
+
+    /**
+     * Read script tests from the assets.ini config file and output them.
+     */
+    public function specs() {
+        $paths = Configure::read('js.tests');
+        return $this->Html->script($this->resolvePaths($paths, JS));
+    }
         
     /**
      * Read stylesheets from the assets.ini config file and output them.

@@ -13,7 +13,7 @@ arcs.templates = {}
 
 # Few settings.
 arcs.debug = CAKE_DEBUG > 0
-arcs.version = "0.8.0"
+arcs.version = "0.9.0"
 arcs.baseURL = '/'
 
 # Logs messages with an ARCS prefix if debug is on and a console is 

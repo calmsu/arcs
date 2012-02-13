@@ -8,6 +8,7 @@ arcs.utils.Search = (function() {
       container: null,
       query: '',
       useParms: true,
+      run: true,
       success: function() {},
       error: function() {}
     };
@@ -36,7 +37,7 @@ arcs.utils.Search = (function() {
         }
       }
     });
-    this.run();
+    if (this.options.run) this.run();
   }
 
   Search.prototype.facets = {

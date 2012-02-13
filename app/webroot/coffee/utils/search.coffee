@@ -19,6 +19,7 @@ class arcs.utils.Search
     #              you get a headless search.
     #   query:     Starting query.
     #   useParams: Uses relevant url parameters in search query.
+    #   run:       Call the run method after init. Defaults to true.
     #   success:   Called after results are successfully fetched.
     #   error:     Called when fetching results fails.
     #   facets:    Set the facets property (this will rarely need to be 
@@ -29,6 +30,7 @@ class arcs.utils.Search
             container: null
             query: ''
             useParms: true
+            run: true
             success: ->
             error: ->
 
@@ -53,7 +55,9 @@ class arcs.utils.Search
                         callback val()
                     else 
                         callback val
-        @run()
+
+        if @options.run
+            @run()
 
     # Keys in the facets object are suggested as facets.
     # Values must be either an array, or a function that returns one.
