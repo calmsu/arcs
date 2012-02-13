@@ -1,3 +1,4 @@
+
 $('[placeholder]').live('focus', function() {
   var $el;
   $el = $(this);
@@ -6,6 +7,7 @@ $('[placeholder]').live('focus', function() {
     return $el.removeClass('unfocused');
   }
 });
+
 $('[placeholder]').live('blur', function() {
   var $el;
   $el = $(this);

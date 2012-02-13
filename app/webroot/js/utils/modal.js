@@ -1,6 +1,7 @@
-var __bind = function(fn, me){ return function(){ return fn.apply(me, arguments); }; };
+
 arcs.utils.modal = function(options) {
-  var $modal, defaults, id, _i, _len, _ref;
+  var $modal, defaults, id, _i, _len, _ref,
+    _this = this;
   defaults = {
     template: '',
     templateValues: {},
@@ -24,9 +25,7 @@ arcs.utils.modal = function(options) {
       closeAfter: true
     };
   }
-  if (!$('#modal').length) {
-    $('body').append(arcs.templates.modalWrapper);
-  }
+  if (!$('#modal').length) $('body').append(arcs.templates.modalWrapper);
   $modal = $('#modal');
   $modal.modal({
     backdrop: options.backdrop
@@ -41,7 +40,7 @@ arcs.utils.modal = function(options) {
   _ref = _.keys(options.buttons);
   for (_i = 0, _len = _ref.length; _i < _len; _i++) {
     id = _ref[_i];
-    $modal.find("#" + id).one('click', __bind(function(e) {
+    $modal.find("#" + id).one('click', function(e) {
       var button, callback, closeAfter, context, id_, vals, _j, _len2, _ref2, _ref3, _ref4, _ref5;
       vals = {};
       if (options.inputs.length) {
@@ -54,19 +53,17 @@ arcs.utils.modal = function(options) {
       button = options.buttons[e.target.id];
       if (typeof button === 'function') {
         callback = button;
-        context = this;
+        context = _this;
         closeAfter = true;
       } else {
-        context = (_ref3 = button.context) != null ? _ref3 : this;
+        context = (_ref3 = button.context) != null ? _ref3 : _this;
         callback = (_ref4 = button.callback) != null ? _ref4 : function() {};
         closeAfter = (_ref5 = button.closeAfter) != null ? _ref5 : true;
       }
       callback = _.bind(callback, context);
       callback(vals, $modal);
-      if (closeAfter) {
-        return $modal.modal('hide');
-      }
-    }, this));
+      if (closeAfter) return $modal.modal('hide');
+    });
   }
   return $modal;
 };

@@ -29,10 +29,10 @@ less:
 
 js: coffee
 	echo $(HEADER) > $(JS)/arcs.min.js
-	$(foreach script, $(SCRIPTS), uglifyjs $(JS)/$(script) >> $(JS)/arcs.min.js)
+	$(foreach script, $(SCRIPTS), uglifyjs $(JS)/$(script) >> $(JS)/arcs.min.js;)
 	
 css: less
 	echo $(HEADER) > $(CSS)/arcs.min.css
-	$(foreach style, $(STYLESHEETS), cleancss $(CSS)/$(style) >> $(CSS)/arcs.min.css)
+	$(foreach style, $(STYLESHEETS), cleancss $(CSS)/$(style) >> $(CSS)/arcs.min.css;)
 
 all: js css

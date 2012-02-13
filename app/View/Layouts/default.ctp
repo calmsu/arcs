@@ -10,6 +10,7 @@
         <!-- ios devices go full screen! -->
         <meta name="apple-mobile-web-app-capable" content="yes" />
         <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+        <script>window.CAKE_DEBUG = <?php echo $dev ?>;</script>
         <?php 
         echo $this->Assets->stylesheets();
         echo $this->Assets->scripts();

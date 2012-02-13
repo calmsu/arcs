@@ -1,9 +1,10 @@
-var __bind = function(fn, me){ return function(){ return fn.apply(me, arguments); }; };
+var _this = this;
+
 arcs.utils.keys = {
   initialize: function() {
     return $(document).bind('keydown', this.delegate);
   },
-  delegate: __bind(function(e) {
+  delegate: function(e) {
     var bubble, callback, m, mappings, modifier, _i, _len;
     if (e.target.type === 'text' || /textarea|select/i.test(e.target.nodeName)) {
       return true;
@@ -14,15 +15,11 @@ arcs.utils.keys = {
       modifier = false;
     }
     mappings = arcs.utils.keys.get(e.which, modifier);
-    if (!mappings.length) {
-      return true;
-    }
+    if (!mappings.length) return true;
     bubble = false;
     for (_i = 0, _len = mappings.length; _i < _len; _i++) {
       m = mappings[_i];
-      if (m.bubble) {
-        bubble = true;
-      }
+      if (m.bubble) bubble = true;
       if (m.context) {
         callback = _.bind(m.callback, m.context);
       } else {
@@ -35,14 +32,10 @@ arcs.utils.keys = {
       return false;
     }
     return true;
-  }, this),
+  },
   add: function(key, modifier, callback, context, bubble) {
-    if (context == null) {
-      context = null;
-    }
-    if (bubble == null) {
-      bubble = false;
-    }
+    if (context == null) context = null;
+    if (bubble == null) bubble = false;
     this.mappings.push({
       key: key,
       modifier: modifier,
@@ -53,19 +46,16 @@ arcs.utils.keys = {
     return this.mappings;
   },
   get: function(keyCode, modifier) {
-    var matches;
-    if (modifier == null) {
-      modifier = false;
-    }
-    return matches = _.filter(this.mappings, __bind(function(map) {
-      return map.key === this.humanize(keyCode) && map.modifier === modifier;
-    }, this));
+    var matches,
+      _this = this;
+    if (modifier == null) modifier = false;
+    return matches = _.filter(this.mappings, function(map) {
+      return map.key === _this.humanize(keyCode) && map.modifier === modifier;
+    });
   },
   mappings: [],
   humanize: function(keyCode) {
-    if (_.has(this.specialKeys, keyCode)) {
-      return this.specialKeys[keyCode];
-    }
+    if (_.has(this.specialKeys, keyCode)) return this.specialKeys[keyCode];
     return String.fromCharCode(keyCode).toLowerCase();
   },
   specialKeys: {
@@ -85,4 +75,5 @@ arcs.utils.keys = {
     109: "-"
   }
 };
+
 arcs.utils.keys.initialize();

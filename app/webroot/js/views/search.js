@@ -1,18 +1,17 @@
-var __hasProp = Object.prototype.hasOwnProperty, __extends = function(child, parent) {
-  for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; }
-  function ctor() { this.constructor = child; }
-  ctor.prototype = parent.prototype;
-  child.prototype = new ctor;
-  child.__super__ = parent.prototype;
-  return child;
-}, __bind = function(fn, me){ return function(){ return fn.apply(me, arguments); }; };
-arcs.views.Search = (function() {
-  __extends(Search, Backbone.View);
+var __hasProp = Object.prototype.hasOwnProperty,
+  __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor; child.__super__ = parent.prototype; return child; };
+
+arcs.views.Search = (function(_super) {
+
+  __extends(Search, _super);
+
   function Search() {
     Search.__super__.constructor.apply(this, arguments);
   }
+
   Search.prototype.initialize = function() {
-    var query;
+    var query,
+      _this = this;
     $('.btn[rel=tooltip]').tooltip({
       placement: 'bottom'
     });
@@ -21,12 +20,13 @@ arcs.views.Search = (function() {
     this.search = new arcs.utils.Search({
       container: $('#search-wrapper'),
       query: query,
-      success: __bind(function() {
-        return this.render();
-      }, this)
+      success: function() {
+        return _this.render();
+      }
     });
     return arcs.utils.keys.add('a', true, this.selectAll, this);
   };
+
   Search.prototype.events = {
     'dblclick img': 'openResult',
     'click img': 'selectResult',
@@ -40,6 +40,7 @@ arcs.views.Search = (function() {
     'click #grid-btn': 'gridView',
     'click #list-btn': 'listView'
   };
+
   Search.prototype.setupSelect = function() {
     return $('#search-results').selectable({
       distance: 20,
@@ -58,17 +59,13 @@ arcs.views.Search = (function() {
       }
     });
   };
+
   Search.prototype.makeCollectionFromSelected = function(event, title, description) {
-    var collection, el, ids;
-    if (event == null) {
-      event = null;
-    }
-    if (title == null) {
-      title = null;
-    }
-    if (description == null) {
-      description = null;
-    }
+    var collection, el, ids,
+      _this = this;
+    if (event == null) event = null;
+    if (title == null) title = null;
+    if (description == null) description = null;
     ids = (function() {
       var _i, _len, _ref, _results;
       _ref = this.getSelected().get();
@@ -96,44 +93,43 @@ arcs.views.Search = (function() {
       data: JSON.stringify(collection),
       type: 'POST',
       contentType: 'application/json',
-      success: __bind(function(data) {
+      success: function(data) {
         return window.open(arcs.baseURL + 'collection/' + data.id);
-      }, this),
-      error: __bind(function() {
-        return this.notify("Not authorized", 'error');
-      }, this)
+      },
+      error: function() {
+        return _this.notify("Not authorized", 'error');
+      }
     });
   };
+
   Search.prototype.getSelected = function() {
     return $('.result.selected');
   };
+
   Search.prototype.getAll = function() {
     return $('.result');
   };
+
   Search.prototype.unselectAll = function(e) {
-    if (e == null) {
-      e = null;
-    }
-    if ((e != null) && (e.metaKey || e.ctrlKey || e.shiftKey)) {
-      return false;
-    }
-    if ((e != null) && $(e.target).attr('src')) {
-      return false;
-    }
+    if (e == null) e = null;
+    if ((e != null) && (e.metaKey || e.ctrlKey || e.shiftKey)) return false;
+    if ((e != null) && $(e.target).attr('src')) return false;
     return this.getSelected().removeClass('selected');
   };
+
   Search.prototype.selectAll = function() {
     return this.getAll().addClass('selected');
   };
+
   Search.prototype.toggleAll = function() {
     return this.getAll().toggleClass('selected');
   };
+
   Search.prototype.selectResult = function(e) {
-    if (!(e.ctrlKey || e.shiftKey || e.metaKey)) {
-      this.unselectAll();
-    }
+    if (!(e.ctrlKey || e.shiftKey || e.metaKey)) this.unselectAll();
     return $(e.currentTarget).parent('.result').toggleClass('selected');
   };
+
   Search.prototype.openResult = function(e) {
     var $el, id;
     arcs.log('called');
@@ -146,6 +142,7 @@ arcs.views.Search = (function() {
     id = $el.find('img').attr('data-id');
     return window.open(arcs.baseURL + 'resource/' + id);
   };
+
   Search.prototype.tagModal = function() {
     var n, s;
     n = this.getSelected().length;
@@ -170,6 +167,7 @@ arcs.views.Search = (function() {
       }
     });
   };
+
   Search.prototype.tagResult = function(el, tagStr) {
     var id, tag;
     id = $(el).find('img').attr('data-id');
@@ -183,11 +181,10 @@ arcs.views.Search = (function() {
       }
     });
   };
+
   Search.prototype.tagSelected = function(vals, modal, tagStr) {
     var n, that;
-    if (tagStr == null) {
-      tagStr = null;
-    }
+    if (tagStr == null) tagStr = null;
     tagStr = tagStr != null ? tagStr : vals['search-modal-value'];
     n = this.getSelected().length;
     that = this;
@@ -196,11 +193,10 @@ arcs.views.Search = (function() {
     });
     return this.notify("" + n + " resources were tagged with " + tagStr);
   };
+
   Search.prototype.bookmarkResult = function(el, noteStr) {
     var bkmk, id;
-    if (noteStr == null) {
-      noteStr = null;
-    }
+    if (noteStr == null) noteStr = null;
     id = $(el).find('img').attr('data-id');
     bkmk = new arcs.models.Bookmark({
       resource_id: id,
@@ -212,6 +208,7 @@ arcs.views.Search = (function() {
       }
     });
   };
+
   Search.prototype.bookmarkSelected = function() {
     var n, that;
     n = this.getSelected().length;
@@ -221,6 +218,7 @@ arcs.views.Search = (function() {
     });
     return this.notify("" + n + " resources were bookmarked");
   };
+
   Search.prototype.openSelected = function() {
     var that;
     that = this;
@@ -228,33 +226,33 @@ arcs.views.Search = (function() {
       return that.openResult(this);
     });
   };
+
   Search.prototype.notify = function(msg, type) {
     var $notify;
-    if (type == null) {
-      type = 'info';
-    }
+    if (type == null) type = 'info';
     $notify = $('#search-notify');
     $notify.html(msg).css('visibility', 'visible').removeClass("alert-info alert-error alert-success").addClass("alert-" + type);
     return window.setTimeout(function() {
       return $notify.css('visibility', 'hidden');
     }, 2000);
   };
+
   Search.prototype.gridView = function() {
     $('#list-btn').removeClass('active');
     $('#grid-btn').addClass('active');
     return this.render();
   };
+
   Search.prototype.listView = function() {
     var list;
     $('#grid-btn').removeClass('active');
     $('#list-btn').addClass('active');
     return this.render(list = true);
   };
+
   Search.prototype.render = function(list) {
     var template;
-    if (list == null) {
-      list = false;
-    }
+    if (list == null) list = false;
     if (list) {
       template = arcs.templates.resultsList;
     } else {
@@ -264,5 +262,7 @@ arcs.views.Search = (function() {
       results: this.search.results.toJSON()
     }));
   };
+
   return Search;
-})();
+
+})(Backbone.View);

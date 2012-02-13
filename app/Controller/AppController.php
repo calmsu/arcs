@@ -29,7 +29,7 @@ class AppController extends Controller {
             'logo' => true,
             'buttons' => array()
         ));
-        $this->set('dev', true);
+        $this->set('dev', Configure::read('debug'));
     }
 
     /**

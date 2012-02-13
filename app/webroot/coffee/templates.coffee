@@ -2,8 +2,6 @@
 # ----------------
 # Mustache templates for various things.
 
-arcs.templates = {}
-
 arcs.templates.resourceImage = 
     """
     <img src="{{ url }}" alt="resource" data-id="{{ id }}">

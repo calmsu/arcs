@@ -9,9 +9,10 @@ arcs.models = {}
 arcs.collections = {}
 arcs.events = {}
 arcs.utils = {}
+arcs.templates = {}
 
 # Few settings.
-arcs.debug = true
+arcs.debug = CAKE_DEBUG > 0
 arcs.version = "0.8.0"
 arcs.baseURL = '/'
 

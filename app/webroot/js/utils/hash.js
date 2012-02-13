@@ -1,3 +1,4 @@
+
 arcs.utils.hash = {
   set: function(val) {
     this.history.push(document.location.hash);
