@@ -225,9 +225,11 @@ class ResourcesController extends AppController {
 
         if ($this->request->is('ajax')) {
             if ($this->request->data) {
-                $this->facetedSearch($this->request->data);
+                $params = $this->request->query;
                 $this->jsonResponse(200, $this->facetedSearch(
-                    $this->request->data
+                    $this->request->data,
+                    isset($params['n']) ? $params['n'] : 30,
+                    isset($params['offset']) ? $params['offset'] : 0
                 ));
             } else {
                 # No facets provided. Give them back some random ones.
@@ -237,12 +239,7 @@ class ResourcesController extends AppController {
                     'order' => array('rand()')
                 )));
             }
-        } else {
-            $this->set('resources', $this->Resource->find('all', array(
-                'limit' => 30,
-                'order' => array('rand()')
-            )));
-        }
+        } 
     }
 
     /**
@@ -263,9 +260,16 @@ class ResourcesController extends AppController {
      *                           )
      *                       )
      *
+     * @param n          number of results that should be returned. Defaults to
+     *                   30.
+     *
+     * @param offset     results are start at this index. (i.e. An offset of
+     *                   40, with an n of 30, will get you results 40-69.) 
+     *                   Defaults to 0.
+     *
      * @return           array of resources meeting criteria.
      */
-    public function facetedSearch($facets) {
+    private function facetedSearch($facets, $n=30, $offset=0) {
         # Given the facets array described above, we must algorithmically
         # generate an SQL query that returns Resources that meet all facets.
         # To make things more interesting, not all facets occupy the resources
@@ -338,7 +342,8 @@ class ResourcesController extends AppController {
             # use the alias.
             $table = $model == 'Resource' ? $model : $dbo->fullTableName($this->$model);
 
-            # If there are join instructions, do the join.
+            # If there are join instructions, do the join (unless we've already
+            # joined this table).
             if (isset($map['join']) && $map['join'] && 
                 !in_array($model, $joined)) {
 
@@ -360,8 +365,8 @@ class ResourcesController extends AppController {
             array(
                 'fields' => array('`Resource`.`id`'),
                 'alias' => 'Resource',
-                'limit' => null,
-                'offset' => null,
+                'limit' => $n,
+                'offset' => $offset,
                 'conditions' => $conditions, 
                 'table' => $dbo->fullTableName($this->Resource),
                 'joins' => $joins,
@@ -425,6 +430,9 @@ class ResourcesController extends AppController {
         }
     }
 
+    /**
+     * Return a list of resource titles for autocompletion.
+     */
     public function complete() {
         if ($this->request->is('ajax')) {
             $this->jsonResponse(200, $this->Resource->find('list', array(

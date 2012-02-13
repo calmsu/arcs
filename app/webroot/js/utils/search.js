@@ -7,6 +7,7 @@ arcs.utils.Search = (function() {
     defaults = {
       container: null,
       query: '',
+      useParms: true,
       success: function() {},
       error: function() {}
     };
@@ -58,15 +59,22 @@ arcs.utils.Search = (function() {
   };
 
   Search.prototype.run = function(facets, success, error) {
+    var n, offset, params, _ref, _ref2;
     if (!(facets != null) && (this.vs != null)) {
       facets = this.vs.searchQuery.toJSON();
     }
     _.each(facets, function(f) {
       return delete f.app;
     });
+    if (this.options.useParams) {
+      n = (_ref = arcs.utils.params.get('n')) != null ? _ref : 30;
+      offset = (_ref2 = arcs.utils.params.get('offset')) != null ? _ref2 : 0;
+      params = "?n=" + n + "&offset=" + offset;
+    }
     this.results.fetch({
       data: JSON.stringify(facets),
       type: 'POST',
+      url: this.results.url() + (params != null ? params : ''),
       contentType: 'application/json',
       success: success || this.options.success,
       error: error || this.options.error

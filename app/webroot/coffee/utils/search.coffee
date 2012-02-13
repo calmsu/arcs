@@ -18,6 +18,7 @@ class arcs.utils.Search
     #   container: DOM Element that wraps the searchbar. When this is omitted,
     #              you get a headless search.
     #   query:     Starting query.
+    #   useParams: Uses relevant url parameters in search query.
     #   success:   Called after results are successfully fetched.
     #   error:     Called when fetching results fails.
     #   facets:    Set the facets property (this will rarely need to be 
@@ -27,6 +28,7 @@ class arcs.utils.Search
         defaults = 
             container: null
             query: ''
+            useParms: true
             success: ->
             error: ->
 
@@ -58,7 +60,7 @@ class arcs.utils.Search
     #
     # Keep in mind that the functions will be called with window scope.
     facets:
-        # Note that here we wrap the func inside of an anonymous func
+        # Note that here we wrap the func call inside of an anonymous func
         # so that script load order won't matter. Providing the func object 
         # itself is also ok.
         filetype: -> arcs.utils.mime.types()
@@ -87,9 +89,15 @@ class arcs.utils.Search
         _.each facets, (f) ->
             delete f.app
 
+        if @options.useParams
+            n = arcs.utils.params.get('n') ? 30
+            offset = arcs.utils.params.get('offset') ? 0
+            params = "?n=#{n}&offset=#{offset}"
+
         @results.fetch
             data: JSON.stringify(facets)
             type: 'POST'
+            url: @results.url() + (params ? '')
             contentType: 'application/json'
             success: success or @options.success
             error: error or @options.error
