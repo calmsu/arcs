@@ -39,18 +39,18 @@ arcs.utils.Search = (function() {
 
   Search.prototype.facets = {
     filetype: function() {
-      return arcs.utils.mime.types;
+      return arcs.utils.mime.types();
     },
     filename: [],
     sha: [],
     title: function() {
-      return arcs.utils.complete.titles;
+      return arcs.utils.complete.titles();
     },
     user: function() {
-      return arcs.utils.complete.users;
+      return arcs.utils.complete.users();
     },
     tag: function() {
-      return arcs.utils.complete.tags;
+      return arcs.utils.complete.tags();
     },
     collection: [],
     date: []

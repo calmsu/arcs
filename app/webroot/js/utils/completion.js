@@ -24,3 +24,16 @@ arcs.utils.complete = {
     return arcs.utils.complete["default"]('resources/complete');
   }
 };
+
+arcs.utils.autocomplete = function(opts) {
+  var $el;
+  $el = $(opts.sel);
+  $el.autocomplete({
+    source: opts.source,
+    autoFocus: true
+  });
+  return $el.on('autocompleteselect', function(event, ui) {
+    $el.val(ui.item.value);
+    return false;
+  });
+};

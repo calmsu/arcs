@@ -60,12 +60,12 @@ class arcs.utils.Search
         # Note that here we wrap the func inside of an anonymous func
         # so that script load order won't matter. Providing the func object 
         # itself is also ok.
-        filetype: -> arcs.utils.mime.types
+        filetype: -> arcs.utils.mime.types()
         filename: []
         sha: []
-        title: -> arcs.utils.complete.titles
-        user: -> arcs.utils.complete.users
-        tag: -> arcs.utils.complete.tags
+        title: -> arcs.utils.complete.titles()
+        user: -> arcs.utils.complete.users()
+        tag: -> arcs.utils.complete.tags()
         collection: []
         date: []
 

@@ -19,6 +19,10 @@ class arcs.views.Tag extends Backbone.View
         @collection.bind 'add', @.render, @
         @collection.bind 'remove', @.render, @
 
+        arcs.utils.autocomplete 
+            sel: '#new-tag'
+            source: arcs.utils.complete.tags()
+
         @.update()
 
     keydownDelegate: (e) =>

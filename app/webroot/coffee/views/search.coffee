@@ -154,6 +154,12 @@ class arcs.views.Search extends Backbone.View
                     callback: @.tagSelected
                     context: @
 
+        $('#search-modal-value').focus()
+
+        arcs.utils.autocomplete
+            sel: '#search-modal-value'
+            source: arcs.utils.complete.tags()
+
     # Create a new Tag, given a result element and a string.
     tagResult: (el, tagStr) -> 
         id = $(el).find('img').attr('data-id')

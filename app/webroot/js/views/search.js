@@ -151,7 +151,7 @@ arcs.views.Search = (function(_super) {
       alert("You must select at least 1 result to tag.");
       return;
     }
-    return arcs.utils.modal({
+    arcs.utils.modal({
       template: arcs.templates.searchModal,
       templateValues: {
         title: 'Tag Selected',
@@ -165,6 +165,11 @@ arcs.views.Search = (function(_super) {
           context: this
         }
       }
+    });
+    $('#search-modal-value').focus();
+    return arcs.utils.autocomplete({
+      sel: '#search-modal-value',
+      source: arcs.utils.complete.tags()
     });
   };
 
