@@ -1,4 +1,5 @@
 <?php
+App::uses('Controller', 'Controller');
 App::uses('ResourcesController', 'Controller');
 
 /**
@@ -78,7 +79,9 @@ class ResourcesControllerTestCase extends CakeTestCase {
  * @return void
  */
 	public function testAdd() {
-
+        $data = array(
+            'Resource' => array()
+        );
 	}
 
 /**
@@ -96,7 +99,6 @@ class ResourcesControllerTestCase extends CakeTestCase {
  * @return void
  */
 	public function testUpdate() {
-
 	}
 
 /**

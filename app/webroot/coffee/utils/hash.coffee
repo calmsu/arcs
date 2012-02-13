@@ -5,7 +5,7 @@ arcs.utils.hash =
 
     # Set the hash, record the change.
     set: (val) ->
-        @history.push document.location.hash
+        @history.push document.location.hash[1..]
         document.location.hash = val
 
     # Get the hash, minus the actual hash.

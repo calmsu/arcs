@@ -7,6 +7,7 @@ arcs.utils.Search = (function() {
     defaults = {
       container: null,
       query: '',
+      run: true,
       success: function() {},
       error: function() {}
     };
@@ -34,7 +35,7 @@ arcs.utils.Search = (function() {
         }
       }
     });
-    this.run();
+    if (options.run) this.run();
   }
 
   Search.prototype.facets = {

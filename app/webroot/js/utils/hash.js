@@ -1,7 +1,7 @@
 
 arcs.utils.hash = {
   set: function(val) {
-    this.history.push(document.location.hash);
+    this.history.push(document.location.hash.slice(1));
     return document.location.hash = val;
   },
   get: function() {
