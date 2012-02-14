@@ -45,6 +45,7 @@ arcs.utils.Search = (function() {
       return arcs.utils.mime.types();
     },
     filename: [],
+    id: [],
     sha: [],
     title: function() {
       return arcs.utils.complete.titles();
@@ -56,7 +57,12 @@ arcs.utils.Search = (function() {
       return arcs.utils.complete.tags();
     },
     collection: [],
-    date: []
+    created: [],
+    uploaded: [],
+    modified: [],
+    type: function() {
+      return arcs.utils.complete.types();
+    }
   };
 
   Search.prototype.run = function(facets, success, error) {

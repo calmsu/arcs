@@ -23,7 +23,7 @@ Facet         | Description
               |
 `comment`\*   | Matches comment text.
               |
-`created`\*   | Matches the date on which the resource was uploaded.
+`created`     | Matches the date on which the resource was uploaded.
               | Provide a date using the Middle Endian format (month
               | in the middle). You may also use `today`, `yesterday`,
               | and `this week`.
@@ -36,7 +36,7 @@ Facet         | Description
               |
 `id`          | Matches the resource's unique id.
               |
-`modified`\*  | Matches the date on which the resource was last 
+`modified`    | Matches the date on which the resource was last 
               | changed. 
               |
 `tag`         | Matches resources with a tag. For example: 
@@ -45,7 +45,7 @@ Facet         | Description
 `title`       | Matches the title of the resource. For example:
               | `title: Bones 1989`
               |
-`type`\*      | Matches the resource type given when uploading a new
+`type`        | Matches the resource type given when uploading a new
               | resource. These values can vary depending on how ARCS
               | is configured.
               |

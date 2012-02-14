@@ -51,7 +51,7 @@ query that will find everything that John uploaded yesterday.</p>
 <td></td>
 </tr>
 <tr>
-<td><code>created</code>*</td>
+<td><code>created</code></td>
 <td>Matches the date on which the resource was uploaded.</td>
 </tr>
 <tr>
@@ -103,7 +103,7 @@ query that will find everything that John uploaded yesterday.</p>
 <td></td>
 </tr>
 <tr>
-<td><code>modified</code>*</td>
+<td><code>modified</code></td>
 <td>Matches the date on which the resource was last</td>
 </tr>
 <tr>
@@ -139,7 +139,7 @@ query that will find everything that John uploaded yesterday.</p>
 <td></td>
 </tr>
 <tr>
-<td><code>type</code>*</td>
+<td><code>type</code></td>
 <td>Matches the resource type given when uploading a new</td>
 </tr>
 <tr>

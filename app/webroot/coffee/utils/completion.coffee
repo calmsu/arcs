@@ -24,7 +24,10 @@ arcs.utils.complete =
         arcs.utils.complete.default 'tags/complete'
 
     titles: ->
-        arcs.utils.complete.default 'resources/complete'
+        arcs.utils.complete.default 'resources/complete/title'
+
+    types: ->
+        arcs.utils.complete.default 'resources/complete/type'
 
 
 # The autocomplete function wraps jQueryUI's autocomplete and ensures

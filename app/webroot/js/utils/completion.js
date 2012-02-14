@@ -21,7 +21,10 @@ arcs.utils.complete = {
     return arcs.utils.complete["default"]('tags/complete');
   },
   titles: function() {
-    return arcs.utils.complete["default"]('resources/complete');
+    return arcs.utils.complete["default"]('resources/complete/title');
+  },
+  types: function() {
+    return arcs.utils.complete["default"]('resources/complete/type');
   }
 };
 

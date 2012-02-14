@@ -326,6 +326,18 @@ class ResourcesController extends AppController {
                 'field' => 'name',
                 'join' => array('user_id', 'id')
             ),
+            'modified' => array(
+                'model' => 'Resource',
+                'field' => 'modified'
+            ),
+            'created' => array(
+                'model' => 'Resource',
+                'field' => 'created'
+            ),
+            'uploaded' => array(
+                'model' => 'Resource',
+                'field' => 'created'
+            ),
             'sha' => array(
                 'model' => 'Resource',
                 'field' => 'sha'
@@ -333,6 +345,14 @@ class ResourcesController extends AppController {
             'title' => array(
                 'model' => 'Resource',
                 'field' => 'title'
+            ),
+            'id' => array(
+                'model' => 'Resource',
+                'field' => 'id'
+            ),
+            'type' => array(
+                'model' => 'Resource',
+                'field' => 'type'
             ),
             'filetype' => array(
                 'model' => 'Resource',
@@ -464,12 +484,19 @@ class ResourcesController extends AppController {
     /**
      * Return a list of resource titles for autocompletion.
      */
-    public function complete() {
+    public function complete($field) {
         if ($this->request->is('ajax')) {
-            $this->jsonResponse(200, $this->Resource->find('list', array(
-                'fields' => array('Resource.title'),
-                'limit' => 100
-            )));
+            switch($field) {
+                case 'title':
+                    $this->jsonResponse(200, $this->Resource->find('list', array(
+                            'fields' => array('Resource.title'),
+                            'limit' => 100
+                        )));
+                    break;
+                case 'type':
+                    $this->jsonResponse(200, Configure::read('resources.types'));
+                    break;
+            }
         }
     }
 }
