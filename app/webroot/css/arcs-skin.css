@@ -4918,20 +4918,6 @@ div#search-results {
   width: 100% !important;
   margin-bottom: 1px !important;
 }
-.ui-autocomplete .ui-menu-item .ui-state-hover {
-  background: -webkit-gradient(linear, left top, left bottom, from(#3fb5d8), to(#2c859e));
-  /* webkit */
-
-  background: -moz-linear-gradient(center bottom, #2c859e, #3fb5d8);
-  /* mozilla */
-
-  filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#dddddd', endColorstr='#bbbbbb');
-  /* IE */
-
-  text-shadow: 0 1px 1px #216376;
-  border: #216376;
-  color: #fff;
-}
 .ui-corner-all {
   border-radius: 0px !important;
 }

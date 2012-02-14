@@ -11,8 +11,11 @@ arcs.events = {}
 arcs.utils = {}
 arcs.templates = {}
 
-# Few settings.
-arcs.debug = CAKE_DEBUG > 0
+# Development mode?
+arcs.mode = CAKE_DEBUG
+# Debug will be on by default in dev mode. Set the var from the 
+# console to turn it off.
+arcs.debug = arcs.mode > 0
 arcs.version = "0.9.0"
 arcs.baseURL = '/'
 
