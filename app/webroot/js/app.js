@@ -14,7 +14,9 @@ arcs.utils = {};
 
 arcs.templates = {};
 
-arcs.debug = CAKE_DEBUG > 0;
+arcs.mode = CAKE_DEBUG;
+
+arcs.debug = arcs.mode > 0;
 
 arcs.version = "0.9.0";
 
