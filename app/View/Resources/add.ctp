@@ -9,7 +9,7 @@
     <?php echo $this->Form->create('Resource', array('type' => 'file')) ?>
     <?php echo $this->Form->input('title', array('type' => 'text')) ?>
     <br>
-    <?php echo $this->Form->input('type') ?>
+    <?php echo $this->Form->input('type', array('options' => $types)) ?>
     <br>
     <?php echo $this->Form->input('public', array('label' => 'Make it Public?')) ?>
     <br>
@@ -27,6 +27,9 @@
 
 <script type="text/javascript">
     $(function() {
+        // Focus the title field.
+        $('#ResourceTitle').focus();
+        // Autocomplete the tags field.
         arcs.utils.autocomplete({
             sel: '#ResourceTags',
             multiple: true,

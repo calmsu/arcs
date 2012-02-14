@@ -7,7 +7,10 @@
 #   - uglify-js
 #   - clean-css
 #   - less
-#   - markdown
+#
+# To build the docs, we're using markdown_py, from the Python
+# Markdown module. You can substitute it with another Markdown
+# converter that supports tables.
 
 # Asset dirs
 COFFEE=app/webroot/coffee
@@ -53,4 +56,5 @@ doc:
 	$(foreach doc, $(DOCS), markdown_py -x tables $(doc) > \
 		app/View/Docs/$(notdir $(basename $(doc))).ctp;)
 
+# Make everything.
 all: js css doc

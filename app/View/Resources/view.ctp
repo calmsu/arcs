@@ -44,8 +44,7 @@
                 <input id="comment-button" type="submit" class="btn" value="Comment" />
             </div><!-- tab-pane -->
 
-        </div><!-- sidebar-tab-content -->		    
-
+        </div><!-- sidebar-tab-content -->
     </div><!-- tab-wrapper -->
 </div><!-- .row -->
 
