@@ -1,4 +1,4 @@
-<h1>API Documentation</h1>
+<h1>API Reference</h1>
 <p>The ARCS API can be queried by sending the appropriate HTTP request to the 
 given URL. </p>
 <h2>Responses and Status Codes</h2>

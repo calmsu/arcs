@@ -2,7 +2,8 @@
     <h3>Upload</h3>
     <br>
     <p>
-    Need help with uploading? See the <a href="/docs/uploading">help page</a>.
+    Need help with uploading? See the 
+    <a href="<?php echo $this->Html->url('/docs/uploading') ?>">help page</a>.
     </p>
     <br>
     <?php echo $this->Form->create('Resource', array('type' => 'file')) ?>

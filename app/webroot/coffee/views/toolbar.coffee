@@ -7,9 +7,9 @@ class arcs.views.Toolbar extends Backbone.View
 
     initialize: ->
         arcs.bind 'resourceChange', =>
-            @.buttonCheck()
+            @buttonCheck()
 
-        @.addButton
+        @addButton
             id: 'full-res'
             text: 'Full Resolution'
             class: 'image'
@@ -52,9 +52,9 @@ class arcs.views.Toolbar extends Backbone.View
 
     buttonCheck: ->
         if (arcs.utils.mime.getInfo(arcs.resource.get('mime_type')).ext == 'pdf')
-            @.addButton
+            @addButton
                 id: 'split-pdf'
                 text: 'Split PDF'
                 class: 'image'
         else 
-            @.removeButton 'split-pdf'
+            @removeButton 'split-pdf'

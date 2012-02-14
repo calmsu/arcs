@@ -93,7 +93,7 @@
     );
 
     # Docs routes
-    Router::connect('/docs', 
+    Router::connect('/docs',
         array('controller' => 'docs', 'action' => 'display', 'index')
     );
     Router::connect('/docs/*', 

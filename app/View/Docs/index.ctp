@@ -1,1 +1,1 @@
-Docs index
+<h1>Getting Started with ARCS</h1>

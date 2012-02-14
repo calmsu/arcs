@@ -23,7 +23,7 @@
             <li><?php echo $this->Html->link('Logout', '/logout') ?></li>
         </ul>
     </div>
-    <a class="btn info" style="float:right; margin-top:5px; margin-right:10px;"
+    <a class="btn primary" style="float:right; margin-top:5px; margin-right:10px;"
         href="<?php echo $this->Html->url('/upload')?>">
         <i class="icon-white icon-upload"></i> Upload
     </a>
