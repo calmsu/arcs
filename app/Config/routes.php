@@ -100,7 +100,6 @@
         array('controller' => 'docs', 'action' => 'display')
     );
 
-
     # Map resources for the ajax-only controllers
     Router::mapResources(array(
         'comments',

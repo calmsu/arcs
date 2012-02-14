@@ -29,6 +29,10 @@ arcs.templates.resourceTable =
         {{/ public }}
     </tr>
     <tr>
+        <td>Type</td>
+        <td>{{ type }}</td>
+    </tr>
+    <tr>
         <td>Created</td>
         <td>{{ created }}</td>
     </tr>

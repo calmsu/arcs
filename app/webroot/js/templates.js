@@ -3,7 +3,7 @@ arcs.templates.resourceImage = "<img src=\"{{ url }}\" alt=\"resource\" data-id=
 
 arcs.templates.resourceDocument = "<iframe src=\"http://docs.google.com/gview?url={{ url }}&embedded=true\"\n    style=\"width:60%; height:100%; float:left;\" frameborder=\"0\"></iframe>";
 
-arcs.templates.resourceTable = "<tr>\n    <td>Title</td>\n    <td>{{ title }}\n</tr>\n<tr>\n    <td>Public</td>\n    {{# public }}\n    <td>Yes</td>\n    {{/ public }}\n    {{^ public }}\n    <td>No</td>\n    {{/ public }}\n</tr>\n<tr>\n    <td>Created</td>\n    <td>{{ created }}</td>\n</tr>\n{{# modified }}\n<tr>\n    <td>Modified</td>\n    <td>{{ modified }}</td>\n</tr>\n{{/ modified }}\n<tr>\n    <td>Download Link</td>\n    <td><a href=\"{{ url }}\">{{ file_name }}</a></td>\n</tr>";
+arcs.templates.resourceTable = "<tr>\n    <td>Title</td>\n    <td>{{ title }}\n</tr>\n<tr>\n    <td>Public</td>\n    {{# public }}\n    <td>Yes</td>\n    {{/ public }}\n    {{^ public }}\n    <td>No</td>\n    {{/ public }}\n</tr>\n<tr>\n    <td>Type</td>\n    <td>{{ type }}</td>\n</tr>\n<tr>\n    <td>Created</td>\n    <td>{{ created }}</td>\n</tr>\n{{# modified }}\n<tr>\n    <td>Modified</td>\n    <td>{{ modified }}</td>\n</tr>\n{{/ modified }}\n<tr>\n    <td>Download Link</td>\n    <td><a href=\"{{ url }}\">{{ file_name }}</a></td>\n</tr>";
 
 arcs.templates.collectionTable = "<tr>\n    <td>Title</td>\n    <td>{{ title }}\n</tr>\n<tr>\n    <td>Description</td>\n    <td>{{ description }}\n</tr>\n<tr>\n    <td>Public</td>\n    {{# public }}\n    <td>Yes</td>\n    {{/ public }}\n    {{^ public }}\n    <td>No</td>\n    {{/ public }}\n</tr>\n{{# pdf }}\n<tr>\n    <td>Original PDF</td>\n    <td><a href=\"../resource/{{ pdf }}\">Link</a></td>\n</tr>\n{{/ pdf }}";
 
