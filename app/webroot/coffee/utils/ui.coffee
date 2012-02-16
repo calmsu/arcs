@@ -13,3 +13,6 @@ $('[placeholder]').live 'blur', ->
     if $el.val() == ''
         $el.val $el.attr('placeholder')
         $el.addClass 'unfocused'
+
+$('[rel=tooltip]').tooltip
+    placement: 'bottom'

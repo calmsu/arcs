@@ -30,7 +30,8 @@ arcs.utils.Search = (function() {
           var val;
           val = _this.facets[facet];
           if (typeof val === 'function') {
-            return callback(val());
+            _this.facets[facet] = val();
+            return callback(_this.facets[facet]);
           } else {
             return callback(val);
           }
@@ -42,26 +43,42 @@ arcs.utils.Search = (function() {
 
   Search.prototype.facets = {
     filetype: function() {
-      return arcs.utils.mime.types();
+      var k, v, _ref, _results;
+      _ref = arcs.utils.mime.types();
+      _results = [];
+      for (k in _ref) {
+        v = _ref[k];
+        _results.push({
+          value: k,
+          label: v
+        });
+      }
+      return _results;
     },
     filename: [],
     id: [],
     sha: [],
     title: function() {
-      return arcs.utils.complete.titles();
+      return arcs.utils.complete.title();
     },
     user: function() {
-      return arcs.utils.complete.users();
+      return arcs.utils.complete.user();
     },
     tag: function() {
-      return arcs.utils.complete.tags();
+      return arcs.utils.complete.tag();
     },
     collection: [],
-    created: [],
-    uploaded: [],
-    modified: [],
+    created: function() {
+      return arcs.utils.complete.created();
+    },
+    uploaded: function() {
+      return arcs.utils.complete.created();
+    },
+    modified: function() {
+      return arcs.utils.complete.modified();
+    },
     type: function() {
-      return arcs.utils.complete.types();
+      return arcs.utils.complete.type();
     }
   };
 

@@ -26,7 +26,7 @@ arcs.views.Tag = (function(_super) {
     this.collection.bind('remove', this.render, this);
     arcs.utils.autocomplete({
       sel: '#new-tag',
-      source: arcs.utils.complete.tags()
+      source: arcs.utils.complete.tag()
     });
     return this.update();
   };

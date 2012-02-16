@@ -20,14 +20,16 @@
             <?php echo $this->element('toolbar', $toolbar) ?>
             <?php echo $this->Session->flash() ?>
             <?php echo $this->Session->flash('auth') ?>
-            <div class="span3">
-            <?php echo $this->element('doc_sidebar', array(
-                'docs' => $docs,
-                'active' => $active
-            )) ?>
-            </div>
-            <div class="span9">
-            <?php echo $this->fetch('content'); ?>
+            <div class="row">
+                <div class="span3">
+                <?php echo $this->element('doc_sidebar', array(
+                    'docs' => $docs,
+                    'active' => $active
+                )) ?>
+                </div>
+                <div class="span9">
+                <?php echo $this->fetch('content'); ?>
+                </div>
             </div>
         </div>
     </body>

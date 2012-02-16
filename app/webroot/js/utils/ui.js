@@ -16,3 +16,7 @@ $('[placeholder]').live('blur', function() {
     return $el.addClass('unfocused');
   }
 });
+
+$('[rel=tooltip]').tooltip({
+  placement: 'bottom'
+});

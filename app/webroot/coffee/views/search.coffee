@@ -4,23 +4,19 @@
 class arcs.views.Search extends Backbone.View
 
     initialize: ->
-        $('.btn[rel=tooltip]').tooltip
-            placement: 'bottom'
-
         @setupSelect()
 
         # Get the query
-        query = arcs.utils.hash.get() or null 
-        if query?
-            query = decodeURIComponent(query)
+        query = arcs.utils.hash.get(uri=true) or null 
 
         # Set up search
         @search = new arcs.utils.Search 
             container: $('#search-wrapper')
             query: query
+            # This callback will be fired each time a search is done.
             success: =>
-                # Set the hash.
-                arcs.utils.hash.set encodeURIComponent(@search.query)
+                # Set the hash
+                arcs.utils.hash.set @search.query, uri=true
                 # Render the our results.
                 @render()
 
@@ -45,6 +41,7 @@ class arcs.views.Search extends Backbone.View
         $('#search-results').selectable
             # Little bit of drag tolerance
             distance: 20
+            # Images are the selectables
             filter: 'img'
             # Make jQuery UI use our selected class
             selecting: (e, ui) ->
@@ -56,34 +53,77 @@ class arcs.views.Search extends Backbone.View
             unselected: (e, ui) ->
                 $(ui.unselected).parent().removeClass('selected')
 
+    results:
+        selected: ->
+            $('.result.selected')
+
+        all: ->
+            $('.result')
+
+        select: (e) ->
+            # If <ctrl> <shift> or <meta> is pressed allow multi-select
+            if not (e.ctrlKey or e.shiftKey or e.metaKey)
+                @unselectAll()
+            $(e.currentTarget).parent('.result').toggleClass 'selected'
+
+        toggle: (e) ->
+
+        selectAll: ->
+            @results.all().addClass 'selected'
+
+        toggleAll: ->
+            @results.all().toggleClass 'selected'
+
+        unselectAll: (e) ->
+            @results.all().removeClass 'selected'
+
+        maybeUnselectAll: (e) ->
+            if e?
+                # If one of the modifier keys is held down, we won't do anything.
+                if (e.metaKey or e.ctrlKey or e.shiftKey)
+                    return false
+
+                # If the target is the image, we won't do anything.
+                if $(e.target).attr 'src'
+                    return false
+
+            @results.unselectAll()
+
+        open: (e) ->
+            # Allows calling with a jQuery Event (via the events hash)...
+            if e instanceof jQuery.Event
+                $el = $(e.currentTarget).parent()
+                e.preventDefault()
+            # ..or a DOM Element
+            else
+                $el = $(e)
+            id = $el.find('img').attr('data-id')
+            window.open(arcs.baseURL + 'resource/' + id)
+
+        openSelected: ->
+            that = @
+            @results.selected().each ->
+                that.openResult @ 
+
     # Create a new collection from the selected results, and open it.
     # Give it title and description arguments and we'll use those, otherwise
     # it's a 'Temporary collection' and the description is take from the search.
-    makeCollectionFromSelected: (event=null, title=null, description=null) ->
-        ids = ($(el).find('img').attr('data-id') for el in @.getSelected().get())
+    makeCollectionFromSelected: (event) ->
+        ids = _.map @getSelected().get(), (el) ->
+            $(el).find('img').attr('data-id')
 
-        title = title ? 'Temporary collection'
-        description = description ? "Results from search, '#{arcs.utils.hash.get()}'"
+        description ?= "Results from search, '#{arcs.utils.hash.get(uri=true)}'"
 
-        arcs.log title, description
+        collection = new arcs.models.Collection
+            public: false
+            temporary: true
+            members: ids
 
-        collection = 
-            Collection:
-                title: title
-                description: description
-                public: false
-                temporary: true
-            Members: ids
-
-        $.ajax
-            url: arcs.baseURL + 'collections/create'
-            data: JSON.stringify(collection)
-            type: 'POST'
-            contentType: 'application/json'
-            success: (data) =>
-                window.open(arcs.baseURL + 'collection/' + data.id)
+        collection.save description: description,
+            success: (model) ->
+                window.open(arcs.baseURL + 'collection/' + model.id)
             error: =>
-                @notify "Not authorized", 'error'
+                @notify()
 
     # Get the selected results. Use this rather than a raw selector so
     # that we can change everything in one place.
@@ -95,7 +135,7 @@ class arcs.views.Search extends Backbone.View
         $('.result')
 
     # Unselect all.
-    unselectAll: (e=null) ->
+    unselectAll: (e) ->
         # This can run with a jQuery.Event argument.
 
         # If one of the modifier keys is held down, we won't do anything.
@@ -119,13 +159,12 @@ class arcs.views.Search extends Backbone.View
     selectResult: (e) ->
         # If <ctrl> <shift> or <meta> is pressed allow multi-select
         if not (e.ctrlKey or e.shiftKey or e.metaKey)
-            @.unselectAll()
+            @unselectAll()
         $(e.currentTarget).parent('.result').toggleClass 'selected'
 
     # Open a result (in a new tab/window)
     openResult: (e) ->
-        arcs.log 'called'
-        # Allows calling with a jQuery Event (via Backbone)...
+        # Allows calling with a jQuery Event (via the events hash)...
         if e instanceof jQuery.Event
             $el = $(e.currentTarget).parent()
             e.preventDefault()
@@ -142,8 +181,8 @@ class arcs.views.Search extends Backbone.View
         n = @getSelected().length
         s = if n > 1 then 's' else ''
 
-        # If nothing is selected:
-        if n == 0
+        # Unless something is selected:
+        unless n
             alert "You must select at least 1 result to tag."
             return
 
@@ -156,14 +195,15 @@ class arcs.views.Search extends Backbone.View
             backdrop: true
             buttons: 
                 save:
-                    callback: @.tagSelected
+                    callback: @tagSelected
                     context: @
 
+        # Focus the input
         $('#search-modal-value').focus()
 
         arcs.utils.autocomplete
             sel: '#search-modal-value'
-            source: arcs.utils.complete.tags()
+            source: arcs.utils.complete.tag()
 
     # Create a new Tag, given a result element and a string.
     tagResult: (el, tagStr) -> 
@@ -206,7 +246,7 @@ class arcs.views.Search extends Backbone.View
         # Notify
         @notify "#{n} resources were bookmarked"
 
-    # Open all selected results through @.openResult()
+    # Open all selected results through @openResult()
     openSelected: ->
         that = @
         @getSelected().each ->

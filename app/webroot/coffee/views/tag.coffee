@@ -12,22 +12,22 @@ class arcs.views.Tag extends Backbone.View
         @collection = new arcs.collections.TagList
 
         arcs.bind 'resourceChange', =>
-            @.update()
+            @update()
 
         _.bindAll @, 'render'
 
-        @collection.bind 'add', @.render, @
-        @collection.bind 'remove', @.render, @
+        @collection.bind 'add', @render, @
+        @collection.bind 'remove', @render, @
 
         arcs.utils.autocomplete 
             sel: '#new-tag'
-            source: arcs.utils.complete.tags()
+            source: arcs.utils.complete.tag()
 
-        @.update()
+        @update()
 
     keydownDelegate: (e) =>
         if e.keyCode == 13
-            @.saveTag()
+            @saveTag()
             e.preventDefault()
             return false
 
@@ -43,7 +43,7 @@ class arcs.views.Tag extends Backbone.View
     update: ->
         @collection.fetch
             success: =>
-                @.render()
+                @render()
 
     render: ->
         $tags = $('#tags-wrapper')
