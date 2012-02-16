@@ -528,6 +528,12 @@ ul.resource-thumbs{
 
 #user-actions{
 	margin-left: 0;
+	tr:hover,
+	tr:nth-child(odd):hover td,
+	tr:nth-child(odd):hover th{
+		text-decoration: underline;
+		background-color: #eee;
+	}//tr
 	.tab-content{
 		#activity-tab{
 		
@@ -648,6 +654,156 @@ ul.resource-thumbs{
 	
 }//#resource-wrapper
 
+// UPLOAD FORM ELEMENTS
+// --------------------
+
+section#upload-form{
+	margin-bottom: 30px;
+	clear: both;
+	min-height: 50px;
+	margin-left: auto;
+	margin-right: auto; 
+	//background-color: @white; 
+	
+	h1#logo {
+	  display: block;
+	  font-size: @baseFontSize * 3;
+	  text-shadow: 2px 3px 3px #ffffff;
+	  padding: 10px 0 0 43px;
+	  background: no-repeat top left url('img/arcs-icon-big.png');
+	  background-position: 0 10px;
+	  margin-right: 10px;
+	  margin-bottom: 20px;
+	  float: left;
+	}//#logo
+	
+	form[name="upload-pt1"],
+	form[name="upload-pt2"]{
+		display: block;
+		margin-top: 20px;
+		
+		fieldset{
+			legend{
+				margin-bottom: 20px;
+				clear: both;
+			}
+			
+			img{
+				margin-top: 10px;
+			}
+			div.properties-contain{
+				margin-top: 10px;
+				.offset3;
+				.span9;
+			}//properties-contain
+			
+		}//fieldset
+
+		input.btn{
+			float: none;
+			text-align: left;
+			width: auto;
+			
+		}//btn
+		
+		input[name="new-or-add"]{
+			display: inline;
+			float: none;
+		}//inputp[name='new-or-add']
+
+		div.label-input-wrapper{
+			display: block;
+			
+			label{
+				text-align: right;
+				width: 90px;
+				margin-bottom: 20px;
+				display: inline-block;
+				font-weight: bold;
+				
+				&:after{
+					content: ":"
+				}//:after
+				
+			}//label
+			
+			input, 
+			text-area, 
+			select{
+				display: inline-block;
+				min-width: 300px;
+				margin-top: 10px;
+				
+			}//input, text-area, select
+			
+			div.radio-group{
+				display: inline-block;
+				//max-width: 100px;
+				margin-bottom: 10px;
+
+				label{
+					display: inline-block;
+					text-align: left;
+					width: 100px;
+					
+					&:after{
+						content: "";
+					}
+				}
+				
+				input[type="radio"]{
+					display: inline-block;
+				}
+				
+			}//.radio-group
+			
+		}//.label-input-wrapper
+		
+		.privacy-contain{
+			margin-top: 10px;
+				.offset3; 
+				.span9;
+			
+			.label-input-wrapper{
+				label{
+				}//label
+				input{
+					margin-top:0;
+				}
+				.radio-group{
+					label{
+						display: inline;
+						min-width: 100px;
+						margin-right: 10px;
+						font-weight: normal;
+					}
+					input[type="radio"]{
+						display: inline;
+						margin:  0 0 10px 0 !important;
+					}//input
+					
+				}//div.radio-group
+			}//.label-input-wrapper
+			
+		}//.privacy-contain
+		
+		select[multiple].extra-stuff{
+			display: block;
+			margin: 0 0 0 110px;
+		}//extra.extra-stuff
+		
+	}//[name='upload-pt1'], [name='upload-pt2']
+	
+	select#resource-type,
+	select#choose-notebook{
+		display: block;
+	}//select#resource-type, select#choose-notebook
+	
+	
+	
+	
+	
+}//#upload-form
 
 
 
@@ -767,6 +923,7 @@ input#arcs-search {
 	margin: inherit inherit inherit -20px;
     border:1px solid #999;
 }
+
 
 #hotspots-wrapper {
     position:relative;
@@ -914,6 +1071,7 @@ a.annotation, a.tag {
 }
 
 input#new-tag {
+    border:1px solid #ccc;
     padding:5px;
 }
 
@@ -966,7 +1124,7 @@ div#search-results {
 
 .result.grid {
     float:left;
-    width:190px;
+    width:200px;
     max-height:140px;
     margin:20px;
 }
@@ -1015,15 +1173,6 @@ div#search-results {
     width:100% !important; 
     margin-bottom:1px !important;
 }
-
-.ui-autocomplete .ui-menu-item .ui-state-hover {
-    // .gradient(#5bc0de, #339bb9);
-    .gradient(#3fb5d8, #2c859e);
-    .text-shadow(#216376);
-    border:#216376;
-    color:#fff;
-}
-
 .ui-corner-all {
     border-radius:0px !important;
 }
