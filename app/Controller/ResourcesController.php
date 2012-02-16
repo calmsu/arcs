@@ -455,15 +455,12 @@ class ResourcesController extends AppController {
             ), $this->Resource
         );
 
-        $this->log($query);
-
         # Run the query and get the ids.
         $ids = array_map(function ($r) { return $r['Resource']['id']; }, 
             $this->Resource->query($query)
         );
 
         if (!$ids) {
-            $this->log($query);
             return array();
         }
 
