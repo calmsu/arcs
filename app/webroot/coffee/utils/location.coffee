@@ -6,13 +6,22 @@
 arcs.utils.hash = 
 
     # Set the hash, record the change.
-    set: (val) ->
+    #
+    # val - string value to set the hash with.
+    # uri - URI encode val before setting.
+    set: (val, uri=false) ->
         @history.push document.location.hash
+        if uri
+            val = encodeURIComponent val
         document.location.hash = val
 
     # Get the hash, minus the actual hash.
-    get: ->
-        document.location.hash[1..]
+    #
+    # uri - URI decode the hash before returning.
+    get: (uri=false) ->
+        hash = document.location.hash[1..]
+        if uri
+            decodeURIComponent hash
 
     # Set the hash to the most recent history item.
     rewind: ->
