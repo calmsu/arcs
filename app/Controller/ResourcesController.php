@@ -47,6 +47,7 @@ class ResourcesController extends AppController {
                 'Resource' => array(
                     'sha' => $sha,
                     'title' => $this->data['Resource']['title'],
+                    'type' => $this->data['Resource']['type'],
                     'public' => $this->data['Resource']['public'],
                     'file_name' => $name,
                     'mime_type' => $mime,
@@ -55,12 +56,33 @@ class ResourcesController extends AppController {
 
             # Optionally add it to a collection.
             if ($collection_id) {
-                $this->loadModel('Membership');
-                $this->Membership->save(array(
+                $this->Resource->Membership->save(array(
                     'Membership' => array(
                         'resource_id' => $this->Resource->id,
                         'collection_id' => $collection_id
-                    )));
+                    )
+                ));
+            }
+
+            # Save any tags.
+            if (strlen($this->data['Resource']['tags'])) {
+                # Remove whitespace
+                $tags = rtrim($this->data['Resource']['tags']);
+                $tagRecords = array();
+                foreach(explode(',', $tags) as $t) {
+                    if (strlen($t)) {
+                        array_push($tagRecords, array(
+                            'Tag' => array(
+                                'resource_id' => $this->Resource->id,
+                                'tag' => $t
+                            )
+                        ));
+                    }
+                }
+                # If not empty:
+                if ($tagRecords) {
+                    $this->Resource->Tag->saveMany($tagRecords);
+                }
             }
 
             # Make a task to get a thumbnail made, don't have time now.
@@ -77,6 +99,15 @@ class ResourcesController extends AppController {
             # Set a flash message, redirect to the resource view.
             $this->Session->setFlash('Resource created.', 'flash_success');
             $this->redirect(array('action' => 'view', $this->Resource->id));
+        } else {
+            $config = Configure::read('resources.types');
+            $types = is_array($config) ? $config : array();
+            # Prepare our options array. Keys = values.
+            foreach($types as $k => $v) {
+                $types[$v] = $v;
+                unset($types[$k]);
+            }
+            $this->set('types', $types);
         }
     }
 
@@ -295,6 +326,18 @@ class ResourcesController extends AppController {
                 'field' => 'name',
                 'join' => array('user_id', 'id')
             ),
+            'modified' => array(
+                'model' => 'Resource',
+                'field' => 'modified'
+            ),
+            'created' => array(
+                'model' => 'Resource',
+                'field' => 'created'
+            ),
+            'uploaded' => array(
+                'model' => 'Resource',
+                'field' => 'created'
+            ),
             'sha' => array(
                 'model' => 'Resource',
                 'field' => 'sha'
@@ -302,6 +345,14 @@ class ResourcesController extends AppController {
             'title' => array(
                 'model' => 'Resource',
                 'field' => 'title'
+            ),
+            'id' => array(
+                'model' => 'Resource',
+                'field' => 'id'
+            ),
+            'type' => array(
+                'model' => 'Resource',
+                'field' => 'type'
             ),
             'filetype' => array(
                 'model' => 'Resource',
@@ -433,12 +484,19 @@ class ResourcesController extends AppController {
     /**
      * Return a list of resource titles for autocompletion.
      */
-    public function complete() {
+    public function complete($field) {
         if ($this->request->is('ajax')) {
-            $this->jsonResponse(200, $this->Resource->find('list', array(
-                'fields' => array('Resource.title'),
-                'limit' => 100
-            )));
+            switch($field) {
+                case 'title':
+                    $this->jsonResponse(200, $this->Resource->find('list', array(
+                            'fields' => array('Resource.title'),
+                            'limit' => 100
+                        )));
+                    break;
+                case 'type':
+                    $this->jsonResponse(200, Configure::read('resources.types'));
+                    break;
+            }
         }
     }
 }

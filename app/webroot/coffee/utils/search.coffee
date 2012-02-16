@@ -69,12 +69,16 @@ class arcs.utils.Search
         # itself is also ok.
         filetype: -> arcs.utils.mime.types()
         filename: []
+        id: []
         sha: []
         title: -> arcs.utils.complete.titles()
         user: -> arcs.utils.complete.users()
         tag: -> arcs.utils.complete.tags()
         collection: []
-        date: []
+        created: []
+        uploaded: []
+        modified: []
+        type: -> arcs.utils.complete.types()
 
     # Query the server and update the results collection.
     #

@@ -140,7 +140,7 @@ class arcs.views.Hotspot extends Backbone.View
         json = 
             hotspots: []
         for hotspot in @collection.models
-            data = @._scaleUp(hotspot.toJSON())
+            data = @_scaleUp(hotspot.toJSON())
             data.left = data.x1
             data.width = data.x2 - data.x1
             data.top = data.y1

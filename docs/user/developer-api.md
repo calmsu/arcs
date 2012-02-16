@@ -1,5 +1,5 @@
-API Documentation
-=================
+API Reference
+=============
 The ARCS API can be queried by sending the appropriate HTTP request to the 
 given URL. 
 

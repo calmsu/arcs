@@ -15,48 +15,32 @@ class DocsController extends AppController {
         parent::beforeFilter();
         $this->Auth->allow('display');
         $this->set('toolbar', array(
-            'logo' => true,
-            'buttons' => array(
-                array(
-                    'id' => 'test',
-                    'class' => 'link',
-                    'content' => 'Arcs at Ismia',
-                    'url' => '#'
-                ),
-                array(
-                    'id' => 'test',
-                    'class' => 'image',
-                    'content' => 'Test',
-                    'url' => '#'
-                ),
-            )
+            'logo' => true
+        ));
+        $this->set('docs', array(
+            'Help' => null,
+            'Getting Started' => '',
+            'Resources' => 'about-resources',
+            'Collections' => 'about-collections',
+            'Uploading Resources' => 'uploading',
+            'Searching the Catalog' => 'searching',
+            'Bulk Actions' => 'bulk-actions',
+            'Developer' => null,
+            'Installing ARCS' => 'installing',
+            'API Reference' => 'developer-api',
         ));
         $this->layout = 'doc';
     }
 
     /**
-     * Displays a view
+     * Displays a document
      *
-     * @param mixed What page to display
+     * @param doc
      * @return void
      */
-	public function display() {
-		$path = func_get_args();
-
-		$count = count($path);
-		if (!$count) {
-			$this->redirect('/');
-		}
-		$page = $subpage = null;
+	public function display($doc='index') {
         $title_for_layout = 'ARCS Help';
-
-		if (!empty($path[0])) {
-			$page = $path[0];
-		}
-		if (!empty($path[1])) {
-			$subpage = $path[1];
-		}
-		$this->set(compact('page', 'subpage', 'title_for_layout'));
-		$this->render(implode('/', $path));
+        $this->set('active', $doc);
+		$this->render($doc);
 	}
 }
