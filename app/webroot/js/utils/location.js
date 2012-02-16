@@ -1,11 +1,16 @@
 
 arcs.utils.hash = {
-  set: function(val) {
+  set: function(val, uri) {
+    if (uri == null) uri = false;
     this.history.push(document.location.hash);
+    if (uri) val = encodeURIComponent(val);
     return document.location.hash = val;
   },
-  get: function() {
-    return document.location.hash.slice(1);
+  get: function(uri) {
+    var hash;
+    if (uri == null) uri = false;
+    hash = document.location.hash.slice(1);
+    if (uri) return decodeURIComponent(hash);
   },
   rewind: function() {
     return this.set(this.history.pop());

@@ -1,21 +1,22 @@
 # keys.coffee
 # -----------
-# Hotkey binding
+# Keyboard shortcuts and what not.
 #
-# The keys object provides an interface for registering key mappings with a 
-# callback that will be fired anytime the key (combination) is pressed. 
-#
-# The keydown event is bound to the document object. Key presses within a text
-# accepting field will be ignored.
-arcs.utils.keys = 
+# The Keys class provides an interface for mapping keys (or key combinations)
+# to methods. A class instance will bind keydown events on the document object.
+# When fired, the instance looks for registered mappings matching the keydown.
+# If any are found, the mapped method is called and bubbling stops unless 
+# instructed otherwise.
+class arcs.utils.Keys
 
-    initialize: ->
-        $(document).bind 'keydown', @delegate
+    # Bind to the document object.
+    constructor: ->
+        $(document).on 'keydown', @delegate
     
     # Inspect the event and see if any matching hotkeys are registered. If so,
     # fire the relevant callback.
     #
-    #   e - a W3C compliant event object.
+    #   e - a W3C-compliant event object.
     delegate: (e) =>
 
         # Is it a text field? We don't do those here. 
@@ -31,8 +32,8 @@ arcs.utils.keys =
             modifier = false
 
         # Get matching mappings
-        mappings = arcs.utils.keys.get e.which, modifier
-        if not mappings.length
+        mappings = @get e.which, modifier
+        unless mappings.length
             return true
 
         # Iterate the mappings.
@@ -57,17 +58,17 @@ arcs.utils.keys =
     # Register a mapping.
     #
     #   key      - single letter or special character.
-    #   modifier - bool, one of [shift,ctl,meta,alt] must also be pressed
     #   callback - function to call when the key (combination) is pressed.
+    #   modifier - bool, one of [shift,ctl,meta,alt] must also be pressed
     #   context  - bind the callback to an object. It will default to the 
     #              DOM's document element (which the keydown is bound to).
     #   bubble   - bubble up the event. By default, we'll return false and
     #              block further action with preventDefault().
-    add: (key, modifier, callback, context=null, bubble=false) ->
+    add: (key, modifier=false, callback, context, bubble=false) ->
         @mappings.push
             key: key
-            modifier: modifier
             callback: callback
+            modifier: modifier
             context: context
             bubble: bubble
         @mappings
@@ -111,5 +112,5 @@ arcs.utils.keys =
         107: "+"
         109: "-"
 
-# Fire it up. There's no harm if we don't have any mappings.
-arcs.utils.keys.initialize()
+# Fire it up an instance.
+arcs.utils.keys = new arcs.utils.Keys

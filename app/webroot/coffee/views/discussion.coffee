@@ -12,14 +12,14 @@ class arcs.views.Discussion extends Backbone.View
         @collection = new arcs.collections.Discussion
 
         arcs.bind 'resourceChange', =>
-            @.update()
+            @update()
 
         _.bindAll @, 'render'
 
-        @collection.bind 'add', @.render, @
-        @collection.bind 'remove', @.render, @
+        @collection.bind 'add', @render, @
+        @collection.bind 'remove', @render, @
 
-        @.update()
+        @update()
 
     saveComment: ->
         $textarea = @el.find('textarea#content')
@@ -37,7 +37,7 @@ class arcs.views.Discussion extends Backbone.View
     update: ->
         @collection.fetch
             success: =>
-                @.render()
+                @render()
 
     render: ->
         $discussion = $('#comment-wrapper')

@@ -6,7 +6,7 @@
 # from the server.
 arcs.utils.complete =
 
-    default: (url) ->
+    _get: (url) ->
         result = []
         $.ajax
             url: arcs.baseURL + url
@@ -17,20 +17,40 @@ arcs.utils.complete =
                 result = _.without(_.uniq(_.values(data)), null)
         return result
 
-    users: ->
-        arcs.utils.complete.default 'users/complete'
+    _date: (url) ->
+        raw_dates = @_get url
+        fmt = 'MM-DD-YYYY'
+        parse_fmt = 'YYYY-MM-DD HH:mm:ss'
+        dates = (moment(d, parse_fmt).format(fmt) for d in raw_dates)
+        aliases = [
+            {label:'today', value: moment().format(fmt)},
+            {label:'yesterday', value: moment().subtract('days', 1).format(fmt)}
+        ]
+        _.uniq _.union dates, aliases
 
-    tags: ->
-        arcs.utils.complete.default 'tags/complete'
+    user: ->
+        @_get 'users/complete'
 
-    titles: ->
-        arcs.utils.complete.default 'resources/complete/title'
+    tag: ->
+        @_get 'tags/complete'
 
-    types: ->
-        arcs.utils.complete.default 'resources/complete/type'
+    title: ->
+        @_get 'resources/complete/title'
+
+    type: ->
+        @_get 'resources/complete/type'
+
+    created: ->
+        @_date 'resources/complete/created'
+
+    modified: ->
+        @_date 'resources/complete/modified'
+
+# Make sure arcs.utils.complete methods are called with that context.
+_.bindAll(arcs.utils.complete)
 
 
-# The autocomplete function wraps jQueryUI's autocomplete and ensures
+# The autocomplete method wraps jQueryUI's autocomplete and ensures
 # that the input field remains in focus. It can also handle multiple
 # value autocompletion (i.e. comma-separated values).
 #
@@ -39,11 +59,12 @@ arcs.utils.complete =
 #   multiple: handle multiple value completion.
 #   sel:      input selectior (e.g. #tag-field or .some-input)
 arcs.utils.autocomplete = (opts) ->
+
+    # Set our defaults
     defaults = 
         source: []
         multiple: false
         sel: null
-
     options = _.extend(defaults, opts)
 
     $el = $(options.sel)
@@ -76,6 +97,7 @@ arcs.utils.autocomplete = (opts) ->
         focus = ->
             false
 
+    # Set up jQueryUI autocomplete
     $el.autocomplete 
         source: options.source
         autoFocus: true

@@ -10,19 +10,15 @@ arcs.views.Search = (function(_super) {
   }
 
   Search.prototype.initialize = function() {
-    var query,
+    var query, uri,
       _this = this;
-    $('.btn[rel=tooltip]').tooltip({
-      placement: 'bottom'
-    });
     this.setupSelect();
-    query = arcs.utils.hash.get() || null;
-    if (query != null) query = decodeURIComponent(query);
+    query = arcs.utils.hash.get(uri = true) || null;
     this.search = new arcs.utils.Search({
       container: $('#search-wrapper'),
       query: query,
       success: function() {
-        arcs.utils.hash.set(encodeURIComponent(_this.search.query));
+        arcs.utils.hash.set(_this.search.query, uri = true);
         return _this.render();
       }
     });
@@ -62,44 +58,76 @@ arcs.views.Search = (function(_super) {
     });
   };
 
-  Search.prototype.makeCollectionFromSelected = function(event, title, description) {
-    var collection, el, ids,
-      _this = this;
-    if (event == null) event = null;
-    if (title == null) title = null;
-    if (description == null) description = null;
-    ids = (function() {
-      var _i, _len, _ref, _results;
-      _ref = this.getSelected().get();
-      _results = [];
-      for (_i = 0, _len = _ref.length; _i < _len; _i++) {
-        el = _ref[_i];
-        _results.push($(el).find('img').attr('data-id'));
+  Search.prototype.results = {
+    selected: function() {
+      return $('.result.selected');
+    },
+    all: function() {
+      return $('.result');
+    },
+    select: function(e) {
+      if (!(e.ctrlKey || e.shiftKey || e.metaKey)) this.unselectAll();
+      return $(e.currentTarget).parent('.result').toggleClass('selected');
+    },
+    toggle: function(e) {},
+    selectAll: function() {
+      return this.results.all().addClass('selected');
+    },
+    toggleAll: function() {
+      return this.results.all().toggleClass('selected');
+    },
+    unselectAll: function(e) {
+      return this.results.all().removeClass('selected');
+    },
+    maybeUnselectAll: function(e) {
+      if (e != null) {
+        if (e.metaKey || e.ctrlKey || e.shiftKey) return false;
+        if ($(e.target).attr('src')) return false;
       }
-      return _results;
-    }).call(this);
-    title = title != null ? title : 'Temporary collection';
-    description = description != null ? description : "Results from search, '" + (arcs.utils.hash.get()) + "'";
-    arcs.log(title, description);
-    collection = {
-      Collection: {
-        title: title,
-        description: description,
-        public: false,
-        temporary: true
-      },
-      Members: ids
-    };
-    return $.ajax({
-      url: arcs.baseURL + 'collections/create',
-      data: JSON.stringify(collection),
-      type: 'POST',
-      contentType: 'application/json',
-      success: function(data) {
-        return window.open(arcs.baseURL + 'collection/' + data.id);
+      return this.results.unselectAll();
+    },
+    open: function(e) {
+      var $el, id;
+      if (e instanceof jQuery.Event) {
+        $el = $(e.currentTarget).parent();
+        e.preventDefault();
+      } else {
+        $el = $(e);
+      }
+      id = $el.find('img').attr('data-id');
+      return window.open(arcs.baseURL + 'resource/' + id);
+    },
+    openSelected: function() {
+      var that;
+      that = this;
+      return this.results.selected().each(function() {
+        return that.openResult(this);
+      });
+    }
+  };
+
+  Search.prototype.makeCollectionFromSelected = function(event) {
+    var collection, ids, uri,
+      _this = this;
+    ids = _.map(this.getSelected().get(), function(el) {
+      return $(el).find('img').attr('data-id');
+    });
+    if (typeof description === "undefined" || description === null) {
+      description = "Results from search, '" + (arcs.utils.hash.get(uri = true)) + "'";
+    }
+    collection = new arcs.models.Collection({
+      public: false,
+      temporary: true,
+      members: ids
+    });
+    return collection.save({
+      description: description
+    }, {
+      success: function(model) {
+        return window.open(arcs.baseURL + 'collection/' + model.id);
       },
       error: function() {
-        return _this.notify("Not authorized", 'error');
+        return _this.notify();
       }
     });
   };
@@ -113,7 +141,6 @@ arcs.views.Search = (function(_super) {
   };
 
   Search.prototype.unselectAll = function(e) {
-    if (e == null) e = null;
     if ((e != null) && (e.metaKey || e.ctrlKey || e.shiftKey)) return false;
     if ((e != null) && $(e.target).attr('src')) return false;
     return this.getSelected().removeClass('selected');
@@ -134,7 +161,6 @@ arcs.views.Search = (function(_super) {
 
   Search.prototype.openResult = function(e) {
     var $el, id;
-    arcs.log('called');
     if (e instanceof jQuery.Event) {
       $el = $(e.currentTarget).parent();
       e.preventDefault();
@@ -149,7 +175,7 @@ arcs.views.Search = (function(_super) {
     var n, s;
     n = this.getSelected().length;
     s = n > 1 ? 's' : '';
-    if (n === 0) {
+    if (!n) {
       alert("You must select at least 1 result to tag.");
       return;
     }
@@ -171,7 +197,7 @@ arcs.views.Search = (function(_super) {
     $('#search-modal-value').focus();
     return arcs.utils.autocomplete({
       sel: '#search-modal-value',
-      source: arcs.utils.complete.tags()
+      source: arcs.utils.complete.tag()
     });
   };
 

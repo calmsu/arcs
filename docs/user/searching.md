@@ -24,9 +24,8 @@ Facet         | Description
 `comment`\*   | Matches comment text.
               |
 `created`     | Matches the date on which the resource was uploaded.
-              | Provide a date using the Middle Endian format (month
-              | in the middle). You may also use `today`, `yesterday`,
-              | and `this week`.
+              | Provide a date using month-day-year format. You can also 
+              | use the aliases `today` and `yesterday`.
               | 
 `filetype`    | Matches the filetype of the resource. Some common
               | filetypes are `pdf`, `jpeg`, and `png`.

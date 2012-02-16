@@ -73,6 +73,11 @@
         array('controller' => 'resources', 'action' => 'search')
     );
 
+    # Configuration status
+    Router::connect('/status',
+        array('controller' => 'pages', 'action' => 'status')
+    );
+
     # Resource hasMany routes
     Router::connect('/resources/:id/comments',
         array('controller' => 'resources', 'action' => 'comments'),

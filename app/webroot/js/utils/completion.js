@@ -1,6 +1,6 @@
 
 arcs.utils.complete = {
-  "default": function(url) {
+  _get: function(url) {
     var result;
     result = [];
     $.ajax({
@@ -14,19 +14,52 @@ arcs.utils.complete = {
     });
     return result;
   },
-  users: function() {
-    return arcs.utils.complete["default"]('users/complete');
+  _date: function(url) {
+    var aliases, d, dates, fmt, parse_fmt, raw_dates;
+    raw_dates = this._get(url);
+    fmt = 'MM-DD-YYYY';
+    parse_fmt = 'YYYY-MM-DD HH:mm:ss';
+    dates = (function() {
+      var _i, _len, _results;
+      _results = [];
+      for (_i = 0, _len = raw_dates.length; _i < _len; _i++) {
+        d = raw_dates[_i];
+        _results.push(moment(d, parse_fmt).format(fmt));
+      }
+      return _results;
+    })();
+    aliases = [
+      {
+        label: 'today',
+        value: moment().format(fmt)
+      }, {
+        label: 'yesterday',
+        value: moment().subtract('days', 1).format(fmt)
+      }
+    ];
+    return _.uniq(_.union(dates, aliases));
   },
-  tags: function() {
-    return arcs.utils.complete["default"]('tags/complete');
+  user: function() {
+    return this._get('users/complete');
   },
-  titles: function() {
-    return arcs.utils.complete["default"]('resources/complete/title');
+  tag: function() {
+    return this._get('tags/complete');
   },
-  types: function() {
-    return arcs.utils.complete["default"]('resources/complete/type');
+  title: function() {
+    return this._get('resources/complete/title');
+  },
+  type: function() {
+    return this._get('resources/complete/type');
+  },
+  created: function() {
+    return this._date('resources/complete/created');
+  },
+  modified: function() {
+    return this._date('resources/complete/modified');
   }
 };
+
+_.bindAll(arcs.utils.complete);
 
 arcs.utils.autocomplete = function(opts) {
   var $el, addTerm, defaults, focus, getLast, options, select, split;

@@ -25,16 +25,16 @@ class CollectionsController extends AppController {
     public function create() {
         if ($this->request->is('post') && $this->data) {
             # Save the collection.
-            $data = array('Collection' => $this->data['Collection']);
+            $data = array('Collection' => $this->data);
             $data['Collection']['user_id'] = $this->Auth->user('id');
             $this->Collection->save($data);
 
             # The 'Members' key may be given as a list of resource 
             # id's that will be saved as Memberships.
-            if ($this->data['Members']) {
+            if ($this->data['members']) {
                 $this->loadModel('Membership');
                 $members = array();
-                foreach ($this->data['Members'] as $member) {
+                foreach ($this->data['members'] as $member) {
                     array_push($members, array(
                         'collection_id' => $this->Collection->id,
                         'resource_id' => $member

@@ -107,7 +107,10 @@ class Resource extends AppModel {
         # Make the path if desired and non-existent
         if ($make) {
             if (!is_dir($path)) {
-                mkdir($path, 0777, true);
+                $success = mkdir($path, 0777, true);
+                if (!$success) {
+                    return false;
+                }
             }
         }
         return $path;

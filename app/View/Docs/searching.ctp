@@ -56,15 +56,11 @@ query that will find everything that John uploaded yesterday.</p>
 </tr>
 <tr>
 <td></td>
-<td>Provide a date using the Middle Endian format (month</td>
+<td>Provide a date using month-day-year format. You can also</td>
 </tr>
 <tr>
 <td></td>
-<td>in the middle). You may also use <code>today</code>, <code>yesterday</code>,</td>
-</tr>
-<tr>
-<td></td>
-<td>and <code>this week</code>.</td>
+<td>use the aliases <code>today</code> and <code>yesterday</code>.</td>
 </tr>
 <tr>
 <td></td>

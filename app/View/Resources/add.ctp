@@ -1,10 +1,8 @@
 <div class="arcs-form" style="width:500px;">
     <h3>Upload</h3>
     <br>
-    <p>
-    Need help with uploading? See the 
-    <a href="<?php echo $this->Html->url('/docs/uploading') ?>">help page</a>.
-    </p>
+    <p>Need help with uploading? See the 
+    <a href="<?php echo $this->Html->url('/docs/uploading') ?>">help page</a>.</p>
     <br>
     <?php echo $this->Form->create('Resource', array('type' => 'file')) ?>
     <?php echo $this->Form->input('title', array('type' => 'text')) ?>
@@ -26,14 +24,14 @@
 </div>
 
 <script type="text/javascript">
-    $(function() {
+    $(document).ready(function() {
         // Focus the title field.
         $('#ResourceTitle').focus();
         // Autocomplete the tags field.
         arcs.utils.autocomplete({
             sel: '#ResourceTags',
             multiple: true,
-            source: arcs.utils.complete.tags()
+            source: arcs.utils.complete.tag()
         });
     });
 </script>

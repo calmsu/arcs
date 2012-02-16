@@ -52,7 +52,8 @@ class arcs.utils.Search
                 valueMatches: (facet, searchTerm, callback) =>
                     val = @facets[facet]
                     if typeof val == 'function'
-                        callback val()
+                        @facets[facet] = val()
+                        callback @facets[facet]
                     else 
                         callback val
 
@@ -61,24 +62,25 @@ class arcs.utils.Search
 
     # Keys in the facets object are suggested as facets.
     # Values must be either an array, or a function that returns one.
+    # If it's a function, the search term will be given as an argument.
     #
     # Keep in mind that the functions will be called with window scope.
     facets:
-        # Note that here we wrap the func call inside of an anonymous func
-        # so that script load order won't matter. Providing the func object 
-        # itself is also ok.
-        filetype: -> arcs.utils.mime.types()
+        filetype: -> 
+            ({value: k, label: v} for k,v of arcs.utils.mime.types())
         filename: []
         id: []
         sha: []
-        title: -> arcs.utils.complete.titles()
-        user: -> arcs.utils.complete.users()
-        tag: -> arcs.utils.complete.tags()
+        # I've wrapped some of these in an anom func so that the load order
+        # doesn't matter. Functions can also be given directly.
+        title: -> arcs.utils.complete.title()
+        user: -> arcs.utils.complete.user()
+        tag: -> arcs.utils.complete.tag()
         collection: []
-        created: []
-        uploaded: []
-        modified: []
-        type: -> arcs.utils.complete.types()
+        created: -> arcs.utils.complete.created()
+        uploaded: -> arcs.utils.complete.created()
+        modified: -> arcs.utils.complete.modified()
+        type: -> arcs.utils.complete.type()
 
     # Query the server and update the results collection.
     #

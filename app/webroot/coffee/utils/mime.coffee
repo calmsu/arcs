@@ -22,9 +22,7 @@ arcs.utils.mime =
         'video/quicktime': 'mov'
 
     types: ->
-        that = arcs.utils.mime
-        types = _.keys(that.imageTypes).concat _.keys(that.documentTypes).concat 
-        types.concat _.keys(that.videoTypes)
+        _.extend @videoTypes, @documentTypes, @imageTypes
 
     getInfo: (mime) ->
         undef =
@@ -43,3 +41,5 @@ arcs.utils.mime =
                     ext: types[type][mime]
 
         result or undef 
+
+_.bindAll arcs.utils.mime
