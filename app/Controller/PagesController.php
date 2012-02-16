@@ -14,22 +14,23 @@ class PagesController extends AppController {
     public function beforeFilter() {
         parent::beforeFilter();
         $this->Auth->allow('display');
-        $this->set('toolbar', array(
-            'logo' => false,
-            'buttons' => array(
-                array(
-                    'id' => 'test',
-                    'class' => 'link',
-                    'content' => 'Arcs at Ismia',
-                    'url' => '#'
-                ),
-                array(
-                    'id' => 'test',
-                    'class' => 'image',
-                    'content' => 'Test',
-                    'url' => '#'
-                ),
-            )
+    }
+
+    /**
+     * Displays information about the system configuration.
+     */
+    public function status() {
+        if ($this->Auth->user('role') > 0) {
+            $this->setFlash('You must be an admin user to view the status page.');
+            $this->redirect('/');
+        }
+        $uploads_path = Configure::read('paths.uploads');
+        $this->set('uploads', array(
+            'url' => Configure::read('urls.uploads'),
+            'path' => $uploads_path,
+            'exists' => is_dir($uploads_path),
+            'writable' => is_writable($uploads_path),
+            'executable' => is_executable($uploads_path)
         ));
     }
 
