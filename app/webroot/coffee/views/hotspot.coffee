@@ -46,24 +46,19 @@ class arcs.views.Hotspot extends Backbone.View
         arcs.utils.modal
             template: arcs.templates.hotspotModal
             backdrop: false
-            draggable: true
-            handle: '#drag-handle'
+            class: 'hotspot-modal'
             # The modal helper will retrieve these values for us.
             inputs: ['caption', 'title', 'type', 'url']
             buttons:
-                save:
-                    # Save the Hotspot and hide the selection when the
-                    # save button is clicked.
-                    callback: (vals) ->
-                        vals.resource = $('.result.selected img').attr('data-id')
-                        @saveHotspot vals
-                        arcs.log vals
-                        @img.imgAreaSelect hide:true
-                    context: @
-                cancel:
-                    callback: ->
-                        @img.imgAreaSelect hide:true
-                    context: @
+                # Save the Hotspot and hide the selection when the
+                # save button is clicked.
+                save: (vals) =>
+                    vals.resource = $('.result.selected img').attr('data-id')
+                    @saveHotspot vals
+                    arcs.log vals
+                    @img.imgAreaSelect hide:true
+                cancel: => 
+                    @img.imgAreaSelect hide:true
 
         $('.result img').live 'click', ->
             $('.result').removeClass 'selected'

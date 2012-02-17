@@ -8,7 +8,6 @@ arcs.utils.complete = {
       async: false,
       dataType: 'json',
       success: function(data) {
-        arcs.log(data);
         return result = _.without(_.uniq(_.values(data)), null);
       }
     });

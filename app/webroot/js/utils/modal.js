@@ -8,6 +8,7 @@ arcs.utils.modal = function(options) {
     draggable: false,
     handle: null,
     backdrop: true,
+    "class": null,
     inputs: [],
     buttons: {
       save: {
@@ -31,6 +32,7 @@ arcs.utils.modal = function(options) {
     backdrop: options.backdrop
   });
   $modal.html(Mustache.render(options.template, options.templateValues));
+  if (options["class"] != null) $modal.addClass(options["class"]);
   $modal.modal('show');
   if (options.draggable) {
     $modal.draggable({
@@ -41,7 +43,7 @@ arcs.utils.modal = function(options) {
   for (_i = 0, _len = _ref.length; _i < _len; _i++) {
     id = _ref[_i];
     $modal.find("#" + id).one('click', function(e) {
-      var button, callback, closeAfter, context, id_, vals, _j, _len2, _ref2, _ref3, _ref4, _ref5;
+      var button, callback, closeAfter, context, id_, vals, _j, _len2, _ref2, _ref3, _ref4;
       vals = {};
       if (options.inputs.length) {
         _ref2 = options.inputs;
@@ -51,16 +53,16 @@ arcs.utils.modal = function(options) {
         }
       }
       button = options.buttons[e.target.id];
-      if (typeof button === 'function') {
+      if (_.isFunction(button)) {
         callback = button;
-        context = _this;
         closeAfter = true;
+        context = null;
       } else {
-        context = (_ref3 = button.context) != null ? _ref3 : _this;
-        callback = (_ref4 = button.callback) != null ? _ref4 : function() {};
-        closeAfter = (_ref5 = button.closeAfter) != null ? _ref5 : true;
+        context = button.context;
+        callback = (_ref3 = button.callback) != null ? _ref3 : function() {};
+        closeAfter = (_ref4 = button.closeAfter) != null ? _ref4 : true;
       }
-      callback = _.bind(callback, context);
+      if (button.context != null) callback = _.bind(callback, context);
       callback(vals, $modal);
       if (closeAfter) return $modal.modal('hide');
     });

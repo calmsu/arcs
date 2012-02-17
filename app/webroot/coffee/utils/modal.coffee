@@ -18,6 +18,8 @@ arcs.utils.modal = (options) ->
         handle: null
         # Give the modal a backdrop?
         backdrop: true
+        # Provide a class to add to the modal div.
+        class: null
         # Provide an array of input ids and we'll retrieve their values and 
         # provide them to the callback.
         inputs: []
@@ -52,6 +54,9 @@ arcs.utils.modal = (options) ->
 
     # Evaluate and inject the template with any values. 
     $modal.html Mustache.render options.template, options.templateValues
+    # Add the class 
+    if options.class?
+        $modal.addClass options.class
     $modal.modal 'show'
 
     # If they want it draggable, make it so (with jQuery UI).
@@ -72,20 +77,21 @@ arcs.utils.modal = (options) ->
 
             # Since this is async, we can't rely on the loop iterator inside.
             button = options.buttons[e.target.id]
-            if typeof button == 'function'  
+            if _.isFunction button
                 callback = button
-                context = @
                 closeAfter = true
+                context = null
             else 
                 # Backup values for context & callback.
-                context = button.context ? @
+                context = button.context
                 callback = button.callback ? ->
                 closeAfter = button.closeAfter ? true
 
             # Bind the function to a context, if given.
             # This allows callbacks to operate in the context of their own 
             # object. (For example, Search.tagSelected bound to Search)
-            callback = _.bind(callback, context)
+            if button.context?
+                callback = _.bind(callback, context)
 
             # Fire the callback with the vals we retrieved and the modal.
             callback(vals, $modal)

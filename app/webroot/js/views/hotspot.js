@@ -59,28 +59,21 @@ arcs.views.Hotspot = (function(_super) {
     arcs.utils.modal({
       template: arcs.templates.hotspotModal,
       backdrop: false,
-      draggable: true,
-      handle: '#drag-handle',
+      "class": 'hotspot-modal',
       inputs: ['caption', 'title', 'type', 'url'],
       buttons: {
-        save: {
-          callback: function(vals) {
-            vals.resource = $('.result.selected img').attr('data-id');
-            this.saveHotspot(vals);
-            arcs.log(vals);
-            return this.img.imgAreaSelect({
-              hide: true
-            });
-          },
-          context: this
+        save: function(vals) {
+          vals.resource = $('.result.selected img').attr('data-id');
+          _this.saveHotspot(vals);
+          arcs.log(vals);
+          return _this.img.imgAreaSelect({
+            hide: true
+          });
         },
-        cancel: {
-          callback: function() {
-            return this.img.imgAreaSelect({
-              hide: true
-            });
-          },
-          context: this
+        cancel: function() {
+          return _this.img.imgAreaSelect({
+            hide: true
+          });
         }
       }
     });

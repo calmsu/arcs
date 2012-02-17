@@ -103,9 +103,6 @@ arcs.templates.hotspotModal =
     """
     <div class="modal-header">
         <h3>New Annotation</h3>
-        <span id="drag-handle" style="float:right; position:relative; top:-20px;">
-            <i class="icon-move"></i>
-        </span>
     </div>
     <div class="modal-body">
         <h4>Type</h4>
@@ -118,29 +115,28 @@ arcs.templates.hotspotModal =
         <input type="text" id="title" />
         <h4>Caption</h4>
         <textarea id="caption"></textarea>
-        <hr>
         <div class="tabbable">
             <ul class="nav tabs">
                 <li class="active"><a href="#resource-link" data-toggle="tab">Resource</a></li>
                 <li><a href="#url-link" data-toggle="tab">URL</a></li>
             </ul>
             <div class="tab-content">
-                <div id="resource-link" class="tab-pane active" style="height:200px">
+                <div id="resource-link" class="tab-pane active">
                     <div id="hotspot-search"></div>
-                    <div id="hotspot-search-results" style="height:170px; overflow:auto;"></div>
+                    <div id="hotspot-search-results"></div>
                 </div>
-                <div id="url-link" class="tab-pane" style="height:45px">
+                <div id="url-link" class="tab-pane">
                     <div class="input-prepend">
                         <span class="add-on">http://</span>
-                        <input id="url" type="text" style="width:85%" />
+                        <input id="url" type="text" />
                     </div>
                 </div>
             </div>
         </div>
     </div>
     <div class="modal-footer">
-        <button id="cancel" class="btn">Cancel</button>
         <button id="save" class="btn success">Save</button>
+        <button id="cancel" class="btn">Cancel</button>
     </div>
     """
 

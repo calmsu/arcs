@@ -159,7 +159,6 @@ class arcs.views.Resource extends Backbone.View
             $resource.html Mustache.render arcs.templates.resourceDocument, 
                 @model.toJSON()
         else
-            arcs.log 'unknown type'
             $resource.html 'Unknown resource type.'
         arcs.trigger 'resourceLoaded'
 

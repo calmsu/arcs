@@ -13,7 +13,6 @@ arcs.utils.complete =
             async: false
             dataType: 'json'
             success: (data) ->
-                arcs.log data
                 result = _.without(_.uniq(_.values(data)), null)
         return result
 

@@ -8,6 +8,5 @@ class arcs.models.Tag extends Backbone.Model
         if arcs.tagView?
             tags = arcs.tagView.collection.pluck 'tag'
             tags.push attrs.tag
-            if _.uniq(tags).length != tags.length
+            #if _.uniq(tags).length != tags.length
                 # Don't do anything for now.
-                arcs.log 'non unique'

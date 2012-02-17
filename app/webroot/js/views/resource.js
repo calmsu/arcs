@@ -163,7 +163,6 @@ arcs.views.Resource = (function(_super) {
     } else if (type === 'document') {
       $resource.html(Mustache.render(arcs.templates.resourceDocument, this.model.toJSON()));
     } else {
-      arcs.log('unknown type');
       $resource.html('Unknown resource type.');
     }
     arcs.trigger('resourceLoaded');
