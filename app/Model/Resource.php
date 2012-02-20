@@ -1,5 +1,7 @@
 <?php
 
+require_once(APPLIBS . 'Mime.php');
+
 class Resource extends AppModel {
     public $name = 'Resource';
     public $belongsTo = 'User';
@@ -8,30 +10,6 @@ class Resource extends AppModel {
         'Comment',
         'Tag',
         'Hotspot'
-    );
-
-    /* MIME-type translation arrays */
-
-    public $imageMimes = array(
-        'image/png' => 'png',
-        'image/jpeg' => 'jpeg',
-        'image/jpg' => 'jpg',
-        'image/gif' => 'gif',
-    );
-
-    public $documentMimes = array(
-        'application/pdf' => 'pdf',
-        'application/vnd.openxmlformats-officedocument.wordprocessingml.document' => 'docx',
-        'application/msword' => 'doc',
-        'text/plain' => 'plaintext',
-        'text/richtext' => 'richtext',
-        'text/rtf' => 'rtf'
-    );
-
-    public $videoMimes = array(
-        'video/mpeg' => 'mpeg',
-        'video/msvideo' => 'avi',
-        'video/quicktime' => 'mov'
     );
 
     /**
@@ -43,16 +21,16 @@ class Resource extends AppModel {
             if (isset($results['sha'])) {
                 $sha = $results['sha'];
                 $name = $results['file_name'];
-                $results['url'] = $this->getURL($sha) . '/' . $name;
-                $results['thumb'] = $this->getURL($sha) . '/thumb.png';
+                $results['url'] = $this->url($sha) . DS . $name;
+                $results['thumb'] = $this->url($sha) . DS . 'thumb.png';
             }
             return $results;
         } else if (isset($results[0]['Resource']['sha'])) { 
             foreach($results as $k=>$v) {
                 $sha = $results[$k]['Resource']['sha'];
                 $name = $results[$k]['Resource']['file_name'];
-                $results[$k]['Resource']['url'] = $this->getURL($sha) . '/' . $name;
-                $results[$k]['Resource']['thumb'] = $this->getURL($sha) . '/thumb.png';
+                $results[$k]['Resource']['url'] = $this->url($sha) . DS . $name;
+                $results[$k]['Resource']['thumb'] = $this->url($sha) . DS .'thumb.png';
             }
             return $results;
         } else {
@@ -61,105 +39,128 @@ class Resource extends AppModel {
     }
 
     /**
-     * Determines if the file with the given MIME type is a document (with 
-     * reasonable assurance). A document is defined as anything with a .pdf, 
-     * .doc, or .docx file extension (but of course we don't trust those, so 
-     * we're checking the MIME type).
+     * Creates the file-level components of a Resource.
      *
-     * @param mime    a valid MIME type
-     * @returns       true if it might be a document, false otherwise.
+     * Given a file path, it will calculate a SHA1 and build a path
+     * in the configured uploads directory and
+     *
+     * @param src    path to a readable file.
+     * @param fname  provide the desired filename, if different than 
+     *               src path basename.
+     * @param move   if false, copy the file rather than move it. Will
+     *               move by default.
+     * @return       a SHA1 hexdigest that can be used to get the 
+     *               resource's path.
      */
-    public function isDoc($mime) {
-        $documents = array_keys($this->documentMimes);
-        if (in_array($mime, $documents)) {
-            return true;
+    public function create($src, $fname=null, $move=true) {
+
+        # If we can't read the src path, return false.
+        if (!is_readable($src)) {
+            return false;
         }
-        return false;
+
+        # Get the SHA, destination path, and filename.
+        $sha = $this->_getSHA($src);
+        $fname = is_null($fname) ? basename($src) : $fname;
+        $dst = $this->path($sha);
+
+        # Try to make the new directory.
+        if (!mkdir($dst, 0777, true)) {
+            return false;
+        }
+
+        # Try to move if move and writable.
+        if ($move && is_writable($src)) {
+            $success = rename($src, $dst . DS . $fname);
+        # Otherwise try to copy.
+        } else {
+            $success = copy($src, $dst . DS . $fname);
+        }
+        # Return false on failure.
+        if (!$success) {
+            return false;
+        }
+
+        # Copy over a default thumbnail.
+        $this->_setDefaultThumb($dst);
+
+        return $sha;
+    }
+
+    /**
+     * Return the file path to the resource.
+     *
+     * This is based on the paths.uploads setting in `arcs.ini`
+     *
+     * @param sha    resource's SHA1
+     */
+    public function path($sha) {
+        return $this->_path($sha, Configure::read('paths.uploads'), DS);
+    }
+
+    /**
+     * Return the url to the resource.
+     *
+     * This is based on the urls.uploads setting in `arcs.ini`
+     *
+     * @param sha   resource's SHA1
+     */
+    public function url($sha) {
+        return $this->_path($sha, Configure::read('urls.uploads'));
+    }
+
+    /* PRIVATE METHODS */
+
+    /**
+     * Builds paths for resources using the ARCS spec. For example:
+     *
+     * $this->_path('123456789abcdef...', '/root/dir/')
+     *
+     * # '/root/dir/1/2/3/456789abcdef...'
+     *
+     * @param sha   resource's SHA1
+     * @param root  root path to prepend
+     * @param sep   separator to use, in most cases '/' or '\'
+     * @return      full path
+     */
+    private function _path($sha, $root='', $sep='/') {
+        # Trim any trailing sep
+        $root = rtrim($root, $sep);
+        return $root . $sep . 
+            substr($sha, 0, 1) . $sep . 
+            substr($sha, 1, 1) . $sep . 
+            substr($sha, 2, 1) . $sep . 
+            substr($sha, 3);
     }
 
     /**
      * Computes a SHA1 given the file name, using the time, and the application
-     * security salt for use in generating the resource file path.
+     * security salt.  The SHA is used to generate the resource file path.
      *
      * @param name   file name, or any suitable string
      * @return       a SHA1 hexdigest
      */
-    public function getSHA($name) {
+    private function _getSHA($name) {
         $salt = Configure::read('Security.salt');
         return sha1($name . time() . $salt);
     }
 
     /**
-     * Computes (and if necessary, builds) the resource path, given its SHA1.
-     * It uses the `filestore_path` defined in arcs.ini.
+     * Puts a default thumbnail within the path, given a MIME type.
      *
-     * @param sha    resource SHA1
-     * @param make   if true, create directories above the path, if permitted.
-     * @return       resource path 
-     */
-    public function getPath($sha, $make=false) {
-        # Get the filestore setting
-        $root = realpath(Configure::read('paths.uploads'));
-        # Resource paths are relative to the filestore, and are stored 3
-        # directories deep, using the first 3 digits of the sha.
-        $path = $root . DS . substr($sha, 0, 1) . DS . substr($sha, 1, 1) . 
-                DS . substr($sha, 2, 1) . DS . substr($sha, 3);
-        # Make the path if desired and non-existent
-        if ($make) {
-            if (!is_dir($path)) {
-                $success = mkdir($path, 0777, true);
-                if (!$success) {
-                    return false;
-                }
-            }
-        }
-        return $path;
-    }
-
-    /**
-     * Constructs a URL relative to the configured 'filestore_url', given the
-     * Resource's SHA. 
-     *
-     * @param   resource's SHA1
-     */
-    public function getURL($sha) {
-        $root = Configure::read('urls.uploads');
-        $root = rtrim($root, '/');
-        return sprintf("%s/%s/%s/%s/%s", $root, substr($sha, 0, 1), 
-                       substr($sha, 1, 1), substr($sha, 2, 1), substr($sha, 3));
-    }
-
-    /**
-     * Copies over the default thumbnail for the mime-type, while the real one
-     * is being created.
+     * We don't create thumbnails during the Request-Response loop, but 
+     * we'll copy over a placeholder.
      *
      * @param mime   resource's MIME type (for example 'image/gif')
-     * @param path   result of getPath() called with the resource's sha
+     * @param path   result of `path` method called with the resource's sha
      */
-    public function setDefaultThumb($mime, $path) {
-        $types = array_merge($this->documentMimes, $this->imageMimes, 
-                             $this->videoMimes);
-        if (array_key_exists($mime, $types)) {
-            $src = $types[$mime] . '.png';
+    private function _setDefaultThumb($path) {
+        $type = Mime::getExt($path);
+        if ($type) {
+            $src = $type . '.png';
         } else {
             $src = 'generic.png';
         }
         copy(IMAGES . 'default_thumbs' . DS . $src, $path . DS . 'thumb.png');
     }
-
-    /**
-     * Return a JOIN statement relative to Resource, given parameters.
-     *
-     * @param table   result of $dbo->fullTableName($this->Model), with 
-     *                quotes.
-     * @param alias   the alias to use, most likely the model name, 
-     *                unquoted.
-     * @param rcol    resource column to join on
-     * @param fcol    foreign column to join on
-     */
-    public function makeInnerJoin($table, $alias, $rcol, $fcol) {
-        return "INNER JOIN {$table} `{$alias}` " .
-            "ON `Resource`.`{$rcol}` = `{$alias}`.`{$fcol}` ";
-    }
-
 }

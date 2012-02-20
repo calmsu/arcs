@@ -1,12 +1,15 @@
-<?php
-App::uses('Sanitize', 'Utility');
+<?php # Require our Search class.
+require_once(APPLIBS . DS . 'Search.php');
+
 /**
  * Resources Controller
  *
  * Logic for retrieving and presenting resources, largely via ajax.
  * 
  * @package      ARCS
+ * @link         http://github.com/calmsu/arcs
  * @copyright    Copyright 2012, Michigan State University Board of Trustees
+ * @license      
  */
 class ResourcesController extends AppController {
     public $name = 'Resources';
@@ -35,21 +38,18 @@ class ResourcesController extends AppController {
 
             # Read the file data from the request. Normally, we'd just save
             # $this->data, but some table fields need to be calculated first.
-            $name = $this->data['Resource']['file']['name'];
-            $tmp  = $this->data['Resource']['file']['tmp_name'];
-            $mime = $this->data['Resource']['file']['type'];
-            $sha  = $this->Resource->getSHA($name);
-            $path = $this->Resource->getPath($sha, true);
-            if (!$path) {
+            $fname = $this->data['Resource']['file']['name'];
+            $tmp   = $this->data['Resource']['file']['tmp_name'];
+            $mime  = $this->data['Resource']['file']['type'];
+
+            $sha = $this->Resource->create($tmp, $fname);
+
+            if (!$sha) {
                 $this->Session->setFlash('You were redirected to this page because we
                     were unable to save your resource. Please verify your
                     configuration.', 'flash_error');
                 return $this->redirect('/status');
             }
-            $this->Resource->setDefaultThumb($mime, $path);
-
-            # Move the file from tmp
-            rename($tmp, $path . DS . $name);
 
             # Save a DB record.
             $this->Resource->save(array(
@@ -58,7 +58,7 @@ class ResourcesController extends AppController {
                     'title' => $this->data['Resource']['title'],
                     'type' => $this->data['Resource']['type'],
                     'public' => $this->data['Resource']['public'],
-                    'file_name' => $name,
+                    'file_name' => $fname,
                     'mime_type' => $mime,
                     'user_id' => $this->Auth->user('id')
             )));
@@ -207,7 +207,7 @@ class ResourcesController extends AppController {
                     return $this->jsonResponse(200, $resource['Resource']);
                 } else {
                     # Not authorized
-                    return $this->jsonResponse(401);
+                    return $this->jsonResponse(403);
                 }
             } else {
                 # Resource doesn't exist
@@ -268,207 +268,46 @@ class ResourcesController extends AppController {
 
         if ($this->request->is('ajax')) {
             if ($this->request->data) {
+
+                # Get the request parameters.
                 $params = $this->request->query;
-                $this->jsonResponse(200, $this->facetedSearch(
-                    $this->request->data,
-                    isset($params['n']) ? $params['n'] : 30,
-                    isset($params['offset']) ? $params['offset'] : 0
-                ));
+                $limit = isset($params['n']) ? $params['n'] : 30;
+                $offset = isset($params['offset']) ? $params['offset'] : 0;
+
+                # Get our datasource object ready to give to the Search class.
+                $dbo = $this->Resource->getDataSource('default');
+                $config = $dbo->config;
+
+                # Instantiate our Search object with the db config and facets.
+                $search = new Search($config, $this->request->data);
+
+                # If not logged in, only public resources may be viewed.
+                if (!$this->Auth->loggedIn()) {
+                    $search->addFacet('access', 'public');
+                }
+
+                # Get the result ids.
+                $ids = $search->results($limit, $offset);
+
+                # Return the results in HABTM format.
+                $this->jsonResponse(200, $this->Resource->find('all', array(
+                    'conditions' => array(
+                        'Resource.id' => $ids
+                    )
+                )));
+
             } else {
+                $conditions = $this->Auth->loggedIn() ? 
+                    array() : array('Resource.public' => 1);
                 # No facets provided. Give them back some random ones.
                 $this->jsonResponse(200, $this->Resource->find('all', array(
+                    'conditions' => $conditions,
                     'limit' => 30,
                     # Random order, to keep it interesting:
                     'order' => array('rand()')
                 )));
             }
         } 
-    }
-
-    /**
-     * Does the heavy lifting for the search action.
-     *
-     * @param facets     numerically indexed array containing sub-arrays
-     *                   with 'category' and 'value' keys. An example facet 
-     *                   array is below:
-     *
-     *                       array(
-     *                           0 => array(
-     *                               'category' => 'user',
-     *                               'value' => 'Nick Reynolds'
-     *                           ),
-     *                           1 => array(
-     *                               'category' => 'tag',
-     *                               'value' => 'East-Field'
-     *                           )
-     *                       )
-     *
-     * @param n          number of results that should be returned. Defaults to
-     *                   30.
-     *
-     * @param offset     results are start at this index. (i.e. An offset of
-     *                   40, with an n of 30, will get you results 40-69.) 
-     *                   Defaults to 0.
-     *
-     * @return           array of resources meeting criteria.
-     */
-    private function facetedSearch($facets, $n=30, $offset=0) {
-        # TODO: Move this somewhere more appropriate.
-        #
-        # Given the facets array described above, we must algorithmically
-        # generate an SQL query that returns Resources that meet all facets.
-        # To make things more interesting, not all facets occupy the resources
-        # table, so joins must be done as (and only when) needed.
-        #
-        # We're using CakePHP's DboSource object to build most of our query.
-
-        # Facet categories must be mapped to a model, field, and an array
-        # containing join instructions. If it seems awkward, it's only because
-        # it is.
-        $facetMappings = array(
-            'tag' => array(
-                # The model that tag is associated with.
-                'model' => 'Tag',
-                # The model field that value will be compared against.
-                'field' => 'tag',
-                # The fields to join on, starting with Resource, so:
-                # JOIN ON Resource.id = Tag.resource_id
-                'join' => array('id', 'resource_id')
-            ),
-            'user' => array(
-                'model' => 'User',
-                'field' => 'name',
-                'join' => array('user_id', 'id')
-            ),
-            'modified' => array(
-                'model' => 'Resource',
-                'field' => 'modified',
-                # If the 'date' key is set and truthy, we'll wrap the comparison
-                # values with the DATE() function.
-                'date' => true
-            ),
-            'created' => array(
-                'model' => 'Resource',
-                'field' => 'created',
-                'date' => true
-            ),
-            'uploaded' => array(
-                'model' => 'Resource',
-                'field' => 'created',
-                'date' => true
-            ),
-            'sha' => array(
-                'model' => 'Resource',
-                'field' => 'sha'
-            ),
-            'title' => array(
-                'model' => 'Resource',
-                'field' => 'title'
-            ),
-            'id' => array(
-                'model' => 'Resource',
-                'field' => 'id'
-            ),
-            'type' => array(
-                'model' => 'Resource',
-                'field' => 'type'
-            ),
-            'filetype' => array(
-                'model' => 'Resource',
-                'field' => 'mime_type'
-            ),
-            'filename' => array(
-                'model' => 'Resource',
-                'field' => 'file_name'
-            )
-        );
-
-        # Get our DboSource object.
-        $dbo = $this->Resource->getDataSource();
-
-        # Homes for the joins and conditions we'll shortly make:
-        $joins = array();
-        $joined = array();
-        $conditions = array();
-
-        # For every facet we've been given:
-        foreach($facets as $f) {
-            # If we don't have a mapping for it, skip.
-            if (!array_key_exists($f['category'], $facetMappings)) {
-                continue;
-            }
-
-            $map = $facetMappings[$f['category']];
-            $model = $map['model'];
-            $field = $map['field'];
-
-            # Clean the value. This is the only user-defined string.
-            $value = Sanitize::clean($f['value'], 'default');
-
-            # Load the model.
-            $this->loadModel($model);
-
-            # Get the table name, unless it's Resource, in which case we'll
-            # use the alias.
-            $table = $model == 'Resource' ? $model : $dbo->fullTableName($this->$model);
-
-            # If there are join instructions, do the join (unless we've already
-            # joined this table).
-            if (isset($map['join']) && $map['join'] && 
-                !in_array($model, $joined)) {
-
-                array_push($joins, $this->Resource->makeInnerJoin(
-                    $table,
-                    $model,
-                    $map['join'][0],
-                    $map['join'][1]
-                ));
-                array_push($joined, $model);
-            }
-
-            # Add the condition.
-            #
-            # To compare dates we'll need to handle them specially.
-            if (isset($map['date']) && $map['date']) {
-                $date = DateTime::createFromFormat('m-d-Y', $value);
-                $date = $date->format('Y-m-d');
-                array_push($conditions,
-                    "DATE($model.$field) = DATE('$date')"
-                );
-            } else {
-                $conditions["$model.$field"] = $value;
-            }
-        }
-
-        # Build the query.
-        $query = $dbo->buildStatement(
-            array(
-                'fields' => array('`Resource`.`id`'),
-                'alias' => 'Resource',
-                'limit' => $n,
-                'offset' => $offset,
-                'conditions' => $conditions, 
-                'table' => $dbo->fullTableName($this->Resource),
-                'joins' => $joins,
-                'order' => null,
-                'group' => null
-            ), $this->Resource
-        );
-
-        # Run the query and get the ids.
-        $ids = array_map(function ($r) { return $r['Resource']['id']; }, 
-            $this->Resource->query($query)
-        );
-
-        if (!$ids) {
-            return array();
-        }
-
-        # Get everything.
-        return $this->Resource->find('all', array(
-            'conditions' => array(
-                'Resource.id' => $ids
-        )));
     }
 
     /**
@@ -512,6 +351,8 @@ class ResourcesController extends AppController {
 
     /**
      * Return a list of resource titles for autocompletion.
+     *
+     * @param field
      */
     public function complete($field) {
         if ($this->request->is('ajax')) {
