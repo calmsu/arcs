@@ -39,8 +39,10 @@ operation. For reference, the relevant status codes are:
 ### Forbidden vs. Unauthorized
 
 When there is no user authenticated (and the request requires being 
-authenticated), a `403` is returned. If the user *is* authenticated, but not
-permitted to request the specified action, a `401` is returned.
+authenticated), a `401` is returned. If the user *is* authenticated, but not
+permitted to request the specified action, a `403` is returned.
+
+For further clarification, see this StackOverflow [answer][1].
 
 ### Accepted
 
@@ -48,10 +50,6 @@ Some requested actions take longer to perform than a normal Request-Response
 loop allows. In these cases, ARCS will queue the action and it will be performed
 as soon as possible. The `202` code is returned in such a scenario--meaning
 it's been accepted, and we're working on it.
-
-Formatting a request
---------------------
-Blah, blah jQuery, blah, blah MooTools, blah, blah Zepto
 
 
 Resources
@@ -246,3 +244,5 @@ successful, a `204` status will be returned.
 
 After sending a `GET` to the url above, a JSON object containing the tag's
 properties will be returned.
+
+[1]:http://stackoverflow.com/questions/3297048/403-forbidden-vs-401-unauthorized-http-responses#answer-6937030
