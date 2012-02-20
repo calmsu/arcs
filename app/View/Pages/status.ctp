@@ -1,8 +1,13 @@
 <style>
-    code { color:black }
+    #status-info code { color:black }
+    #status-info h1, h3 { margin-left:0px; font-weight:normal; }
 </style>
 
-<h3>Configuration Status</h3>
+<div id="status-info">
+<h1>Configuration Status</h1>
+<br>
+
+<h3>Uploads</h3>
 <br>
 
 <?php if ($uploads['exists']): ?>
@@ -54,4 +59,22 @@
 <div class="alert alert-info">
     Your uploads base url is <code><?php echo $uploads['url'] ?></code>. 
     If resources are not displaying, this url may be incorrect.
+</div>
+
+<h3>Dependencies</h3>
+For information on installing dependencies, see the 
+<?php echo $this->Html->link('Installation Guide', '/docs/installing') ?>.
+<br><br>
+
+<?php if ($executables['ghostscript']): ?>
+<div class="alert alert-success">
+    Ghostscript is executable.
+</div>
+<?php else: ?>
+<div class="alert alert-error">
+    <p>Ghostscript is <strong>NOT</strong> executable.</p>
+    <p>To fix this, verify that Ghostscript is installed, and that the
+    path given in <code>app/Config/arcs.ini</code> is correct.</p>
+</div>
+<?php endif ?>
 </div>
