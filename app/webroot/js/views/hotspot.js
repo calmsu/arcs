@@ -54,9 +54,9 @@ arcs.views.Hotspot = (function(_super) {
   };
 
   Hotspot.prototype.openModal = function() {
-    var $results, search,
+    var $results, modal, search,
       _this = this;
-    arcs.utils.modal({
+    modal = new arcs.utils.Modal({
       template: arcs.templates.hotspotModal,
       backdrop: false,
       "class": 'hotspot-modal',
@@ -77,11 +77,11 @@ arcs.views.Hotspot = (function(_super) {
         }
       }
     });
-    $('.result img').live('click', function() {
+    modal.el.find('.result img').live('click', function() {
       $('.result').removeClass('selected');
       return $(this).parent().addClass('selected');
     });
-    $('input#url').keyup(function() {
+    modal.el.find('input#url').keyup(function() {
       var val;
       val = $(this).val();
       if (val.substring(0, 7) === 'http://') return $(this).val(val.substring(7));

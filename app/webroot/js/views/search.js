@@ -172,14 +172,14 @@ arcs.views.Search = (function(_super) {
   };
 
   Search.prototype.tagModal = function() {
-    var n, s;
+    var modal, n, s;
     n = this.getSelected().length;
     s = n > 1 ? 's' : '';
     if (!n) {
       alert("You must select at least 1 result to tag.");
       return;
     }
-    arcs.utils.modal({
+    modal = new arcs.utils.Modal({
       template: arcs.templates.searchModal,
       templateValues: {
         title: 'Tag Selected',
@@ -191,10 +191,11 @@ arcs.views.Search = (function(_super) {
         save: {
           callback: this.tagSelected,
           context: this
-        }
+        },
+        cancel: function() {}
       }
     });
-    $('#search-modal-value').focus();
+    modal.el.find('#search-modal-value').focus();
     return arcs.utils.autocomplete({
       sel: '#search-modal-value',
       source: arcs.utils.complete.tag()
@@ -215,9 +216,8 @@ arcs.views.Search = (function(_super) {
     });
   };
 
-  Search.prototype.tagSelected = function(vals, modal, tagStr) {
+  Search.prototype.tagSelected = function(vals, tagStr) {
     var n, that;
-    if (tagStr == null) tagStr = null;
     tagStr = tagStr != null ? tagStr : vals['search-modal-value'];
     n = this.getSelected().length;
     that = this;

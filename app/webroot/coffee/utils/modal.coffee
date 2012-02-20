@@ -2,102 +2,111 @@
 # ------------
 # Wraps up modal dialog logic.
 #
-# The goal here is to avoid dealing with things like opening/closing the modal
-# and binding click events to buttons in each view. We'll do it all here and 
-# provide options to customize the functionality.
-arcs.utils.modal = (options) ->
+# The Modal class establishes some conventions for modal dialogs within ARCS.
+# The actual modal functionality is delegated to Bootstrap's modal plugin,
+# this class handles binding buttons to callbacks and gathering input values.
+class arcs.utils.Modal
 
-    # Default options
-    defaults =
-        # Mustache template
-        template: ''
-        # Values to evaluate the template with
-        templateValues: {}
-        # Make the modal draggable?
-        draggable: false
-        handle: null
-        # Give the modal a backdrop?
-        backdrop: true
-        # Provide a class to add to the modal div.
-        class: null
-        # Provide an array of input ids and we'll retrieve their values and 
-        # provide them to the callback.
-        inputs: []
-        # Provide an array of button objects. Each key should be the button's 
-        # id. We'll provide any values garnered from the inputs option, along
-        # with the modal dialog element. An example is given below:
-        buttons: 
-            save:
-                callback: (vals, $modal) ->
-                    # do something
-                    $modal.modal 'hide'
-                context: @
-                closeAfter: true
+    # Construct a new Modal instance.
+    #
+    # options:
+    #   template       - Mustache template 
+    #   templateValues - values to evaluate the template with.
+    #   draggable      - make the modal draggable.
+    #   handle         - DOM element to use as drag handle.
+    #   backdrop       - use a backdrop when displaying the modal.
+    #   class          - add a class to the modal. To add more than one, 
+    #                    just provide them in a single string, 
+    #                    whitespace-separated.
+    #   inputs         - array of input ids. We'll retrieve the value 
+    #                    of each matched input and provide them as an 
+    #                    object to the button callbacks, and via @values()
+    #   buttons        - object with keys that map to button (or anchor) ids
+    #                    and values that are either a callback or an object of:
+    #
+    #                        callback =
+    #                           callback: fn
+    #                           context: object
+    #                           keepOpen: bool
+    #
+    #                    We'll bind to the button's click event and fire the
+    #                    given callback with any input values as an argument.
+    #
+    #                    The modal will close automatically after a button is
+    #                    clicked, unless keepOpen is truthy.
+    constructor: (options) ->
 
-    # Override defaults with givens.
-    options = _.extend defaults, options 
+        # Default options
+        defaults =
+            template: ''
+            templateValues: {}
+            draggable: false
+            handle: null
+            backdrop: true
+            class: null
+            inputs: []
+            buttons: {}
 
-    # Cancel button is free if not defined.
-    # Can't put it in defaults because extend is not recursive.
-    if not options.buttons.cancel?
-        options.buttons.cancel =
-            closeAfter: true
+        # Override defaults with givens.
+        @options = _.extend defaults, options 
 
-    # Check to see if the page already has a modal DOM el.
-    if not $('#modal').length
-        $('body').append(arcs.templates.modalWrapper)
-    $modal = $('#modal')
+        # Add a modal div to the DOM if not there.
+        unless $('#modal').length
+            $('body').append(arcs.templates.modalWrapper)
+        @el = $('#modal')
 
-    # Set the modal
-    $modal.modal
-        backdrop: options.backdrop
+        # Add the class 
+        @el.addClass @options.class if @options.class?
 
-    # Evaluate and inject the template with any values. 
-    $modal.html Mustache.render options.template, options.templateValues
-    # Add the class 
-    if options.class?
-        $modal.addClass options.class
-    $modal.modal 'show'
+        # If they want it draggable, make it so (with jQuery UI).
+        @el.draggable(handle: @options.handle) if @options.draggable
 
-    # If they want it draggable, make it so (with jQuery UI).
-    $modal.draggable(handle: options.handle) if options.draggable
+        # Set the modal
+        @el.modal
+            backdrop: @options.backdrop
+            keyboard: true
+            show: false
 
-    # Iterate through the buttons and bind them. This is where it gets 
-    # complicated.
-    for id in _.keys(options.buttons)
+        @show()
 
-        # Use one to avoid double triggers:
-        $modal.find("##{id}").one 'click', (e) =>
+        @_bindButtons()
 
-            # Get the input vals, if any inputs were given.
-            vals = {}
-            if options.inputs.length
-                for id_ in options.inputs
-                    vals[id_] = $modal.find("##{id_}").val()
+    hide: ->
+        @el.modal 'hide'
 
-            # Since this is async, we can't rely on the loop iterator inside.
-            button = options.buttons[e.target.id]
-            if _.isFunction button
-                callback = button
-                closeAfter = true
-                context = null
-            else 
-                # Backup values for context & callback.
-                context = button.context
-                callback = button.callback ? ->
-                closeAfter = button.closeAfter ? true
+    show: ->
+        # Evaluate and inject the template with any values. 
+        
+        @el.html Mustache.render @options.template, @options.templateValues
+        @el.modal 'show'
 
-            # Bind the function to a context, if given.
-            # This allows callbacks to operate in the context of their own 
-            # object. (For example, Search.tagSelected bound to Search)
-            if button.context?
-                callback = _.bind(callback, context)
+        if not @el.is 'visible'
+            @el.css('right', '-400px').animate(right: '0px')
 
-            # Fire the callback with the vals we retrieved and the modal.
-            callback(vals, $modal)
+    values: ->
+        # Get the input vals, if any inputs were given.
+        vals = {}
+        if @options.inputs.length
+            for id in @options.inputs
+                vals[id] = @el.find("##{id}").val()
+        vals
 
-            if closeAfter
-                $modal.modal 'hide'
-
-    # Return the modal el.
-    $modal
+    # Bind to each button or 
+    _bindButtons: ->
+        # Iterate through the buttons and bind them. 
+        for id in _.keys(@options.buttons)
+            # Use one to avoid double triggers:
+            @el.find("a##{id}, button##{id}").one 'click', (e) =>
+                button = @options.buttons[e.target.id]
+                # Button value is a function: call it.
+                if _.isFunction button
+                    button @values()
+                # Object?
+                else
+                    [callback, context] = [button.callback, button.context ? null]
+                    # Bind the callback to an object, if given.
+                    callback = _.bind(callback, context) if context?
+                    callback @values()
+                # Close the modal, unless told not to.
+                unless button.keepOpen
+                    @hide()

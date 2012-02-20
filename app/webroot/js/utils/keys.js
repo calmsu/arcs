@@ -2,8 +2,10 @@ var __bind = function(fn, me){ return function(){ return fn.apply(me, arguments)
 
 arcs.utils.Keys = (function() {
 
-  function Keys() {
-    this.delegate = __bind(this.delegate, this);    $(document).on('keydown', this.delegate);
+  function Keys(sel) {
+    if (sel == null) sel = document;
+    this.delegate = __bind(this.delegate, this);
+    $(sel).on('keydown', this.delegate);
   }
 
   Keys.prototype.delegate = function(e) {

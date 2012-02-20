@@ -5074,7 +5074,7 @@ div ::-webkit-scrollbar-thumb {
   left: inherit;
   height: 100%;
   width: 400px;
-  background-color: #cfcfcf;
+  background-color: #dfdfdf;
 }
 .hotspot-modal .tab-content {
   border: 1px solid #999;

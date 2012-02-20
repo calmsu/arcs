@@ -3,15 +3,17 @@
 # Keyboard shortcuts and what not.
 #
 # The Keys class provides an interface for mapping keys (or key combinations)
-# to methods. A class instance will bind keydown events on the document object.
-# When fired, the instance looks for registered mappings matching the keydown.
-# If any are found, the mapped method is called and bubbling stops unless 
-# instructed otherwise.
+# to methods. A class instance will bind keydown events on the given element,
+# which by default is the document object. When fired, the instance looks 
+# for registered mappings matching the keydown. If any are found, the mapped 
+# method is called and bubbling stops unless instructed otherwise.
 class arcs.utils.Keys
 
-    # Bind to the document object.
-    constructor: ->
-        $(document).on 'keydown', @delegate
+    # Bind to the keydown event of the given DOM element object.
+    #
+    #   sel - DOM element selector (passed right off to $)
+    constructor: (sel=document) ->
+        $(sel).on 'keydown', @delegate
     
     # Inspect the event and see if any matching hotkeys are registered. If so,
     # fire the relevant callback.
@@ -57,7 +59,7 @@ class arcs.utils.Keys
 
     # Register a mapping.
     #
-    #   key      - single letter or special character.
+    #   key      - single character.
     #   callback - function to call when the key (combination) is pressed.
     #   modifier - bool, one of [shift,ctl,meta,alt] must also be pressed
     #   context  - bind the callback to an object. It will default to the 

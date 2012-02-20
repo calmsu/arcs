@@ -42,6 +42,7 @@ arcs.utils.Search = (function() {
   }
 
   Search.prototype.facets = {
+    access: ['public', 'private'],
     filetype: function() {
       var k, v, _ref, _results;
       _ref = arcs.utils.mime.types();

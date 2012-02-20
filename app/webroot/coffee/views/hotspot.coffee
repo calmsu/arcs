@@ -43,7 +43,8 @@ class arcs.views.Hotspot extends Backbone.View
 
     # Open a modal dialog to save the selection.
     openModal: ->
-        arcs.utils.modal
+        # Don't re-init the modal a bunch of times, just make sure it's visible.
+        modal = new arcs.utils.Modal
             template: arcs.templates.hotspotModal
             backdrop: false
             class: 'hotspot-modal'
@@ -60,12 +61,12 @@ class arcs.views.Hotspot extends Backbone.View
                 cancel: => 
                     @img.imgAreaSelect hide:true
 
-        $('.result img').live 'click', ->
+        modal.el.find('.result img').live 'click', ->
             $('.result').removeClass 'selected'
             $(@).parent().addClass 'selected'
 
         # Remove http:// from the input. (It's assumed.)
-        $('input#url').keyup ->
+        modal.el.find('input#url').keyup ->
             val = $(@).val()
             if val.substring(0, 7) == 'http://' 
                 $(@).val(val.substring(7))

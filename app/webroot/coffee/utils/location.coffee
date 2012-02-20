@@ -31,9 +31,9 @@ arcs.utils.hash =
     history: []
 
 
+# Get url paramaters by name.
 arcs.utils.params = 
-
-    # Get a url param by name
+    # Pull apart location.search and look for a the value of the given name.
     get: (name) ->
         params = document.location.search[1..].split '&' 
         for p in params

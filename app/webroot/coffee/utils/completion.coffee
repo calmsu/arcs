@@ -6,7 +6,9 @@
 # from the server.
 arcs.utils.complete =
 
-    _get: (url) ->
+    # Get a url from the server (synchronously), and clean up the results for
+    # Visual Search.
+    get: (url) ->
         result = []
         $.ajax
             url: arcs.baseURL + url
@@ -16,8 +18,10 @@ arcs.utils.complete =
                 result = _.without(_.uniq(_.values(data)), null)
         return result
 
-    _date: (url) ->
-        raw_dates = @_get url
+    # Get an array of dates from the server, reformat them, and add a few
+    # aliases. Helper method for date-type facets.
+    date: (url) ->
+        raw_dates = @get url
         fmt = 'MM-DD-YYYY'
         parse_fmt = 'YYYY-MM-DD HH:mm:ss'
         dates = (moment(d, parse_fmt).format(fmt) for d in raw_dates)
@@ -28,22 +32,22 @@ arcs.utils.complete =
         _.uniq _.union dates, aliases
 
     user: ->
-        @_get 'users/complete'
+        @get 'users/complete'
 
     tag: ->
-        @_get 'tags/complete'
+        @get 'tags/complete'
 
     title: ->
-        @_get 'resources/complete/title'
+        @get 'resources/complete/title'
 
     type: ->
-        @_get 'resources/complete/type'
+        @get 'resources/complete/type'
 
     created: ->
-        @_date 'resources/complete/created'
+        @date 'resources/complete/created'
 
     modified: ->
-        @_date 'resources/complete/modified'
+        @date 'resources/complete/modified'
 
 # Make sure arcs.utils.complete methods are called with that context.
 _.bindAll(arcs.utils.complete)
@@ -53,10 +57,10 @@ _.bindAll(arcs.utils.complete)
 # that the input field remains in focus. It can also handle multiple
 # value autocompletion (i.e. comma-separated values).
 #
-# options:
-#   source:   array of completion values, or function that returns one.
-#   multiple: handle multiple value completion.
-#   sel:      input selectior (e.g. #tag-field or .some-input)
+# options
+#   source   - array of completion values, or function that returns one.
+#   multiple - handle multiple value completion.
+#   sel:     - input selectior (e.g. #tag-field or .some-input)
 arcs.utils.autocomplete = (opts) ->
 
     # Set our defaults

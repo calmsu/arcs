@@ -1,6 +1,6 @@
 
 arcs.utils.complete = {
-  _get: function(url) {
+  get: function(url) {
     var result;
     result = [];
     $.ajax({
@@ -13,9 +13,9 @@ arcs.utils.complete = {
     });
     return result;
   },
-  _date: function(url) {
+  date: function(url) {
     var aliases, d, dates, fmt, parse_fmt, raw_dates;
-    raw_dates = this._get(url);
+    raw_dates = this.get(url);
     fmt = 'MM-DD-YYYY';
     parse_fmt = 'YYYY-MM-DD HH:mm:ss';
     dates = (function() {
@@ -39,22 +39,22 @@ arcs.utils.complete = {
     return _.uniq(_.union(dates, aliases));
   },
   user: function() {
-    return this._get('users/complete');
+    return this.get('users/complete');
   },
   tag: function() {
-    return this._get('tags/complete');
+    return this.get('tags/complete');
   },
   title: function() {
-    return this._get('resources/complete/title');
+    return this.get('resources/complete/title');
   },
   type: function() {
-    return this._get('resources/complete/type');
+    return this.get('resources/complete/type');
   },
   created: function() {
-    return this._date('resources/complete/created');
+    return this.date('resources/complete/created');
   },
   modified: function() {
-    return this._date('resources/complete/modified');
+    return this.date('resources/complete/modified');
   }
 };
 

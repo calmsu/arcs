@@ -21,6 +21,8 @@ arcs.baseURL = '/'
 
 # Logs messages with an ARCS prefix if debug is on and a console is 
 # available (there's no console in older IE's).
+#
+# @param [Object] msg variable number of object arguments to log.
 arcs.log = (msg...) ->
     if arcs.debug and console?.log?
         console.log '[ARCS]:', msg...

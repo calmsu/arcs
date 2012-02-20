@@ -7,7 +7,8 @@
 # The Search utility is a class, so there can be multiple instances of
 # it at any time. Each instance maintains a results object, which is our
 # own Backbone collection extension. When the run method is called, the
-# results object will be reset with the new result set.
+# results object will be reset with the new result set. (Say that 5 times
+# fast.)
 class arcs.utils.Search 
 
     # The constructor accepts options, but none are required for minimal
@@ -19,7 +20,7 @@ class arcs.utils.Search
     #              you get a headless search.
     #   query:     Starting query.
     #   useParams: Uses relevant url parameters in search query.
-    #   run:       Call the run method after init. Defaults to true.
+    #   run:       Call the run method after construct. Defaults to true.
     #   success:   Called after results are successfully fetched.
     #   error:     Called when fetching results fails.
     #   facets:    Set the facets property (this will rarely need to be 
@@ -66,6 +67,7 @@ class arcs.utils.Search
     #
     # Keep in mind that the functions will be called with window scope.
     facets:
+        access: ['public', 'private']
         filetype: -> 
             ({value: k, label: v} for k,v of arcs.utils.mime.types())
         filename: []

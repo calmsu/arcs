@@ -186,7 +186,7 @@ class arcs.views.Search extends Backbone.View
             alert "You must select at least 1 result to tag."
             return
 
-        arcs.utils.modal
+        modal = new arcs.utils.Modal
             template: arcs.templates.searchModal
             templateValues:
                 title: 'Tag Selected'
@@ -194,12 +194,13 @@ class arcs.views.Search extends Backbone.View
             inputs: ['search-modal-value']
             backdrop: true
             buttons: 
-                save:
+                save: 
                     callback: @tagSelected
                     context: @
+                cancel: ->
 
         # Focus the input
-        $('#search-modal-value').focus()
+        modal.el.find('#search-modal-value').focus()
 
         arcs.utils.autocomplete
             sel: '#search-modal-value'
@@ -217,7 +218,7 @@ class arcs.views.Search extends Backbone.View
 
     # Call tagResult on all selected results.
     # This is used as a callback to arcs.modal
-    tagSelected: (vals, modal, tagStr=null) ->
+    tagSelected: (vals, tagStr) ->
         tagStr = tagStr ? vals['search-modal-value']
         n = @getSelected().length
         that = @
