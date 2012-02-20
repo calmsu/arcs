@@ -1,6 +1,6 @@
         <div class="tab-pane" id="disucssion-tab">
         
-        	<h1 class="alert alert-danger">The Discussion Tab is still under development</h1>
+        	<!-- <h1 class="alert alert-danger">The Discussion Tab is still under development</h1> -->
         	
         	<?php if(empty($user_info['Comment'])){ ?>
 			

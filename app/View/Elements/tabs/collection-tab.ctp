@@ -1,5 +1,5 @@
 <div class="tab-pane" id="collections-tab">
-	<h1 class="alert alert-danger">This is still under development</h1>
+	<!-- <h1 class="alert alert-danger">This is still under development</h1> -->
 	
 	
 	<?php if(empty($user_info['Collection'])){ ?>

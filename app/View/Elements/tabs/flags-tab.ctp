@@ -1,6 +1,6 @@
         <div class="tab-pane" id="flagged-tab">
-        
-        	<h1 class="alert alert-danger">The Flags are still under development</h1>
+        	<!-- <h1 class="alert alert-danger">The Flags are still under development</h1> -->
+			
 			<?php if(empty($user_info['Hotspot'])){ ?>
 			
 			<h3>Looks like this user hasn't made any Flags yet</h3>

@@ -1,5 +1,5 @@
-<div class="tab-pane" id="activity-tab">
-    <h1 class="alert alert-danger">The Activity feed is still under development</h1>
+<div class="tab-pane active" id="activity-tab">
+    <!-- <h1 class="alert alert-danger">The Activity feed is still under development</h1> -->
     <h3 class="span1 activity-date">Dec 15</h3>
     	<ul class="span10 activity-feed">
     	
