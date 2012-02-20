@@ -21,10 +21,7 @@ arcs.utils.mime = {
     'video/quicktime': 'mov'
   },
   types: function() {
-    var that, types;
-    that = arcs.utils.mime;
-    types = _.keys(that.imageTypes).concat(_.keys(that.documentTypes).concat);
-    return types.concat(_.keys(that.videoTypes));
+    return _.extend(this.videoTypes, this.documentTypes, this.imageTypes);
   },
   getInfo: function(mime) {
     var result, type, types, undef, _i, _len, _ref;
@@ -50,3 +47,5 @@ arcs.utils.mime = {
     return result || undef;
   }
 };
+
+_.bindAll(arcs.utils.mime);

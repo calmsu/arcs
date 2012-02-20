@@ -16,6 +16,9 @@ class ResourcesController extends AppController {
         # user array), so the parent's beforeFilter is run in this and most 
         # other controllers.
         parent::beforeFilter();
+
+        # Read-only actions, such as viewing resources and associated comments
+        # are allowed by default.
         $this->Auth->allow(
             'index', 'view', 'search', 'comments', 'hotspots', 'tags'
         );
@@ -37,6 +40,12 @@ class ResourcesController extends AppController {
             $mime = $this->data['Resource']['file']['type'];
             $sha  = $this->Resource->getSHA($name);
             $path = $this->Resource->getPath($sha, true);
+            if (!$path) {
+                $this->Session->setFlash('You were redirected to this page because we
+                    were unable to save your resource. Please verify your
+                    configuration.', 'flash_error');
+                return $this->redirect('/status');
+            }
             $this->Resource->setDefaultThumb($mime, $path);
 
             # Move the file from tmp
@@ -168,11 +177,14 @@ class ResourcesController extends AppController {
     public function update($id) {
         $resource = $this->Resource->findById($id);
         if ($this->request->is('ajax')) {
+            if (!$resource) {
+                return $this->jsonResponse(404);
+            }
             $data = array('Resource' => $this->request->data);
             if ($this->Resource->save($data)) {
                 return $this->jsonResponse(200);
             } else {
-                return $this->jsonResponse(400);
+                return $this->jsonResponse(500);
             }
         }
     }
@@ -301,6 +313,8 @@ class ResourcesController extends AppController {
      * @return           array of resources meeting criteria.
      */
     private function facetedSearch($facets, $n=30, $offset=0) {
+        # TODO: Move this somewhere more appropriate.
+        #
         # Given the facets array described above, we must algorithmically
         # generate an SQL query that returns Resources that meet all facets.
         # To make things more interesting, not all facets occupy the resources
@@ -328,15 +342,20 @@ class ResourcesController extends AppController {
             ),
             'modified' => array(
                 'model' => 'Resource',
-                'field' => 'modified'
+                'field' => 'modified',
+                # If the 'date' key is set and truthy, we'll wrap the comparison
+                # values with the DATE() function.
+                'date' => true
             ),
             'created' => array(
                 'model' => 'Resource',
-                'field' => 'created'
+                'field' => 'created',
+                'date' => true
             ),
             'uploaded' => array(
                 'model' => 'Resource',
-                'field' => 'created'
+                'field' => 'created',
+                'date' => true
             ),
             'sha' => array(
                 'model' => 'Resource',
@@ -408,7 +427,17 @@ class ResourcesController extends AppController {
             }
 
             # Add the condition.
-            $conditions["$model.$field"] = $value;
+            #
+            # To compare dates we'll need to handle them specially.
+            if (isset($map['date']) && $map['date']) {
+                $date = DateTime::createFromFormat('m-d-Y', $value);
+                $date = $date->format('Y-m-d');
+                array_push($conditions,
+                    "DATE($model.$field) = DATE('$date')"
+                );
+            } else {
+                $conditions["$model.$field"] = $value;
+            }
         }
 
         # Build the query.
@@ -495,6 +524,18 @@ class ResourcesController extends AppController {
                     break;
                 case 'type':
                     $this->jsonResponse(200, Configure::read('resources.types'));
+                    break;
+                case 'created':
+                    $this->jsonResponse(200, $this->Resource->find('list', array(
+                            'fields' => array('Resource.created'),
+                            'limit' => 100
+                        )));
+                    break;
+                case 'modified':
+                    $this->jsonResponse(200, $this->Resource->find('list', array(
+                            'fields' => array('Resource.modified'),
+                            'limit' => 100
+                        )));
                     break;
             }
         }
