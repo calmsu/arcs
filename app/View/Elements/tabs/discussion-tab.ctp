@@ -7,13 +7,6 @@
 				<h3>Looks like this user hasn't made any discussion items yet</h3>
 			
 			<?php  elseif(isset($user_info['Comment'])): ?>
-	        	<label class="radio">
-	           		<input type="radio" name="optionsRadios" id="optionsRadios1" value="option1" checked=""> Discussion items by Josh
-	         	</label>
-	         	
-	         	<label class="radio">
-	           		<input type="radio" name="optionsRadios" id="optionsRadios2" value="option2"> Discussions Josh has participated in
-	         	</label>
 				<table class="table table-striped">
 		          <thead>
 				    <tr>
