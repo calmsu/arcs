@@ -27,11 +27,11 @@
 				    <?php foreach($user_info['Comment'] as $comment): ?>
 			    		<tr>
 			    			<td><?php echo $comment['content']; ?></td> <!-- content -->
-			    			<td><?php echo $this->Html->link($user_info['User']['name'], 
+			    			<td><?php echo $this->Html->link($comment['resource_id'], 
 			    						'/resource/' . $comment['resource_id'], 
 			    						array());
 		    					?></td><!-- for -->
-			    			<td><?php echo $comment['user_id']; ?></td> <!-- author -->
+			    			<td><?php echo $user_info['User']['name']; ?></td> <!-- author -->
 			    			<td><?php echo $comment['created']; ?></td><!-- created -->
 			    		</tr>
 			    	<?php endforeach; ?>
