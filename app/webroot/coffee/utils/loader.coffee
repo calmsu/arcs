@@ -1,5 +1,9 @@
 # loader.coffee
 # -------------
-# Not Implemented
-arcs.utils.loader = (selector, timeout) ->
-    $(selector).delay()
+arcs.utils.loader = 
+    show: ->
+        unless $('#arcs-loader').length
+            $('body').append arcs.templates.loader
+        $('#arcs-loader').show()
+    hide: ->
+        $('#arcs-loader').hide()

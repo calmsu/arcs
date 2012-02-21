@@ -177,9 +177,6 @@ arcs.templates.resultsGrid =
         <div>{{ user_name }}</div>
     </div>
     {{/ results }}
-    {{^ results }}
-    <div id="no-results">No Results</div>
-    {{/ results }}
     """
 
 arcs.templates.resultsList = 
@@ -198,9 +195,6 @@ arcs.templates.resultsList =
     </tr>
     {{/ results }}
     </table>
-    {{^ results }}
-    <div id="no-results">No Results</div>
-    {{/ results }}
     """
 
 arcs.templates.modalWrapper =
@@ -240,4 +234,9 @@ arcs.templates.splitModal =
         <button id="cancel" class="btn">No, leave it alone.</button>
         <button id="yes" class="btn success">Yes</button>
     </div>
+    """
+
+arcs.templates.loader =
+    """
+    <div class="loading" id="arcs-loader"></div>
     """

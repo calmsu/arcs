@@ -19,12 +19,14 @@ arcs.templates.annotation = "{{# hotspots }}\n<a class=\"annotation\">{{ type }}
 
 arcs.templates.button = "<a class=\"btn icon unselectable\" id=\"{{ id }}\"\n    {{# url }} href=\"{{ url }}\" {{/ url }}>\n    <span class=\"{{ class }}\"></span>\n    {{ text }}\n</a>";
 
-arcs.templates.resultsGrid = "{{# results }}\n<div class=\"result grid\">\n    <img src=\"{{ thumb }}\" data-id=\"{{ id }}\" style=\"height:100px\" />\n    <div><strong>{{ title }}</strong></div>\n    <div>{{ user_name }}</div>\n</div>\n{{/ results }}\n{{^ results }}\n<div id=\"no-results\">No Results</div>\n{{/ results }}";
+arcs.templates.resultsGrid = "{{# results }}\n<div class=\"result grid\">\n    <img src=\"{{ thumb }}\" data-id=\"{{ id }}\" style=\"height:100px\" />\n    <div><strong>{{ title }}</strong></div>\n    <div>{{ user_name }}</div>\n</div>\n{{/ results }}";
 
-arcs.templates.resultsList = "<table>\n{{# results }}\n<tr class=\"result list\">\n    <td>\n        <img src=\"{{ thumb }}\" data-id=\"{{ id }}\" style=\"width:100px\" />\n    </td>\n    <td>\n        <div><strong>{{ title }}</strong></div>\n        <br>\n        <div>{{ user_name }}</div>\n    </td>\n</tr>\n{{/ results }}\n</table>\n{{^ results }}\n<div id=\"no-results\">No Results</div>\n{{/ results }}";
+arcs.templates.resultsList = "<table>\n{{# results }}\n<tr class=\"result list\">\n    <td>\n        <img src=\"{{ thumb }}\" data-id=\"{{ id }}\" style=\"width:100px\" />\n    </td>\n    <td>\n        <div><strong>{{ title }}</strong></div>\n        <br>\n        <div>{{ user_name }}</div>\n    </td>\n</tr>\n{{/ results }}\n</table>";
 
 arcs.templates.modalWrapper = "<div id=\"modal\" class=\"modal\" style=\"display:none; max-height:none;\"></div>";
 
 arcs.templates.searchModal = "<div class=\"modal-header\">\n    <h3>{{ title }}</h3>\n</div>\n<div class=\"modal-body\">\n    {{ message }}\n    <br><br>\n    <input type=\"text\" value=\"{{ value }}\" id=\"search-modal-value\" />\n</div>\n<div class=\"modal-footer\">\n    <button id=\"cancel\" class=\"btn\">Cancel</button>\n    <button id=\"save\" class=\"btn info\">Make it so</button>\n</div>";
 
 arcs.templates.splitModal = "<div class=\"modal-header\">\n    <h3>PDF</h3>\n</div>\n<div class=\"modal-body\">\n    We noticed you've uploaded a PDF. If you'd like, we can\n    split the PDF into a collection, where it can be annotated\n    and commented on--page by page.\n    <hr>\n    <h4>Make a collection from this resource?</h4>\n</div>\n<div class=\"modal-footer\">\n    <button id=\"cancel\" class=\"btn\">No, leave it alone.</button>\n    <button id=\"yes\" class=\"btn success\">Yes</button>\n</div>";
+
+arcs.templates.loader = "<div class=\"loading\" id=\"arcs-loader\"></div>";
