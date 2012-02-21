@@ -267,12 +267,12 @@ class ResourcesController extends AppController {
         $this->set('title_for_layout', 'Search');
 
         if ($this->request->is('ajax')) {
-            if ($this->request->data) {
+            # Get the request parameters.
+            $params = $this->request->query;
+            $limit = isset($params['n']) ? $params['n'] : 30;
+            $offset = isset($params['offset']) ? $params['offset'] : 0;
 
-                # Get the request parameters.
-                $params = $this->request->query;
-                $limit = isset($params['n']) ? $params['n'] : 30;
-                $offset = isset($params['offset']) ? $params['offset'] : 0;
+            if ($this->request->data) {
 
                 # Get our datasource object ready to give to the Search class.
                 $dbo = $this->Resource->getDataSource('default');
@@ -302,9 +302,9 @@ class ResourcesController extends AppController {
                 # No facets provided. Give them back some random ones.
                 $this->jsonResponse(200, $this->Resource->find('all', array(
                     'conditions' => $conditions,
-                    'limit' => 30,
-                    # Random order, to keep it interesting:
-                    'order' => array('rand()')
+                    'limit' => $limit,
+                    'offset' => $offset,
+                    'order' => array('Resource.modified DESC')
                 )));
             }
         } 

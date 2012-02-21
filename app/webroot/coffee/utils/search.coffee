@@ -19,7 +19,8 @@ class arcs.utils.Search
     #   container: DOM Element that wraps the searchbar. When this is omitted,
     #              you get a headless search.
     #   query:     Starting query.
-    #   useParams: Uses relevant url parameters in search query.
+    #   loader:    Use arcs.utils.loader to display a loading gif while the
+    #              results are being fetched. Off by default.
     #   run:       Call the run method after construct. Defaults to true.
     #   success:   Called after results are successfully fetched.
     #   error:     Called when fetching results fails.
@@ -30,7 +31,7 @@ class arcs.utils.Search
         defaults = 
             container: null
             query: ''
-            useParms: true
+            loader: false
             run: true
             success: ->
             error: ->
@@ -94,25 +95,42 @@ class arcs.utils.Search
     # callbacks.
     #
     # An arcs.collections.ResultSet object will be returned.
-    run: (facets, success, error) ->
+    run: (facets, options) ->
+
+        defaults =
+            add: false
+            n: 30
+            page: 1
+            success: @options.success
+            error: @options.error
+        options = _.extend defaults, options
+
+        # Get the facets from the VS object if not given.
         if not facets? and @vs?
             facets = @vs.searchQuery.toJSON()
 
+        # Don't want the app prop included.
         _.each facets, (f) ->
             delete f.app
 
-        if @options.useParams
-            n = arcs.utils.params.get('n') ? 30
-            offset = arcs.utils.params.get('offset') ? 0
-            params = "?n=#{n}&offset=#{offset}"
+        # Calculate the url parameters
+        offset = (options.page - 1) * options.n
+        params = "?n=#{options.n}&offset=#{offset}"
+
+        arcs.utils.loader.show() if @options.loader
 
         @results.fetch
+            add: options.add
             data: JSON.stringify(facets)
             type: 'POST'
-            url: @results.url() + (params ? '')
+            url: @results.url() + params
             contentType: 'application/json'
-            success: success or @options.success
-            error: error or @options.error
+            success: =>
+                options.success()
+                arcs.utils.loader.hide() if @options.loader
+            error: =>
+                options.error()
+                arcs.utils.loader.hide() if @options.loader
 
         @query = @vs.searchBox.value()
 

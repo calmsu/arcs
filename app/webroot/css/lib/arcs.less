@@ -954,13 +954,16 @@ span.es-nav-prev {
     z-index:100 !important;
     color:white;
     background-color:#444;
-    padding:20px;
+    position:fixed;
+    padding:15px;
     height:40px;
     width:40px;
-    position:absolute;
-    top:40%;
-    left:46%;
+    margin-top:-20px;
+    margin-left:-20px;
+    top:50%;
+    left:47%;
     border-radius:10px;
+    border:1px solid #000;
 }
 
 .tab-pane h3 {
@@ -1202,4 +1205,11 @@ div {
     input[type=text] {
         box-shadow:none;
     }
+}
+
+.toolbar-fixed {
+    border-bottom:1px solid #999;
+    position:fixed;
+    top:0px;
+    width:100%;
 }

@@ -17,11 +17,26 @@ arcs.views.Search = (function(_super) {
     this.search = new arcs.utils.Search({
       container: $('#search-wrapper'),
       query: query,
+      loader: true,
       success: function() {
         arcs.utils.hash.set(_this.search.query, uri = true);
         return _this.render();
       }
     });
+    this.searchPage = 1;
+    $(window).scroll(function() {
+      if ($(window).scrollTop() === $(document).height() - $(window).height()) {
+        _this.searchPage += 1;
+        return _this.search.run(null, {
+          add: true,
+          page: _this.searchPage,
+          success: function() {
+            return _this.append();
+          }
+        });
+      }
+    });
+    this.view = 'grid';
     return arcs.utils.keys.add('a', true, this.selectAll, this);
   };
 
@@ -273,27 +288,50 @@ arcs.views.Search = (function(_super) {
   Search.prototype.gridView = function() {
     $('#list-btn').removeClass('active');
     $('#grid-btn').addClass('active');
+    this.view = 'grid';
     return this.render();
   };
 
   Search.prototype.listView = function() {
-    var list;
     $('#grid-btn').removeClass('active');
     $('#list-btn').addClass('active');
-    return this.render(list = true);
+    this.view = 'list';
+    return this.render();
   };
 
-  Search.prototype.render = function(list) {
-    var template;
-    if (list == null) list = false;
-    if (list) {
+  Search.prototype.append = function() {
+    var rest, results;
+    rest = this.search.results.rest(this.results.all().length);
+    results = new arcs.collections.ResultSet(rest);
+    return this._render({
+      results: results.toJSON()
+    }, true);
+  };
+
+  Search.prototype.render = function() {
+    return this._render({
+      results: this.search.results.toJSON()
+    });
+  };
+
+  Search.prototype._render = function(results, append) {
+    var $results, content, template;
+    if (append == null) append = false;
+    $results = $('#search-results');
+    if (this.view === 'list') {
       template = arcs.templates.resultsList;
     } else {
       template = arcs.templates.resultsGrid;
     }
-    return $('#search-results').html(Mustache.render(template, {
-      results: this.search.results.toJSON()
-    }));
+    content = Mustache.render(template, results);
+    if (append) {
+      $results.append(content);
+    } else {
+      $results.html(content);
+    }
+    if (!this.results.all().length) {
+      return $results.html('<div id="no-results">No Results</div>');
+    }
   };
 
   return Search;

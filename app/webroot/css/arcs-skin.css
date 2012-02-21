@@ -4874,13 +4874,16 @@ span.es-nav-prev {
   z-index: 100 !important;
   color: white;
   background-color: #444;
-  padding: 20px;
+  position: fixed;
+  padding: 15px;
   height: 40px;
   width: 40px;
-  position: absolute;
-  top: 40%;
-  left: 46%;
+  margin-top: -20px;
+  margin-left: -20px;
+  top: 50%;
+  left: 47%;
   border-radius: 10px;
+  border: 1px solid #000;
 }
 .tab-pane h3 {
   color: #444;
@@ -5077,18 +5080,18 @@ div ::-webkit-scrollbar-thumb {
   background-color: #dfdfdf;
 }
 .hotspot-modal .tab-content {
-  border: 1px solid #999;
+  border: 1px solid #aaa;
   border-top: none;
 }
 .hotspot-modal .tabs {
-  border-bottom: 1px solid #999;
+  border-bottom: 1px solid #aaa;
 }
 .hotspot-modal .tabs li.active a {
-  border: 1px solid #999;
+  border: 1px solid #aaa;
   border-bottom: 1px solid #fff;
 }
 .hotspot-modal #title, .hotspot-modal #caption, .hotspot-modal #type {
-  border: 1px solid #999;
+  border: 1px solid #aaa;
 }
 .hotspot-modal h3, .hotspot-modal h4 {
   font-weight: normal;
@@ -5127,6 +5130,12 @@ div ::-webkit-scrollbar-thumb {
 }
 #hotspot-search input[type=text], #search-wrapper input[type=text] {
   box-shadow: none;
+}
+.toolbar-fixed {
+  border-bottom: 1px solid #999;
+  position: fixed;
+  top: 0px;
+  width: 100%;
 }
 .hidden {
   display: none;

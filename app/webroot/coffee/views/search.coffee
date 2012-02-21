@@ -13,12 +13,25 @@ class arcs.views.Search extends Backbone.View
         @search = new arcs.utils.Search 
             container: $('#search-wrapper')
             query: query
+            loader: true
             # This callback will be fired each time a search is done.
             success: =>
                 # Set the hash
                 arcs.utils.hash.set @search.query, uri=true
                 # Render the our results.
                 @render()
+
+        @searchPage = 1
+        $(window).scroll =>
+            if $(window).scrollTop() == $(document).height() - $(window).height()
+                @searchPage += 1
+                @search.run null,
+                    add: true
+                    page: @searchPage
+                    success: =>
+                        @append()
+
+        @view = 'grid'
 
         # Bind hotkeys:
         arcs.utils.keys.add 'a', true, @selectAll, @
@@ -270,19 +283,36 @@ class arcs.views.Search extends Backbone.View
     gridView: ->
         $('#list-btn').removeClass 'active'
         $('#grid-btn').addClass 'active'
+        @view = 'grid'
         @render()
 
     # Render the view using list view.
     listView: ->
         $('#grid-btn').removeClass 'active'
         $('#list-btn').addClass 'active'
-        @render(list=true)
+        @view = 'list'
+        @render()
 
-    # Render the view.
-    render: (list=false) ->
-        if list
+    # Append more results.
+    append: ->
+        rest = @search.results.rest @results.all().length
+        results = new arcs.collections.ResultSet rest
+        @_render results: results.toJSON(), true
+
+    # Render the results.
+    render: ->
+        @_render results: @search.results.toJSON()
+
+    _render: (results, append=false) ->
+        $results = $('#search-results')
+        if @view == 'list'
             template = arcs.templates.resultsList
         else
             template = arcs.templates.resultsGrid
-        $('#search-results').html Mustache.render template, 
-            results: @search.results.toJSON()
+        content = Mustache.render template, results
+        if append
+            $results.append content
+        else
+            $results.html content
+        if not @results.all().length
+            $results.html '<div id="no-results">No Results</div>'
