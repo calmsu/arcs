@@ -2280,13 +2280,13 @@ table .span12 {
 .navbar-search .search-query :-moz-placeholder {
   color: #eeeeee;
 }
-.navbar-search .search-query ::-webkit-input-placeholder {
+.navbar-search .search-query::-webkit-input-placeholder {
   color: #eeeeee;
 }
 .navbar-search .search-query :-moz-placeholder {
   color: #eeeeee;
 }
-.navbar-search .search-query ::-webkit-input-placeholder {
+.navbar-search .search-query::-webkit-input-placeholder {
   color: #eeeeee;
 }
 .navbar-search .search-query:hover {
@@ -4500,8 +4500,15 @@ ul.resource-thumbs li:hover a {
 #user-info #prof-img {
   margin-right: 10px;
 }
+#user-info div h2 {
+  margin-left: 0;
+}
 #user-actions {
   margin-left: 0;
+}
+#user-actions tr:hover, #user-actions tr:nth-child(odd):hover td, #user-actions tr:nth-child(odd):hover th {
+  text-decoration: underline;
+  background-color: #eee;
 }
 #user-actions .tab-content #activity-tab h3.activity-date {
   text-align: right;
@@ -4526,9 +4533,18 @@ ul.resource-thumbs li:hover a {
   display: inline-block;
   margin-right: 15px;
 }
-#user-actions .tab-content #annotations-tab td:hover {
-  text-decoration: underline;
+#user-actions .tab-content #annotations-tab tr:hover {
+  text-decoration: none;
   background-color: #999999;
+}
+#user-actions .tab-content label.radio {
+  display: inline-block;
+  margin-right: 10px;
+}
+#user-actions .tab-content label.radio input {
+  display: inline-block;
+  visibility: visible;
+  margin: 2px 10px 0 0;
 }
 #resource-wrapper {
   height: 530px;
@@ -4576,6 +4592,116 @@ ul.resource-thumbs li:hover a {
   overflow: hidden;
   padding-right: 0;
   padding-bottom: 15px;
+}
+section#upload-form {
+  margin-bottom: 30px;
+  clear: both;
+  min-height: 50px;
+  margin-left: auto;
+  margin-right: auto;
+}
+section#upload-form h1#logo {
+  display: block;
+  font-size: 39px;
+  text-shadow: 2px 3px 3px #ffffff;
+  padding: 10px 0 0 43px;
+  background: no-repeat top left url('img/arcs-icon-big.png');
+  background-position: 0 10px;
+  margin-right: 10px;
+  margin-bottom: 20px;
+  float: left;
+}
+section#upload-form form[name="upload-pt1"], section#upload-form form[name="upload-pt2"] {
+  display: block;
+  margin-top: 20px;
+}
+section#upload-form form[name="upload-pt1"] fieldset legend, section#upload-form form[name="upload-pt2"] fieldset legend {
+  margin-bottom: 20px;
+  clear: both;
+}
+section#upload-form form[name="upload-pt1"] fieldset img, section#upload-form form[name="upload-pt2"] fieldset img {
+  margin-top: 10px;
+}
+section#upload-form form[name="upload-pt1"] fieldset div.properties-contain, section#upload-form form[name="upload-pt2"] fieldset div.properties-contain {
+  margin-top: 10px;
+  margin-left: 260px;
+  margin-left: 260px;
+  width: 700px;
+  width: 700px;
+}
+section#upload-form form[name="upload-pt1"] input.btn, section#upload-form form[name="upload-pt2"] input.btn {
+  float: none;
+  text-align: left;
+  width: auto;
+}
+section#upload-form form[name="upload-pt1"] input[name="new-or-add"], section#upload-form form[name="upload-pt2"] input[name="new-or-add"] {
+  display: inline;
+  float: none;
+}
+section#upload-form form[name="upload-pt1"] div.label-input-wrapper, section#upload-form form[name="upload-pt2"] div.label-input-wrapper {
+  display: block;
+}
+section#upload-form form[name="upload-pt1"] div.label-input-wrapper label, section#upload-form form[name="upload-pt2"] div.label-input-wrapper label {
+  text-align: right;
+  width: 90px;
+  margin-bottom: 20px;
+  display: inline-block;
+  font-weight: bold;
+}
+section#upload-form form[name="upload-pt1"] div.label-input-wrapper label:after, section#upload-form form[name="upload-pt2"] div.label-input-wrapper label:after {
+  content: ":";
+}
+section#upload-form form[name="upload-pt1"] div.label-input-wrapper input,
+section#upload-form form[name="upload-pt2"] div.label-input-wrapper input,
+section#upload-form form[name="upload-pt1"] div.label-input-wrapper text-area,
+section#upload-form form[name="upload-pt2"] div.label-input-wrapper text-area,
+section#upload-form form[name="upload-pt1"] div.label-input-wrapper select,
+section#upload-form form[name="upload-pt2"] div.label-input-wrapper select {
+  display: inline-block;
+  min-width: 300px;
+  margin-top: 10px;
+}
+section#upload-form form[name="upload-pt1"] div.label-input-wrapper div.radio-group, section#upload-form form[name="upload-pt2"] div.label-input-wrapper div.radio-group {
+  display: inline-block;
+  margin-bottom: 10px;
+}
+section#upload-form form[name="upload-pt1"] div.label-input-wrapper div.radio-group label, section#upload-form form[name="upload-pt2"] div.label-input-wrapper div.radio-group label {
+  display: inline-block;
+  text-align: left;
+  width: 100px;
+}
+section#upload-form form[name="upload-pt1"] div.label-input-wrapper div.radio-group label:after, section#upload-form form[name="upload-pt2"] div.label-input-wrapper div.radio-group label:after {
+  content: "";
+}
+section#upload-form form[name="upload-pt1"] div.label-input-wrapper div.radio-group input[type="radio"], section#upload-form form[name="upload-pt2"] div.label-input-wrapper div.radio-group input[type="radio"] {
+  display: inline-block;
+}
+section#upload-form form[name="upload-pt1"] .privacy-contain, section#upload-form form[name="upload-pt2"] .privacy-contain {
+  margin-top: 10px;
+  margin-left: 260px;
+  margin-left: 260px;
+  width: 700px;
+  width: 700px;
+}
+section#upload-form form[name="upload-pt1"] .privacy-contain .label-input-wrapper input, section#upload-form form[name="upload-pt2"] .privacy-contain .label-input-wrapper input {
+  margin-top: 0;
+}
+section#upload-form form[name="upload-pt1"] .privacy-contain .label-input-wrapper .radio-group label, section#upload-form form[name="upload-pt2"] .privacy-contain .label-input-wrapper .radio-group label {
+  display: inline;
+  min-width: 100px;
+  margin-right: 10px;
+  font-weight: normal;
+}
+section#upload-form form[name="upload-pt1"] .privacy-contain .label-input-wrapper .radio-group input[type="radio"], section#upload-form form[name="upload-pt2"] .privacy-contain .label-input-wrapper .radio-group input[type="radio"] {
+  display: inline;
+  margin: 0 0 10px 0 !important;
+}
+section#upload-form form[name="upload-pt1"] select[multiple].extra-stuff, section#upload-form form[name="upload-pt2"] select[multiple].extra-stuff {
+  display: block;
+  margin: 0 0 0 110px;
+}
+section#upload-form select#resource-type, section#upload-form select#choose-notebook {
+  display: block;
 }
 /* General Effects */
 .centered {
@@ -4830,6 +4956,7 @@ a.annotation, a.tag {
   margin: 5px 20px 0;
 }
 input#new-tag {
+  border: 1px solid #ccc;
   padding: 5px;
 }
 div#search-wrapper {
@@ -4880,7 +5007,7 @@ div#search-results {
 }
 .result.grid {
   float: left;
-  width: 190px;
+  width: 200px;
   max-height: 140px;
   margin: 20px;
 }
@@ -5131,14 +5258,14 @@ input, textarea {
   text-shadow: 0 1px 1px #ffffff;
 }
 /* Give all of our divs a custom scrollbar */
-div ::-webkit-scrollbar {
+div::-webkit-scrollbar {
   width: 12px;
 }
-div ::-webkit-scrollbar-track {
+div::-webkit-scrollbar-track {
   -webkit-box-shadow: inset 0 0 2px rgba(0, 0, 0, 0.3);
   border-radius: 3px;
 }
-div ::-webkit-scrollbar-thumb {
+div::-webkit-scrollbar-thumb {
   border-radius: 3px;
   background: #bbb;
   border: 1px solid #888;
