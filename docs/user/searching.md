@@ -16,12 +16,12 @@ Facet         | Description
 ------------- | -----------------------------------------------------
 `all`\*       | Default facet. Matches all fields.
               |
-`caption`\*   | Matches annotation caption text.
+`caption`     | Matches annotation caption text.
               |
 `collection`\*| Matches resources within a collection. For example:
               | `collection: Bones 1980's`
               |
-`comment`\*   | Matches comment text.
+`comment`     | Matches comment text.
               |
 `created`     | Matches the date on which the resource was uploaded.
               | Provide a date using month-day-year format. You can also 
@@ -53,4 +53,9 @@ Facet         | Description
               | `user: John Doe`
    
 ---
-*\* Not implemented. (Yet.)*
+\* Not implemented.
+
+Auto-completion
+---------------
+Facet values will be auto-completed when possible. For certain facets,
+like `user`, we'll only auto-complete the values if you're logged in.

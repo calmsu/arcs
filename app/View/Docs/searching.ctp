@@ -23,7 +23,7 @@ query that will find everything that John uploaded yesterday.</p>
 <td></td>
 </tr>
 <tr>
-<td><code>caption</code>*</td>
+<td><code>caption</code></td>
 <td>Matches annotation caption text.</td>
 </tr>
 <tr>
@@ -43,7 +43,7 @@ query that will find everything that John uploaded yesterday.</p>
 <td></td>
 </tr>
 <tr>
-<td><code>comment</code>*</td>
+<td><code>comment</code></td>
 <td>Matches comment text.</td>
 </tr>
 <tr>
@@ -165,4 +165,7 @@ query that will find everything that John uploaded yesterday.</p>
 </tbody>
 </table>
 <hr />
-<p><em>* Not implemented. (Yet.)</em></p>
+<p>* Not implemented.</p>
+<h2>Auto-completion</h2>
+<p>Facet values will be auto-completed when possible. For certain facets,
+like <code>user</code>, we'll only auto-complete the values if you're logged in.</p>

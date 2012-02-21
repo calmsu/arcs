@@ -38,7 +38,7 @@ class DocsController extends AppController {
      * @param doc
      * @return void
      */
-	public function display($doc='') {
+	public function display($doc) {
         $title_for_layout = 'ARCS Help';
         $active = $doc == 'index' ? '' : $doc;
         $this->set('active', $active);
