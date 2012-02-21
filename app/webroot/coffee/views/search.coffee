@@ -24,6 +24,10 @@ class arcs.views.Search extends Backbone.View
             pushState: true
             root: arcs.baseURL + 'search/'
 
+        if document.location.href[-1] == '/'
+            arcs.log document.location.href[-1]
+            @router.navigate('/', trigger: true, replace: true)
+
         unless @router.searched
             @search.run()
 

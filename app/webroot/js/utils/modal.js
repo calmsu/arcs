@@ -27,6 +27,7 @@ arcs.utils.Modal = (function() {
       keyboard: true,
       show: false
     });
+    if (this.el.attr('data-first') !== 'false') this.el.attr('data-first', 'true');
     this.show();
     this._bindButtons();
   }
@@ -38,11 +39,16 @@ arcs.utils.Modal = (function() {
   Modal.prototype.show = function() {
     this.el.html(Mustache.render(this.options.template, this.options.templateValues));
     this.el.modal('show');
-    if (!this.el.is('visible')) {
-      return this.el.css('right', '-400px').animate({
+    if (this.el.attr('data-first') === 'true') {
+      this.el.css('right', '-400px').animate({
         right: '0px'
       });
+      return this.el.attr('data-first', 'false');
     }
+  };
+
+  Modal.prototype.visible = function() {
+    return this.el.is(':visible');
   };
 
   Modal.prototype.values = function() {

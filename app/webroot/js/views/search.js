@@ -28,6 +28,13 @@ arcs.views.Search = (function(_super) {
       pushState: true,
       root: arcs.baseURL + 'search/'
     });
+    if (document.location.href[-1] === '/') {
+      arcs.log(document.location.href[-1]);
+      this.router.navigate('/', {
+        trigger: true,
+        replace: true
+      });
+    }
     if (!this.router.searched) this.search.run();
     this.searchPage = 1;
     $(window).scroll(function() {

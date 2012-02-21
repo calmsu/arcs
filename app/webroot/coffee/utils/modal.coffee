@@ -67,6 +67,8 @@ class arcs.utils.Modal
             keyboard: true
             show: false
 
+        if @el.attr('data-first') != 'false'
+            @el.attr 'data-first', 'true'
         @show()
 
         @_bindButtons()
@@ -76,12 +78,14 @@ class arcs.utils.Modal
 
     show: ->
         # Evaluate and inject the template with any values. 
-        
         @el.html Mustache.render @options.template, @options.templateValues
         @el.modal 'show'
-
-        if not @el.is 'visible'
+        if @el.attr('data-first') == 'true'
             @el.css('right', '-400px').animate(right: '0px')
+            @el.attr 'data-first', 'false'
+
+    visible: ->
+        @el.is ':visible'
 
     values: ->
         # Get the input vals, if any inputs were given.
