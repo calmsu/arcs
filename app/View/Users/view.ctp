@@ -39,11 +39,11 @@
 		<?php 
 			echo "<h2>".$user['name']."</h2>"; 
 		?>
-		<p><strong class="label label-info">Institution:</strong> <?php #echo $user['institution'] ?> Michigan State University</p>
-		<p>
+		<!-- <p><strong class="label label-info">Institution:</strong> <?php #echo $user['institution'] ?> Michigan State University</p>
+		<p> 
 			<strong class="label label-info">Status:</strong> 
 			<?php #echo $user['ed-status']; ?>Undergrad, class 2012
-		</p>
+		</p> -->
 		
 		<p>
 			<strong class="label label-info">Role:</strong> 
@@ -65,13 +65,13 @@
 
 <div class="row" id="user-actions"> <!-- class="row span12">--> <!--class="tab-wrapper">-->
     <ul class="nav tabs">
-        <li><a data-toggle="tab" href="#activity-tab">Activity</a></li>
+        <li class="active"><a data-toggle="tab" href="#activity-tab">Activity</a></li>
         <li><a data-toggle="tab" href="#uploads-tab">Uploads</a></li>
         <li><a data-toggle="tab" href="#annotations-tab">Annotations</a></li>
         <li><a data-toggle="tab" href="#flagged-tab">Flagged Items (12)</a></li>
         <li><a data-toggle="tab" href="#disucssion-tab">Discussions (122)</a></li>
         <li><a data-toggle="tab" href="#collections-tab">Collections</a></li>
-        <li class="active"><a data-toggle="tab" href="#print-arrays">Super Secret Code Tab</a></li>
+        <li><a data-toggle="tab" href="#print-arrays">Super Secret Code Tab</a></li>
     </ul><!-- .tab-heads -->
 
     <div class="tab-content">
@@ -81,7 +81,7 @@
 	    <?php echo $this->element('tabs/flags-tab') ?>
 	    <?php echo $this->element('tabs/discussion-tab') ?>
 	    <?php echo $this->element('tabs/collection-tab') ?>
-	    <?php echo $this->element('tabs/print-arrays') ?>
+	    <?php echo $this->element('tabs/print-arrays') //this is a dev tab...make sure it's commented out before shipping ?>
                
     </div><!-- sidebar-tab-content -->		    
 

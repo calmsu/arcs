@@ -2,11 +2,11 @@
         
         	<!-- <h1 class="alert alert-danger">The Discussion Tab is still under development</h1> -->
         	
-        	<?php if(empty($user_info['Comment'])){ ?>
+        	<?php if(empty($user_info['Comment'])): ?>
 			
 				<h3>Looks like this user hasn't made any discussion items yet</h3>
 			
-			<?php  } else if(isset($user_info['Comment'])){ ?>
+			<?php  elseif(isset($user_info['Comment'])): ?>
 	        	<label class="radio">
 	           		<input type="radio" name="optionsRadios" id="optionsRadios1" value="option1" checked=""> Discussion items by Josh
 	         	</label>
@@ -24,15 +24,14 @@
 				    </tr>
 				  </thead>
 				  <tbody>
-				    <?php
-				    	foreach($user_info['Comment'] as $comment){
-				    		echo '<tr>';
-				    			echo '<td><a href="">' . $comment['content'] . '</a></td>'; # content
-				    			echo '<td><a href="">' . $comment['resource_id'] . '</a></td>'; # for
-				    			echo '<td><a href="">' . $comment['user_id'] . '</a></td>'; # author
-				    			echo '<td><a href="">' . $comment['created'] . '</a></td>'; # created
-				    		echo '</tr>';
-				    	}//foreach
+				    <?php foreach($user_info['Comment'] as $comment){ ?>
+				    		<tr>
+				    			<td><?php echo $comment['content']; ?></a></td> <!-- content -->
+				    			<td><?php echo $comment['resource_id']; ?></a></td><!-- for -->
+				    			<td><?php echo $comment['user_id']; ?></a></td> <!-- author -->
+				    			<td><?php echo $comment['created']; ?></a></td><!-- created -->
+				    		</tr>
+				    	<?php endforeach; ?>
 				    	/*
 						#Echo out some placeholding rows like a boss
 						$i = 0;
@@ -48,6 +47,6 @@
 				  </tbody>
 				</table>
 				
-			<?php  }//if/elseif	//$flags = $user_info['Comment']; ?>
+			<?php  endif; ?>
         
         </div><!-- #discussion-tab -->

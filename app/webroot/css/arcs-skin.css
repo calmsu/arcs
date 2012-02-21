@@ -4533,9 +4533,18 @@ ul.resource-thumbs li:hover a {
   display: inline-block;
   margin-right: 15px;
 }
-#user-actions .tab-content #annotations-tab td:hover {
-  text-decoration: underline;
+#user-actions .tab-content #annotations-tab tr:hover {
+  text-decoration: none;
   background-color: #999999;
+}
+#user-actions .tab-content label.radio {
+  display: inline-block;
+  margin-right: 10px;
+}
+#user-actions .tab-content label.radio input {
+  display: inline-block;
+  visibility: visible;
+  margin: 2px 10px 0 0;
 }
 #resource-wrapper {
   height: 530px;

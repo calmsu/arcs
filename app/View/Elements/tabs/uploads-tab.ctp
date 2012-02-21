@@ -20,23 +20,26 @@
 				    		
 				    		<tr>
 								<td>
-									<a href="">
-										<i class="<?php 
-									    		if($resource['type'] == 'Photograph'){
-									    			echo 'icon-picture';
-									    		} else if($resource['type'] == 'Notebook'){
-									    			echo 'icon-book';
-									    		} else if($resource['type'] == 'Inventory Card'){
-									    			echo 'icon-file';
-									    		} else if($resource['type'] == 'Map'){
-									    			echo 'icon-map-maker';
-									    		}
-									    	?>"></i>
-									</a>
+									<i class="<?php 
+								    		if($resource['type'] == 'Photograph'){
+								    			echo 'icon-picture';
+								    		} else if($resource['type'] == 'Notebook'){
+								    			echo 'icon-book';
+								    		} else if($resource['type'] == 'Inventory Card'){
+								    			echo 'icon-file';
+								    		} else if($resource['type'] == 'Map'){
+								    			echo 'icon-map-maker';
+								    		}
+								    	?>"></i>
 								</td><!-- type -->
-						<td><a href=""><?php echo $resource['title']; ?></a></td><!-- title -->
-						<td><a href="">24<!-- (this is a static number for now) --></a></td> <!-- annotations --> <!--  I need to know how to echo a cake-ified link in this instance that echoes the id of a resource...or: http://dev.cal.msu.edu:8080/~compto35/arcs/resources/view/' . $resource['id'] -->
-						<td><a href="">240 <!-- (this is a static number for now) --></a></td> <!-- comments -->
+						<td><?php echo $this->Html->link($resource['id'], 
+				    						'/resource/' . $resource['id'], 
+				    						array());
+						
+						
+						$resource['title']; ?></td><!-- title -->
+						<td>24<!-- (this is a static number for now) --></td> <!-- annotations --> <!--  I need to know how to echo a cake-ified link in this instance that echoes the id of a resource...or: http://dev.cal.msu.edu:8080/~compto35/arcs/resources/view/' . $resource['id'] -->
+						<td>240 <!-- (this is a static number for now) --></td> <!-- comments -->
 						<td><?php echo $resource['created']; ?></td> <!-- upload date -->
 				    			
 </tr>
