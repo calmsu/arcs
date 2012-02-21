@@ -6,20 +6,26 @@ class arcs.views.Search extends Backbone.View
     initialize: ->
         @setupSelect()
 
-        # Get the query
-        query = arcs.utils.hash.get(uri=true) or null 
-
         # Set up search
         @search = new arcs.utils.Search 
             container: $('#search-wrapper')
-            query: query
+            run: false
             loader: true
             # This callback will be fired each time a search is done.
             success: =>
-                # Set the hash
-                arcs.utils.hash.set @search.query, uri=true
+                @router.navigate(@search.query)
                 # Render the our results.
                 @render()
+
+        @router = new arcs.routers.Search
+            search: @search
+
+        Backbone.history.start
+            pushState: true
+            root: arcs.baseURL + 'search/'
+
+        unless @router.searched
+            @search.run()
 
         @searchPage = 1
         $(window).scroll =>

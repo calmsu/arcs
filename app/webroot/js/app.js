@@ -8,9 +8,9 @@ arcs.models = {};
 
 arcs.collections = {};
 
-arcs.events = {};
-
 arcs.utils = {};
+
+arcs.routers = {};
 
 arcs.templates = {};
 

@@ -13,14 +13,6 @@ arcs.views.Resource = (function(_super) {
 
   Resource.prototype.initialize = function() {
     var _this = this;
-    arcs.utils.keys.add('left', false, this.prevResource, this);
-    arcs.utils.keys.add('right', false, this.nextResource, this);
-    this.model.bind('change', function() {
-      return _this.render;
-    });
-    this.model.bind('destroy', function() {
-      return _this.render;
-    });
     arcs.bind('resourceChange', function() {
       arcs.utils.hash.set(_this.index + 1);
       return _this.render();
@@ -37,9 +29,17 @@ arcs.views.Resource = (function(_super) {
     arcs.toolbarView = new arcs.views.Toolbar({
       el: $('#toolbar')
     });
-    this.index = this.parseHash();
+    this.index = (arcs.utils.hash.get() || 1) - 1;
     this.setResource(this.index) || this.render();
-    this.setupCarousel(this.index);
+    this._setupCarousel(this.index);
+    arcs.utils.keys.add('left', false, this.prevResource, this);
+    arcs.utils.keys.add('right', false, this.nextResource, this);
+    this.model.bind('change', function() {
+      return _this.render;
+    });
+    this.model.bind('destroy', function() {
+      return _this.render;
+    });
     if (this.model.get('first_req')) return this.firstReq();
   };
 
@@ -49,7 +49,7 @@ arcs.views.Resource = (function(_super) {
     'click #prev-button': 'prevResource'
   };
 
-  Resource.prototype.setupCarousel = function(index) {
+  Resource.prototype._setupCarousel = function(index) {
     var _this = this;
     $('#carousel').elastislide({
       imageW: 100,
@@ -128,14 +128,6 @@ arcs.views.Resource = (function(_super) {
     return $carousel.find(".thumb[data-id=" + this.model.id + "]").addClass('selected');
   };
 
-  Resource.prototype.parseHash = function() {
-    if (arcs.utils.hash.get()) {
-      return arcs.utils.hash.get() - 1;
-    } else {
-      return 0;
-    }
-  };
-
   Resource.prototype.firstReq = function() {
     var _this = this;
     if (this.model.get('mime_type') === 'application/pdf') {
@@ -153,9 +145,9 @@ arcs.views.Resource = (function(_super) {
 
   Resource.prototype.render = function() {
     var $ctable, $resource, $table, type;
-    $resource = this.el.find('#resource');
-    $table = this.el.find('#resource-details');
-    $ctable = this.el.find('#collection-details');
+    $resource = this.$el.find('#resource');
+    $table = this.$el.find('#resource-details');
+    $ctable = this.$el.find('#collection-details');
     $resource.html('');
     type = arcs.utils.mime.getInfo(this.model.get('mime_type')).type;
     if (type === 'image') {

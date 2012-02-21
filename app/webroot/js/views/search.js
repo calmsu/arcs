@@ -10,19 +10,25 @@ arcs.views.Search = (function(_super) {
   }
 
   Search.prototype.initialize = function() {
-    var query, uri,
-      _this = this;
+    var _this = this;
     this.setupSelect();
-    query = arcs.utils.hash.get(uri = true) || null;
     this.search = new arcs.utils.Search({
       container: $('#search-wrapper'),
-      query: query,
+      run: false,
       loader: true,
       success: function() {
-        arcs.utils.hash.set(_this.search.query, uri = true);
+        _this.router.navigate(_this.search.query);
         return _this.render();
       }
     });
+    this.router = new arcs.routers.Search({
+      search: this.search
+    });
+    Backbone.history.start({
+      pushState: true,
+      root: arcs.baseURL + 'search/'
+    });
+    if (!this.router.searched) this.search.run();
     this.searchPage = 1;
     $(window).scroll(function() {
       if ($(window).scrollTop() === $(document).height() - $(window).height()) {

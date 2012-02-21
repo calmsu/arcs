@@ -1,6 +1,12 @@
 # dev.coffee
 # ----------
-# Useful things for developing ARCS
+# Development mode settings
+
+# Set the baseURL so that Backbone.sync works with our port 8080 dev installs.
+# This part is on, for now, in production mode to test the built assets.
+if document.location.href.match /:8080\/~[a-z0-9]+\//
+    arcs.baseURL += document.location.href.match /~[a-z0-9]+\//
+    arcs.baseURL += 'arcs/'
 
 if arcs.mode > 0
     arcs.dev = {}
@@ -9,11 +15,6 @@ if arcs.mode > 0
     arcs.dev.reload = false  
     # Reload them every n msecs
     arcs.dev.reloadAt = 2000
-
-    # Set the baseURL so that Backbone.sync works with our port 8080 dev installs.
-    if document.location.href.match /:8080\/~[a-z0-9]+\//
-        arcs.baseURL += document.location.href.match /~[a-z0-9]+\//
-        arcs.baseURL += 'arcs/'
 
     # Inject some logging into Backbone.sync
     _sync = Backbone.sync

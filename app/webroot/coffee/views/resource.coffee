@@ -10,16 +10,6 @@ class arcs.views.Resource extends Backbone.View
 
     # Setup
     initialize: ->
-        # Bind key events (see utils/keys.coffee)
-        arcs.utils.keys.add 'left', false, @prevResource, @
-        arcs.utils.keys.add 'right', false, @nextResource, @
-
-        # Bind model alter events to render
-        @model.bind 'change', =>
-            @render
-        @model.bind 'destroy', =>
-            @render
-
         # Bind resourceChange event to render
         arcs.bind 'resourceChange', =>
             arcs.utils.hash.set @index + 1
@@ -35,11 +25,21 @@ class arcs.views.Resource extends Backbone.View
         arcs.toolbarView = new arcs.views.Toolbar
             el: $('#toolbar')
 
-        @index = @parseHash()
+        @index = (arcs.utils.hash.get() or 1) - 1
         # Set the resource
         @setResource(@index) or @render()
         # Setup the thumbnail carousel
-        @setupCarousel(@index)
+        @_setupCarousel(@index)
+
+        # Bind key events (see utils/keys.coffee)
+        arcs.utils.keys.add 'left', false, @prevResource, @
+        arcs.utils.keys.add 'right', false, @nextResource, @
+
+        # Bind model alter events to render
+        @model.bind 'change', =>
+            @render
+        @model.bind 'destroy', =>
+            @render
 
         if @model.get 'first_req'
             @firstReq()
@@ -51,7 +51,7 @@ class arcs.views.Resource extends Backbone.View
         'click #prev-button': 'prevResource'
 
     # Start the thumbnail carousel.
-    setupCarousel: (index) ->
+    _setupCarousel: (index) ->
         $('#carousel').elastislide
             imageW: 100
             onClick: ($item) =>
@@ -122,14 +122,6 @@ class arcs.views.Resource extends Backbone.View
         $carousel.find('.thumb').removeClass 'selected'
         $carousel.find(".thumb[data-id=#{@model.id}]").addClass 'selected'
 
-    # Return the hash (minus 1) or 0.
-    # We subtract 1 because we're storing the page number and not the index
-    # in the hash.
-    parseHash: ->
-        if arcs.utils.hash.get()
-            arcs.utils.hash.get() - 1
-        else
-            0
 
     firstReq: ->
         if @model.get('mime_type') == 'application/pdf'
@@ -144,9 +136,9 @@ class arcs.views.Resource extends Backbone.View
     # This means rendering the resource and table templates and calling some
     # of the view's methods.
     render: ->
-        $resource = @el.find('#resource')
-        $table = @el.find('#resource-details')
-        $ctable = @el.find('#collection-details')
+        $resource = @$el.find('#resource')
+        $table = @$el.find('#resource-details')
+        $ctable = @$el.find('#collection-details')
 
         $resource.html('')
         type = arcs.utils.mime.getInfo(@model.get('mime_type')).type

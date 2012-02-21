@@ -31,7 +31,7 @@ arcs.views.Hotspot = (function(_super) {
   };
 
   Hotspot.prototype.setup = function() {
-    this.img = this.el.find('img');
+    this.img = this.$el.find('img');
     if (this.img != null) {
       this.startImgAreaSelect();
       return this.update();

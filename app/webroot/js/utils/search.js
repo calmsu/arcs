@@ -21,6 +21,7 @@ arcs.utils.Search = (function() {
       query: this.options.query,
       callbacks: {
         search: function(query, searchCollection) {
+          _this.query = query;
           return _this.run(searchCollection.toJSON());
         },
         facetMatches: function(callback) {
@@ -40,6 +41,10 @@ arcs.utils.Search = (function() {
     });
     if (this.options.run) this.run();
   }
+
+  Search.prototype.setQuery = function(query) {
+    return this.vs.searchBox.setQuery(query);
+  };
 
   Search.prototype.facets = {
     access: ['public', 'private'],

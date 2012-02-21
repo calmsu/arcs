@@ -1,14 +1,15 @@
 # search.coffee
 # -------------
-# One stop shop for searching the ARCS catalog using Visual Search,
-# or directly. This is largely a wrapper of Visual Search that bundles
-# our facets and callbacks.
+# Extends Visual Search to interface with our ResultsSet object.
 #
+# It also can operate in 'headless' mode--returning results without needing
+# a UI component.
+# 
 # The Search utility is a class, so there can be multiple instances of
-# it at any time. Each instance maintains a results object, which is our
-# own Backbone collection extension. When the run method is called, the
-# results object will be reset with the new result set. (Say that 5 times
-# fast.)
+# it at any time. Each instance maintains an arcs.collections.ResultSet
+# object, which will hold any search results. When the run method is called, 
+# the results will replace (or optionally, extend) the ResultSet object.
+#
 class arcs.utils.Search 
 
     # The constructor accepts options, but none are required for minimal
@@ -48,6 +49,9 @@ class arcs.utils.Search
             query: @options.query
             callbacks:
                 search: (query, searchCollection) =>
+                    # Update our query value
+                    @query = query
+                    # Call our run method with the facets
                     @run searchCollection.toJSON()
                 facetMatches: (callback) =>
                     callback _.keys @facets
@@ -61,6 +65,10 @@ class arcs.utils.Search
 
         if @options.run
             @run()
+
+    # Convenience wrapper to call the VS.ui.SearchBox object's setQuery method.
+    setQuery: (query) ->
+        @vs.searchBox.setQuery query
 
     # Keys in the facets object are suggested as facets.
     # Values must be either an array, or a function that returns one.
@@ -87,14 +95,22 @@ class arcs.utils.Search
 
     # Query the server and update the results collection.
     #
-    # By default, no arguments are required. The current Visual Search
-    # query and the instance's given or default callbacks will be used.
+    # By default, no arguments are required. Facets will be taken from the
+    # VS.searchBox object and the default options will be used.
     #
-    # If you'd like, you can override the instance's facets and
-    # provide different ones. The same goes for the success and error
-    # callbacks.
+    # facets - array obj containing facet objects
     #
-    # An arcs.collections.ResultSet object will be returned.
+    # options 
+    #
+    #   add     - add the results to the collection, rather than resetting it.
+    #   n       - number of results to return.
+    #   page    - range of results to return. When n=30 and page=2, results
+    #             31-60 are returned.
+    #   success - callback to use instead of the instance's success callback.
+    #   error   - callback to use instead of the instance's error callback.
+    #
+    # Returns an arcs.collections.ResultSet object, which is also accessible
+    # via the `results` property.
     run: (facets, options) ->
 
         defaults =

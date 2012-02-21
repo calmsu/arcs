@@ -7,22 +7,25 @@ window.arcs = {}
 arcs.views = {}
 arcs.models = {}
 arcs.collections = {}
-arcs.events = {}
 arcs.utils = {}
+arcs.routers = {}
 arcs.templates = {}
 
 # Development mode?
 arcs.mode = CAKE_DEBUG
+
 # Debug will be on by default in dev mode. Set the var from the 
 # console to turn it off.
 arcs.debug = arcs.mode > 0
 arcs.version = "0.9.0"
+
+# Base URL holds any prefix needed to link to pages relatively.
 arcs.baseURL = '/'
 
 # Logs messages with an ARCS prefix if debug is on and a console is 
 # available (there's no console in older IE's).
 #
-# @param [Object] msg variable number of object arguments to log.
+# msg -  variable number of object arguments to log.
 arcs.log = (msg...) ->
     if arcs.debug and console?.log?
         console.log '[ARCS]:', msg...

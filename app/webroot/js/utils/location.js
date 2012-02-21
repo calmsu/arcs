@@ -11,6 +11,7 @@ arcs.utils.hash = {
     if (uri == null) uri = false;
     hash = document.location.hash.slice(1);
     if (uri) return decodeURIComponent(hash);
+    return hash;
   },
   rewind: function() {
     return this.set(this.history.pop());

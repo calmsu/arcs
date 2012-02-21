@@ -42,13 +42,13 @@ class arcs.views.Toolbar extends Backbone.View
     #   url: href attribute
     #   class: class to apply to inner span 
     addButton: (options) ->
-        @el.find('#nav-container').append(Mustache.render(arcs.templates.button, options))
+        @$el.find('#nav-container').append(Mustache.render(arcs.templates.button, options))
 
     hasButton: (id) ->
-        @el.find('#nav-container').children("##{id}").length > 0
+        @$el.find('#nav-container').children("##{id}").length > 0
 
     removeButton: (id) ->
-        @el.find('#nav-container').children("##{id}").remove()
+        @$el.find('#nav-container').children("##{id}").remove()
 
     buttonCheck: ->
         if (arcs.utils.mime.getInfo(arcs.resource.get('mime_type')).ext == 'pdf')

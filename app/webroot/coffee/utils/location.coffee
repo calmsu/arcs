@@ -21,7 +21,8 @@ arcs.utils.hash =
     get: (uri=false) ->
         hash = document.location.hash[1..]
         if uri
-            decodeURIComponent hash
+            return decodeURIComponent hash
+        return hash
 
     # Set the hash to the most recent history item.
     rewind: ->

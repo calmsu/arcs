@@ -1,13 +1,14 @@
 var _sync;
 
+if (document.location.href.match(/:8080\/~[a-z0-9]+\//)) {
+  arcs.baseURL += document.location.href.match(/~[a-z0-9]+\//);
+  arcs.baseURL += 'arcs/';
+}
+
 if (arcs.mode > 0) {
   arcs.dev = {};
   arcs.dev.reload = false;
   arcs.dev.reloadAt = 2000;
-  if (document.location.href.match(/:8080\/~[a-z0-9]+\//)) {
-    arcs.baseURL += document.location.href.match(/~[a-z0-9]+\//);
-    arcs.baseURL += 'arcs/';
-  }
   _sync = Backbone.sync;
   Backbone.sync = function(method, model, options) {
     arcs.log('Backbone.sync:', method, model, options);

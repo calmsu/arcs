@@ -24,7 +24,7 @@ class arcs.views.Hotspot extends Backbone.View
 
     # Cache the image selector, call @startImgAreaSelect
     setup: ->
-        @img = @el.find('img')
+        @img = @$el.find('img')
         if @img?
             @startImgAreaSelect()
             @update()
