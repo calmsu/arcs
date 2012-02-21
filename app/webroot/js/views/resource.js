@@ -139,7 +139,7 @@ arcs.views.Resource = (function(_super) {
   Resource.prototype.firstReq = function() {
     var _this = this;
     if (this.model.get('mime_type') === 'application/pdf') {
-      return arcs.utils.modal({
+      return new arcs.utils.Modal({
         template: arcs.templates.splitModal,
         backdrop: true,
         buttons: {

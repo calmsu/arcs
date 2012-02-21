@@ -133,7 +133,7 @@ class arcs.views.Resource extends Backbone.View
 
     firstReq: ->
         if @model.get('mime_type') == 'application/pdf'
-            arcs.utils.modal
+            new arcs.utils.Modal
                 template: arcs.templates.splitModal
                 backdrop: true
                 buttons:
