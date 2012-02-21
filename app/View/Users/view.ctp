@@ -41,8 +41,8 @@
     <ul class="nav tabs">
         <li class="active"><a data-toggle="tab" href="#uploads-tab">Uploads</a></li>
         <li><a data-toggle="tab" href="#annotations-tab">Annotations</a></li>
-        <li><a data-toggle="tab" href="#flagged-tab">Flagged Items (12)</a></li>
-        <li><a data-toggle="tab" href="#disucssion-tab">Discussions (122)</a></li>
+        <li><a data-toggle="tab" href="#flagged-tab">Flagged Items</a></li>
+        <li><a data-toggle="tab" href="#disucssion-tab">Discussions</a></li>
         <li><a data-toggle="tab" href="#collections-tab">Collections</a></li>
     </ul><!-- .tab-heads -->
 
