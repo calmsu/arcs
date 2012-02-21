@@ -34,6 +34,9 @@
         <a class="btn success" 
             href="<?php echo $this->Html->url('/signup') ?>">Signup</a>
     </div>
-    
     <?php endif ?>
+    <a class="btn info" style="float:right; margin-top:5px; margin-right:10px;"
+        href="<?php echo $this->Html->url('/docs')?>">
+        <i class="icon-white icon-file"></i> Help
+    </a>
 </div><!-- #toolbar -->
