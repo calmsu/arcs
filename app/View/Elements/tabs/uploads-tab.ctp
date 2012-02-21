@@ -1,4 +1,4 @@
-<div class="tab-pane" id="uploads-tab">
+<div class="tab-pane active" id="uploads-tab">
 	        <!-- <h1 class="alert alert-danger">Uploads tab is still under development</h1> -->
 			<?php if(empty($user_info['Resource'])): ?>
 			
@@ -29,15 +29,12 @@
 								    			echo 'icon-file';
 								    		} else if($resource['type'] == 'Map'){
 								    			echo 'icon-map-maker';
-								    		}
-								    	?>"></i>
+								    		}?>"></i>
 								</td><!-- type -->
-						<td><?php echo $this->Html->link($resource['id'], 
+						<td><?php echo $this->Html->link($resource['title'], 
 				    						'/resource/' . $resource['id'], 
 				    						array());
-						
-						
-						$resource['title']; ?></td><!-- title -->
+							?></td><!-- title -->
 						<td>24<!-- (this is a static number for now) --></td> <!-- annotations --> <!--  I need to know how to echo a cake-ified link in this instance that echoes the id of a resource...or: http://dev.cal.msu.edu:8080/~compto35/arcs/resources/view/' . $resource['id'] -->
 						<td>240 <!-- (this is a static number for now) --></td> <!-- comments -->
 						<td><?php echo $resource['created']; ?></td> <!-- upload date -->

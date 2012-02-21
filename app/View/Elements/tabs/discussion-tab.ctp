@@ -24,29 +24,19 @@
 				    </tr>
 				  </thead>
 				  <tbody>
-				    <?php foreach($user_info['Comment'] as $comment){ ?>
-				    		<tr>
-				    			<td><?php echo $comment['content']; ?></a></td> <!-- content -->
-				    			<td><?php echo $comment['resource_id']; ?></a></td><!-- for -->
-				    			<td><?php echo $comment['user_id']; ?></a></td> <!-- author -->
-				    			<td><?php echo $comment['created']; ?></a></td><!-- created -->
-				    		</tr>
-				    	<?php endforeach; ?>
-				    	/*
-						#Echo out some placeholding rows like a boss
-						$i = 0;
-						while ($i <= 10) {
-							echo '<tr>';
-							    echo '<td><a href="">Notebook spread 11-12</a></td><!-- for -->';
-							    echo '<td><a href="">Jon Frey</a></td><!-- author -->';
-							    echo '<td>12/12/12</td><!-- date-->';
-						    echo '</tr>';
-						    $i++;
-						}*/
-					?>
+				    <?php foreach($user_info['Comment'] as $comment): ?>
+			    		<tr>
+			    			<td><?php echo $comment['content']; ?></td> <!-- content -->
+			    			<td><?php echo $this->Html->link($user_info['User']['name'], 
+			    						'/resource/' . $comment['resource_id'], 
+			    						array());
+		    					?></td><!-- for -->
+			    			<td><?php echo $comment['user_id']; ?></td> <!-- author -->
+			    			<td><?php echo $comment['created']; ?></td><!-- created -->
+			    		</tr>
+			    	<?php endforeach; ?>
 				  </tbody>
 				</table>
-				
 			<?php  endif; ?>
         
         </div><!-- #discussion-tab -->
