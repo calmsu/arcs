@@ -41,7 +41,7 @@ arcs.views.Tag = (function(_super) {
 
   Tag.prototype.saveTag = function() {
     var $input, tag;
-    $input = this.el.find('input#new-tag');
+    $input = this.$el.find('input#new-tag');
     tag = new arcs.models.Tag({
       resource_id: arcs.resource.id,
       tag: $input.val()

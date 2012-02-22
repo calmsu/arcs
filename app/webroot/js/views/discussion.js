@@ -27,7 +27,7 @@ arcs.views.Discussion = (function(_super) {
 
   Discussion.prototype.saveComment = function() {
     var $textarea, comment;
-    $textarea = this.el.find('textarea#content');
+    $textarea = this.$el.find('textarea#content');
     comment = new arcs.models.Comment({
       resource_id: arcs.resource.id,
       content: $textarea.val(),
