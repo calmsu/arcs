@@ -18,6 +18,8 @@ arcs.routers.Search = (function(_super) {
   };
 
   Search.prototype.doSearch = function(query) {
+    if (query == null) query = '';
+    arcs.log(query);
     this.search.setQuery(query);
     this.search.run();
     this.navigate(this.search.query);

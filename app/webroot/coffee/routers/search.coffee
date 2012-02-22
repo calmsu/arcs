@@ -8,7 +8,8 @@ class arcs.routers.Search extends Backbone.Router
     routes:
         ':query': 'doSearch'
 
-    doSearch: (query) ->
+    doSearch: (query='') ->
+        arcs.log query
         @search.setQuery query
         @search.run()
         @navigate(@search.query)
