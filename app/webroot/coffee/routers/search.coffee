@@ -9,8 +9,10 @@ class arcs.routers.Search extends Backbone.Router
         ':query': 'doSearch'
 
     doSearch: (query='') ->
-        arcs.log query
-        @search.setQuery query
-        @search.run()
-        @navigate(@search.query)
-        @searched = true
+        unless query == 'search'
+            @search.setQuery query
+            @search.run()
+            @navigate(@search.query)
+            @searched = true
+            return @searched
+        @navigate '/'

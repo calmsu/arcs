@@ -19,11 +19,14 @@ arcs.routers.Search = (function(_super) {
 
   Search.prototype.doSearch = function(query) {
     if (query == null) query = '';
-    arcs.log(query);
-    this.search.setQuery(query);
-    this.search.run();
-    this.navigate(this.search.query);
-    return this.searched = true;
+    if (query !== 'search') {
+      this.search.setQuery(query);
+      this.search.run();
+      this.navigate(this.search.query);
+      this.searched = true;
+      return this.searched;
+    }
+    return this.navigate('/');
   };
 
   return Search;

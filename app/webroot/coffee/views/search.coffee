@@ -23,7 +23,7 @@ class arcs.views.Search extends Backbone.View
         Backbone.history.start
             pushState: true
             root: arcs.baseURL + 'search/'
-
+        
         unless @router.searched
             @search.run()
 
