@@ -22,7 +22,7 @@ class arcs.views.Discussion extends Backbone.View
         @update()
 
     saveComment: ->
-        $textarea = @el.find('textarea#content')
+        $textarea = @$el.find('textarea#content')
         comment = new arcs.models.Comment
             resource_id: arcs.resource.id
             content: $textarea.val()

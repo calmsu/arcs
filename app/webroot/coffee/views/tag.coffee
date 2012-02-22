@@ -32,7 +32,7 @@ class arcs.views.Tag extends Backbone.View
             return false
 
     saveTag: ->
-        $input = @el.find('input#new-tag')
+        $input = @$el.find('input#new-tag')
         tag = new arcs.models.Tag
             resource_id: arcs.resource.id
             tag: $input.val()
