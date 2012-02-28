@@ -41,8 +41,8 @@ class Resource extends AppModel {
     /**
      * Creates the file-level components of a Resource.
      *
-     * Given a file path, it will calculate a SHA1 and build a path
-     * in the configured uploads directory and
+     * Given a file path, it will calculate a SHA1 checksum of it, then build a
+     * path for the file from the hexdigest and put it there. 
      *
      * @param src    path to a readable file.
      * @param fname  provide the desired filename, if different than 
@@ -52,61 +52,81 @@ class Resource extends AppModel {
      * @return       a SHA1 hexdigest that can be used to get the 
      *               resource's path.
      */
-    public function create($src, $fname=null, $move=true) {
+    public function createFile($src, $fname=null, $move=true) {
 
         # If we can't read the src path, return false.
-        if (!is_readable($src)) {
-            return false;
-        }
+        if (!is_readable($src)) return false;
 
         # Get the SHA, destination path, and filename.
         $sha = $this->_getSHA($src);
         $fname = is_null($fname) ? basename($src) : $fname;
         $dst = $this->path($sha);
 
-        # Try to make the new directory.
-        if (!mkdir($dst, 0777, true)) {
-            return false;
+        # Try to make the new directory if it's not already there.
+        if (!is_dir($dst))
+            # Return false if we can't make it.
+            if (!mkdir($dst, 0777, true)) return false;
+
+        # If the file doesn't already exist (it may be a duplicate):
+        if (!is_file($dst . DS . $sha)) {
+            # Try to move if move and writable.
+            if ($move && is_writable($src)) {
+                $success = rename($src, $dst . DS . $sha);
+            # Otherwise try to copy. (Maybe it's read-only)
+            } else {
+                $success = copy($src, $dst . DS . $sha);
+            }
+            # Return false on failure.
+            if (!$success) return false;
+            # Copy over a default thumbnail.
+            $this->_setDefaultThumb($dst);
         }
 
-        # Try to move if move and writable.
-        if ($move && is_writable($src)) {
-            $success = rename($src, $dst . DS . $fname);
-        # Otherwise try to copy.
-        } else {
-            $success = copy($src, $dst . DS . $fname);
-        }
-        # Return false on failure.
-        if (!$success) {
-            return false;
-        }
+        # Create a hard link to the file, if the file doesn't already exist.
+        if (!is_file($dst . DS . $fname))
+            # Return false if we can't make the link.
+            if (!link($dst . DS . $sha, $dst . DS . $fname)) return false;
 
-        # Copy over a default thumbnail.
-        $this->_setDefaultThumb($dst);
-
+        # Return the hexdigest.
         return $sha;
     }
 
     /**
-     * Return the file path to the resource.
+     * Return the file path to the resource's directory.
      *
      * This is based on the paths.uploads setting in `arcs.ini`
      *
      * @param sha    resource's SHA1
+     * @param fname  filename
      */
-    public function path($sha) {
-        return $this->_path($sha, Configure::read('paths.uploads'), DS);
+    public function path($sha, $fname=null) {
+        $path = $this->_path($sha, Configure::read('paths.uploads'), DS);
+        if ($fname) return $path . DS . $fname;
+        return $path;
     }
 
     /**
-     * Return the url to the resource.
+     * Return the url to the resource's directory.
      *
      * This is based on the urls.uploads setting in `arcs.ini`
      *
      * @param sha   resource's SHA1
+     * @param fname resource's filename
      */
-    public function url($sha) {
-        return $this->_path($sha, Configure::read('urls.uploads'));
+    public function url($sha, $fname=null) {
+        $url = $this->_path($sha, Configure::read('urls.uploads'));
+        if ($fname) return $url . DS . $fname;
+        return $url;
+    }
+
+    /**
+     * Return the file size of a Resource, in bytes.
+     *
+     * @param sha   resource's SHA1
+     * @param fname resource's filename
+     */
+    public function size($sha, $fname) {
+        return filesize($this->path($sha) . DS . $fname);
     }
 
     /* PRIVATE METHODS */
@@ -134,15 +154,13 @@ class Resource extends AppModel {
     }
 
     /**
-     * Computes a SHA1 given the file name, using the time, and the application
-     * security salt.  The SHA is used to generate the resource file path.
+     * Computes a SHA1 checksum of the file at the given path.
      *
-     * @param name   file name, or any suitable string
+     * @param name   file path
      * @return       a SHA1 hexdigest
      */
-    private function _getSHA($name) {
-        $salt = Configure::read('Security.salt');
-        return sha1($name . time() . $salt);
+    private function _getSHA($path) {
+        return sha1_file($path);
     }
 
     /**
@@ -156,11 +174,10 @@ class Resource extends AppModel {
      */
     private function _setDefaultThumb($path) {
         $type = Mime::getExt($path);
-        if ($type) {
-            $src = $type . '.png';
-        } else {
-            $src = 'generic.png';
-        }
-        copy(IMAGES . 'default_thumbs' . DS . $src, $path . DS . 'thumb.png');
+        $src = $type ? $type . '.png' : 'generic.png';
+        copy(
+            IMAGES . 'default_thumbs' . DS . $src, 
+            $path . DS . 'thumb.png'
+        );
     }
 }

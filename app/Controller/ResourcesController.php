@@ -1,4 +1,5 @@
-<?php # Require our Search class.
+<?php 
+# Require our Search class.
 require_once(APPLIBS . DS . 'Search.php');
 
 /**
@@ -23,7 +24,12 @@ class ResourcesController extends AppController {
         # Read-only actions, such as viewing resources and associated comments
         # are allowed by default.
         $this->Auth->allow(
-            'index', 'view', 'search', 'comments', 'hotspots', 'tags'
+            'index', 
+            'view', 
+            'search', 
+            'comments', 
+            'hotspots', 
+            'tags'
         );
         $this->RequestHandler->addInputType('json', array('json_decode', true));
     }
@@ -38,16 +44,22 @@ class ResourcesController extends AppController {
 
             # Read the file data from the request. Normally, we'd just save
             # $this->data, but some table fields need to be calculated first.
-            $fname = $this->data['Resource']['file']['name'];
-            $tmp   = $this->data['Resource']['file']['tmp_name'];
-            $mime  = $this->data['Resource']['file']['type'];
+           
+            # Convenience variable for the Resource key of the data prop array.
+            $rdata = $this->data['Resource'];
+            $fname = $rdata['file']['name'];
+            $tmp   = $rdata['file']['tmp_name'];
+            $mime  = $rdata['file']['type'];
 
-            $sha = $this->Resource->create($tmp, $fname);
+            # Create the resource file.
+            $sha = $this->Resource->createFile($tmp, $fname);
 
+            # If creating the file went wrong, something is probably wrong with
+            # the configuration. Redirect to the status page.
             if (!$sha) {
-                $this->Session->setFlash('You were redirected to this page because we
-                    were unable to save your resource. Please verify your
-                    configuration.', 'flash_error');
+                $this->Session->setFlash('You were redirected to this page 
+                    because we were unable to save your resource. Please 
+                    verify your configuration.', 'flash_error');
                 return $this->redirect('/status');
             }
 
@@ -55,10 +67,11 @@ class ResourcesController extends AppController {
             $this->Resource->save(array(
                 'Resource' => array(
                     'sha' => $sha,
-                    'title' => $this->data['Resource']['title'],
-                    'type' => $this->data['Resource']['type'],
-                    'public' => $this->data['Resource']['public'],
+                    'title' => $rdata['title'],
+                    'type' => $rdata['type'],
+                    'public' => $rdata['public'],
                     'file_name' => $fname,
+                    'file_size' => $rdata['file']['size'],
                     'mime_type' => $mime,
                     'user_id' => $this->Auth->user('id')
             )));
@@ -74,9 +87,9 @@ class ResourcesController extends AppController {
             }
 
             # Save any tags.
-            if (strlen($this->data['Resource']['tags'])) {
+            if (strlen($rdata['tags'])) {
                 # Remove whitespace
-                $tags = rtrim($this->data['Resource']['tags']);
+                $tags = rtrim($rdata['tags']);
                 $tagRecords = array();
                 foreach(explode(',', $tags) as $t) {
                     if (strlen($t)) {
@@ -160,10 +173,7 @@ class ResourcesController extends AppController {
             $this->Session->setFlash('Resource has been queued for splitting.',
                 'flash_success');
         } else {
-            if ($this->request->is('ajax')) {
-                # Bad Request
-                return $this->jsonResponse(400);
-            } 
+            if ($this->request->is('ajax')) return $this->jsonResponse(400);
             $this->Session->setFlash('Can only split a PDF file.', 'flash_error');
         }
         $this->redirect(array('action' => 'view', $id));
@@ -181,11 +191,8 @@ class ResourcesController extends AppController {
                 return $this->jsonResponse(404);
             }
             $data = array('Resource' => $this->request->data);
-            if ($this->Resource->save($data)) {
-                return $this->jsonResponse(200);
-            } else {
-                return $this->jsonResponse(500);
-            }
+            if ($this->Resource->save($data)) return $this->jsonResponse(200);
+            return $this->jsonResponse(500);
         }
     }
 
@@ -350,7 +357,7 @@ class ResourcesController extends AppController {
     }
 
     /**
-     * Return a list of resource titles for autocompletion.
+     * Return a list of values for autocompletion.
      *
      * @param field
      */

@@ -38,12 +38,14 @@ class Mime {
      */
     static function getExt($path) {
         $mime = self::getMime($path);
+        # Strip any ;* info
+        $mime = array_shift(explode(';', $mime));
         $all = array_merge(
             self::$mimes['image'],
             self::$mimes['document'],
             self::$mimes['video']
         );
-        if (in_array($mime, $all)) {
+        if (array_key_exists($mime, $all)) {
             return $all[$mime];
         }
     }

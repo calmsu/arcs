@@ -137,7 +137,8 @@ arcs.views.Resource = (function(_super) {
         buttons: {
           yes: function() {
             return $.get(arcs.baseURL + 'resources/pdfSplit/' + _this.model.id);
-          }
+          },
+          cancel: function() {}
         }
       });
     }

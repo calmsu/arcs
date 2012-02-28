@@ -131,6 +131,7 @@ class arcs.views.Resource extends Backbone.View
                 buttons:
                     yes: =>
                         $.get(arcs.baseURL + 'resources/pdfSplit/' + @model.id)
+                    cancel: ->
 
     # Render the view.
     # This means rendering the resource and table templates and calling some
