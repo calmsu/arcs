@@ -1,6 +1,7 @@
 Installing ARCS
 ===============
 
+
 Requires
 --------
 (PHP5)[php.net]
@@ -13,45 +14,57 @@ Development Install
 -------------------
 Ubuntu-11.10/Nginx/MySQL
 
-### Getting the deps ###
+### Get the deps ###
 
-MySQL
-    apt-get install mysql-seuver
-    
-Nginx
-    apt-get install nginx
-
-php5
-    apt-get install php5 php5-cgi spawn-fcgi
-    
-php-imagick
-    apt-get install php5-imagick
-
-Ghostscript
-    apt-get install ghostscript
-
-Git
-    apt-get install git
+    [sudo] apt-get install mysql-server
+    [sudo] apt-get install nginx
+    [sudo] apt-get install php5 php5-cgi spawn-fcgi
+    [sudo] apt-get install php5-imagick
+    [sudo] apt-get install ghostscript
+    [sudo] apt-get install git
      
 ### Setting things up ###
 
 Clone the repo:
-    cd /var/www/
-    git clone $URL:arcs.git
 
-Create the db and a MySQL user:
+    cd /var/www/
+    git clone https://github.com/calmsu/arcs.git
+
+Create the db and a www user:
+
     mysqladmin -u root -p create arcs
-    # Create user with SELECT/INSERT/DELETE/UPDATE privs
-    mysql -u root -p < $ARCS/db/schema.sql
+    mysql -u root -p arcs < db/user.sql
+    mysql -u root -p arcs < db/schema.sql
+
+**NOTE:** If you'd like to use a different database or database user, just
+update the db configuration in `app/Config/database.php`.
     
 Copy over the Nginx config:
-    cp $ARCS/conf/nginx.conf /var/etc/nginx/conf.d/arcs.conf
-    cp $ARCS/conf/arcs /var/etc/nginx/sites-available/arcs
+
+    cp conf/nginx.conf /var/etc/nginx/conf.d/arcs.conf
+    cp conf/arcs /var/etc/nginx/sites-available/arcs
     # Be sure the client_max_body_size is large enough for uploads.
     /etc/init.d/nginx reload
 
-Raise the POST size directive:
-    # /etc/php5/cgi/php.ini
+**NOTE:** You'll want to be sure Nginx's `client_max_body_size` directive and
+PHP's `post_max_size` and `upload_max_size` directives are large enough for the
+resources that will be uploaded. `post_max_size` should be slightly larger
+than `upload_max_size`. (The relevant PHP directives should be in 
+`/etc/php5/cgi/php.ini`.)
 
-Configure arcs (set filestore_path, filestore_url) 
-    vi $ARCS/arcs.ini
+Change ownership of `app/tmp/`:
+
+    [sudo] chown -R www-data app/tmp
+
+Create an uploads directory:
+
+    mkdir app/webroot/uploads
+    [sudo] chown www-data uploads
+
+Configure arcs (set uploads path and url):
+
+    [editor] app/Config/arcs.ini
+
+Create an admin user:
+
+    # bin/create-user --role=admin [username]

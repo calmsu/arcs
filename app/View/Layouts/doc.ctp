@@ -10,12 +10,9 @@
         <meta name="apple-mobile-web-app-capable" content="yes" />
         <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
         <?php 
-        # css:
-        # if dev is true, you get lots of stylesheets, if false, you get arcs.min.css
-        echo $this->element('css', array('dev' => $dev));
-        # js:
-        # if dev is true, you get lots of scripts, if false, you get arcs.min.js
-        echo $this->element('scripts', array('dev' => $dev));
+        echo $this->Assets->stylesheets();
+        echo $this->Html->css('docs');
+        echo $this->Assets->scripts();
         ?>
     </head>
     <body>
@@ -23,7 +20,17 @@
             <?php echo $this->element('toolbar', $toolbar) ?>
             <?php echo $this->Session->flash() ?>
             <?php echo $this->Session->flash('auth') ?>
-            <?php echo $this->fetch('content'); ?>
+            <div class="row">
+                <div class="span3">
+                <?php echo $this->element('doc_sidebar', array(
+                    'docs' => $docs,
+                    'active' => $active
+                )) ?>
+                </div>
+                <div class="span9">
+                <?php echo $this->fetch('content'); ?>
+                </div>
+            </div>
         </div>
     </body>
 </html>

@@ -1,9 +1,5 @@
-var __indexOf = Array.prototype.indexOf || function(item) {
-  for (var i = 0, l = this.length; i < l; i++) {
-    if (this[i] === item) return i;
-  }
-  return -1;
-};
+var __indexOf = Array.prototype.indexOf || function(item) { for (var i = 0, l = this.length; i < l; i++) { if (i in this && this[i] === item) return i; } return -1; };
+
 arcs.utils.mime = {
   imageTypes: {
     'image/png': 'png',
@@ -25,10 +21,7 @@ arcs.utils.mime = {
     'video/quicktime': 'mov'
   },
   types: function() {
-    var that, types;
-    that = arcs.utils.mime;
-    types = _.keys(that.imageTypes).concat(_.keys(that.documentTypes).concat);
-    return types.concat(_.keys(that.videoTypes));
+    return _.extend(this.videoTypes, this.documentTypes, this.imageTypes);
   },
   getInfo: function(mime) {
     var result, type, types, undef, _i, _len, _ref;
@@ -54,3 +47,5 @@ arcs.utils.mime = {
     return result || undef;
   }
 };
+
+_.bindAll(arcs.utils.mime);

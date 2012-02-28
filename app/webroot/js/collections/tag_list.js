@@ -16,8 +16,8 @@ arcs.collections.TagList = (function(_super) {
   };
 
   TagList.prototype.parse = function(response) {
-    var r;
-    return (function() {
+    var r, t, tags, _i, _len;
+    tags = (function() {
       var _i, _len, _results;
       _results = [];
       for (_i = 0, _len = response.length; _i < _len; _i++) {
@@ -26,6 +26,11 @@ arcs.collections.TagList = (function(_super) {
       }
       return _results;
     })();
+    for (_i = 0, _len = tags.length; _i < _len; _i++) {
+      t = tags[_i];
+      t.link = arcs.baseURL + "search/#" + encodeURIComponent("tag: '" + t.tag + "'");
+    }
+    return tags;
   };
 
   return TagList;

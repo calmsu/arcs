@@ -39,15 +39,15 @@ arcs.views.Toolbar = (function(_super) {
   Toolbar.prototype.splitPDF = function() {};
 
   Toolbar.prototype.addButton = function(options) {
-    return this.el.find('#nav-container').append(Mustache.render(arcs.templates.button, options));
+    return this.$el.find('#nav-container').append(Mustache.render(arcs.templates.button, options));
   };
 
   Toolbar.prototype.hasButton = function(id) {
-    return this.el.find('#nav-container').children("#" + id).length > 0;
+    return this.$el.find('#nav-container').children("#" + id).length > 0;
   };
 
   Toolbar.prototype.removeButton = function(id) {
-    return this.el.find('#nav-container').children("#" + id).remove();
+    return this.$el.find('#nav-container').children("#" + id).remove();
   };
 
   Toolbar.prototype.buttonCheck = function() {

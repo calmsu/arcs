@@ -15,8 +15,7 @@ arcs.models.Tag = (function(_super) {
     var tags;
     if (arcs.tagView != null) {
       tags = arcs.tagView.collection.pluck('tag');
-      tags.push(attrs.tag);
-      if (_.uniq(tags).length !== tags.length) return arcs.log('non unique');
+      return tags.push(attrs.tag);
     }
   };
 

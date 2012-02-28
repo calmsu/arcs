@@ -33,7 +33,7 @@
                 <h3>Tags</h3>
                 <div id="tags-wrapper"></div>
                 <br>
-                <input id="new-tag" class="unfocused" type="text" value="New tag..." />
+                <input id="new-tag" class="unfocused" type="text" placeholder="New tag..." />
             </div><!-- #information.tab-pane -->
 
             <div class="tab-pane" id="discussion">
@@ -44,8 +44,7 @@
                 <input id="comment-button" type="submit" class="btn" value="Comment" />
             </div><!-- tab-pane -->
 
-        </div><!-- sidebar-tab-content -->		    
-
+        </div><!-- sidebar-tab-content -->
     </div><!-- tab-wrapper -->
 </div><!-- .row -->
 

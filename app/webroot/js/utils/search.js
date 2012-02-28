@@ -1,66 +1,132 @@
-var __bind = function(fn, me){ return function(){ return fn.apply(me, arguments); }; };
+
 arcs.utils.Search = (function() {
+
   function Search(options) {
-    var defaults;
+    var defaults,
+      _this = this;
     defaults = {
       container: null,
       query: '',
+      loader: false,
+      run: true,
       success: function() {},
       error: function() {}
     };
-    if (options.facets != null) {
-      this.facets = options.facets;
-    }
+    if (options.facets != null) this.facets = options.facets;
     this.options = _.extend(defaults, options);
+    this.query = this.options.query;
     this.results = new arcs.collections.ResultSet;
     this.vs = VS.init({
       container: this.options.container,
       query: this.options.query,
       callbacks: {
-        search: __bind(function(query, searchCollection) {
-          return this.run(searchCollection.toJSON());
-        }, this),
-        facetMatches: __bind(function(callback) {
-          return callback(_.keys(this.facets));
-        }, this),
-        valueMatches: __bind(function(facet, searchTerm, callback) {
+        search: function(query, searchCollection) {
+          _this.query = query;
+          return _this.run(searchCollection.toJSON());
+        },
+        facetMatches: function(callback) {
+          return callback(_.keys(_this.facets));
+        },
+        valueMatches: function(facet, searchTerm, callback) {
           var val;
-          val = this.facets[facet];
+          val = _this.facets[facet];
           if (typeof val === 'function') {
-            return callback(val());
+            _this.facets[facet] = val();
+            return callback(_this.facets[facet]);
           } else {
             return callback(val);
           }
-        }, this)
+        }
       }
     });
-    this.run();
+    if (this.options.run) this.run();
   }
-  Search.prototype.facets = {
-    filetype: arcs.utils.mime.types,
-    filename: [],
-    sha: [],
-    title: arcs.utils.complete.titles,
-    user: arcs.utils.complete.users,
-    tag: arcs.utils.complete.tags,
-    collection: [],
-    date: []
+
+  Search.prototype.setQuery = function(query) {
+    return this.vs.searchBox.setQuery(query);
   };
-  Search.prototype.run = function(facets, success, error) {
+
+  Search.prototype.facets = {
+    access: ['public', 'private'],
+    filetype: function() {
+      var k, v, _ref, _results;
+      _ref = arcs.utils.mime.types();
+      _results = [];
+      for (k in _ref) {
+        v = _ref[k];
+        _results.push({
+          value: k,
+          label: v
+        });
+      }
+      return _results;
+    },
+    filename: [],
+    id: [],
+    sha: [],
+    title: function() {
+      return arcs.utils.complete.title();
+    },
+    user: function() {
+      return arcs.utils.complete.user();
+    },
+    tag: function() {
+      return arcs.utils.complete.tag();
+    },
+    collection: [],
+    created: function() {
+      return arcs.utils.complete.created();
+    },
+    uploaded: function() {
+      return arcs.utils.complete.created();
+    },
+    modified: function() {
+      return arcs.utils.complete.modified();
+    },
+    type: function() {
+      return arcs.utils.complete.type();
+    }
+  };
+
+  Search.prototype.run = function(facets, options) {
+    var defaults, offset, params,
+      _this = this;
+    defaults = {
+      add: false,
+      n: 30,
+      page: 1,
+      success: this.options.success,
+      error: this.options.error
+    };
+    options = _.extend(defaults, options);
     if (!(facets != null) && (this.vs != null)) {
       facets = this.vs.searchQuery.toJSON();
     }
     _.each(facets, function(f) {
       return delete f.app;
     });
+    offset = (options.page - 1) * options.n;
+    params = "?n=" + options.n + "&offset=" + offset;
+    if (this.options.loader) arcs.utils.loader.show();
     this.results.fetch({
+      add: options.add,
       data: JSON.stringify(facets),
       type: 'POST',
+      url: this.results.url() + params,
       contentType: 'application/json',
-      success: success || this.options.success,
-      error: error || this.options.error
+      success: function() {
+        options.success();
+        if (_this.options.loader) return arcs.utils.loader.hide();
+      },
+      error: function() {
+        options.error();
+        if (_this.options.loader) return arcs.utils.loader.hide();
+      }
     });
+    this.query = this.vs.searchBox.value();
     return this.results;
   };
+
   return Search;
+
 })();

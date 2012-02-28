@@ -10,7 +10,7 @@ class PDFTask extends AppShell {
      * @return                  command output
      */
     public function processPage($page, $src, $dst, $resolution) {
-        $ghostscript_path = Configure::read('ghostscript_path');
+        $ghostscript_path = Configure::read('executables.ghostscript');
         $command = $ghostscript_path;
         $options =  ' -dBATCH -r' . $resolution;
         $options .= ' -dUseCIEColor';

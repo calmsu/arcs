@@ -18,11 +18,9 @@ class UsersController extends AppController {
         ));
     }
 
-    public function index() {
-        $this->set('users', $this->User->find('all'));
-        $this->set('_serialize', array('users'));
-    }
-
+    /**
+     * Display a user's bookmarks.
+     */
     public function bookmarks($ref) {
         $user = $this->User->findByRef($ref);
         if (!$user) {
@@ -35,6 +33,9 @@ class UsersController extends AppController {
         ))));
     }
 
+    /**
+     * Add a new user.
+     */
     public function add() {
         if ($this->Auth->loggedIn()) {
             $this->Session->setFlash("You can't signup while logged in.", 
@@ -42,12 +43,24 @@ class UsersController extends AppController {
             $this->redirect('/');
         }
         if ($this->request->is('post') && $this->data) {
+            # Save the new user.
             if ($this->User->save($this->data)) {
+                # Log them in after signup.
+                $id = $this->User->id;
+                $this->request->data['User'] = array_merge(
+                    $this->request->data["User"], 
+                    array('id' => $id)
+                );
+                $this->Auth->login($this->request->data['User']);
+                # Redirect home.
                 $this->redirect('/');
             }
         }
     }
 
+    /**
+     * Display the login form or authenticate a POSTed form.
+     */
     public function login() {
         $redirect = $this->Session->read('redirect');
         if ($redirect) {
@@ -64,10 +77,18 @@ class UsersController extends AppController {
         }
     }
 
+    /**
+     * Logout the user.
+     */
     public function logout() {
         $this->redirect($this->Auth->logout());
     }
 
+    /**
+     * Display information about a user.
+     *
+     * @param ref  username or id of an existing user
+     */
     public function view($ref) {
         $user = $this->User->findByRef($ref);
         if (!$user) {

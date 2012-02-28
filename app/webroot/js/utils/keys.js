@@ -1,10 +1,14 @@
-var _this = this;
+var __bind = function(fn, me){ return function(){ return fn.apply(me, arguments); }; };
 
-arcs.utils.keys = {
-  initialize: function() {
-    return $(document).bind('keydown', this.delegate);
-  },
-  delegate: function(e) {
+arcs.utils.Keys = (function() {
+
+  function Keys(sel) {
+    if (sel == null) sel = document;
+    this.delegate = __bind(this.delegate, this);
+    $(sel).on('keydown', this.delegate);
+  }
+
+  Keys.prototype.delegate = function(e) {
     var bubble, callback, m, mappings, modifier, _i, _len;
     if (e.target.type === 'text' || /textarea|select/i.test(e.target.nodeName)) {
       return true;
@@ -14,7 +18,7 @@ arcs.utils.keys = {
     } else {
       modifier = false;
     }
-    mappings = arcs.utils.keys.get(e.which, modifier);
+    mappings = this.get(e.which, modifier);
     if (!mappings.length) return true;
     bubble = false;
     for (_i = 0, _len = mappings.length; _i < _len; _i++) {
@@ -32,33 +36,38 @@ arcs.utils.keys = {
       return false;
     }
     return true;
-  },
-  add: function(key, modifier, callback, context, bubble) {
-    if (context == null) context = null;
+  };
+
+  Keys.prototype.add = function(key, modifier, callback, context, bubble) {
+    if (modifier == null) modifier = false;
     if (bubble == null) bubble = false;
     this.mappings.push({
       key: key,
-      modifier: modifier,
       callback: callback,
+      modifier: modifier,
       context: context,
       bubble: bubble
     });
     return this.mappings;
-  },
-  get: function(keyCode, modifier) {
+  };
+
+  Keys.prototype.get = function(keyCode, modifier) {
     var matches,
       _this = this;
     if (modifier == null) modifier = false;
     return matches = _.filter(this.mappings, function(map) {
       return map.key === _this.humanize(keyCode) && map.modifier === modifier;
     });
-  },
-  mappings: [],
-  humanize: function(keyCode) {
+  };
+
+  Keys.prototype.mappings = [];
+
+  Keys.prototype.humanize = function(keyCode) {
     if (_.has(this.specialKeys, keyCode)) return this.specialKeys[keyCode];
     return String.fromCharCode(keyCode).toLowerCase();
-  },
-  specialKeys: {
+  };
+
+  Keys.prototype.specialKeys = {
     8: "backspace",
     9: "tab",
     13: "return",
@@ -73,7 +82,10 @@ arcs.utils.keys = {
     40: "down",
     107: "+",
     109: "-"
-  }
-};
+  };
 
-arcs.utils.keys.initialize();
+  return Keys;
+
+})();
+
+arcs.utils.keys = new arcs.utils.Keys;

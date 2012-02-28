@@ -2,9 +2,6 @@
 -- ARCS MySQL schema
 --
 
-CREATE DATABASE IF NOT EXISTS arcs;
-USE arcs;
-
 -- resources
 CREATE TABLE IF NOT EXISTS resources (
     id CHAR(36) PRIMARY KEY,
@@ -14,6 +11,7 @@ CREATE TABLE IF NOT EXISTS resources (
     exclusive BOOL,
     file_name VARCHAR(200),
     mime_type VARCHAR(100),
+    type VARCHAR(100),
     first_req BOOL DEFAULT TRUE,
     title TEXT,
     created DATETIME DEFAULT NULL,

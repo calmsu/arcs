@@ -18,13 +18,16 @@ arcs.views.Tag = (function(_super) {
   Tag.prototype.initialize = function() {
     var _this = this;
     this.collection = new arcs.collections.TagList;
-    arcs.focusHelper($('#new-tag'));
     arcs.bind('resourceChange', function() {
       return _this.update();
     });
     _.bindAll(this, 'render');
     this.collection.bind('add', this.render, this);
     this.collection.bind('remove', this.render, this);
+    arcs.utils.autocomplete({
+      sel: '#new-tag',
+      source: arcs.utils.complete.tag()
+    });
     return this.update();
   };
 
@@ -38,7 +41,7 @@ arcs.views.Tag = (function(_super) {
 
   Tag.prototype.saveTag = function() {
     var $input, tag;
-    $input = this.el.find('input#new-tag');
+    $input = this.$el.find('input#new-tag');
     tag = new arcs.models.Tag({
       resource_id: arcs.resource.id,
       tag: $input.val()

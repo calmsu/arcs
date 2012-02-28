@@ -1,108 +1,102 @@
-var __hasProp = Object.prototype.hasOwnProperty, __extends = function(child, parent) {
-  for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; }
-  function ctor() { this.constructor = child; }
-  ctor.prototype = parent.prototype;
-  child.prototype = new ctor;
-  child.__super__ = parent.prototype;
-  return child;
-}, __bind = function(fn, me){ return function(){ return fn.apply(me, arguments); }; };
-arcs.views.Hotspot = (function() {
-  __extends(Hotspot, Backbone.View);
+var __hasProp = Object.prototype.hasOwnProperty,
+  __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor; child.__super__ = parent.prototype; return child; };
+
+arcs.views.Hotspot = (function(_super) {
+
+  __extends(Hotspot, _super);
+
   function Hotspot() {
     Hotspot.__super__.constructor.apply(this, arguments);
   }
+
   Hotspot.prototype.initialize = function() {
+    var _this = this;
     this.collection = new arcs.collections.HotspotMap;
     this.reRender = _.throttle(this.render, 50);
-    $(window).resize(__bind(function() {
+    $(window).resize(function() {
       return arcs.trigger('resourceResize');
-    }, this));
-    arcs.bind('resourceResize', __bind(function() {
-      return this.reRender();
-    }, this));
-    arcs.bind('resourceLoaded', __bind(function() {
-      return this.setup();
-    }, this));
-    this.collection.bind('add', __bind(function() {
-      return this.render();
-    }, this));
-    return this.collection.bind('remove', __bind(function() {
-      return this.render();
-    }, this));
+    });
+    arcs.bind('resourceResize', function() {
+      return _this.reRender();
+    });
+    arcs.bind('resourceLoaded', function() {
+      return _this.setup();
+    });
+    this.collection.bind('add', function() {
+      return _this.render();
+    });
+    return this.collection.bind('remove', function() {
+      return _this.render();
+    });
   };
+
   Hotspot.prototype.setup = function() {
-    this.img = this.el.find('img');
+    this.img = this.$el.find('img');
     if (this.img != null) {
       this.startImgAreaSelect();
       return this.update();
     }
   };
+
   Hotspot.prototype.startImgAreaSelect = function(coords) {
-    if (coords == null) {
-      coords = null;
-    }
+    var _this = this;
+    if (coords == null) coords = null;
     return this.img.imgAreaSelect({
       handles: true,
-      onSelectEnd: __bind(function(img, sel) {
-        this.currentHotspot = {
+      onSelectEnd: function(img, sel) {
+        _this.currentHotspot = {
           img: img,
           sel: sel
         };
-        return this.openModal();
-      }, this)
+        return _this.openModal();
+      }
     });
   };
+
   Hotspot.prototype.openModal = function() {
-    var $results, search;
-    arcs.utils.modal({
+    var $results, modal, search,
+      _this = this;
+    modal = new arcs.utils.Modal({
       template: arcs.templates.hotspotModal,
       backdrop: false,
-      draggable: true,
-      handle: '#drag-handle',
+      "class": 'hotspot-modal',
       inputs: ['caption', 'title', 'type', 'url'],
       buttons: {
-        save: {
-          callback: function(vals) {
-            vals.resource = $('.result.selected img').attr('data-id');
-            this.saveHotspot(vals);
-            arcs.log(vals);
-            return this.img.imgAreaSelect({
-              hide: true
-            });
-          },
-          context: this
+        save: function(vals) {
+          vals.resource = $('.result.selected img').attr('data-id');
+          _this.saveHotspot(vals);
+          arcs.log(vals);
+          return _this.img.imgAreaSelect({
+            hide: true
+          });
         },
-        cancel: {
-          callback: function() {
-            return this.img.imgAreaSelect({
-              hide: true
-            });
-          },
-          context: this
+        cancel: function() {
+          return _this.img.imgAreaSelect({
+            hide: true
+          });
         }
       }
     });
-    $('.result img').live('click', function() {
+    modal.el.find('.result img').live('click', function() {
       $('.result').removeClass('selected');
       return $(this).parent().addClass('selected');
     });
-    $('input#url').keyup(function() {
+    modal.el.find('input#url').keyup(function() {
       var val;
       val = $(this).val();
-      if (val.substring(0, 7) === 'http://') {
-        return $(this).val(val.substring(7));
-      }
+      if (val.substring(0, 7) === 'http://') return $(this).val(val.substring(7));
     });
     $results = $('#hotspot-search-results');
     return search = new arcs.utils.Search({
       container: $('#hotspot-search'),
-      success: __bind(function() {
+      success: function() {
         return $results.html(Mustache.render(arcs.templates.resultsGrid, {
           results: search.results.toJSON()
         }));
-      }, this)
+      }
     });
   };
+
   Hotspot.prototype.saveHotspot = function(data) {
     var hotspot, scaled;
     scaled = this._scaleDown(this.currentHotspot.sel);
@@ -127,6 +121,7 @@ arcs.views.Hotspot = (function() {
     hotspot.save();
     return this.collection.add(hotspot);
   };
+
   Hotspot.prototype._scaleDown = function(cds) {
     cds.x1 /= this.img.width();
     cds.y1 /= this.img.height();
@@ -134,6 +129,7 @@ arcs.views.Hotspot = (function() {
     cds.y2 /= this.img.height();
     return cds;
   };
+
   Hotspot.prototype._scaleUp = function(cds) {
     cds.x1 *= this.img.width();
     cds.y1 *= this.img.height();
@@ -141,13 +137,16 @@ arcs.views.Hotspot = (function() {
     cds.y2 *= this.img.height();
     return cds;
   };
+
   Hotspot.prototype.update = function() {
+    var _this = this;
     return this.collection.fetch({
-      success: __bind(function() {
-        return this.render();
-      }, this)
+      success: function() {
+        return _this.render();
+      }
     });
   };
+
   Hotspot.prototype.render = function() {
     var $annotations, $hotspots, data, hotspot, json, _i, _len, _ref;
     $hotspots = $('#hotspots-wrapper');
@@ -173,5 +172,7 @@ arcs.views.Hotspot = (function() {
     $hotspots.html(Mustache.render(arcs.templates.hotspot, json));
     return $annotations.html(Mustache.render(arcs.templates.annotation, json));
   };
+
   return Hotspot;
-})();
+
+})(Backbone.View);
