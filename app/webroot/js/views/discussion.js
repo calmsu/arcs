@@ -14,14 +14,9 @@ arcs.views.Discussion = (function(_super) {
   };
 
   Discussion.prototype.initialize = function() {
-    var _this = this;
     this.collection = new arcs.collections.Discussion;
-    arcs.bind('resourceChange', function() {
-      return _this.update();
-    });
-    _.bindAll(this, 'render');
-    this.collection.bind('add', this.render, this);
-    this.collection.bind('remove', this.render, this);
+    arcs.on('resourceChange', this.update, this);
+    this.collection.on('add remove', this.render, this);
     return this.update();
   };
 
@@ -30,12 +25,14 @@ arcs.views.Discussion = (function(_super) {
     $textarea = this.$el.find('textarea#content');
     comment = new arcs.models.Comment({
       resource_id: arcs.resource.id,
-      content: $textarea.val(),
-      _name: 'You',
-      _created: 'just now'
+      content: $textarea.val()
     });
     $textarea.val('');
     comment.save();
+    comment.set({
+      name: 'You',
+      created: 'just now'
+    });
     return this.collection.add(comment);
   };
 
@@ -51,7 +48,7 @@ arcs.views.Discussion = (function(_super) {
   Discussion.prototype.render = function() {
     var $discussion;
     $discussion = $('#comment-wrapper');
-    $discussion.html(Mustache.render(arcs.templates.discussion, {
+    $discussion.html(arcs.tmpl('discussion', {
       comments: this.collection.toJSON()
     }));
     return this;

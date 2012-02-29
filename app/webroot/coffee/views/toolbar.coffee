@@ -42,7 +42,7 @@ class arcs.views.Toolbar extends Backbone.View
     #   url: href attribute
     #   class: class to apply to inner span 
     addButton: (options) ->
-        @$el.find('#nav-container').append(Mustache.render(arcs.templates.button, options))
+        @$el.find('#nav-container').append arcs.tmpl 'button', options
 
     hasButton: (id) ->
         @$el.find('#nav-container').children("##{id}").length > 0
@@ -51,7 +51,7 @@ class arcs.views.Toolbar extends Backbone.View
         @$el.find('#nav-container').children("##{id}").remove()
 
     buttonCheck: ->
-        if (arcs.utils.mime.getInfo(arcs.resource.get('mime_type')).ext == 'pdf')
+        if arcs.utils.mime.getInfo(arcs.resource.get('mime_type')).ext == 'pdf'
             @addButton
                 id: 'split-pdf'
                 text: 'Split PDF'

@@ -47,6 +47,5 @@ class arcs.views.Tag extends Backbone.View
 
     render: ->
         $tags = $('#tags-wrapper')
-        $tags.html Mustache.render arcs.templates.tagList,
-            tags: @collection.toJSON()
+        $tags.html arcs.tmpl 'tagList', tags: @collection.toJSON()
         @

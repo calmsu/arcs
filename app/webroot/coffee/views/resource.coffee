@@ -146,21 +146,17 @@ class arcs.views.Resource extends Backbone.View
 
         # Resource is rendered based on its type.
         if type == 'image'
-            $resource.html Mustache.render arcs.templates.resourceImage, 
-                @model.toJSON()
+            $resource.html arcs.tmpl 'resourceImage', @model.toJSON()
         else if type == 'document'
-            $resource.html Mustache.render arcs.templates.resourceDocument, 
-                @model.toJSON()
+            $resource.html arcs.tmpl 'resourceDocument', @model.toJSON()
         else
             $resource.html 'Unknown resource type.'
         arcs.trigger 'resourceLoaded'
 
         # Render the details tables.
-        $table.html Mustache.render arcs.templates.resourceTable, 
-            @model.toJSON()
+        $table.html arcs.tmpl 'resourceTable', @model.toJSON()
         if @collection.length
-            $ctable.html Mustache.render arcs.templates.collectionTable, 
-                arcs.collectionData
+            $ctable.html arcs.tmpl 'collectionTable', arcs.collectionData
 
         # Check the navigation.
         @checkNavigation()

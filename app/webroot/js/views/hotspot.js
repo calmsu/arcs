@@ -90,7 +90,7 @@ arcs.views.Hotspot = (function(_super) {
     return search = new arcs.utils.Search({
       container: $('#hotspot-search'),
       success: function() {
-        return $results.html(Mustache.render(arcs.templates.resultsGrid, {
+        return $results.html(arcs.tmpl('resultsGrid', {
           results: search.results.toJSON()
         }));
       }
@@ -148,18 +148,16 @@ arcs.views.Hotspot = (function(_super) {
   };
 
   Hotspot.prototype.render = function() {
-    var $annotations, $hotspots, data, hotspot, json, _i, _len, _ref;
+    var $annotations, $hotspots, data, hotspots, m, _i, _len, _ref;
     $hotspots = $('#hotspots-wrapper');
     $annotations = $('#annotations-wrapper');
     $hotspots.html('');
     $annotations.html('');
-    json = {
-      hotspots: []
-    };
+    hotspots = [];
     _ref = this.collection.models;
     for (_i = 0, _len = _ref.length; _i < _len; _i++) {
-      hotspot = _ref[_i];
-      data = this._scaleUp(hotspot.toJSON());
+      m = _ref[_i];
+      data = this._scaleUp(m.toJSON());
       data.left = data.x1;
       data.width = data.x2 - data.x1;
       data.top = data.y1;
@@ -167,10 +165,14 @@ arcs.views.Hotspot = (function(_super) {
       if ((data.link != null) && data.link.substring(0, 7) === 'arcs://') {
         data.link = arcs.baseURL + 'resource/' + data.link.substring(7);
       }
-      json.hotspots.push(data);
+      hotspots.push(data);
     }
-    $hotspots.html(Mustache.render(arcs.templates.hotspot, json));
-    return $annotations.html(Mustache.render(arcs.templates.annotation, json));
+    $hotspots.html(arcs.tmpl('hotspot', {
+      hotspots: hotspots
+    }));
+    return $annotations.html(arcs.tmpl('annotation', {
+      hotspots: hotspots
+    }));
   };
 
   return Hotspot;

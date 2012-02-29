@@ -14,8 +14,7 @@ arcs.utils.Modal = (function() {
       buttons: {}
     };
     this.options = _.extend(defaults, options);
-    if (!$('#modal').length) $('body').append(arcs.templates.modalWrapper);
-    this.el = $('#modal');
+    this._setEl();
     if (this.options["class"] != null) this.el.addClass(this.options["class"]);
     if (this.options.draggable) {
       this.el.draggable({
@@ -32,12 +31,17 @@ arcs.utils.Modal = (function() {
     this._bindButtons();
   }
 
+  Modal.prototype._setEl = function() {
+    if (!$('#modal').length) $('body').append(arcs.templates.modalWrapper);
+    return this.el = $('#modal');
+  };
+
   Modal.prototype.hide = function() {
     return this.el.modal('hide');
   };
 
   Modal.prototype.show = function() {
-    this.el.html(Mustache.render(this.options.template, this.options.templateValues));
+    this.el.html(arcs.tmpl(this.options.template, this.options.templateValues));
     this.el.modal('show');
     if (this.el.attr('data-first') === 'true') {
       this.el.css('right', '-400px').animate({

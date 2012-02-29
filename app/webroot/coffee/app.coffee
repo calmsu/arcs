@@ -17,7 +17,7 @@ arcs.mode = CAKE_DEBUG
 # Debug will be on by default in dev mode. Set the var from the 
 # console to turn it off.
 arcs.debug = arcs.mode > 0
-arcs.version = "0.9.0"
+arcs.version = "0.9.1"
 
 # Base URL holds any prefix needed to link to pages relatively.
 arcs.baseURL = '/'
@@ -29,6 +29,12 @@ arcs.baseURL = '/'
 arcs.log = (msg...) ->
     if arcs.debug and console?.log?
         console.log '[ARCS]:', msg...
+
+# Convenience method for rendering templates.
+# This should be the only place that a vendor templating function
+# is called (so they're easy to swap).
+arcs.tmpl = (key, data) ->
+    Mustache.render arcs.templates[key], (data ? {})
 
 # We'll bind app-wide events to the arcs object.
 _.extend(arcs, Backbone.Events)

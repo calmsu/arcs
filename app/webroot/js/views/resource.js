@@ -152,16 +152,16 @@ arcs.views.Resource = (function(_super) {
     $resource.html('');
     type = arcs.utils.mime.getInfo(this.model.get('mime_type')).type;
     if (type === 'image') {
-      $resource.html(Mustache.render(arcs.templates.resourceImage, this.model.toJSON()));
+      $resource.html(arcs.tmpl('resourceImage', this.model.toJSON()));
     } else if (type === 'document') {
-      $resource.html(Mustache.render(arcs.templates.resourceDocument, this.model.toJSON()));
+      $resource.html(arcs.tmpl('resourceDocument', this.model.toJSON()));
     } else {
       $resource.html('Unknown resource type.');
     }
     arcs.trigger('resourceLoaded');
-    $table.html(Mustache.render(arcs.templates.resourceTable, this.model.toJSON()));
+    $table.html(arcs.tmpl('resourceTable', this.model.toJSON()));
     if (this.collection.length) {
-      $ctable.html(Mustache.render(arcs.templates.collectionTable, arcs.collectionData));
+      $ctable.html(arcs.tmpl('collectionTable', arcs.collectionData));
     }
     this.checkNavigation();
     this.setThumbSelected();

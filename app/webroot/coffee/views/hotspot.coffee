@@ -76,7 +76,7 @@ class arcs.views.Hotspot extends Backbone.View
         search = new arcs.utils.Search
             container: $('#hotspot-search')
             success: =>
-                $results.html Mustache.render arcs.templates.resultsGrid, 
+                $results.html arcs.tmpl 'resultsGrid',
                     results: search.results.toJSON()
 
     # Save the hotspot after the ImgAreaSelect callback.
@@ -133,10 +133,9 @@ class arcs.views.Hotspot extends Backbone.View
         $annotations.html ''
 
         # Calculate the CSS given the scaled down coordinates.
-        json = 
-            hotspots: []
-        for hotspot in @collection.models
-            data = @_scaleUp(hotspot.toJSON())
+        hotspots = []
+        for m in @collection.models
+            data = @_scaleUp(m.toJSON())
             data.left = data.x1
             data.width = data.x2 - data.x1
             data.top = data.y1
@@ -144,8 +143,8 @@ class arcs.views.Hotspot extends Backbone.View
             # Resolve the link.
             if data.link? and data.link.substring(0, 7) == 'arcs://'
                 data.link = arcs.baseURL + 'resource/' + data.link.substring(7)
-            json.hotspots.push data
+            hotspots.push data
 
         # Render the templates.
-        $hotspots.html Mustache.render arcs.templates.hotspot, json
-        $annotations.html Mustache.render arcs.templates.annotation, json
+        $hotspots.html arcs.tmpl 'hotspot', hotspots: hotspots
+        $annotations.html arcs.tmpl 'annotation', hotspots: hotspots

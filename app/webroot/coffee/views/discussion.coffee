@@ -11,13 +11,8 @@ class arcs.views.Discussion extends Backbone.View
     initialize: ->
         @collection = new arcs.collections.Discussion
 
-        arcs.bind 'resourceChange', =>
-            @update()
-
-        _.bindAll @, 'render'
-
-        @collection.bind 'add', @render, @
-        @collection.bind 'remove', @render, @
+        arcs.on 'resourceChange', @update, @
+        @collection.on 'add remove', @render, @
 
         @update()
 
@@ -26,12 +21,11 @@ class arcs.views.Discussion extends Backbone.View
         comment = new arcs.models.Comment
             resource_id: arcs.resource.id
             content: $textarea.val()
-            # These next two are just temporary values so we don't need to 
-            # fetch the collection again to get them.
-            _name: 'You'
-            _created: 'just now'
         $textarea.val ''
         comment.save()
+        comment.set 
+            name: 'You' 
+            created: 'just now'
         @collection.add(comment)
 
     update: ->
@@ -41,6 +35,5 @@ class arcs.views.Discussion extends Backbone.View
 
     render: ->
         $discussion = $('#comment-wrapper')
-        $discussion.html Mustache.render arcs.templates.discussion,
-            comments: @collection.toJSON()
+        $discussion.html arcs.tmpl 'discussion', comments: @collection.toJSON()
         @

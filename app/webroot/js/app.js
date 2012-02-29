@@ -30,4 +30,8 @@ arcs.log = function() {
   }
 };
 
+arcs.tmpl = function(key, data) {
+  return Mustache.render(arcs.templates[key], data != null ? data : {});
+};
+
 _.extend(arcs, Backbone.Events);

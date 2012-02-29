@@ -39,7 +39,7 @@ arcs.views.Toolbar = (function(_super) {
   Toolbar.prototype.splitPDF = function() {};
 
   Toolbar.prototype.addButton = function(options) {
-    return this.$el.find('#nav-container').append(Mustache.render(arcs.templates.button, options));
+    return this.$el.find('#nav-container').append(arcs.tmpl('button', options));
   };
 
   Toolbar.prototype.hasButton = function(id) {

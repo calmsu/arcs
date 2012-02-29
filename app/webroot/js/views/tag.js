@@ -63,7 +63,7 @@ arcs.views.Tag = (function(_super) {
   Tag.prototype.render = function() {
     var $tags;
     $tags = $('#tags-wrapper');
-    $tags.html(Mustache.render(arcs.templates.tagList, {
+    $tags.html(arcs.tmpl('tagList', {
       tags: this.collection.toJSON()
     }));
     return this;
