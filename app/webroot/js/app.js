@@ -18,7 +18,7 @@ arcs.mode = CAKE_DEBUG;
 
 arcs.debug = arcs.mode > 0;
 
-arcs.version = "0.9.0";
+arcs.version = "0.9.1";
 
 arcs.baseURL = '/';
 

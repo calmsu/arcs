@@ -57,18 +57,4 @@
     arcs.searchView = new arcs.views.Search({
         el: $('#search-results-wrapper')
     });
-    $(window).scroll(function() {
-        if ($(window).scrollTop() > 160) {
-            $('#search-actions').addClass('toolbar-fixed');
-            $('#search-actions').width($('#search-results').width() + 22);
-        } else {
-            $('#search-actions').removeClass('toolbar-fixed');
-            $('#search-actions').width('auto');
-        }
-    });
-    $(window).resize(function() {
-        if ($(window).scrollTop() > 160) {
-            $('#search-actions').width($('#search-results').width() + 22);
-        }
-    });
 </script>

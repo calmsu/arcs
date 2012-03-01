@@ -30,3 +30,7 @@ arcs.templates.searchModal = "<div class=\"modal-header\">\n    <h3>{{ title }}<
 arcs.templates.splitModal = "<div class=\"modal-header\">\n    <h3>PDF</h3>\n</div>\n<div class=\"modal-body\">\n    We noticed you've uploaded a PDF. If you'd like, we can\n    split the PDF into a collection, where it can be annotated\n    and commented on--page by page.\n    <hr>\n    <h4>Make a collection from this resource?</h4>\n</div>\n<div class=\"modal-footer\">\n    <button id=\"cancel\" class=\"btn\">No, leave it alone.</button>\n    <button id=\"yes\" class=\"btn success\">Yes</button>\n</div>";
 
 arcs.templates.loader = "<div class=\"loading\" id=\"arcs-loader\"></div>";
+
+arcs.templates.uploads = "{{# uploads }}\n<div class=\"accordion-group\">\n    <div class=\"accordion-heading\">\n        <div class=\"accordion-toggle\">\n        {{ fileName }} &nbsp;&nbsp;<em>{{ fileSize }}</em>\n        <span class=\"progress\">\n            <div class=\"bar\" style=\"width: {{ progress }}%\"></div>\n        </span>\n        </div>\n    </div>\n    <div class=\"accordion-body collapse in\">\n        <div class=\"accordion-inner\">\n            lots of text lots of text\n        </div>\n    </div>\n</div>\n{{/ uploads }}";
+
+arcs.templates.notification = "<div id=\"notification\" class=\"alert\" style=\"display:none\">\n    <span id=\"msg\"></span>\n    <a class=\"close\" data-dismiss=\"alert\" href=\"#\">×</a>\n</div>";

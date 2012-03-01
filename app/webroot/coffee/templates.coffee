@@ -240,3 +240,32 @@ arcs.templates.loader =
     """
     <div class="loading" id="arcs-loader"></div>
     """
+
+arcs.templates.uploads =
+    """
+    {{# uploads }}
+    <div class="accordion-group">
+        <div class="accordion-heading">
+            <div class="accordion-toggle">
+            {{ fileName }} &nbsp;&nbsp;<em>{{ fileSize }}</em>
+            <span class="progress">
+                <div class="bar" style="width: {{ progress }}%"></div>
+            </span>
+            </div>
+        </div>
+        <div class="accordion-body collapse in">
+            <div class="accordion-inner">
+                lots of text lots of text
+            </div>
+        </div>
+    </div>
+    {{/ uploads }}
+    """
+
+arcs.templates.notification =
+    """
+    <div id="notification" class="alert" style="display:none">
+        <span id="msg"></span>
+        <a class="close" data-dismiss="alert" href="#">×</a>
+    </div>
+    """
