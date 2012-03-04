@@ -1,0 +1,23 @@
+<tr>
+    <td>Title</td>
+    <td>{{ title }}
+</tr>
+<tr>
+    <td>Description</td>
+    <td>{{ description }}
+</tr>
+<tr>
+    <td>Public</td>
+    {{# public }}
+    <td>Yes</td>
+    {{/ public }}
+    {{^ public }}
+    <td>No</td>
+    {{/ public }}
+</tr>
+{{# pdf }}
+<tr>
+    <td>Original PDF</td>
+    <td><a href="../resource/{{ pdf }}">Link</a></td>
+</tr>
+{{/ pdf }}

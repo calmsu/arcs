@@ -1,0 +1,31 @@
+<tr>
+    <td>Title</td>
+    <td>{{ title }}
+</tr>
+<tr>
+    <td>Public</td>
+    {{# public }}
+    <td>Yes</td>
+    {{/ public }}
+    {{^ public }}
+    <td>No</td>
+    {{/ public }}
+</tr>
+<tr>
+    <td>Type</td>
+    <td>{{ type }}</td>
+</tr>
+<tr>
+    <td>Created</td>
+    <td>{{ created }}</td>
+</tr>
+{{# modified }}
+<tr>
+    <td>Modified</td>
+    <td>{{ modified }}</td>
+</tr>
+{{/ modified }}
+<tr>
+    <td>Download Link</td>
+    <td><a href="{{ url }}">{{ file_name }}</a></td>
+</tr>

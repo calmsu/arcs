@@ -1,0 +1,23 @@
+<table>
+{{# results }}
+<tr class="result list">
+    <td>
+        <img src="{{ thumb }}" data-id="{{ id }}" style="width:100px" />
+    </td>
+    <td style="width:65px; min-width:0px;">
+      <div><em>title:</em></div>
+      <div><em>user:</em></div>
+      <div><em>file-name:</em></div>
+      <div><em>file-size</em></div>
+      <div><em>public:</em></div>
+    </td>
+    <td style="padding-left:10px;">
+      <div><strong>{{ title }}</strong></div>
+      <div>{{ user.name }}</div>
+      <div><a href="{{ url }}">{{ file_name }}</a></div>
+      <div>{{ file_size }}</div>
+      <div>{{ public }}</div>
+    </td>
+</tr>
+{{/ results }}
+</table>
