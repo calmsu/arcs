@@ -2,8 +2,8 @@
 # ---------------
 class arcs.routers.Resource extends Backbone.Router
 
-    routes:
-        ':id/:index': 'change'
+  routes:
+    ':id/:index': 'change'
 
-    change: (id, index) ->
-        arcs.log id, index
+  change: (id, index) ->
+    arcs.log id, index

@@ -2,6 +2,8 @@
 # ------------
 # Wraps up modal dialog logic.
 #
+# NOTE: This is now deprecated by views.Modal
+#
 # The Modal class establishes some conventions for modal dialogs within ARCS.
 # The actual modal functionality is delegated to Bootstrap's modal plugin--this
 # class handles binding buttons to callbacks and gathering input values.
@@ -72,7 +74,7 @@ class arcs.utils.Modal
     _setEl: ->
         # Add a modal div to the DOM if not there.
         unless $('#modal').length
-            $('body').append(arcs.templates.modalWrapper)
+            $('body').append(arcs.tmpl 'ui/modal_wrapper')
         @el = $('#modal')
 
     hide: ->

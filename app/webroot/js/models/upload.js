@@ -1,23 +1,26 @@
-var __hasProp = Object.prototype.hasOwnProperty,
-  __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor; child.__super__ = parent.prototype; return child; };
+(function() {
+  var __hasProp = Object.prototype.hasOwnProperty,
+    __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor; child.__super__ = parent.prototype; return child; };
 
-arcs.models.Upload = (function(_super) {
+  arcs.models.Upload = (function(_super) {
 
-  __extends(Upload, _super);
+    __extends(Upload, _super);
 
-  function Upload() {
-    Upload.__super__.constructor.apply(this, arguments);
-  }
+    function Upload() {
+      Upload.__super__.constructor.apply(this, arguments);
+    }
 
-  Upload.prototype.defaults = {
-    id: null,
-    fileName: null,
-    lastModifiedDate: null,
-    progress: 0,
-    size: 0,
-    type: 'unknown'
-  };
+    Upload.prototype.defaults = {
+      id: null,
+      fileName: null,
+      lastModifiedDate: null,
+      progress: 0,
+      size: 0,
+      type: 'unknown'
+    };
 
-  return Upload;
+    return Upload;
 
-})(Backbone.Model);
+  })(Backbone.Model);
+
+}).call(this);

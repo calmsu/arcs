@@ -9,24 +9,24 @@
 #        or not given, hide after 3 seconds. If falsey, don't hide.
 arcs.utils.notify = (msg, type='info', hide=3) ->
 
-    # Create a notification div if there isn't already one.
-    unless $('#notification').length
-        $('body').append arcs.tmpl 'notification'
-    $el = $('#notification')
+  # Create a notification div if there isn't already one.
+  unless $('#notification').length
+    $('body').append arcs.tmpl 'notification'
+  $el = $('#notification')
 
-    # Set the content.
-    $el.find('#msg').html(msg)
+  # Set the content.
+  $el.find('#msg').html(msg)
 
-    # Set the type.
-    type = 'info' unless type in ['info', 'error', 'success']
-    $el.removeClass 'alert-info alert-error alert-success'
-    $el.addClass "alert-#{type}"
+  # Set the type.
+  type = 'info' unless type in ['info', 'error', 'success']
+  $el.removeClass 'alert-info alert-error alert-success'
+  $el.addClass "alert-#{type}"
 
-    # Make it visible.
-    $el.show()
-    
-    # Fade out 
-    if hide
-        duration = if _.isNumber hide then hide else 3
-        setTimeout (-> $el.fadeOut 500), duration * 1000
-    $el
+  # Make it visible.
+  $el.show()
+  
+  # Fade out 
+  if hide
+    duration = if _.isNumber hide then hide else 3
+    setTimeout (-> $el.fadeOut 500), duration * 1000
+  $el

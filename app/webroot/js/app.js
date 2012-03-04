@@ -1,37 +1,43 @@
-var __slice = Array.prototype.slice;
+(function() {
+  var __slice = Array.prototype.slice;
 
-window.arcs = {};
+  window.arcs = {};
 
-arcs.views = {};
+  arcs.views = {};
 
-arcs.models = {};
+  arcs.models = {};
 
-arcs.collections = {};
+  arcs.collections = {};
 
-arcs.utils = {};
+  arcs.utils = {};
 
-arcs.routers = {};
+  arcs.routers = {};
 
-arcs.templates = {};
+  arcs.templates = {};
 
-arcs.mode = CAKE_DEBUG;
+  arcs.mode = CAKE_DEBUG;
 
-arcs.debug = arcs.mode > 0;
+  arcs.debug = arcs.mode > 0;
 
-arcs.version = "0.9.1";
+  arcs.version = "0.9.1";
 
-arcs.baseURL = '/';
+  arcs.baseURL = '/';
 
-arcs.log = function() {
-  var msg;
-  msg = 1 <= arguments.length ? __slice.call(arguments, 0) : [];
-  if (arcs.debug && ((typeof console !== "undefined" && console !== null ? console.log : void 0) != null)) {
-    return console.log.apply(console, ['[ARCS]:'].concat(__slice.call(msg)));
-  }
-};
+  arcs.log = function() {
+    var msg;
+    msg = 1 <= arguments.length ? __slice.call(arguments, 0) : [];
+    if (arcs.debug && ((typeof console !== "undefined" && console !== null ? console.log : void 0) != null)) {
+      return console.log.apply(console, ['[ARCS]:'].concat(__slice.call(msg)));
+    }
+  };
 
-arcs.tmpl = function(key, data) {
-  return Mustache.render(arcs.templates[key], data != null ? data : {});
-};
+  arcs.tmpl = function(key, data, func) {
+    var tmpl;
+    if (func == null) func = Mustache.render;
+    tmpl = _.has(arcs.templates, key) ? arcs.templates[key] : key;
+    return func(tmpl, data != null ? data : {});
+  };
 
-_.extend(arcs, Backbone.Events);
+  _.extend(arcs, Backbone.Events);
+
+}).call(this);
