@@ -8,6 +8,7 @@
 <div id="search-results-wrapper">
     <div id="search-actions" class="mini-toolbar">
         <div id="action-buttons" class="btn-group">
+        <?php if ($user['loggedIn']): ?>
             <button id="bookmark-btn" class="btn" rel="tooltip"
                 data-original-title="Bookmark the selected results">
                 <i class="icon-bookmark"></i> Bookmark
@@ -16,16 +17,17 @@
                 data-original-title="Tag the selected results">
                 <i class="icon-tag"></i> Tag
             </button>
-            <!--
-            <button id="delete-btn" class="btn" rel="tooltip"
-                data-original-title="Delete the selected results">
-                <i class="icon-trash"></i> Delete
-            </button>
-            -->
             <button id="collection-btn" class="btn" rel="tooltip"
                 data-original-title="Create or add to a collection from selected">
                 <i class="icon-book"></i> Collection
             </button>
+            <button id="attribute-btn" class="btn" rel="tooltip"
+                data-original-title="Edit the attributes of the selected results">
+                <i class="icon-pencil"></i> Attribute
+            </button>
+        <?php else: // placeholder ?>
+            <div style="height:28px"></div>
+        <?php endif ?>
         </div>
         <div id="view-buttons" class="btn-group">
             <button id="grid-btn" class="btn active">
@@ -56,19 +58,5 @@
 <script type="text/javascript">
     arcs.searchView = new arcs.views.Search({
         el: $('#search-results-wrapper')
-    });
-    $(window).scroll(function() {
-        if ($(window).scrollTop() > 160) {
-            $('#search-actions').addClass('toolbar-fixed');
-            $('#search-actions').width($('#search-results').width() + 22);
-        } else {
-            $('#search-actions').removeClass('toolbar-fixed');
-            $('#search-actions').width('auto');
-        }
-    });
-    $(window).resize(function() {
-        if ($(window).scrollTop() > 160) {
-            $('#search-actions').width($('#search-results').width() + 22);
-        }
     });
 </script>

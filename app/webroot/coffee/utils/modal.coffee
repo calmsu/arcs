@@ -2,16 +2,18 @@
 # ------------
 # Wraps up modal dialog logic.
 #
+# NOTE: This is now deprecated by views.Modal
+#
 # The Modal class establishes some conventions for modal dialogs within ARCS.
-# The actual modal functionality is delegated to Bootstrap's modal plugin,
-# this class handles binding buttons to callbacks and gathering input values.
+# The actual modal functionality is delegated to Bootstrap's modal plugin--this
+# class handles binding buttons to callbacks and gathering input values.
 class arcs.utils.Modal
 
     # Construct a new Modal instance.
     #
     # options:
-    #   template       - Mustache template 
-    #   templateValues - values to evaluate the template with.
+    #   template       - Template to use (first argument of arcs.tmpl)
+    #   templateValues - Template values (second argument of arcs.tmpl)
     #   draggable      - make the modal draggable.
     #   handle         - DOM element to use as drag handle.
     #   backdrop       - use a backdrop when displaying the modal.
@@ -36,7 +38,6 @@ class arcs.utils.Modal
     #                    clicked, unless keepOpen is truthy.
     constructor: (options) ->
 
-        # Default options
         defaults =
             template: ''
             templateValues: {}
@@ -50,10 +51,7 @@ class arcs.utils.Modal
         # Override defaults with givens.
         @options = _.extend defaults, options 
 
-        # Add a modal div to the DOM if not there.
-        unless $('#modal').length
-            $('body').append(arcs.templates.modalWrapper)
-        @el = $('#modal')
+        @_setEl()
 
         # Add the class 
         @el.addClass @options.class if @options.class?
@@ -73,12 +71,18 @@ class arcs.utils.Modal
 
         @_bindButtons()
 
+    _setEl: ->
+        # Add a modal div to the DOM if not there.
+        unless $('#modal').length
+            $('body').append(arcs.tmpl 'ui/modal_wrapper')
+        @el = $('#modal')
+
     hide: ->
         @el.modal 'hide'
 
     show: ->
         # Evaluate and inject the template with any values. 
-        @el.html Mustache.render @options.template, @options.templateValues
+        @el.html arcs.tmpl @options.template, @options.templateValues
         @el.modal 'show'
         if @el.attr('data-first') == 'true'
             @el.css('right', '-400px').animate(right: '0px')

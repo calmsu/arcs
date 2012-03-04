@@ -1,22 +1,25 @@
+(function() {
 
-$('[placeholder]').live('focus', function() {
-  var $el;
-  $el = $(this);
-  if ($el.val() === $el.attr('placeholder')) {
-    $el.val('');
-    return $el.removeClass('unfocused');
-  }
-});
+  $('[placeholder]').live('focus', function() {
+    var $el;
+    $el = $(this);
+    if ($el.val() === $el.attr('placeholder')) {
+      $el.val('');
+      return $el.removeClass('unfocused');
+    }
+  });
 
-$('[placeholder]').live('blur', function() {
-  var $el;
-  $el = $(this);
-  if ($el.val() === '') {
-    $el.val($el.attr('placeholder'));
-    return $el.addClass('unfocused');
-  }
-});
+  $('[placeholder]').live('blur', function() {
+    var $el;
+    $el = $(this);
+    if ($el.val() === '') {
+      $el.val($el.attr('placeholder'));
+      return $el.addClass('unfocused');
+    }
+  });
 
-$('[rel=tooltip]').tooltip({
-  placement: 'bottom'
-});
+  $('[rel=tooltip]').tooltip({
+    placement: 'bottom'
+  });
+
+}).call(this);

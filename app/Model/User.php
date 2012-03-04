@@ -16,10 +16,12 @@ class User extends AppModel {
      */
     function afterFind($results, $primary) {
         if (!$primary) {
-            if (isset($results['User']['password'])) {
+            if (isset($results[0]['User']['password']))
+                $results[0]['User']['password'] = '****';
+            else if (isset($results['User']['password'])) 
                 $results['User']['password'] = '****';
-                return $results;
-            }
+            else if (isset($results['password']))
+                $results['password'] = '****';
         }
         return $results;
     }
@@ -32,9 +34,7 @@ class User extends AppModel {
      * @param resource
      */
     function canMakeMeta($user, $resource) {
-        if (!$resource['Resource']['exclusive']) {
-            return true;
-        } 
+        if (!$resource['Resource']['exclusive']) return true;
         return false;
     }
 
@@ -46,9 +46,7 @@ class User extends AppModel {
      * @param resource
      */
     function canResolveFlag($user, $resource) {
-        if ($user['User']['role'] <= 1) {
-            return true;
-        }
+        if ($user['User']['role'] <= 1) return true;
         return false;
     }
 
@@ -60,9 +58,7 @@ class User extends AppModel {
      */
     function findByRef($ref) {
         $user = $this->findById($ref);
-        if (!$user) {
-            $user = $this->findByUsername($ref);
-        }
+        if (!$user) $user = $this->findByUsername($ref);
         return $user;
     }
 
@@ -80,6 +76,8 @@ class User extends AppModel {
      * Hash the password before saving it.
      */
     function beforeSave() {
-        $this->data['User']['password'] = AuthComponent::password($this->data['User']['password']);
+        $this->data['User']['password'] = AuthComponent::password(
+            $this->data['User']['password']
+        );
     }
 }
