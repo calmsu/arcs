@@ -89,7 +89,8 @@
 							// (unless of course minItems is higher than the total number of elements)
 		current		: 0,	// index of the current item
 							// when we resize the window, the carousel will make sure this item is visible 
-		onClick		: function() { return false; } // click item callback
+		onClick		: function() { return false; }, // click item callback
+        onSlide     : function() { return false; } // slide callback
     };
 	
 	$.elastislide.prototype 	= {
@@ -375,6 +376,21 @@
 					this._toggleControls( 'right', -1 );
 					
 			}
+
+            // Fire the onSlide callback with the indexes of the first and last
+            // visible elements.
+            var first;
+            if (fml === 0) first = 0;
+            else if (fml === undefined) {
+                if (this.$navPrev.is(':hidden')) 
+                    first = 0;
+                else 
+                    first = this.itemsCount - this.fitCount;
+            }
+            else 
+                first = Math.round(fml / this.itemW);
+            var last = first + this.fitCount;
+            this.options.onSlide(first, last);
 			
 			$.fn.applyStyle = ( anim === undefined ) ? $.fn.animate : $.fn.css;
 			
@@ -402,6 +418,7 @@
 			
 			// adds new items to the carousel
 			this.$items 		= this.$items.add( $newelems );
+            this.$slider.append($newelems);
 			this.itemsCount		= this.$items.length;
 			this._setDim();
 			this._setCurrentValues();
@@ -413,6 +430,8 @@
 			if ( callback ) callback.call( $newelems );
 			
 		},
+        getIndex            : function() {
+        },
 		setCurrent			: function( idx, callback ) {
 			
 			this.current = idx;
