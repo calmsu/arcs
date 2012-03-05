@@ -34,12 +34,12 @@ arcs.log = (msg...) ->
 # This should be the only place that a vendor templating function is 
 # called (so they're easy to swap).
 #
-#  key  -  prop of arcs.templates or a template string
+#  key  -  prop of window.JST or a template string
 #  data -  object to interpolate. When missing, {} will be used
 #  func -  template interpolation function. Defaults to Mustache.render
 arcs.tmpl = (key, data, func) ->
   func ?= Mustache.render
-  tmpl = if _.has(arcs.templates, key) then arcs.templates[key] else key
+  tmpl = if _.has(JST, key) then JST[key] else key
   func tmpl, (data ? {})
 
 # We'll bind app-wide events to the arcs object.
