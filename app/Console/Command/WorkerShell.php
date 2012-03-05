@@ -154,6 +154,7 @@ class WorkerShell extends AppShell {
                     'sha' => $sha,
                     'title' => $resource['title'] . "-p$page",
                     'public' => $resource['public'],
+                    'context' => $collection_id,
                     'file_name' => $fname,
                     'file_size' => $this->Resource->size($sha, $fname),
                     'mime_type' => 'image/jpeg',

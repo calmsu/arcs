@@ -199,9 +199,13 @@ class ResourcesController extends AppController {
     /**
      * Display the resource, as either HTML or JSON.
      *
-     * @param id    resource id
+     * @param id              resource id
+     * @param ignore_context  if true, the action will not redirect to the
+     *                        collection view when the resource has a non-null
+     *                        context attribute. This is irrelevant for ajax
+     *                        requests; we'll never redirect those.
      */
-    public function view($id) {
+    public function view($id, $ignore_context=false) {
         $resource = $this->Resource->findById($id);
         $public = $resource['Resource']['public'];
 
@@ -224,6 +228,13 @@ class ResourcesController extends AppController {
 
         # Exists and public or authenticated.
         if ($resource && ($public || $this->Auth->loggedIn())) {
+
+            # Redirect if the resource's context is non-null.
+            if ($resource['Resource']['context'] && !$ignore_context) {
+                return $this->redirect('/collection/' . 
+                    $resource['Resource']['context'] . '/' . $id
+                );
+            }
 
             $memberships = $this->Resource->Membership->find('all', array(
                 'conditions' => array('Membership.resource_id' => $id)
