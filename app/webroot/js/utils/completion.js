@@ -41,7 +41,7 @@
     },
     _date: function(url) {
       var aliases, d, dates, fmt, parse_fmt, raw_dates;
-      raw_dates = this.get(url);
+      raw_dates = this._get(url);
       fmt = 'MM-DD-YYYY';
       parse_fmt = 'YYYY-MM-DD HH:mm:ss';
       dates = (function() {

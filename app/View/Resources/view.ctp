@@ -48,13 +48,13 @@
     </div><!-- tab-wrapper -->
 </div><!-- .row -->
 
-<!-- Give the resource array to the client -->
+<!-- Give the resource array to the client-side code -->
 <script>
-    arcs.resource = new arcs.models.Resource(<?php echo json_encode($resource) ?>);
-    arcs.collection = new arcs.collections.Collection();
-    arcs.resourceView = new arcs.views.Resource({
-        model: arcs.resource,
-        collection: arcs.collection,
-        el: $('#resource-wrapper')
-    });
+  arcs.resource = new arcs.models.Resource(<?php echo json_encode($resource) ?>);
+  arcs.collection = new arcs.collections.Collection();
+  arcs.view = new arcs.views.Collection({
+    model: arcs.resource,
+    collection: arcs.collection,
+    el: $('#resource-wrapper')
+  });
 </script>

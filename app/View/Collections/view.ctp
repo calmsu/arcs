@@ -1,5 +1,4 @@
 <div id="resource-wrapper" class="row">
-    
     <div id="prev-button"></div>
     <div id="resource"></div>
     <div id="hotspots-wrapper" style="position:relative; left:18px;"></div>
@@ -38,42 +37,28 @@
                 <br><br>
                 <input id="comment-button" type="submit" class="btn" value="Comment" />
             </div><!-- tab-pane -->
-
         </div><!-- sidebar-tab-content -->		    
-
     </div><!-- tab-wrapper -->
 </div><!-- .row -->
 <div style="clear:both"></div>
-<div id="carousel" class="es-carousel-wrapper">
-    <div class="es-carousel">
-        <ul>
-        <?php for($i=0; $i<count($resources); $i++): ?>
-            <li>
-                <img class="thumb"
-                     src="<?php echo $resources[$i]['thumb'] ?>" 
-                     alt="" style="width:100px; height:90px;" 
-                     data-id="<?php echo $resources[$i]['id'] ?>" />
-                <div class="overlay">
-                    <span><?php echo $i + 1 ?></span>
-                </div>
-            </li>
-        <?php endfor ?>
-        </ul>
-    </div><!-- es-carousel -->
-</div><!-- carousel -->
+<div id="carousel-wrapper" class="es-carousel-wrapper">
+    <div id="carousel" class="es-carousel">
+        <ul></ul>
+    </div>
+</div>
 
 <!-- Bootstrap our backbone models -->
 <script>
-    arcs.collectionData = <?php echo json_encode($collection) ?>;
-    arcs.collection = new arcs.collections.Collection(
-        <?php echo json_encode($resources); ?>
-    );
-    arcs.resource = new arcs.models.Resource(
-        <?php echo json_encode($resources[0]) ?>
-    );
-    arcs.resourceView = new arcs.views.Resource({
-        model: arcs.resource,
-        collection: arcs.collection,
-        el: $('#resource-wrapper')
-    });
+  arcs.collectionData = <?php echo json_encode($collection) ?>;
+  arcs.collection = new arcs.collections.Collection(
+    <?php echo json_encode($resources); ?>
+  );
+  arcs.resource = new arcs.models.Resource(
+    <?php echo json_encode($resources[0]) ?>
+  );
+  arcs.view = new arcs.views.Collection({
+    model: arcs.resource,
+    collection: arcs.collection,
+    el: $('#resource-wrapper')
+  });
 </script>
