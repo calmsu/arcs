@@ -16,13 +16,14 @@
                 <table id="resource-details" 
                     class="details table table-striped table-bordered"></table>
                 <hr>
-                <h3>Memberships</h3>
+                <h3>Collections</h3>
                 <div id="memberships-wrapper">
                 <?php foreach($memberships as $m): ?>
                     <?php echo $this->Html->link(
                         # If it doesn't have a title, use the description
                         $m['Collection']['title'] ? $m['Collection']['title']: $m['Collection']['description'],
-                        '/collection/' . $m['Collection']['id']) ?>
+                        '/collection/' . $m['Collection']['id'] . '/' . $resource['id']
+                    ); ?>
                     <br>
                 <?php endforeach ?>
                 </div>
