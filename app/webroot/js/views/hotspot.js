@@ -11,24 +11,11 @@
     }
 
     Hotspot.prototype.initialize = function() {
-      var _this = this;
       this.collection = new arcs.collections.HotspotMap;
       this.reRender = _.throttle(this.render, 50);
-      $(window).resize(function() {
-        return arcs.trigger('resourceResize');
-      });
-      arcs.bind('resourceResize', function() {
-        return _this.reRender();
-      });
-      arcs.bind('resourceLoaded', function() {
-        return _this.setup();
-      });
-      this.collection.bind('add', function() {
-        return _this.render();
-      });
-      return this.collection.bind('remove', function() {
-        return _this.render();
-      });
+      arcs.bind('arcs:resourceresize', this.reRender, this);
+      arcs.bind('arcs:resourceloaded', this.setup, this);
+      return this.collection.bind('add remove', this.render, this);
     };
 
     Hotspot.prototype.setup = function() {
@@ -173,9 +160,10 @@
       $hotspots.html(arcs.tmpl('resource/hotspots', {
         hotspots: hotspots
       }));
-      return $annotations.html(arcs.tmpl('resource/annotations', {
+      $annotations.html(arcs.tmpl('resource/annotations', {
         hotspots: hotspots
       }));
+      return this;
     };
 
     return Hotspot;

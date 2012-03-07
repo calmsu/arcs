@@ -20,7 +20,7 @@
       arcs.on('arcs:indexchange', this.slideTo, this);
       arcs.on('arcs:indexchange', this.setSelected, this);
       this.render();
-      this.$el.parent().elastislide({
+      this.$el.elastislide({
         imageW: 100,
         onClick: function($item) {
           return arcs.trigger('arcs:indexchange', $item.index(), {
@@ -51,9 +51,7 @@
       if (this.$('li').length < index) {
         this._addThumbs(index + 1 - this.$('li').length);
       }
-      if (!options.noSlide) {
-        return this.$el.parent().elastislide('slideToIndex', index);
-      }
+      if (!options.noSlide) return this.$el.elastislide('slideToIndex', index);
     };
 
     Carousel.prototype.setSelected = function(index) {
@@ -79,7 +77,7 @@
         })(),
         offset: this.options.nthumbs
       }));
-      this.$el.parent().elastislide('add', $thumbs.filter('li'));
+      this.$el.elastislide('add', $thumbs.filter('li'));
       this.options.nthumbs += n;
       return this.delegateEvents();
     };

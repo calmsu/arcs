@@ -1,5 +1,12 @@
 # carousel.coffee
 # ---------------
+# View for the thumbnail carousel.
+#
+# The view is responsible for watching our global 'indexchange' event and
+# sliding the carousel and activating thumbnails as necessary. 
+#
+# By default the Carousel view doesn't render all the thumbnails it is given,
+# only 30. It's smart enough to fetch the rest when they're needed.
 class arcs.views.Carousel extends Backbone.View
 
   options:
@@ -7,12 +14,14 @@ class arcs.views.Carousel extends Backbone.View
     nthumbs: 30 
 
   initialize: ->
+    # Bind to the indexchange event.
     arcs.on 'arcs:indexchange', @slideTo, @
     arcs.on 'arcs:indexchange', @setSelected, @
 
     @render()
 
-    @$el.parent().elastislide
+    # Setup the elastislide plugin on the parent wrapper div.
+    @$el.elastislide
       imageW: 100
       onClick: ($item) ->
         arcs.trigger 'arcs:indexchange', $item.index(), noSlide: true
@@ -32,7 +41,7 @@ class arcs.views.Carousel extends Backbone.View
   slideTo: (index, options={}) ->
     if @$('li').length < index
       @_addThumbs index + 1 - @$('li').length
-    @$el.parent().elastislide('slideToIndex', index) unless options.noSlide
+    @$el.elastislide('slideToIndex', index) unless options.noSlide
 
   setSelected: (index) ->
     @$('.thumb.selected').removeClass 'selected'
@@ -44,7 +53,7 @@ class arcs.views.Carousel extends Backbone.View
     $thumbs = $ @_tmpl 
       resources: (m.toJSON() for m in additions)
       offset: @options.nthumbs
-    @$el.parent().elastislide 'add', $thumbs.filter 'li'
+    @$el.elastislide 'add', $thumbs.filter 'li'
     @options.nthumbs += n
     @delegateEvents()
 

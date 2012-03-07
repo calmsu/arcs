@@ -11,7 +11,8 @@
     }
 
     Collection.prototype.initialize = function() {
-      var _ref, _ref2;
+      var _ref, _ref2,
+        _this = this;
       arcs.on('arcs:indexchange', this.set, this);
       arcs.on('arcs:indexchange', function() {
         return arcs.log('arcs:indexchange', arguments);
@@ -31,7 +32,7 @@
         el: $('#toolbar')
       });
       this.carousel = new arcs.views.Carousel({
-        el: $('#carousel'),
+        el: $('#carousel-wrapper'),
         collection: this.collection,
         index: (_ref = this.index) != null ? _ref : 0
       });
@@ -39,6 +40,9 @@
       Backbone.history.start({
         pushState: true,
         root: arcs.baseURL + (this.collection.length ? 'collection/' : 'resource/')
+      });
+      $(window).resize(function() {
+        return arcs.trigger('arcs:resourceresize');
       });
       if (this.model.get('first_req')) {
         if (this.model.get('mime_type' === 'application/pdf')) this.splitPrompt();
@@ -65,7 +69,7 @@
         options.noNavigate = false;
       }
       if (!(model && index >= 0)) return false;
-      _ref = [model, index], this.model = _ref[0], this.index = _ref[1];
+      _ref = [model, model, index], this.model = _ref[0], arcs.resource = _ref[1], this.index = _ref[2];
       if (options.trigger) {
         arcs.trigger('arcs:indexchange', index, {
           noSet: true

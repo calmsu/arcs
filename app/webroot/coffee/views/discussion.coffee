@@ -11,7 +11,7 @@ class arcs.views.Discussion extends Backbone.View
   initialize: ->
     @collection = new arcs.collections.Discussion
 
-    arcs.on 'resourceChange', @update, @
+    arcs.on 'arcs:indexchange', @update, @
     @collection.on 'add remove', @render, @
 
     @update()

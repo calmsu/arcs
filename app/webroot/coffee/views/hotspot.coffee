@@ -6,21 +6,14 @@ class arcs.views.Hotspot extends Backbone.View
     # Create a throttled render function that will be triggered
     # on window resizes.
     @reRender = _.throttle @render, 50
-    $(window).resize =>
-      arcs.trigger 'resourceResize'
-    arcs.bind 'resourceResize', =>
-      @reRender()
+    arcs.bind 'arcs:resourceresize', @reRender, @
 
     # Bind the setup to the resourceLoaded event,
     # which is triggered directly after the resource
     # is rendered (and after resourceChange).
-    arcs.bind 'resourceLoaded', =>
-      @setup()
+    arcs.bind 'arcs:resourceloaded', @setup, @
 
-    @collection.bind 'add', =>
-      @render()
-    @collection.bind 'remove', =>
-      @render()
+    @collection.bind 'add remove', @render, @
 
   # Cache the image selector, call @startImgAreaSelect
   setup: ->
@@ -120,7 +113,7 @@ class arcs.views.Hotspot extends Backbone.View
   # Fetch the collection and render it.
   update: ->
     @collection.fetch
-      success: =>
+      success: => 
         @render()
 
   # Render the hotspots over the image and the corresponding annotation
@@ -147,3 +140,4 @@ class arcs.views.Hotspot extends Backbone.View
     # Render the templates.
     $hotspots.html arcs.tmpl 'resource/hotspots', hotspots: hotspots
     $annotations.html arcs.tmpl 'resource/annotations', hotspots: hotspots
+    @

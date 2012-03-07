@@ -62,7 +62,7 @@ class arcs.views.Search extends Backbone.View
   _unselectAll : -> @_all().removeClass 'selected'
   _anySelected : ->
     unless @_any()
-      arcs.utils.notify 'Select at least one result', 'error'
+      arcs.notify 'Select at least one result', 'error'
       return false
     return true
 
@@ -170,7 +170,7 @@ class arcs.views.Search extends Backbone.View
       tag: tagStr
     tag.save
       error: ->
-        arcs.utils.notify 'Not authorized', 'error'
+        arcs.notify 'Not authorized', 'error'
 
   # Create a new Bookmark, given a result element and optionally a note 
   # string.
@@ -180,7 +180,7 @@ class arcs.views.Search extends Backbone.View
       description: noteStr 
     bkmk.save
       error: ->
-        arcs.utils.notify 'Not authorized', 'error'
+        arcs.notify 'Not authorized', 'error'
 
   # Create a new collection from the selected results, and open it.
   collectionFromSelected: (vals) ->
@@ -198,7 +198,7 @@ class arcs.views.Search extends Backbone.View
       success: (model) ->
         window.open(arcs.baseURL + 'collection/' + model.id)
       error: =>
-        arcs.utils.notify 'An error occurred.', 'error'
+        arcs.notify 'An error occurred.', 'error'
 
   # Open a modal (called when tag button is clicked) and ask the user for 
   # a tag string. Delegate further action through callbacks.
@@ -274,7 +274,7 @@ class arcs.views.Search extends Backbone.View
       cbk.call @, el, cbkArgs...
 
     n = @_selected().length
-    arcs.utils.notify "#{@_nsel()} resource#{'s' if 0 < @_nsel() > 1} " +
+    arcs.notify "#{@_nsel()} resource#{'s' if 0 < @_nsel() > 1} " +
       "#{if 0 < @_nsel() > 1 then "were" else "was"} #{name[1]}", 'success'
 
   # Toggle between list and grid view.
@@ -306,7 +306,7 @@ class arcs.views.Search extends Backbone.View
   _render: (results, append=false) ->
     $results = $('#search-results')
     template = if @grid then 'search/grid' else 'search/list'
-    content = arcs.tmpl template, results
+    content = arcs.tmpl template, results, (_.template if !@grid)
     if append
       $results.append content
     else

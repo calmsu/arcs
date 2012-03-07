@@ -24,7 +24,7 @@ class arcs.views.Collection extends Backbone.View
     @toolbar = new arcs.views.Toolbar
       el: $('#toolbar')
     @carousel = new arcs.views.Carousel
-      el: $('#carousel')
+      el: $('#carousel-wrapper')
       collection: @collection
       index: @index ? 0
 
@@ -34,6 +34,8 @@ class arcs.views.Collection extends Backbone.View
       pushState: true
       root: arcs.baseURL + 
         if @collection.length then 'collection/' else 'resource/'
+
+    $(window).resize => arcs.trigger 'arcs:resourceresize'
 
     # Special logic for a resource's first request post-upload.
     if @model.get 'first_req'
@@ -75,7 +77,7 @@ class arcs.views.Collection extends Backbone.View
     return false unless model and index >= 0
 
     # Replace the instance's model and index properties.
-    [@model, @index] = [model, index]
+    [@model, arcs.resource, @index] = [model, model, index]
 
     # Trigger indexchange if the trigger opt was set.
     arcs.trigger('arcs:indexchange', index, noSet: true) if options.trigger
