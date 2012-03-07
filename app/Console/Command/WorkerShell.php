@@ -6,9 +6,6 @@ class WorkerShell extends AppShell {
     public $tasks = array('PDF');
 
     public function main() {
-        # We look for open tasks each time the loop executes, so
-        # it should be relatively thread-safe.
-        
         while (true) {
             # Find a new task...
             $task = $this->Task->find('first', array(
