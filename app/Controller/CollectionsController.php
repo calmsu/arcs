@@ -85,7 +85,7 @@ class CollectionsController extends AppController {
      */
     public function view($id=null) {
         $collection = $this->Collection->findById($id);
-        $this->set('title_for_layout', $collection['Collection']['description']);
+        $this->set('title_for_layout', $collection['Collection']['title']);
         $this->set('collection', $collection['Collection']);
         $this->set('resources', $this->Collection->getResources($id, false));
         $this->set('_serialize', array('collection', 'resources'));
