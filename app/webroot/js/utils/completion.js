@@ -19,6 +19,9 @@
     modified: function() {
       return this._date('resources/complete/modified');
     },
+    collection: function() {
+      return this._get('collections/complete');
+    },
     _cache: {},
     _get: function(url, fresh) {
       var data, result, ts, _ref;

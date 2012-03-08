@@ -24,6 +24,9 @@ arcs.utils.complete =
   modified: ->
     @_date 'resources/complete/modified'
 
+  collection: ->
+    @_get 'collections/complete'
+
   # We'll store completion values by url and timestamp them.
   # The _get method may choose to use the cache or not.
   _cache: {}

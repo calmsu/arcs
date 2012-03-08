@@ -21,7 +21,7 @@
     Resource.prototype.urlRoot = arcs.baseURL + 'resources';
 
     Resource.prototype.parse = function(r) {
-      var k, m, t, v, _i, _j, _len, _len2, _ref, _ref2, _ref3;
+      var k, m, t, v, _i, _len, _ref, _ref2;
       if (r.Resource != null) {
         _ref = r.Resource;
         for (k in _ref) {
@@ -33,11 +33,16 @@
           delete r.User;
         }
         if (r.Tag != null) {
-          _ref2 = r.Tag;
-          for (_i = 0, _len = _ref2.length; _i < _len; _i++) {
-            t = _ref2[_i];
-            r.tags = t.tag;
-          }
+          r.tags = (function() {
+            var _i, _len, _ref2, _results;
+            _ref2 = r.Tag;
+            _results = [];
+            for (_i = 0, _len = _ref2.length; _i < _len; _i++) {
+              t = _ref2[_i];
+              _results.push(t.tag);
+            }
+            return _results;
+          })();
           delete r.Tag;
         }
         if (r.Comment != null) {
@@ -45,9 +50,9 @@
           delete r.Comment;
         }
         if (r.Membership != null) {
-          _ref3 = r.Membership;
-          for (_j = 0, _len2 = _ref3.length; _j < _len2; _j++) {
-            m = _ref3[_j];
+          _ref2 = r.Membership;
+          for (_i = 0, _len = _ref2.length; _i < _len; _i++) {
+            m = _ref2[_i];
             r.memberships = m.collection_id;
           }
           delete r.Membership;

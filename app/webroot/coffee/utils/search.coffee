@@ -87,7 +87,7 @@ class arcs.utils.Search
     title: -> arcs.utils.complete.title()
     user: -> arcs.utils.complete.user()
     tag: -> arcs.utils.complete.tag()
-    collection: []
+    collection: -> arcs.utils.complete.collection()
     created: -> arcs.utils.complete.created()
     uploaded: -> arcs.utils.complete.created()
     modified: -> arcs.utils.complete.modified()

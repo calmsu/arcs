@@ -20,7 +20,7 @@ class arcs.models.Resource extends Backbone.Model
         r.user = r.User
         delete r.User
       if r.Tag?
-        r.tags = t.tag for t in r.Tag
+        r.tags = (t.tag for t in r.Tag)
         delete r.Tag
       if r.Comment?
         r.comments = r.Comment

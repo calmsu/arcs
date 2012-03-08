@@ -74,7 +74,9 @@
       tag: function() {
         return arcs.utils.complete.tag();
       },
-      collection: [],
+      collection: function() {
+        return arcs.utils.complete.collection();
+      },
       created: function() {
         return arcs.utils.complete.created();
       },
