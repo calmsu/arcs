@@ -107,36 +107,12 @@ div#toolbar {
     float: left;
   }
 
-  div.courtesy-nav-panel-wrapper {
-    display: inline;
-    position: relative;
-    margin: 0;
-    padding: 0;
-      
-    a#user {			
-      &::after {
-        content: "  \25BC";
-        font-size: @baseFontSize - 3px;
-      }//before
-      
-      &:hover {
-        text-decoration: none;
-      }//hover			
-        
-    }//.dropdowntoggle
-      
-    div.courtesy-nav-panel-content {
-      display: none;
-      position: absolute; 
-      z-index: 1;
-      background: #fff;
-      padding: 5px 10px;
-      border: solid thin @grayLighter; 
-      .border-radius(4px);
-      right: 0;		
-      .transition(.2s linear all);
-    }//.courtesy-nav-panel-content
-  }//.panel-wrapper	
+  .toolbar-btn {
+    float:right;
+    position:relative;
+    top:5px;
+  }
+
 }//#toolbar
 
 
@@ -798,6 +774,7 @@ div#toolbar {
 
 #hotspots-wrapper {
   position:relative;
+  left:18px;
 
   .hotspot {
     display:block;
@@ -924,8 +901,33 @@ div#search-wrapper {
     margin:20px;
   }
 
-  &.list td {
-    min-width:120px;
+  &.list {
+    td.thumb-wrapper {
+      padding-right:10px;
+      div {
+        width:100px;
+        img {
+          float:right;
+          width:100px;
+        }
+        div.overlay {
+          position:relative;
+          float:right;
+          bottom:25px;
+          text-align:right;
+          right:0px;
+        }
+      }
+    }
+      
+    td.keys {
+      width:65px;
+    }
+    td.values {
+      padding-left:10px;
+      padding-right:20px;
+      min-width:120px;
+    }
   }
 
   &.selected img {
@@ -1398,4 +1400,3 @@ div#search-results-wrapper {
     width:100%;
   }
 }
-

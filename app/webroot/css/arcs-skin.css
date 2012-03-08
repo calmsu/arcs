@@ -4202,43 +4202,10 @@ div#toolbar h1#logo {
   margin-right: 10px;
   float: left;
 }
-div#toolbar div.courtesy-nav-panel-wrapper {
-  display: inline;
+div#toolbar .toolbar-btn {
+  float: right;
   position: relative;
-  margin: 0;
-  padding: 0;
-}
-div#toolbar div.courtesy-nav-panel-wrapper a#user::after {
-  content: "  \25BC";
-  font-size: 10px;
-}
-div#toolbar div.courtesy-nav-panel-wrapper a#user:hover {
-  text-decoration: none;
-}
-div#toolbar div.courtesy-nav-panel-wrapper div.courtesy-nav-panel-content {
-  display: none;
-  position: absolute;
-  z-index: 1;
-  background: #fff;
-  padding: 5px 10px;
-  border: solid thin #eeeeee;
-  -webkit-border-radius: 4px;
-  -moz-border-radius: 4px;
-  border-radius: 4px;
-  -webkit-border-radius: 4px;
-  -moz-border-radius: 4px;
-  border-radius: 4px;
-  right: 0;
-  -webkit-transition: 0.2s linear all;
-  -moz-transition: 0.2s linear all;
-  -ms-transition: 0.2s linear all;
-  -o-transition: 0.2s linear all;
-  transition: 0.2s linear all;
-  -webkit-transition: 0.2s linear all;
-  -moz-transition: 0.2s linear all;
-  -ms-transition: 0.2s linear all;
-  -o-transition: 0.2s linear all;
-  transition: 0.2s linear all;
+  top: 5px;
 }
 section#logo-search-filter {
   margin-bottom: 30px;
@@ -4918,6 +4885,7 @@ div#toolbar {
 }
 #hotspots-wrapper {
   position: relative;
+  left: 18px;
 }
 #hotspots-wrapper .hotspot {
   display: block;
@@ -5079,7 +5047,29 @@ div#search-wrapper {
   max-height: 140px;
   margin: 20px;
 }
-.result.list td {
+.result.list td.thumb-wrapper {
+  padding-right: 10px;
+}
+.result.list td.thumb-wrapper div {
+  width: 100px;
+}
+.result.list td.thumb-wrapper div img {
+  float: right;
+  width: 100px;
+}
+.result.list td.thumb-wrapper div div.overlay {
+  position: relative;
+  float: right;
+  bottom: 25px;
+  text-align: right;
+  right: 0px;
+}
+.result.list td.keys {
+  width: 65px;
+}
+.result.list td.values {
+  padding-left: 10px;
+  padding-right: 20px;
   min-width: 120px;
 }
 .result.selected img {
