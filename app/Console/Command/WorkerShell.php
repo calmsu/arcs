@@ -6,9 +6,6 @@ class WorkerShell extends AppShell {
     public $tasks = array('PDF');
 
     public function main() {
-        # We look for open tasks each time the loop executes, so
-        # it should be relatively thread-safe.
-        
         while (true) {
             # Find a new task...
             $task = $this->Task->find('first', array(
@@ -154,6 +151,7 @@ class WorkerShell extends AppShell {
                     'sha' => $sha,
                     'title' => $resource['title'] . "-p$page",
                     'public' => $resource['public'],
+                    'context' => $collection_id,
                     'file_name' => $fname,
                     'file_size' => $this->Resource->size($sha, $fname),
                     'mime_type' => 'image/jpeg',

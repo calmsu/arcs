@@ -3,7 +3,15 @@
 class arcs.routers.Resource extends Backbone.Router
 
   routes:
-    ':id/:index': 'change'
+    ':id'       : 'noIndex'
+    ':id/:index': 'indexChange'
 
-  change: (id, index) ->
-    arcs.log id, index
+  noIndex: (id) ->
+    arcs.trigger 'arcs:indexchange', 0
+    @initial = true
+
+  indexChange: (id, index) ->
+    index -= 1 if _.isNumeric(index)
+    arcs.trigger 'arcs:indexchange', index, 
+      noNavigate: true
+    @initial = true

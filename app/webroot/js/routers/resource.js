@@ -11,11 +11,21 @@
     }
 
     Resource.prototype.routes = {
-      ':id/:index': 'change'
+      ':id': 'noIndex',
+      ':id/:index': 'indexChange'
     };
 
-    Resource.prototype.change = function(id, index) {
-      return arcs.log(id, index);
+    Resource.prototype.noIndex = function(id) {
+      arcs.trigger('arcs:indexchange', 0);
+      return this.initial = true;
+    };
+
+    Resource.prototype.indexChange = function(id, index) {
+      if (_.isNumeric(index)) index -= 1;
+      arcs.trigger('arcs:indexchange', index, {
+        noNavigate: true
+      });
+      return this.initial = true;
     };
 
     return Resource;

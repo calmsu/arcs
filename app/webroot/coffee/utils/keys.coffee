@@ -114,4 +114,4 @@ class arcs.utils.Keys
     109: "-"
 
 # Fire it up an instance.
-arcs.utils.keys = new arcs.utils.Keys
+arcs.keys = arcs.utils.keys = new arcs.utils.Keys

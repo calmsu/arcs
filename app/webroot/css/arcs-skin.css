@@ -4993,6 +4993,7 @@ div#toolbar {
   opacity: 0.5;
   filter: alpha(opacity=50);
   border: 1px solid #aaa;
+  background-color: #333;
   -moz-box-shadow: 1px 1px 0 0 #555555;
   -webkit-box-shadow: 1px 1px 0 0 #555555;
   box-shadow: 1px 1px 0 0 #555555;

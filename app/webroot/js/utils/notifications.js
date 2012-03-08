@@ -1,10 +1,10 @@
 (function() {
 
-  arcs.utils.notify = function(msg, type, hide) {
+  arcs.notify = function(msg, type, hide) {
     var $el, duration;
     if (type == null) type = 'info';
     if (hide == null) hide = 3;
-    if (!$('#notification').length) $('body').append(arcs.tmpl('notification'));
+    if (!$('#notification').length) $('body').append(arcs.tmpl('ui/notification'));
     $el = $('#notification');
     $el.find('#msg').html(msg);
     if (type !== 'info' && type !== 'error' && type !== 'success') type = 'info';

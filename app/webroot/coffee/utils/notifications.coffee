@@ -7,11 +7,11 @@
 # type - one of 'info', 'error', 'success', defaults to 'info'
 # hide - if number, hide after this many seconds. If truthy non-number,
 #        or not given, hide after 3 seconds. If falsey, don't hide.
-arcs.utils.notify = (msg, type='info', hide=3) ->
+arcs.notify = (msg, type='info', hide=3) ->
 
   # Create a notification div if there isn't already one.
   unless $('#notification').length
-    $('body').append arcs.tmpl 'notification'
+    $('body').append arcs.tmpl 'ui/notification'
   $el = $('#notification')
 
   # Set the content.

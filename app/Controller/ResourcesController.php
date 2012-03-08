@@ -29,7 +29,8 @@ class ResourcesController extends AppController {
             'search', 
             'comments', 
             'hotspots', 
-            'tags'
+            'tags',
+            'complete'
         );
         $this->RequestHandler->addInputType('json', array('json_decode', true));
     }
@@ -47,6 +48,8 @@ class ResourcesController extends AppController {
            
             # Convenience variable for the Resource key of the data prop array.
             $rdata = $this->data['Resource'];
+
+            # Extract some of the file info.
             $fname = $rdata['file']['name'];
             $tmp   = $rdata['file']['tmp_name'];
             $mime  = $rdata['file']['type'];
@@ -89,9 +92,10 @@ class ResourcesController extends AppController {
             # Save any tags.
             if (strlen($rdata['tags'])) {
                 # Remove whitespace
-                $tags = rtrim($rdata['tags']);
+                $tags = $rdata['tags'];
                 $tagRecords = array();
                 foreach(explode(',', $tags) as $t) {
+                    $t = trim($t);
                     if (strlen($t)) {
                         array_push($tagRecords, array(
                             'Tag' => array(
@@ -121,7 +125,9 @@ class ResourcesController extends AppController {
             # Set a flash message, redirect to the resource view.
             $this->Session->setFlash('Resource created.', 'flash_success');
             $this->redirect(array('action' => 'view', $this->Resource->id));
+
         } else {
+
             $config = Configure::read('resources.types');
             $types = is_array($config) ? $config : array();
             # Prepare our options array. Keys = values.
@@ -199,9 +205,13 @@ class ResourcesController extends AppController {
     /**
      * Display the resource, as either HTML or JSON.
      *
-     * @param id    resource id
+     * @param id              resource id
+     * @param ignore_context  if true, the action will not redirect to the
+     *                        collection view when the resource has a non-null
+     *                        context attribute. This is irrelevant for ajax
+     *                        requests; we'll never redirect those.
      */
-    public function view($id) {
+    public function view($id, $ignore_context=false) {
         $resource = $this->Resource->findById($id);
         $public = $resource['Resource']['public'];
 
@@ -224,6 +234,13 @@ class ResourcesController extends AppController {
 
         # Exists and public or authenticated.
         if ($resource && ($public || $this->Auth->loggedIn())) {
+
+            # Redirect if the resource's context is non-null.
+            if ($resource['Resource']['context'] && !$ignore_context) {
+                return $this->redirect('/collection/' . 
+                    $resource['Resource']['context'] . '/' . $id
+                );
+            }
 
             $memberships = $this->Resource->Membership->find('all', array(
                 'conditions' => array('Membership.resource_id' => $id)
@@ -289,9 +306,7 @@ class ResourcesController extends AppController {
                 $search = new Search($config, $this->request->data);
 
                 # If not logged in, only public resources may be viewed.
-                if (!$this->Auth->loggedIn()) {
-                    $search->addFacet('access', 'public');
-                }
+                if (!$this->Auth->loggedIn()) $search->public = true;
 
                 # Get the result ids.
                 $ids = $search->results($limit, $offset);
@@ -363,29 +378,23 @@ class ResourcesController extends AppController {
      */
     public function complete($field) {
         if ($this->request->is('ajax')) {
-            switch($field) {
+            switch ($field) {
                 case 'title':
-                    $this->jsonResponse(200, $this->Resource->find('list', array(
-                            'fields' => array('Resource.title'),
-                            'limit' => 100
-                        )));
-                    break;
-                case 'type':
-                    $this->jsonResponse(200, Configure::read('resources.types'));
+                    $values = $this->Resource->complete('Resource.title');
                     break;
                 case 'created':
-                    $this->jsonResponse(200, $this->Resource->find('list', array(
-                            'fields' => array('Resource.created'),
-                            'limit' => 100
-                        )));
+                    $values = $this->Resource->complete('Resource.created');
                     break;
                 case 'modified':
-                    $this->jsonResponse(200, $this->Resource->find('list', array(
-                            'fields' => array('Resource.modified'),
-                            'limit' => 100
-                        )));
+                    $values = $this->Resource->complete('Resource.modified');
                     break;
+                case 'type':
+                    $values = Configure::read('resources.types');
+                    break;
+                default:
+                    $values = array();
             }
+            return $this->jsonResponse(200, $values);
         }
     }
 }

@@ -19,6 +19,9 @@
     modified: function() {
       return this._date('resources/complete/modified');
     },
+    collection: function() {
+      return this._get('collections/complete');
+    },
     _cache: {},
     _get: function(url, fresh) {
       var data, result, ts, _ref;
@@ -41,7 +44,7 @@
     },
     _date: function(url) {
       var aliases, d, dates, fmt, parse_fmt, raw_dates;
-      raw_dates = this.get(url);
+      raw_dates = this._get(url);
       fmt = 'MM-DD-YYYY';
       parse_fmt = 'YYYY-MM-DD HH:mm:ss';
       dates = (function() {

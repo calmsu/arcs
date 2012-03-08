@@ -89,6 +89,6 @@
 
   })();
 
-  arcs.utils.keys = new arcs.utils.Keys;
+  arcs.keys = arcs.utils.keys = new arcs.utils.Keys;
 
 }).call(this);

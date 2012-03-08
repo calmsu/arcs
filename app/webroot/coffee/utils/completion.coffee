@@ -24,6 +24,9 @@ arcs.utils.complete =
   modified: ->
     @_date 'resources/complete/modified'
 
+  collection: ->
+    @_get 'collections/complete'
+
   # We'll store completion values by url and timestamp them.
   # The _get method may choose to use the cache or not.
   _cache: {}
@@ -49,7 +52,7 @@ arcs.utils.complete =
   # Get an array of dates from the server, reformat them, and add a few
   # aliases. Helper method for date-type facets.
   _date: (url) ->
-    raw_dates = @get url
+    raw_dates = @_get url
     fmt = 'MM-DD-YYYY'
     parse_fmt = 'YYYY-MM-DD HH:mm:ss'
     dates = (moment(d, parse_fmt).format(fmt) for d in raw_dates)

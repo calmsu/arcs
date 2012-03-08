@@ -16,13 +16,14 @@
                 <table id="resource-details" 
                     class="details table table-striped table-bordered"></table>
                 <hr>
-                <h3>Memberships</h3>
+                <h3>Collections</h3>
                 <div id="memberships-wrapper">
                 <?php foreach($memberships as $m): ?>
                     <?php echo $this->Html->link(
                         # If it doesn't have a title, use the description
                         $m['Collection']['title'] ? $m['Collection']['title']: $m['Collection']['description'],
-                        '/collection/' . $m['Collection']['id']) ?>
+                        '/collection/' . $m['Collection']['id'] . '/' . $resource['id']
+                    ); ?>
                     <br>
                 <?php endforeach ?>
                 </div>
@@ -48,13 +49,13 @@
     </div><!-- tab-wrapper -->
 </div><!-- .row -->
 
-<!-- Give the resource array to the client -->
+<!-- Give the resource array to the client-side code -->
 <script>
-    arcs.resource = new arcs.models.Resource(<?php echo json_encode($resource) ?>);
-    arcs.collection = new arcs.collections.Collection();
-    arcs.resourceView = new arcs.views.Resource({
-        model: arcs.resource,
-        collection: arcs.collection,
-        el: $('#resource-wrapper')
-    });
+  arcs.resource = new arcs.models.Resource(<?php echo json_encode($resource) ?>);
+  arcs.collection = new arcs.collections.Collection();
+  arcs.view = new arcs.views.Collection({
+    model: arcs.resource,
+    collection: arcs.collection,
+    el: $('#resource-wrapper')
+  });
 </script>

@@ -9,7 +9,7 @@ arcs.utils.hash =
   #
   # val - string value to set the hash with.
   # uri_encode - URI encode val before setting.
-  set: (val, uri=false) ->
+  set: (val, uri_encode=false) ->
     @history.push document.location.hash
     if uri_encode
       val = encodeURIComponent val

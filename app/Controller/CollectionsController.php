@@ -8,6 +8,11 @@
 class CollectionsController extends AppController {
     public $name = 'Collections';
 
+    public function beforeFilter() {
+        parent::beforeFilter();
+        $this->Auth->allow('view', 'complete');
+    }
+
     /**
      * Display all collections.
      */
@@ -80,7 +85,7 @@ class CollectionsController extends AppController {
      */
     public function view($id=null) {
         $collection = $this->Collection->findById($id);
-        $this->set('title_for_layout', $collection['Collection']['description']);
+        $this->set('title_for_layout', $collection['Collection']['title']);
         $this->set('collection', $collection['Collection']);
         $this->set('resources', $this->Collection->getResources($id, false));
         $this->set('_serialize', array('collection', 'resources'));
@@ -97,5 +102,15 @@ class CollectionsController extends AppController {
      * @param id
      */
     public function delete($id=null) {
+    }
+
+    public function complete() {
+        if ($this->request->is('ajax')) {
+            return $this->jsonResponse(200, $this->Collection->complete(
+                'Collection.title', array(
+                    'Collection.title !=' => 'Temporary Collection'
+                )
+            ));
+        }
     }
 }

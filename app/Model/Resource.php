@@ -21,16 +21,16 @@ class Resource extends AppModel {
             if (isset($results['sha'])) {
                 $sha = $results['sha'];
                 $name = $results['file_name'];
-                $results['url'] = $this->url($sha) . DS . $name;
-                $results['thumb'] = $this->url($sha) . DS . 'thumb.png';
+                $results['url'] = $this->url($sha, $name);
+                $results['thumb'] = $this->url($sha, 'thumb.png');
             }
             return $results;
         } else if (isset($results[0]['Resource']['sha'])) { 
             foreach($results as $k=>$v) {
                 $sha = $results[$k]['Resource']['sha'];
                 $name = $results[$k]['Resource']['file_name'];
-                $results[$k]['Resource']['url'] = $this->url($sha) . DS . $name;
-                $results[$k]['Resource']['thumb'] = $this->url($sha) . DS .'thumb.png';
+                $results[$k]['Resource']['url'] = $this->url($sha, $name);
+                $results[$k]['Resource']['thumb'] = $this->url($sha, 'thumb.png');
             }
             return $results;
         } else {

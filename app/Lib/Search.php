@@ -1,18 +1,23 @@
 <?php
 
 /**
- * Builds an SQL query to perform a faceted search.
+ * Search
+ *
+ * Instances of the Search class build SQL for faceted search queries, given 
+ * an array of facets, and returns the IDs of matching rows.
+ *
+ * I expect this functionality to be replaced by Apache SOLR, which is much 
+ * more qualified to do this sort of thing.
  */
 class Search {
 
     /**
-     * Facets must be mapped to tables (if not on the default). The facet names 
-     * are the keys in the array below. Each key's value is a sub-array of 
-     * options:
-     *
-     * table        table name, if different than the $table property. If given,
-     *              join instructions should also be provided. This will default
-     *              to the $table property.
+     * Before we can use facets, they have be mapped to table columns. The
+     * `mappings` property of the Search class holds these associations. It
+     * also provides options for customizing how the facet 'works'. For example,
+     * some facets map to tables that need to be joined on. Some facets should
+     * be compared in a certain way (e.g. dates). These special behaviors are
+     * configured in each facet's options array.
      *
      * model        provide an alias that we'll use to refer to the table. This
      *              will default to the $model property.
@@ -20,8 +25,18 @@ class Search {
      * field        field (or column) name that the facet corresponds to. This
      *              option is required.
      *
-     * join         a (key, foreign_key) pair (as an array) that specifies how 
-     *              the tables should be joined. 
+     * joins        an array of table => predicate pairs which will be 
+     *              inner-joined, in the order that they are defined. The 
+     *              predicate must be a two-member associative array following 
+     *              the pattern:
+     *
+     *                  array(
+     *                      'TableA' => 'field',
+     *                      'TableB' => 'field'
+     *                  )
+     *
+     *              where TableA is the primary table (or another previously
+     *              joined), and TableB is the one being joined.
      *
      * comparison   string specifiying how the fields should be compared. By
      *              default, the equality comparison is used. Others include:
@@ -36,18 +51,26 @@ class Search {
      *              on BOOL fields. If a translation is not found, the value will 
      *              remain unchanged.
      */
-    public $mappings = array(
+    public $MAPPINGS = array(
         'tag' => array(
-            'table' => 'tags',
             'model' => 'Tag',
             'field' => 'tag',
-            'join' => array('id', 'resource_id')
+            'joins' => array(
+                'tags' => array(
+                    'Resource' => 'id', 
+                    'Tag' => 'resource_id'
+                )
+            )
         ),
         'user' => array(
-            'table' => 'users',
             'model' => 'User',
             'field' => 'name',
-            'join' => array('user_id', 'id')
+            'joins' => array(
+                'users' => array(
+                    'Resource' => 'user_id', 
+                    'User' => 'id'
+                )
+            )
         ),
         'modified' => array(
             'field' => 'modified',
@@ -62,30 +85,52 @@ class Search {
             'comparison' => 'date'
         ),
         'comment' => array(
-            'table' => 'comments',
             'model' => 'Comment',
             'field' => 'content',
-            'join' => array('id', 'resource_id'),
+            'joins' => array(
+                'comments' => array(
+                    'Resource' => 'id', 
+                    'Comment' => 'resource_id'
+                )
+            ),
             'comparison' => 'match'
         ),
         'caption' => array(
-            'table' => 'hotspots',
             'model' => 'Hotspot',
             'field' => 'description',
-            'join' => array('id', 'resource_id'),
+            'joins' => array(
+                'hotspots' => array(
+                    'Resource' => 'id', 
+                    'Hotspot' => 'resource_id'
+                )
+            ),
             'comparison' => 'match'
         ),
-        'sha'      => array(
+        'collection' => array(
+            'model' => 'Collection',
+            'field' => 'title',
+            'joins' => array(
+                'memberships' => array(
+                    'Resource' => 'id',
+                    'Membership' => 'resource_id'
+                ),
+                'collections' => array(
+                    'Membership' => 'collection_id',
+                    'Collection' => 'id'
+                )
+            )
+        ),
+        'sha' => array(
             'field' => 'sha'
         ),
-        'title'    => array(
+        'title' => array(
             'field' => 'title',
             'comparison' => 'match'
         ),
-        'id'       => array(
+        'id' => array(
             'field' => 'id'
         ),
-        'type'     => array(
+        'type' => array(
             'field' => 'type'
         ),
         'filetype' => array(
@@ -107,14 +152,24 @@ class Search {
      * The limit and offset properties may be reassigned on an instance any 
      * time. The change will take effect the next time a search is made.
      */
-    public $limit = 30;
-    public $offset = 0;
+    public $LIMIT = 30;
+    public $OFFSET = 0;
+
+    /**
+     * Normally, results must match all of the supplied facets--the conditions
+     * are conjunctive. In some cases, this is undesirable. Set the disjunctive 
+     * property to true, and conditions will be joined with 'OR'.
+     */
+    public $DISJUNCTIVE = false;
+
+    public $public      = false;
 
     /**
      * The table and model values must be configured here.
      */
-    private $table      = 'resources';
-    private $model      = 'Resource';
+    private $TABLE      = 'resources';
+    private $MODEL      = 'Resource';
+
     private $values     = array();
     private $joins      = array();
     private $joined     = array();
@@ -210,22 +265,23 @@ class Search {
     public function addFacet($category, $value) {
 
         # We can't add facets that we don't know about.
-        if (!array_key_exists($category, $this->mappings)) {
+        if (!array_key_exists($category, $this->MAPPINGS)) {
+            if ($category == 'text') return $this->_all($value);
             return false;
         }
 
         # Look up the mapping.
-        $map = $this->mappings[$category];
+        $map = $this->MAPPINGS[$category];
 
-        $table = isset($map['table']) ? $map['table'] : $this->table;
-        $model = isset($map['model']) ? $map['model'] : $this->model;
+        $model = isset($map['model']) ? $map['model'] : $this->MODEL;
         $comp = isset($map['comparison']) ? $map['comparison'] : 'equality';
         $field = $map['field'];
 
-        # Add a join, if instructed.
-        if (isset($map['join'])) {
-            $join = $map['join'];
-            $this->_addJoin($table, $model, $join[0], $join[1]);
+        # Add any joins that were given.
+        if (isset($map['joins'])) {
+            foreach($map['joins'] as $table => $predicate) {
+                $this->_addJoin($table, $predicate);
+            }
         }
 
         # Perform a value translation, if instructed.
@@ -270,10 +326,6 @@ class Search {
 
     /* PRIVATE METHODS */
 
-    private function _parseQueryString($query) {
-
-    }
-
     /**
      * Adds each facet in an array of facets.
      *
@@ -289,6 +341,15 @@ class Search {
             }
         }
         return $all;
+    }
+
+    private function _all($value) {
+        $this->DISJUNCTIVE = true;
+        foreach ($this->MAPPINGS as $facet => $map) {
+            if ($facet == 'access') continue;
+            if (!isset($map['comparison']) ||  $map['comparison'] == 'equality')
+                $this->addFacet($facet, $value);
+        }
     }
 
     /**
@@ -350,17 +411,25 @@ class Search {
      * Adds an INNER JOIN to the joins property, and the joining table to the
      * joined property. If the table is already in joined, we won't do another.
      *
+     * @param string table
+     * @param array predicate
      * @return bool True if the table was joined, false otherwise.
      */
-    private function _addJoin($table, $model, $rkey, $fkey) {
+    private function _addJoin($table, $predicate) {
         # Don't make duplicate joins. We'll keep track of the tables
         # we've joined.
         if (in_array($table, $this->joined)) {
             return false;
         }
+
+        # Take apart the predicate array.
+        $aliases = array_keys($predicate);
+        $fields = array_values($predicate);
+        $alias = $aliases[1];
+
         # Construct a join and add it to the joins array.
-        $join = " INNER JOIN `{$this->database}`.`{$table}` `$model` ";
-        $join .= "ON `{$this->model}`.`$rkey` = `{$model}`.`$fkey` ";
+        $join = " INNER JOIN `{$this->database}`.`{$table}` `$alias` ";
+        $join .= "ON `{$aliases[0]}`.`{$fields[0]}` = `{$aliases[1]}`.`{$fields[1]}` ";
         $this->joins[] = $join;
 
         # Add table to our joined array.
@@ -373,20 +442,24 @@ class Search {
      * Generates the search SQL by concatenating the instance properties
      * into a valid SQL statement.
      *
-     * @param bool and 
      * @return string SQL statement
      */
-    private function _buildStatement($and=true) {
-        $sql = "SELECT `{$this->model}`.`id` FROM `{$this->database}`.`{$this->table}` ";
-        $sql .= "AS `{$this->model}`";
-        foreach($this->joins as $j) {
+    private function _buildStatement() {
+        $lop = $this->DISJUNCTIVE ? 'OR' : 'AND';
+
+        $sql = "SELECT `{$this->MODEL}`.`id` FROM ";
+        $sql .= "`{$this->database}`.`{$this->TABLE}` ";
+        $sql .= "AS `{$this->MODEL}`";
+        foreach($this->joins as $j)
             $sql .= $j;
+        if ($this->conditions)
+            $sql .= " WHERE " . implode(" $lop ", $this->conditions);
+        if ($this->public) {
+            $where = $this->conditions ? " " : " WHERE ";
+            $sql .= "$where  AND  `Resource`.`public` = 1 ";
         }
-        if ($this->conditions) {
-            $sql .= " WHERE " . implode(" AND ", $this->conditions);
-        }
-        $sql .= " LIMIT {$this->limit}";
-        $sql .= " OFFSET {$this->offset}";
+        $sql .= " LIMIT {$this->LIMIT}";
+        $sql .= " OFFSET {$this->OFFSET}";
         return $sql;
     }
 

@@ -16,7 +16,7 @@
 
     Discussion.prototype.initialize = function() {
       this.collection = new arcs.collections.Discussion;
-      arcs.on('resourceChange', this.update, this);
+      arcs.on('arcs:indexchange', this.update, this);
       this.collection.on('add remove', this.render, this);
       return this.update();
     };

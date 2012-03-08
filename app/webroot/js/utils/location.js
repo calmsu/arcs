@@ -1,8 +1,8 @@
 (function() {
 
   arcs.utils.hash = {
-    set: function(val, uri) {
-      if (uri == null) uri = false;
+    set: function(val, uri_encode) {
+      if (uri_encode == null) uri_encode = false;
       this.history.push(document.location.hash);
       if (uri_encode) val = encodeURIComponent(val);
       return document.location.hash = val;

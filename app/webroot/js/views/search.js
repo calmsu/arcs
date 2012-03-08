@@ -78,7 +78,7 @@
 
     Search.prototype._anySelected = function() {
       if (!this._any()) {
-        arcs.utils.notify('Select at least one result', 'error');
+        arcs.notify('Select at least one result', 'error');
         return false;
       }
       return true;
@@ -182,7 +182,7 @@
       });
       return tag.save({
         error: function() {
-          return arcs.utils.notify('Not authorized', 'error');
+          return arcs.notify('Not authorized', 'error');
         }
       });
     };
@@ -196,7 +196,7 @@
       });
       return bkmk.save({
         error: function() {
-          return arcs.utils.notify('Not authorized', 'error');
+          return arcs.notify('Not authorized', 'error');
         }
       });
     };
@@ -222,7 +222,7 @@
           return window.open(arcs.baseURL + 'collection/' + model.id);
         },
         error: function() {
-          return arcs.utils.notify('An error occurred.', 'error');
+          return arcs.notify('An error occurred.', 'error');
         }
       });
     };
@@ -314,7 +314,7 @@
         return cbk.call.apply(cbk, [_this, el].concat(__slice.call(cbkArgs)));
       });
       n = this._selected().length;
-      return arcs.utils.notify(("" + (this._nsel()) + " resource" + ((0 < (_ref = this._nsel()) && _ref > 1) ? 's' : void 0) + " ") + ("" + ((0 < (_ref2 = this._nsel()) && _ref2 > 1) ? "were" : "was") + " " + name[1]), 'success');
+      return arcs.notify(("" + (this._nsel()) + " resource" + ((0 < (_ref = this._nsel()) && _ref > 1) ? 's' : void 0) + " ") + ("" + ((0 < (_ref2 = this._nsel()) && _ref2 > 1) ? "were" : "was") + " " + name[1]), 'success');
     };
 
     Search.prototype.toggleView = function() {
@@ -347,7 +347,7 @@
       if (append == null) append = false;
       $results = $('#search-results');
       template = this.grid ? 'search/grid' : 'search/list';
-      content = arcs.tmpl(template, results);
+      content = arcs.tmpl(template, results, (!this.grid ? _.template : void 0));
       if (append) {
         $results.append(content);
       } else {
