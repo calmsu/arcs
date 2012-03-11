@@ -69,7 +69,8 @@ class arcs.views.Hotspot extends Backbone.View
       container: $('#hotspot-search')
       success: =>
         $results.html arcs.tmpl 'search/grid',
-          results: search.results.toJSON()
+          (results: search.results.toJSON()),
+          _.template
 
   # Save the hotspot after the ImgAreaSelect callback.
   saveHotspot: (data) ->
