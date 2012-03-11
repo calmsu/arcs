@@ -100,22 +100,14 @@ textarea {
   overflow: auto;
   vertical-align: top;
 }
-/* HTML5.less
- * In cooperation with Modernizr...fixes specific to HTML5
- * ---------------------------------------------------------------------------- */
-::selection {
-  background: #049cdb;
-  color: #fff;
-}
-a::selection {
-  text-decoration: underline;
-}
-a::-moz-selection {
-  text-decoration: underline;
-}
+::selection,
 ::-moz-selection {
   background: #049cdb;
   color: #fff;
+}
+a::selection,
+a::-moz-selection {
+  text-decoration: underline;
 }
 .no-details summary:hover,
 .no-details summary:focus {
@@ -124,12 +116,6 @@ a::-moz-selection {
 /* The following styles are not really needed, since the jQuery script takes care of hiding/displaying the elements. */
 /* However, we're still gonna use CSS as well to prevent FOUC in browsers that understand these selectors. */
 /* Remember: by default (and probably most of the time), the contents of the <details> element are hidden. */
-/* This doesn't work very well in Firefox 3.6.x */
-/* .no-details details[open] > * { display: block; } */
-/* The following doesn't toggle correctly in Webkit:
-		   .no-details details summary:before { content: '► '; }
-		   .no-details details[open] summary:before { content: '▼ '; }
-	   */
 /* And yes, it should really be ::before, but that doesn't work in IE8 */
 .no-details details summary:before {
   width: 20px;
@@ -138,12 +124,12 @@ a::-moz-selection {
 .no-details details.open summary:before {
   content: '▼ ';
 }
-/* For IE6 and IE7, who don't support generated content, you could use padding-left + a background image instead */
-/* I really couldn't be bothered though. */
-/*
-		   .no-details details summary { padding-left: 20px; background: url(img/arrow-sprite.png) no-repeat 0 0; }
-		   .no-details details.open summary { background-position: 0 -20px; }
-	   */
+/* 
+For IE6 and IE7, who don't support generated content, you could use 
+padding-left + a background image instead.
+
+I really couldn't be bothered though.
+*/
 .no-details details summary {
   display: block;
 }
@@ -4192,7 +4178,8 @@ div#toolbar a#logo-wrapper:hover {
 }
 div#toolbar h1#logo {
   display: inline;
-  font-size: 19.5px;
+  font-size: 18.2px;
+  font-weight: 500;
   text-shadow: 0 1px 1px #fff;
   padding-left: 45px;
   padding-bottom: 5px;
@@ -5070,7 +5057,7 @@ div#search-wrapper {
 .result.list td.values {
   padding-left: 10px;
   padding-right: 20px;
-  min-width: 120px;
+  max-width: 300px;
 }
 .result.selected img {
   padding: 0px;
@@ -5458,31 +5445,69 @@ span.tag-link {
 #batch-upload .accordion-body {
   border-top: none;
 }
-#batch-upload .progress {
+#batch-upload .accordion-body input[type="text"] {
   border: 1px solid #888;
+}
+#batch-upload .progress {
+  border: 1px solid #666;
+  border-radius: 0px;
+  -webkit-border-radius: 0px;
+  -moz-border-radius: 0px;
   float: right;
   width: 150px;
   margin-bottom: 0px;
 }
-#batch-upload #dropzone {
-  height: 140px;
-  text-align: center;
-  font-size: 160%;
-  border: 2px dashed #09c;
-  text-shadow: 0 1px 1px #ffffff;
-  border-radius: 5px;
-  -webkit-border-radius: 5px;
-  -moz-border-radius: 5px;
-  margin-left: auto;
-  margin-right: auto;
+#batch-upload .progress .bar {
+  border-radius: 0px;
+  -webkit-border-radius: 0px;
+  -moz-border-radius: 0px;
 }
-#batch-upload #dropzone div {
-  margin-top: 40px;
-  color: #08c;
-  text-shadow: 0 1px 1px #ffffff;
-  border-radius: 5px;
-  -webkit-border-radius: 5px;
-  -moz-border-radius: 5px;
+#batch-upload div.controls {
+  background-color: #bbb;
+  margin-left: -16px;
+  margin-right: -16px;
+  margin-bottom: -1px;
+  padding-left: 10px;
+  border: 1px solid #888;
+  border-bottom-left-radius: 5px;
+  border-bottom-right-radius: 5px;
+}
+#batch-upload div.controls button#upload-btn {
+  position: relative;
+  bottom: 12px;
+}
+#batch-upload div.controls span#progress-all {
+  float: right;
+  position: relative;
+  font-style: italic;
+  color: black;
+  top: 15px;
+  right: 5px;
+}
+#batch-upload div.controls div#fileupload-wrapper {
+  margin-top: 10px;
+  width: 65px;
+  height: 20px;
+  cursor: pointer;
+}
+#batch-upload div.controls div#fileupload-wrapper span {
+  float: left;
+  top: 5px;
+}
+#batch-upload div.controls div#fileupload-wrapper input#fileupload {
+  cursor: pointer;
+  position: relative;
+  float: left;
+  top: -20px;
+  opacity: 0;
+  filter: alpha(opacity=0);
+  filter: alpha(opacity=30);
+  -moz-opacity: 0;
+  -khtml-opacity: 0;
+  opacity: 0;
+  opacity: 0;
+  filter: alpha(opacity=0);
+  height: 100%;
 }
 /* Notifications */
 .notification {

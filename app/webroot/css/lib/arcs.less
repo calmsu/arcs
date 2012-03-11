@@ -96,7 +96,8 @@ div#toolbar {
 
   h1#logo {
     display: inline;
-    font-size: @baseFontSize * 1.5;
+    font-size: @baseFontSize * 1.4;
+    font-weight: 500;
     text-shadow: 0 1px 1px #fff;
     padding-left:45px;
     padding-bottom:5px;
@@ -926,7 +927,7 @@ div#search-wrapper {
     td.values {
       padding-left:10px;
       padding-right:20px;
-      min-width:120px;
+      max-width:300px;
     }
   }
 
@@ -1287,29 +1288,60 @@ span.tag-link {
 
   .accordion-body {
     border-top:none;
+    input[type="text"] {
+      border:1px solid #888;
+    }
   }
 
   .progress {
-    border:1px solid #888;
+    border:1px solid #666;
+    .rounded-corners(0px);
     float:right;
     width:150px;
     margin-bottom:0px;
+    .bar { .rounded-corners(0px) }
   }
 
-  #dropzone {
-    height:140px;
-    text-align:center;
-    font-size:160%;
-    border:2px dashed #09c;
-    .text-shadow(#fff);
-    .rounded-corners(5px);
-    .centered;
+  div.controls {
+    background-color:#bbb;
+    margin-left:-16px;
+    margin-right:-16px;
+    margin-bottom:-1px;
+    padding-left:10px;
+    border:1px solid #888;
+    .rounded-corners-bottom(5px);
 
-    div {
-      margin-top:40px;
-      color: #08c;
-      .text-shadow(#fff);
-      .rounded-corners(5px);
+    button#upload-btn {
+      position:relative;
+      bottom:12px;
+    }
+
+    span#progress-all {
+      float:right;
+      position:relative;
+      font-style:italic;
+      color:black;
+      top:15px;
+      right:5px;
+    }
+
+    div#fileupload-wrapper {
+      margin-top:10px;
+      width:65px;
+      height:20px;
+      cursor:pointer;
+      span {
+        float:left;
+        top:5px;
+      }
+      input#fileupload {
+        cursor:pointer;
+        position:relative;
+        float:left;
+        top:-20px;
+        .opacity(0);
+        height:100%;
+      }
     }
   }
 }
