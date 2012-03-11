@@ -119,7 +119,7 @@
     };
 
     Search.prototype.setupSearch = function() {
-      var $actions, $results, $window,
+      var $actions, $results, $window, pos,
         _this = this;
       this.search = new arcs.utils.Search({
         container: $('#search-wrapper'),
@@ -131,16 +131,15 @@
         }
       });
       this.searchPage = 1;
-      $actions = $('#search-actions');
+      $actions = this.$('#search-actions');
+      $results = this.$('#search-results');
       $window = $(window);
-      $results = $('#search-results');
+      pos = $actions.offset().top;
       $window.scroll(function() {
-        if ($window.scrollTop() > 160) {
-          $actions.addClass('toolbar-fixed');
-          $actions.width($results.width() + 23);
+        if ($window.scrollTop() > pos) {
+          $actions.addClass('toolbar-fixed').width($results.width() + 23);
         } else {
-          $actions.removeClass('toolbar-fixed');
-          $actions.width('auto');
+          $actions.removeClass('toolbar-fixed').width('auto');
         }
         if ($window.scrollTop() === $(document).height() - $window.height()) {
           _this.searchPage += 1;
@@ -154,7 +153,7 @@
         }
       });
       return $window.resize(function() {
-        if ($window.scrollTop() > 160) {
+        if ($window.scrollTop() > pos) {
           return $actions.width($results.width() + 23);
         }
       });
@@ -236,7 +235,7 @@
         inputs: {
           tag: {
             label: false,
-            multicomplete: arcs.utils.complete.tag,
+            complete: arcs.utils.complete.tag,
             focused: true
           }
         },
@@ -347,7 +346,7 @@
       if (append == null) append = false;
       $results = $('#search-results');
       template = this.grid ? 'search/grid' : 'search/list';
-      content = arcs.tmpl(template, results, (!this.grid ? _.template : void 0));
+      content = arcs.tmpl(template, results, _.template);
       if (append) {
         $results.append(content);
       } else {

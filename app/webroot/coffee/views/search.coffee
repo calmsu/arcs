@@ -121,18 +121,17 @@ class arcs.views.Search extends Backbone.View
 
     @searchPage = 1
 
-    $actions = $('#search-actions')
+    $actions = @$('#search-actions')
+    $results = @$('#search-results')
     $window = $(window)
-    $results = $('#search-results')
+    pos = $actions.offset().top
 
     $window.scroll =>
       # Toggle the toolbar's fixed position
-      if $window.scrollTop() > 160
-        $actions.addClass 'toolbar-fixed' 
-        $actions.width $results.width() + 23
+      if $window.scrollTop() > pos
+        $actions.addClass('toolbar-fixed').width $results.width() + 23
       else
-        $actions.removeClass 'toolbar-fixed'
-        $actions.width 'auto'
+        $actions.removeClass('toolbar-fixed').width 'auto'
 
       # If the scroll position is at the bottom, get the more results.
       if $window.scrollTop() == $(document).height() - $window.height()
@@ -146,8 +145,7 @@ class arcs.views.Search extends Backbone.View
     # Fix the toolbar width on resizes. 
     # TODO: do this in the stylesheet.
     $window.resize ->
-      if $window.scrollTop() > 160
-        $actions.width $results.width() + 23
+      $actions.width($results.width() + 23) if $window.scrollTop() > pos
 
 
   ### Actions that take one or more search results ###
@@ -211,7 +209,7 @@ class arcs.views.Search extends Backbone.View
       inputs:
         tag:
           label: false
-          multicomplete: arcs.utils.complete.tag
+          complete: arcs.utils.complete.tag
           focused: true
       backdrop: true
       buttons: 
@@ -306,7 +304,7 @@ class arcs.views.Search extends Backbone.View
   _render: (results, append=false) ->
     $results = $('#search-results')
     template = if @grid then 'search/grid' else 'search/list'
-    content = arcs.tmpl template, results, (_.template if !@grid)
+    content = arcs.tmpl template, results, _.template
     if append
       $results.append content
     else
