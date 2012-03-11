@@ -1,5 +1,7 @@
 <div class="row" id="user-info"> <!-- class="row span12"> -->
 	<div class="span10">
+        <img class="pull-left" 
+            src="http://gravatar.com/avatar/<?php echo $user_info['User']['gravatar'] ?>">
         <h2><?php echo $user_info['User']['name'] ?></h2>
 		<p>
 			<strong class="label label-info">Role:</strong> 
