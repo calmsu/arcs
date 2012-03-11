@@ -16,13 +16,16 @@ class User extends AppModel {
      */
     function afterFind($results, $primary) {
         if (!$primary) {
-            if (isset($results[0]['User']['password']))
-                $results[0]['User']['password'] = '****';
-            else if (isset($results['User']['password'])) 
-                $results['User']['password'] = '****';
-            else if (isset($results['password']))
-                $results['password'] = '****';
+            $results = $this->resultsMap($results, function($r) {
+                $r['password'] = '****';
+                return $r;
+            });
         }
+        $results = $this->resultsMap($results, function($r) {
+            if (isset($r['email']))
+                $r['gravatar'] = md5(strtolower($r['email']));
+            return $r;
+        });
         return $results;
     }
 

@@ -17,25 +17,17 @@ class Resource extends AppModel {
      * Note that we don't store those, so we must dynamically generate them.
      */
     public function afterFind($results, $primary) {
-        if (!$primary) {
-            if (isset($results['sha'])) {
-                $sha = $results['sha'];
-                $name = $results['file_name'];
-                $results['url'] = $this->url($sha, $name);
-                $results['thumb'] = $this->url($sha, 'thumb.png');
+        # Add the thumbnail and resource urls to the results array.
+        # We're using our resultsMap method, passing in $this and using it
+        # internally as $c.
+        $results = $this->resultsMap($results, function($r, $c) {
+            if (isset($r['sha']) && isset($r['file_name'])) {
+                $r['url'] = $c->url($r['sha'], $r['file_name']);
+                $r['thumb'] = $c->url($r['sha'], 'thumb.png');
             }
-            return $results;
-        } else if (isset($results[0]['Resource']['sha'])) { 
-            foreach($results as $k=>$v) {
-                $sha = $results[$k]['Resource']['sha'];
-                $name = $results[$k]['Resource']['file_name'];
-                $results[$k]['Resource']['url'] = $this->url($sha, $name);
-                $results[$k]['Resource']['thumb'] = $this->url($sha, 'thumb.png');
-            }
-            return $results;
-        } else {
-            return $results;
-        }
+            return $r;
+        }, $this);
+        return $results;
     }
 
     /**
