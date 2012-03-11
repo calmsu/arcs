@@ -1,15 +1,21 @@
 (function() {
 
   arcs.notify = function(msg, type, hide) {
-    var $el, duration;
+    var $el, duration, types;
     if (type == null) type = 'info';
     if (hide == null) hide = 3;
+    types = {
+      info: 'Heads Up!',
+      error: 'Error',
+      success: 'Success!'
+    };
     if (!$('#notification').length) $('body').append(arcs.tmpl('ui/notification'));
     $el = $('#notification');
-    $el.find('#msg').html(msg);
-    if (type !== 'info' && type !== 'error' && type !== 'success') type = 'info';
+    if (!(type in types)) type = 'info';
     $el.removeClass('alert-info alert-error alert-success');
     $el.addClass("alert-" + type);
+    $el.find('#header').html(types[type]);
+    $el.find('#msg').html(msg);
     $el.show();
     if (hide) {
       duration = _.isNumber(hide) ? hide : 3;
