@@ -1,10 +1,10 @@
 <table>
 <% _.each(results, function(r, i) { %>
 <tr class="result list">
-    <td>
-      <div style="width:100px;">
-        <img src="<%= r.thumb %>" data-id="<%= r.id %>" style="float:right;width:100px;" />
-        <div style="float:right; position:relative; bottom:25px; right:0px;">
+    <td class="thumb-wrapper">
+      <div>
+        <img src="<%= r.thumb %>" data-id="<%= r.id %>" />
+        <div class="overlay">
           <% if (r.comments.length) { %>
             <%= r.comments.length %> <i class="icon-comment"></i>
           <% } if (r.hotspots.length) { %>
@@ -13,24 +13,24 @@
         </div>
       </div>
     </td>
-    <td style="width:65px; min-width:0px;">
+    <td class="keys">
       <div><em>title:</em></div>
       <div><em>user:</em></div>
       <div><em>file-name:</em></div>
       <div><em>file-size</em></div>
     </td>
-    <td style="padding-left:10px;">
+    <td class="values">
       <div><strong><%= r.title %></strong></div>
       <div><%= r.user.name %></div>
       <div><a href="<%= r.url %>"><%= r.file_name %></a></div>
       <div><%= r.file_size %></div>
     </td>
-    <td style="padding-left:20px; width:65px; min-width:0px;">
+    <td class="keys">
       <div><em>access:</em></div>
       <div><em>created:</em></div>
       <div><em>tags:</em></div>
     </td>
-    <td style="padding-left:10px;">
+    <td class="values">
       <div><strong><%= r.public ? 'public' : 'private' %></strong></div>
       <div><%= r.created %></div>
       <div>
