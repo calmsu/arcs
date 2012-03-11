@@ -18,7 +18,7 @@ Facet         | Description
               |
 `caption`     | Matches annotation caption text.
               |
-`collection`\*| Matches resources within a collection. For example:
+`collection`  | Matches resources within a collection. For example:
               | `collection: Bones 1980's`
               |
 `comment`     | Matches comment text.

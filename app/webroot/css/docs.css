@@ -1,4 +1,4 @@
-.span9 {
+.doc {
     font-family: Helvetica Neue;
     height:100%;
     background-color:#fcfcfc;
@@ -6,13 +6,14 @@
     border:1px solid #ccc;
     border-radius:5px;
     color:#333;
+    margin-bottom:50px;
 }
 
-.span9 img {
+.doc img {
     box-shadow: 2px 2px 2px #bbb;
 }
 
-.span9 h1, h2, h3, h4 {
+.doc h1, h2, h3, h4 {
     text-shadow:0 1px 1px #fff;
     color:#444;
     font-weight:normal;
@@ -20,46 +21,45 @@
     margin-bottom:10px;
 }
 
-.span9 h1 {
+.doc h1 {
     font-size:200%;
 }
 
-.span9 h2 {
+.doc h2 {
     font-size:160%;
     text-decoration:underline;
 }
 
-.span9 h3 {
+.doc h3 {
     font-size:150%;
 }
 
-.span9 h4 {
+.doc h4 {
     font-size:140%;
 }
 
-.span9 code {
+.doc code {
     color:#333;
 }
 
-.span9 pre code {
+.doc pre code {
     border:none;
 }
 
-.span9 table th {
+.doc table th {
     padding-bottom:20px;
 }
 
-.span9 table td {
+.doc table td {
     padding-right:10px;
     padding-left:10px;
     padding-bottom:5px;
 }
 
-.span9 table td:nth-child(odd) {
+.doc table td:nth-child(odd) {
     border-right:1px solid #ccc;
     text-align:right;
 }
-
 
 .well {
     border-radius:5px;

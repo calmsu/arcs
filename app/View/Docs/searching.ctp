@@ -31,7 +31,7 @@ query that will find everything that John uploaded yesterday.</p>
 <td></td>
 </tr>
 <tr>
-<td><code>collection</code>*</td>
+<td><code>collection</code></td>
 <td>Matches resources within a collection. For example:</td>
 </tr>
 <tr>

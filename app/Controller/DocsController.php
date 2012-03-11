@@ -23,6 +23,7 @@ class DocsController extends AppController {
             'Resources' => 'about-resources',
             'Collections' => 'about-collections',
             'Uploading Resources' => 'uploading',
+            'Your Account' => 'account',
             'Searching the Catalog' => 'searching',
             'Bulk Actions' => 'bulk-actions',
             'Developer' => null,
