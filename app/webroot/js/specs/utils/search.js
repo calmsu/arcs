@@ -18,9 +18,11 @@
     it('inits Visual Search', function() {
       return expect(search.vs).toBeTruthy();
     });
-    it('can be run', function() {
+    it('can be run, returns results', function() {
       search.run();
-      return expect(search.results).toBeDefined();
+      expect(search.results).toBeDefined();
+      expect(search.results.length).toBeTruthy();
+      return expect;
     });
     it('has a ResultSet object', function() {
       search.run();

@@ -16,9 +16,11 @@ describe 'arcs.utils.search', ->
     it 'inits Visual Search', ->
         expect(search.vs).toBeTruthy()
 
-    it 'can be run', ->
+    it 'can be run, returns results', ->
         search.run()
         expect(search.results).toBeDefined()
+        expect(search.results.length).toBeTruthy()
+        expect
 
     it 'has a ResultSet object', ->
         search.run()
