@@ -7,5 +7,8 @@
 <p>stub</p>
 <h2>Creating a new Collection</h2>
 <p>stub</p>
-<h2>Setting Attributes</h2>
+<h2>Editing Attributes</h2>
+<h3>Single</h3>
+<p>stub</p>
+<h3>Batch</h3>
 <p>stub</p>

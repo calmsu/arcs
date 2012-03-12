@@ -17,6 +17,11 @@ Creating a new Collection
 -------------------------
 stub
 
-Setting Attributes
+Editing Attributes
 ------------------
+
+### Single
+stub
+
+### Batch
 stub

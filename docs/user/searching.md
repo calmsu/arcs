@@ -59,3 +59,7 @@ Auto-completion
 ---------------
 Facet values will be auto-completed when possible. For certain facets,
 like `user`, we'll only auto-complete the values if you're logged in.
+
+Boolean Logic
+-------------
+stub
