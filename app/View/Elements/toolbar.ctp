@@ -8,9 +8,9 @@
 	<?php endif ?>
     <?php if ($user['loggedIn']): ?>
     <div class="btn-group toolbar-btn">
-        <button class="btn">
+        <a class="btn" href="<?php echo $this->Html->url('/user/' . $user['username']) ?>">
             <i class="icon-user"></i> <?php echo $user['name'] ?> 
-        </button>
+        </a>
         <button class="btn dropdown-toggle" data-toggle="dropdown">
             <span class="caret"></span>
         </button>
