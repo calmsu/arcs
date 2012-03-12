@@ -1,9 +1,18 @@
 #!/usr/bin/env bash
 #
 # Does pending thumbnail and PDF process jobs.
-# The actual script is located at $ARCS/app/Console/Command/WorkerShell.php
+# The actual script is located at $ARCS/app/Console/Command/WorkerShell.php.
 #
-# Probably needs to be run as the web-server user or root.
+# Needs to be run as the web user. Will try to use sudo to that end if logged
+# in as someone else.
 
 DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
-${DIR}/../app/Console/cake worker
+WWW_USER="www-data"
+USER=`whoami`
+
+if [ $USER != $WWW_USER ]
+then
+    sudo -u $WWW_USER ${DIR}/../app/Console/cake worker
+else
+    ${DIR}/../app/Console/cake worker
+fi
