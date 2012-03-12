@@ -1,10 +1,10 @@
 <div class="row" id="user-info"> <!-- class="row span12"> -->
 	<div class="span10">
-        <img class="pull-left" 
+        <img class="thumbnail pull-left" style="margin-right:10px"
             src="http://gravatar.com/avatar/<?php echo $user_info['User']['gravatar'] ?>">
         <h2><?php echo $user_info['User']['name'] ?></h2>
 		<p>
-			<strong class="label label-info">Role:</strong> 
+			<strong class="label label-info">Role:</strong>&nbsp;
             <?php 
                 $role = $user_info['User']['role'];
                 if ($role == 0) echo "Admin";
@@ -36,6 +36,5 @@
 	    <?php echo $this->element('tabs/flags-tab') ?>
 	    <?php echo $this->element('tabs/discussion-tab') ?>
 	    <?php echo $this->element('tabs/collection-tab') ?>
-               
     </div><!-- sidebar-tab-content -->		    
 </div><!-- tab-wrapper -->

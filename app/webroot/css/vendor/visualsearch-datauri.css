@@ -174,7 +174,7 @@ Source: http://meyerweb.com/eric/thoughts/2007/05/01/reset-reloaded/
     padding-top: 1px;
     padding-bottom: 2px;
     padding-right: 3px;
-
+    border:none;
   }
   .VS-search .search_facet.is_editing input,
   .VS-search .search_facet.is_selected input {
@@ -221,6 +221,7 @@ Source: http://meyerweb.com/eric/thoughts/2007/05/01/reset-reloaded/
     z-index: 100;
     min-width: 4px;
     position: relative;
+    border:none;
   }
   .VS-search .search_input.is_editing input {
     color: #202020;

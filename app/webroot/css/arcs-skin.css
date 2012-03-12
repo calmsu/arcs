@@ -4173,6 +4173,20 @@ html {
   margin-left: 10px;
   margin-right: 10px;
 }
+body {
+  background-color: #efefef;
+}
+input[type=text],
+input[type=password],
+textarea {
+  border: 1px solid #999;
+  text-shadow: 0 1px 1px #ffffff;
+}
+input[type=text]:focus,
+input[type=password]:focus,
+textarea:focus {
+  border-color: rgba(82, 168, 236, 0.8);
+}
 div#toolbar a#logo-wrapper:hover {
   text-decoration: none;
 }
@@ -4847,9 +4861,6 @@ section#upload-form select#resource-type,
 section#upload-form select#choose-notebook {
   display: block;
 }
-body {
-  background-color: #efefef;
-}
 div#toolbar {
   background: -webkit-gradient(linear, left top, left bottom, from(#cccccc), to(#bbbbbb));
   /* webkit */
@@ -5034,7 +5045,12 @@ div#search-wrapper {
   max-height: 140px;
   margin: 20px;
 }
+.result.list {
+  border-bottom: 1px solid #888;
+}
 .result.list td.thumb-wrapper {
+  padding-top: 20px;
+  padding-left: 20px;
   padding-right: 10px;
 }
 .result.list td.thumb-wrapper div {
@@ -5270,19 +5286,47 @@ textarea#content {
   margin-top: 10%;
   margin-bottom: 100px;
   padding-bottom: 0px;
+  margin-top: 0px;
+  margin-bottom: 10px;
+}
+#login h3 {
+  font-weight: normal;
 }
 #login input[type=text],
 #login input[type=password] {
   width: 290px;
 }
-.login-link {
+#login .login-link {
   float: right;
   font-size: 70%;
   color: #333;
 }
-input,
-textarea {
+#login-header {
+  width: 300px;
+  margin-top: 10%;
+  margin-left: auto;
+  margin-right: auto;
+  position: relative;
+  left: 20px;
+}
+#login-header h1 {
+  display: inline;
+  position: relative;
+  bottom: 10px;
+  font-weight: 300;
   text-shadow: 0 1px 1px #ffffff;
+}
+#login-footer {
+  width: 300px;
+  margin-left: auto;
+  margin-right: auto;
+  text-shadow: 0 1px 1px #ffffff;
+}
+#login-footer a {
+  color: #444;
+}
+#login-footer span {
+  margin-left: 30px;
 }
 /* Give all of our divs a custom scrollbar */
 div::-webkit-scrollbar {
@@ -5368,7 +5412,8 @@ div::-webkit-scrollbar-thumb {
   font-weight: normal;
 }
 .hotspot-modal .modal-header {
-  border-bottom: 1px solid #555;
+  background-color: #dfdfdf !important;
+  border-bottom: 1px solid #999 !important;
   outline: 1px solid #fff;
   font-size: 110%;
   height: 34px;
@@ -5538,7 +5583,7 @@ div#search-results-wrapper {
 div#search-results-wrapper div#search-results {
   margin-top: 18px;
   border: 1px solid #888;
-  background-color: #bbb;
+  background: #bbb;
   color: #222;
   min-height: 700px;
   text-align: left;
@@ -5586,6 +5631,16 @@ div#search-results-wrapper .toolbar-fixed {
   position: fixed;
   top: 0px;
   width: 100%;
+}
+.modal .modal-header {
+  background-color: whiteSmoke;
+  border-bottom: 1px solid #ddd;
+  box-shadow: inset 0 1px 0 #ffffff;
+}
+.modal .modal-header h3 {
+  color: #333;
+  font-weight: normal;
+  text-shadow: 0 1px 1px #ffffff;
 }
 .hidden {
   display: none;
