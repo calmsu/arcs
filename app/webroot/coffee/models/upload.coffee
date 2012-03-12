@@ -2,9 +2,11 @@
 # -------------
 class arcs.models.Upload extends Backbone.Model
   defaults:
-    id: null
-    fileName: null
-    lastModifiedDate: null
+    name: null
+    sha: null
+    identifier: null
     progress: 0
     size: 0
     type: 'unknown'
+    title: null
+    lastModifiedDate: null

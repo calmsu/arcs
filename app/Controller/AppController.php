@@ -29,7 +29,9 @@ class AppController extends Controller {
             'logo' => true,
             'buttons' => array()
         ));
+        $this->set('show_toolbar', true);
         $this->set('dev', Configure::read('debug'));
+        $this->RequestHandler->addInputType('json', array('json_decode', true));
     }
 
     /**
