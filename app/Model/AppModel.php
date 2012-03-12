@@ -19,6 +19,17 @@ class AppModel extends Model {
     }
 
     /*
+     * Convenience method for saving a model from a simple array of
+     * fields. It wraps the given array in another array and sends it
+     * off to save().
+     */
+    public function add($data) {
+        return $this->save(array(
+            $this->name => $data
+        ));
+    }
+
+    /*
      * This is a utility method for reformatting the results arrays that are
      * returned by the afterFind callback. The results can take a few different
      * formats. This method will normalize the results and provide them in a
