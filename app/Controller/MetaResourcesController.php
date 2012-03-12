@@ -24,7 +24,6 @@ class MetaResourcesController extends AppController {
             $this->response->statusCode(404);
             $this->redirect('/404');
         }
-        $this->RequestHandler->addInputType('json', array('json_decode', true));
         $this->Auth->allow('view');
     }
 

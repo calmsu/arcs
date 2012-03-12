@@ -14,6 +14,7 @@ require_once(APPLIBS . DS . 'Search.php');
  */
 class ResourcesController extends AppController {
     public $name = 'Resources';
+    public $uses = array('Resource', 'Task', 'Collection');
 
     public function beforeFilter() {
         # The App Controller will set some common view variables (namely a 
@@ -24,15 +25,9 @@ class ResourcesController extends AppController {
         # Read-only actions, such as viewing resources and associated comments
         # are allowed by default.
         $this->Auth->allow(
-            'index', 
-            'view', 
-            'search', 
-            'comments', 
-            'hotspots', 
-            'tags',
-            'complete'
+            'index', 'view', 'search', 'comments', 
+            'hotspots', 'tags', 'complete'
         );
-        $this->RequestHandler->addInputType('json', array('json_decode', true));
     }
 
     /**
@@ -47,12 +42,12 @@ class ResourcesController extends AppController {
             # $this->data, but some table fields need to be calculated first.
            
             # Convenience variable for the Resource key of the data prop array.
-            $rdata = $this->data['Resource'];
+            $data = $this->data['Resource'];
 
             # Extract some of the file info.
-            $fname = $rdata['file']['name'];
-            $tmp   = $rdata['file']['tmp_name'];
-            $mime  = $rdata['file']['type'];
+            $fname = $data['file']['name'];
+            $tmp   = $data['file']['tmp_name'];
+            $mime  = $data['file']['type'];
 
             # Create the resource file.
             $sha = $this->Resource->createFile($tmp, $fname);
@@ -67,67 +62,44 @@ class ResourcesController extends AppController {
             }
 
             # Save a DB record.
-            $this->Resource->save(array(
-                'Resource' => array(
-                    'sha' => $sha,
-                    'title' => $rdata['title'],
-                    'type' => $rdata['type'],
-                    'public' => $rdata['public'],
-                    'file_name' => $fname,
-                    'file_size' => $rdata['file']['size'],
-                    'mime_type' => $mime,
-                    'user_id' => $this->Auth->user('id')
-            )));
+            $this->Resource->add(array(
+                'sha' => $sha,
+                'title' => $data['title'],
+                'type' => $data['type'],
+                'public' => $data['public'],
+                'file_name' => $fname,
+                'file_size' => $data['file']['size'],
+                'mime_type' => $mime,
+                'user_id' => $this->Auth->user('id')
+            ));
+            $id = $this->Resource->id;
 
             # Optionally add it to a collection.
-            if ($collection_id) {
-                $this->Resource->Membership->save(array(
-                    'Membership' => array(
-                        'resource_id' => $this->Resource->id,
-                        'collection_id' => $collection_id
-                    )
-                ));
-            }
+            if ($collection_id)
+                $this->Resource->Membership->pair($id, $collection_id);
 
             # Save any tags.
-            if (strlen($rdata['tags'])) {
-                # Remove whitespace
-                $tags = $rdata['tags'];
-                $tagRecords = array();
-                foreach(explode(',', $tags) as $t) {
-                    $t = trim($t);
-                    if (strlen($t)) {
-                        array_push($tagRecords, array(
-                            'Tag' => array(
-                                'resource_id' => $this->Resource->id,
-                                'tag' => $t
-                            )
-                        ));
-                    }
+            if ($data['tags']) {
+                $tags = $this->Resource->Tag->fromString($data['tags']);
+                $records = array();
+                foreach ($tags as $t) {
+                    $records[] = array(
+                        'resource_id' => $id,
+                        'user_id' => $this->Auth->user('id'),
+                        'tag' => $t
+                    );
                 }
-                # If not empty:
-                if ($tagRecords) {
-                    $this->Resource->Tag->saveMany($tagRecords);
-                }
+                $this->Resource->Tag->saveMany($records);
             }
 
             # Make a task to get a thumbnail made, don't have time now.
             # (We need the requests to go quickly for batch uploads.)
-            $this->loadModel('Task');
-            $this->Task->save(array(
-                'Task' => array(
-                    'resource_id' => $this->Resource->id,
-                    'job' => 'thumb',
-                    'status' => 1,
-                    'progress' => 0
-            )));
+            $this->Task->queue('thumb', $id);
 
             # Set a flash message, redirect to the resource view.
             $this->Session->setFlash('Resource created.', 'flash_success');
-            $this->redirect(array('action' => 'view', $this->Resource->id));
-
+            #$this->redirect(array('action' => 'view', $id));
         } else {
-
             $config = Configure::read('resources.types');
             $types = is_array($config) ? $config : array();
             # Prepare our options array. Keys = values.
@@ -145,11 +117,10 @@ class ResourcesController extends AppController {
      * 
      * @param id    resource id
      */
-    public function pdfSplit($id) {
+    public function split_pdf($id) {
         $resource = $this->Resource->findById($id);
         if ($resource['Resource']['mime_type'] == 'application/pdf') {
             # Create a new collection for the split.
-            $this->loadModel('Collection');
             $this->Collection->save(array(
                 'Collection' => array(
                     'title' => $resource['Resource']['title'],
@@ -160,15 +131,7 @@ class ResourcesController extends AppController {
             )));
 
             # Make a new task to split the PDF.
-            $this->loadModel('Task');
-            $this->Task->save(array(
-                'Task' => array(
-                    'resource_id' => $id,
-                    'job' => 'pdf_split',
-                    'status' => 1,
-                    'data' => $this->Collection->id,
-                    'progress' => 0
-            )));
+            $this->Task->queue('split_pdf', $id, $this->Collection->id);
 
             # If request is ajax, return a response here.
             if ($this->request->is('ajax')) {
@@ -249,7 +212,7 @@ class ResourcesController extends AppController {
             $this->set('memberships', $memberships);
             $this->set('resource', $resource['Resource']);
 
-            # On the first request of a particualar resource (usually directly 
+            # On the first request of a particular resource (usually directly 
             # after upload), we might prompt the user for additional 
             # actions/information. Here we're turning that off for future 
             # requests. (Note that the first_req will still be true within the 

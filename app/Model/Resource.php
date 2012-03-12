@@ -1,6 +1,7 @@
 <?php
 
 require_once(APPLIBS . 'Mime.php');
+require_once(APPLIBS . 'ImageUtility.php');
 
 class Resource extends AppModel {
     public $name = 'Resource';
@@ -71,7 +72,7 @@ class Resource extends AppModel {
             # Return false on failure.
             if (!$success) return false;
             # Copy over a default thumbnail.
-            $this->_setDefaultThumb($dst);
+            $this->_setDefaultThumb($sha);
         }
 
         # Create a hard link to the file, if the file doesn't already exist.
@@ -118,7 +119,13 @@ class Resource extends AppModel {
      * @param fname resource's filename
      */
     public function size($sha, $fname) {
-        return filesize($this->path($sha) . DS . $fname);
+        return filesize($this->path($sha, $fname));
+    }
+
+    public function makeThumbnail($sha) {
+        $src = $this->path($sha, $sha);
+        $dst = $this->path($sha, 'thumb.png');
+        return ImageUtility::thumbnail($src, $dst);
     }
 
     /* PRIVATE METHODS */
@@ -161,15 +168,14 @@ class Resource extends AppModel {
      * We don't create thumbnails during the Request-Response loop, but 
      * we'll copy over a placeholder.
      *
-     * @param mime   resource's MIME type (for example 'image/gif')
-     * @param path   result of `path` method called with the resource's sha
+     * @param sha
      */
-    private function _setDefaultThumb($path) {
-        $type = Mime::getExt($path);
-        $src = $type ? $type . '.png' : 'generic.png';
+    private function _setDefaultThumb($sha) {
+        $type = Mime::getExt($this->path($sha, $sha));
+        $thumb = $type ? $type . '.png' : 'generic.png';
         copy(
-            IMAGES . 'default_thumbs' . DS . $src, 
-            $path . DS . 'thumb.png'
+            IMAGES . 'default_thumbs' . DS . $thumb, 
+            $this->path($sha, 'thumb.png')
         );
     }
 }

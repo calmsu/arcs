@@ -1,97 +1,50 @@
 <?php
 
+include_once(APPLIBS . 'ImageUtility.php');
+include_once(APPLIBS . 'PdfExtractor.php');
+
 class WorkerShell extends AppShell {
 
     public $uses = array('Task', 'Resource', 'Membership');
-    public $tasks = array('PDF');
 
+    /**
+     * Checks the queue and delegates tasks.
+     */
     public function main() {
         while (true) {
             # Find a new task...
-            $task = $this->Task->find('first', array(
-                'conditions' => array(
-                    'Task.status' => 1, 
-                    'Task.in_progress' => false
-            )));
-            # ...or die.
-            if (!$task) {
-                return;
-            }
+            $task = $this->Task->pop();
+            # ...or die if there aren't any.
+            if (!$task) return $this->out('Nothing to do.');
             
-            $task = $task['Task'];
+            # Start the task.
+            $this->Task->start($task['id']);
+            $this->out("Task: {$task['id']} ({$task['job']})");
 
-            # Set task as in-progress.
-            $this->Task->read(null, $task['id']);
-            $this->Task->set('in_progress', true);
-            $this->Task->save();
-
-            # Debug.
-            $this->out("Task: " .  $task['id'] .  " (" . $task['job'] . ")");
-
-            # Delegate.
-            $job = $task['job'];
-            switch ($job) {
+            # Delegate the job to a method.
+            switch ($task['job']) {
                 case "thumb":
-                    $success = $this->makeThumb($task['resource_id']);
+                    $success = $this->thumb($task['resource_id']);
                     break;
-                case "pdf_split":
-                    $success = $this->splitPDF($task['resource_id'], 
-                                               $task['data']);
+                case "split_pdf":
+                    $success = $this->split_pdf($task['resource_id'], $task['data']);
                     break;
             }
 
-            # Debug that it's done.
-            if ($success) {
-                $this->out('Done.');
-            }
-
-            # Save the task return status
-            $this->Task->set('status', ($success ? 0 : 2));
-            $this->Task->set('in_progress', false);
-            $this->Task->save();
+            # Mark it done.
+            $this->Task->done($task['id'], $success ? 0 : 2);
+            $success ? $this->out('Done.') : $this->out('Failed.');
         }
     }
 
     /**
-     * Makes a thumbnail for a given resource, if possible.
+     * Makes a thumbnail for a given resource.
+     *
+     * @param id
      */
-    public function makeThumb($id, $width=100, $height=100) {
+    public function thumb($id) {
         $resource = $this->Resource->findById($id);
-        $resource = $resource['Resource'];
-
-        $src = $this->Resource->path(
-            $resource['sha'],
-            $resource['file_name']
-        );
-        $dst = $this->Resource->path($resource['sha'], 'thumb.png');
-
-        # If it's a PDF, add an index of 0 to the path.
-        # ImageMagick will then make a thumb from the first page. 
-        if ($resource['mime_type'] == 'application/pdf') {
-            $src .= '[0]';
-        }
-
-        # Fire up an Imagick instance
-		$imagick = new Imagick();
-		try {
-			$imagick->readimage($src);
-		} catch (Exception $e){
-            $this->out("Reading image failed.\n");
-			return false; 
-		}
-
-        # Scale it.
-		$imagick->setImageFormat('png');
-        $imagick->scaleImage($width, $height, true);
-		
-        # Write it.
-		if (!$imagick->writeImage($dst)) {
-            $this->out("Writing thumbnail failed.\n");
-			return false;
-		}
-
-        # Return successful.
-        return true;
+        return $this->Resource->makeThumbnail($resource['Resource']['sha']);
     }
 
     /**
@@ -102,76 +55,63 @@ class WorkerShell extends AppShell {
      * @param collection_id   id of the collection to fill. (This method
      *                        doesn't create one.)
      */
-    public function splitPDF($id, $collection_id) {
-
+    public function split_pdf($id, $collection_id) {
         # Find the PDF resource.
-        $resource_arr = $this->Resource->findById($id);
-        $resource = $resource_arr['Resource'];
-
-        # If it's not a PDF, return unsucessful.
-        if (!($resource['mime_type'] == 'application/pdf')) return false;
+        $result = $this->Resource->findById($id);
+        $resource = $result['Resource'];
 
         # Get and set its path.
-        $resource['path'] = $this->Resource->path(
-            $resource['sha'], 
-            $resource['file_name']
-        );
+        $path = $this->Resource->path($resource['sha'], $resource['file_name']);
 
-        # Get the page resolution.
-        $pdfinfo = $this->PDF->getInfo($resource['path']);
-        $resolution = $this->PDF->getPageResolution($pdfinfo);
+        $pdf = new PdfExtractor($path);
 
         # For each page in the PDF:
-        for ($page=1; $page<=$pdfinfo['Pages']; $page++) {
+        for ($page=1; $page<=$pdf->npages; $page++) {
+            # Output our progress.
+            $this->out("$page/{$pdf->npages}");
 
-            # Output our progress
-            $this->out("$page/{$pdfinfo['Pages']}");
-
-            # Make a JPEG for the PDF page.
-            #
-            # We'll write it to a tmp file so we can later use the Resource
-            # model's createFile method as if the file was uploaded.
+            # Create a tmp file to write to.
             $tmp_file = tempnam(sys_get_temp_dir(), 'ARCS');
-            $this->PDF->processPage(
-                $page, // page number
-                $resource['path'], // path to the PDF
-                $tmp_file, // path to our tmp file
-                $resolution // page resolution
-            );
+            # Extract the page.
+            $pdf->extractPage($page, $tmp_file);
 
-            # Move the file into place and get a SHA.
-            #
             # The name is just the PDF file name plus "-pX.jpeg"
-            $fname = rtrim($resource['file_name'], '.pdf') . "-p$page.jpeg";
+            $basename = str_ireplace('.pdf', $resource['file_name']);
+            $fname = $basename . "-p$page.jpeg";
+            # Create the resource file.
             $sha = $this->Resource->createFile($tmp_file, $fname);
 
             # Save the resource.
-            $this->Resource->save(array(
-                'Resource' => array(
-                    'sha' => $sha,
-                    'title' => $resource['title'] . "-p$page",
-                    'public' => $resource['public'],
-                    'context' => $collection_id,
-                    'file_name' => $fname,
-                    'file_size' => $this->Resource->size($sha, $fname),
-                    'mime_type' => 'image/jpeg',
-                    'user_id' => $resource['user_id']
-            )));
+            $this->Resource->add(array(
+                'sha' => $sha,
+                'title' => $resource['title'] . "-p$page",
+                'public' => $resource['public'],
+                'context' => $collection_id,
+                'file_name' => $fname,
+                'file_size' => $this->Resource->size($sha, $fname),
+                'mime_type' => 'image/jpeg',
+                'user_id' => $resource['user_id']
+            ));
 
             # Save the collection membership.
-            $this->Membership->save(array(
-                'Membership' => array(
-                    'resource_id' => $this->Resource->id,
-                    'collection_id' => $collection_id
-            )));
-
+            $this->Membership->pair($this->Resource->id, $collection_id);
             # Make a thumbnail for it.
-            $this->makeThumb($this->Resource->id);
-
+            $this->Resource->makeThumbnail($sha);
             # Reset the Resource and Membership models for the next round.
             $this->Resource->create();
             $this->Membership->create();
         }
         return true;
+    }
+
+    /**
+     * Prints out the startup message.
+     */
+    public function startup() {
+        $this->out();
+        $this->out('ARCS Worker');
+        $this->hr();
+        $this->out(date('r'));
+        $this->hr();
     }
 }
