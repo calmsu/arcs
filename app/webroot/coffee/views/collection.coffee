@@ -83,7 +83,7 @@ class arcs.views.Collection extends Backbone.View
     arcs.trigger('arcs:indexchange', index, noSet: true) if options.trigger
     @render() unless options.noRender
     # Update the location
-    route = "#{arcs.collectionData.id ? @model.id}/#{@index + 1}"
+    route = "#{arcs.collectionData?.id ? @model.id}/#{@index + 1}"
     @router.navigate(route) unless options.noNavigate
     # Return true if we were able to set the model and index.
     return true
@@ -122,7 +122,7 @@ class arcs.views.Collection extends Backbone.View
           yes: 
             class: 'btn-success'
             callback: =>
-              $.get arcs.baseURL + 'resources/pdfSplit/' + @model.id
+              $.get arcs.baseURL + 'resources/split_pdf/' + @model.id
           no:
             text: 'No, leave it alone'
   

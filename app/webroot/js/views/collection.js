@@ -57,7 +57,7 @@
     };
 
     Collection.prototype.set = function(identifier, options) {
-      var index, model, route, _ref, _ref2;
+      var index, model, route, _ref, _ref2, _ref3;
       if (options == null) options = {};
       if (options.noSet) return false;
       if (_.isNumeric(identifier)) {
@@ -76,7 +76,7 @@
         });
       }
       if (!options.noRender) this.render();
-      route = "" + ((_ref2 = arcs.collectionData.id) != null ? _ref2 : this.model.id) + "/" + (this.index + 1);
+      route = "" + ((_ref2 = (_ref3 = arcs.collectionData) != null ? _ref3.id : void 0) != null ? _ref2 : this.model.id) + "/" + (this.index + 1);
       if (!options.noNavigate) this.router.navigate(route);
       return true;
     };
@@ -120,7 +120,7 @@
             yes: {
               "class": 'btn-success',
               callback: function() {
-                return $.get(arcs.baseURL + 'resources/pdfSplit/' + _this.model.id);
+                return $.get(arcs.baseURL + 'resources/split_pdf/' + _this.model.id);
               }
             },
             no: {
