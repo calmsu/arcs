@@ -47,6 +47,7 @@ class arcs.views.Search extends Backbone.View
     'click #tag-btn'         : 'tagModal'
     'click #grid-btn'        : 'toggleView'
     'click #list-btn'        : 'toggleView'
+    'click #top-btn'         : 'scrollTop'
 
 
   ### Methods that return result DOM els or alter their states ###
@@ -130,8 +131,10 @@ class arcs.views.Search extends Backbone.View
       # Toggle the toolbar's fixed position
       if $window.scrollTop() > pos
         $actions.addClass('toolbar-fixed').width $results.width() + 23
+        @$('#top-btn').show()
       else
         $actions.removeClass('toolbar-fixed').width 'auto'
+        @$('#top-btn').hide()
 
       # If the scroll position is at the bottom, get the more results.
       if $window.scrollTop() == $(document).height() - $window.height()
@@ -214,16 +217,38 @@ class arcs.views.Search extends Backbone.View
       backdrop: true
       buttons: 
         save:
-          class: 'btn info'
+          class: 'btn success'
           callback: @tagSelected
           context: @
         cancel: ->
 
   attributeModal: ->
     return unless @_anySelected()
+    return @multiAttributeModal() if @_nsel() > 1
     new arcs.views.Modal
-      title: 'Edit attributes'
+      title: 'Edit Attributes'
       subtitle: ''
+      buttons:
+        save: 
+          class: 'btn success'
+          callback: ->
+        cancel: ->
+
+  multiAttributeModal: ->
+    models = (@_getModel(r) for r in @_selected().get())
+    inputs = {}
+    for input in models[0].batchModifiable()
+      inputs[input] = true
+    new arcs.views.Modal
+      title: 'Edit Attributes (Multiple)'
+      subtitle: "The values of checked fields will be applied to all " +
+        "of the selected results."
+      inputs: inputs
+      buttons:
+        save: 
+          class: 'btn success'
+          callback: ->
+        cancel: ->
 
   collectionModal: ->
     return unless @_anySelected()
@@ -282,6 +307,8 @@ class arcs.views.Search extends Backbone.View
     $('#list-btn').toggleClass 'active'
     @render()
 
+  scrollTop: ->
+    $('html, body').animate {scrollTop: 0}, 1000
 
   ### Render the search results ###
 

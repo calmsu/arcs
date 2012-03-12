@@ -20,6 +20,23 @@
 
     Resource.prototype.urlRoot = arcs.baseURL + 'resources';
 
+    Resource.prototype.modifiable = ['title', 'identifier', 'copyright', 'creator', 'location', 'subject'];
+
+    /*
+        'coverage',
+        'date',
+        'format',
+        'date-modified',
+        'language',
+        'description',
+        'medium'
+      ]
+    */
+
+    Resource.prototype.batchModifiable = function() {
+      return _.without(this.modifiable, 'title', 'identifier');
+    };
+
     Resource.prototype.parse = function(r) {
       var k, m, t, v, _i, _len, _ref, _ref2;
       if (r.Resource != null) {

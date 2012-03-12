@@ -42,7 +42,8 @@
       'click #bookmark-btn': 'bookmarkSelected',
       'click #tag-btn': 'tagModal',
       'click #grid-btn': 'toggleView',
-      'click #list-btn': 'toggleView'
+      'click #list-btn': 'toggleView',
+      'click #top-btn': 'scrollTop'
     };
 
     /* Methods that return result DOM els or alter their states
@@ -138,8 +139,10 @@
       $window.scroll(function() {
         if ($window.scrollTop() > pos) {
           $actions.addClass('toolbar-fixed').width($results.width() + 23);
+          _this.$('#top-btn').show();
         } else {
           $actions.removeClass('toolbar-fixed').width('auto');
+          _this.$('#top-btn').hide();
         }
         if ($window.scrollTop() === $(document).height() - $window.height()) {
           _this.searchPage += 1;
@@ -242,7 +245,7 @@
         backdrop: true,
         buttons: {
           save: {
-            "class": 'btn info',
+            "class": 'btn success',
             callback: this.tagSelected,
             context: this
           },
@@ -253,9 +256,49 @@
 
     Search.prototype.attributeModal = function() {
       if (!this._anySelected()) return;
+      if (this._nsel() > 1) return this.multiAttributeModal();
       return new arcs.views.Modal({
-        title: 'Edit attributes',
-        subtitle: ''
+        title: 'Edit Attributes',
+        subtitle: '',
+        buttons: {
+          save: {
+            "class": 'btn success',
+            callback: function() {}
+          },
+          cancel: function() {}
+        }
+      });
+    };
+
+    Search.prototype.multiAttributeModal = function() {
+      var input, inputs, models, r, _i, _len, _ref;
+      models = (function() {
+        var _i, _len, _ref, _results;
+        _ref = this._selected().get();
+        _results = [];
+        for (_i = 0, _len = _ref.length; _i < _len; _i++) {
+          r = _ref[_i];
+          _results.push(this._getModel(r));
+        }
+        return _results;
+      }).call(this);
+      inputs = {};
+      _ref = models[0].batchModifiable();
+      for (_i = 0, _len = _ref.length; _i < _len; _i++) {
+        input = _ref[_i];
+        inputs[input] = true;
+      }
+      return new arcs.views.Modal({
+        title: 'Edit Attributes (Multiple)',
+        subtitle: "The values of checked fields will be applied to all " + "of the selected results.",
+        inputs: inputs,
+        buttons: {
+          save: {
+            "class": 'btn success',
+            callback: function() {}
+          },
+          cancel: function() {}
+        }
       });
     };
 
@@ -321,6 +364,12 @@
       $('#grid-btn').toggleClass('active');
       $('#list-btn').toggleClass('active');
       return this.render();
+    };
+
+    Search.prototype.scrollTop = function() {
+      return $('html, body').animate({
+        scrollTop: 0
+      }, 1000);
     };
 
     /* Render the search results

@@ -11,6 +11,30 @@ class arcs.models.Resource extends Backbone.Model
 
   urlRoot: arcs.baseURL + 'resources'
 
+  # List of attributes that the server will accept updates to.
+  modifiable: [
+    'title',
+    'identifier'
+    'copyright',
+    'creator',
+    'location',
+    'subject'
+  ]
+    ###
+    'coverage',
+    'date',
+    'format',
+    'date-modified',
+    'language',
+    'description',
+    'medium'
+  ]
+  ###
+
+  # List of attributes that can be batch-edited.
+  batchModifiable: ->
+    _.without(@modifiable, 'title', 'identifier')
+
   parse: (r) ->
     # Flatten an HABTM object.
     if r.Resource?

@@ -54,6 +54,9 @@
                 <li><a id="open-colview-btn">In a collection view</a></li>
             </ul>
         </div>
+        <button id="top-btn" class="btn actions-right" style="margin-right:40px; display:none">
+            <i class="icon-arrow-up"></i> Back to Top
+        </button>
     </div>
     <div id="search-results"></div>
 </div>
