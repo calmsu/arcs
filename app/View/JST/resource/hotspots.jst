@@ -1,5 +1,5 @@
-{{# hotspots }}
-<a class="hotspot" style="left:{{left}}px; top:{{top}}px; width:{{width}}px;
-    height:{{height}}px;" rel="popover" data-original-title="{{type}}"
-    data-content="{{caption}}" href="{{link}}"></a>
-{{/ hotspots }}
+<% _.each(hotspots, function(h) { %>
+<a class="hotspot" style="left:<%= h.left %>px; top:<%= h.top %>px; width:<%= h.width %>px;
+    height:<%= h.height %>px;" rel="popover" data-original-title="<%= h.type %>"
+    data-content="<%= h.caption %>" href="<%= h.link %>"></a>
+<% }) %>

@@ -33,7 +33,7 @@
 
   arcs.tmpl = function(key, data, func) {
     var tmpl;
-    if (func == null) func = Mustache.render;
+    if (func == null) func = _.template;
     tmpl = _.has(JST, key) ? JST[key] : key;
     return func(tmpl, data != null ? data : {});
   };

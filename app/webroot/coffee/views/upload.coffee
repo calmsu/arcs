@@ -40,7 +40,7 @@ class arcs.views.Upload extends Backbone.View
         for u in uploads
           upload = u.toJSON()
           upload.cid = u.cid
-          @$uploads.append arcs.tmpl 'upload/list', upload, _.template
+          @$uploads.append arcs.tmpl 'upload/list', upload
         @$('span#drop-msg').remove()
         @$('#upload-btn').addClass 'disabled'
         data.submit()

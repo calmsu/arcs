@@ -331,7 +331,7 @@ class arcs.views.Search extends Backbone.View
   _render: (results, append=false) ->
     $results = $('#search-results')
     template = if @grid then 'search/grid' else 'search/list'
-    content = arcs.tmpl template, results, _.template
+    content = arcs.tmpl template, results
     if append
       $results.append content
     else

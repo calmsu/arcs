@@ -395,7 +395,7 @@
       if (append == null) append = false;
       $results = $('#search-results');
       template = this.grid ? 'search/grid' : 'search/list';
-      content = arcs.tmpl(template, results, _.template);
+      content = arcs.tmpl(template, results);
       if (append) {
         $results.append(content);
       } else {

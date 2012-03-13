@@ -82,7 +82,7 @@
         success: function() {
           return $results.html(arcs.tmpl('search/grid', {
             results: search.results.toJSON()
-          }, _.template));
+          }));
         }
       });
     };

@@ -59,7 +59,7 @@
             u = uploads[_i];
             upload = u.toJSON();
             upload.cid = u.cid;
-            _this.$uploads.append(arcs.tmpl('upload/list', upload, _.template));
+            _this.$uploads.append(arcs.tmpl('upload/list', upload));
           }
           _this.$('span#drop-msg').remove();
           _this.$('#upload-btn').addClass('disabled');

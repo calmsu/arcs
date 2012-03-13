@@ -1,23 +1,18 @@
 <tr>
     <td>Title</td>
-    <td>{{ title }}
+    <td><%= title %></td>
 </tr>
 <tr>
     <td>Description</td>
-    <td>{{ description }}
+    <td><%= description %></td>
 </tr>
 <tr>
     <td>Public</td>
-    {{# public }}
-    <td>Yes</td>
-    {{/ public }}
-    {{^ public }}
-    <td>No</td>
-    {{/ public }}
+    <td><%= public ? "Yes" : "No" %></td>
 </tr>
-{{# pdf }}
+<% if (pdf) { %>
 <tr>
     <td>Original PDF</td>
-    <td><a href="../resource/{{ pdf }}">Link</a></td>
+    <td><a href="../resource/<%= pdf %>">Link</a></td>
 </tr>
-{{/ pdf }}
+<% } %>

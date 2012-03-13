@@ -38,7 +38,7 @@ arcs.log = (msg...) ->
 #  data -  object to interpolate. When missing, {} will be used
 #  func -  template interpolation function. Defaults to Mustache.render
 arcs.tmpl = (key, data, func) ->
-  func ?= Mustache.render
+  func ?= _.template
   tmpl = if _.has(JST, key) then JST[key] else key
   func tmpl, (data ? {})
 

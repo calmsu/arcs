@@ -62,4 +62,4 @@ class arcs.views.Carousel extends Backbone.View
       resources: _.first(@collection.toJSON(), @options.nthumbs)
       offset: 0
 
-  _tmpl: (data) -> arcs.tmpl 'resource/carousel', data, _.template
+  _tmpl: (data) -> arcs.tmpl 'resource/carousel', data
