@@ -16,6 +16,59 @@
       return arcs.baseURL + 'search';
     };
 
+    ResultSet.prototype.selected = function() {
+      return this.filter(function(result) {
+        return result.get('selected');
+      });
+    };
+
+    ResultSet.prototype.notSelected = function() {
+      return this.reject(function(result) {
+        return result.get('selected');
+      });
+    };
+
+    ResultSet.prototype.anySelected = function() {
+      return this.any(function(result) {
+        return result.get('selected');
+      });
+    };
+
+    ResultSet.prototype.numSelected = function() {
+      return this.selected().length;
+    };
+
+    ResultSet.prototype.select = function(result) {
+      return this._eachSetSelected(result, function() {
+        return true;
+      });
+    };
+
+    ResultSet.prototype.toggle = function(result) {
+      return this._eachSetSelected(result, function(m) {
+        return !m.get('selected');
+      });
+    };
+
+    ResultSet.prototype.unselect = function(result) {
+      return this._eachSetSelected(result, function() {
+        return false;
+      });
+    };
+
+    ResultSet.prototype._eachSetSelected = function(result, func) {
+      var id, model, _i, _len, _results;
+      if (!_.isArray(result)) result = [result];
+      _results = [];
+      for (_i = 0, _len = result.length; _i < _len; _i++) {
+        id = result[_i];
+        model = this.get(id);
+        if (!model) continue;
+        _results.push(model.set('selected', func(model)));
+      }
+      return _results;
+    };
+
     return ResultSet;
 
   })(Backbone.Collection);

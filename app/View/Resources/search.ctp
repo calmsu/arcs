@@ -19,6 +19,10 @@
                 data-original-title="Edit the attributes of the selected results">
                 <i class="icon-pencil"></i> Attribute
             </button>
+            <button id="flag-btn" class="btn" rel="tooltip"
+                data-original-title="Flag the selected results">
+                <i class="icon-flag"></i> Flag
+            </button>
         <?php else: // placeholder ?>
             <div style="height:28px"></div>
         <?php endif ?>

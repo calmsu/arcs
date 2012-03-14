@@ -1,5 +1,5 @@
 <% _.each(results, function(r, i) { %>
-<div class="result grid">
+<div class="result grid" data-id="<%= r.id %>">
   <img src="<%= r.thumb %>" data-id="<%= r.id %>" style="height:100px" />
   <div>
     <strong>
