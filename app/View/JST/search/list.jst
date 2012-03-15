@@ -1,6 +1,6 @@
 <table>
 <% _.each(results, function(r, i) { %>
-<tr class="result list">
+<tr class="result list" data-id="<% r.id %>">
     <td class="thumb-wrapper">
       <div>
         <img src="<%= r.thumb %>" data-id="<%= r.id %>" />

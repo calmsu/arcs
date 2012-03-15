@@ -6,10 +6,12 @@ class arcs.views.Search extends Backbone.View
   ### Initialize and define events ###
 
   initialize: ->
-    # Setup drag-to-select
-    @setupSelect()
-    # Setup search
-    @setupSearch()
+    @setupSelect() and @setupSearch() and @setupScroll()
+
+    # Init our sub-view for actions.
+    @actions = new arcs.views.SearchActions
+      el: @$el
+      collection: @search.results
 
     # Setup our Router
     @router = new arcs.routers.Search
@@ -21,75 +23,24 @@ class arcs.views.Search extends Backbone.View
       root: arcs.baseURL + 'search/'
     
     # Search unless the Router already delegated it.
-    unless @router.searched
-      @search.run()
+    @search.run() unless @router.searched
 
     # Grid view unless init-ed with false
     @grid ?= true
 
-    ## Bind hotkeys
-    
     # <ctrl>-a to select all
-    arcs.utils.keys.add 'a', true, @_selectAll, @
-    # <ctrl>-o to open selected
-    arcs.utils.keys.add 'o', true, @openSelected, @
+    arcs.keys.add 'a', true, @selectAll, @
 
   events:
-    'click img'              : '_select'
-    'click .result'          : '_maybeUnselectAll'
-    'click #search-results'  : '_maybeUnselectAll'
-    'dblclick img'           : 'openResult'
-    'click #open-btn'        : 'openSelected'
-    'click #open-colview-btn': 'collectionFromSelected'
-    'click #collection-btn'  : 'collectionModal'
-    'click #attribute-btn'   : 'attributeModal'
-    'click #bookmark-btn'    : 'bookmarkSelected'
-    'click #tag-btn'         : 'tagModal'
+    'click img'              : 'toggle'
+    'click .result'          : 'maybeUnselectAll'
+    'click #search-results'  : 'maybeUnselectAll'
     'click #grid-btn'        : 'toggleView'
     'click #list-btn'        : 'toggleView'
     'click #top-btn'         : 'scrollTop'
 
 
-  ### Methods that return result DOM els or alter their states ###
-  
-  ## No argument methods:
-  
-  _selected    : -> @$('.result.selected')
-  _all         : -> @$('.result')
-  _any         : -> !!@_selected().length
-  _nsel        : -> @_selected().length
-  _selectAll   : -> @_all().addClass 'selected'
-  _toggleAll   : -> @_all().toggleClass 'selected'
-  _unselectAll : -> @_all().removeClass 'selected'
-  _anySelected : ->
-    unless @_any()
-      arcs.notify 'Select at least one result', 'error'
-      return false
-    return true
-
-  ## Methods that take an Event object:
-  
-  # Select a result and unselect everything else, unless a modifier key
-  # is pressed.n
-  _select: (e) ->
-    # If <ctrl> <shift> or <meta> is pressed allow multi-select
-    if not (e.ctrlKey or e.shiftKey or e.metaKey)
-      @_unselectAll()
-    $(e.currentTarget).parent('.result').toggleClass 'selected'
-
-  # Unselect all results unless a modifier key is held down, or
-  # the target isn't right.
-  _maybeUnselectAll: (e) ->
-    # If e is not an Event object, do it.
-    return @_unselectAll() unless e instanceof jQuery.Event 
-    # If one of the modifier keys is held down, we won't do anything.
-    return false if (e.metaKey or e.ctrlKey or e.shiftKey)
-    # If the target is the image, we won't do anything.
-    return false if $(e.target).attr 'src'
-    @_unselectAll()
-
-
-  ### More involved setups run by the initialize method ###
+  ## More involved setups run by the initialize method ###
 
   # Set up drag-to-select, using jQuery.ui.selectable
   setupSelect: ->
@@ -98,15 +49,15 @@ class arcs.views.Search extends Backbone.View
       distance: 20
       # Images are the selectables
       filter: 'img'
-      # Make jQuery UI use our selected class
-      selecting: (e, ui) ->
-        $(ui.selecting).parent().addClass 'selected'
-      selected: (e, ui) ->
-        $(ui.selected).parent().addClass 'selected'
-      unselecting: (e, ui) ->
-        $(ui.unselecting).parent().removeClass 'selected'
-      unselected: (e, ui) ->
-        $(ui.unselected).parent().removeClass 'selected'
+      # Make jQuery UI call our selection methods.
+      selecting: (e, ui) => 
+        $(ui.selecting).parent().addClass('selected') and @syncSelection()
+      selected: (e, ui) =>
+        $(ui.selected).parent().addClass('selected') and @syncSelection()
+      unselecting: (e, ui) =>
+        $(ui.unselecting).parent().removeClass('selected') and @syncSelection()
+      unselected: (e, ui) =>
+        $(ui.unselected).parent().removeClass('selected') and @syncSelection()
 
   # Make an instance of our Search utility and setup endless scrolling.
   setupSearch: ->
@@ -122,6 +73,7 @@ class arcs.views.Search extends Backbone.View
 
     @searchPage = 1
 
+  setupScroll: ->
     $actions = @$('#search-actions')
     $results = @$('#search-results')
     $window = $(window)
@@ -150,167 +102,55 @@ class arcs.views.Search extends Backbone.View
     $window.resize ->
       $actions.width($results.width() + 23) if $window.scrollTop() > pos
 
-
-  ### Actions that take one or more search results ###
-  
-  # Open the resource view for a result.
-  openResult: (e) ->
-    # Allows calling with a jQuery Event (via the events hash)..
-    if e instanceof jQuery.Event
-      $el = $(e.currentTarget).parent()
-      e.preventDefault()
-    # ..or a DOM Element
-    else
-      $el = $(e)
-    window.open(arcs.baseURL + 'resource/' + this._getModel($el).id)
-
-  # Create a new Tag, given a result element and a string.
-  tagResult: ($result, tagStr) -> 
-    tag = new arcs.models.Tag
-      resource_id: this._getModel($result).id
-      tag: tagStr
-    tag.save
-      error: ->
-        arcs.notify 'Not authorized', 'error'
-
-  # Create a new Bookmark, given a result element and optionally a note 
-  # string.
-  bookmarkResult: ($result, noteStr=null) ->
-    bkmk = new arcs.models.Bookmark
-      resource_id: this._getModel($result).id
-      description: noteStr 
-    bkmk.save
-      error: ->
-        arcs.notify 'Not authorized', 'error'
-
-  # Create a new collection from the selected results, and open it.
-  collectionFromSelected: (vals) ->
-    return unless @_anySelected()
-    collection = new arcs.models.Collection
-      title: vals.title ? "Temporary Collection"
-      description: vals.description ? "Results from search '#{@search.query}'"
-      public: false
-      temporary: true
-      members: ids
-
-    ids = _.map @_selected().get(), ($el) => @_getModel($el).id
-
-    collection.save members: ids,
-      success: (model) ->
-        window.open(arcs.baseURL + 'collection/' + model.id)
-      error: =>
-        arcs.notify 'An error occurred.', 'error'
-
-  # Open a modal (called when tag button is clicked) and ask the user for 
-  # a tag string. Delegate further action through callbacks.
-  tagModal: ->
-    return unless @_anySelected()
-    new arcs.views.Modal
-      title: 'Tag Selected'
-      subtitle: "#{@_nsel()} resource#{if 0 < @_nsel() > 1 then 's' else ''}" +
-        " will be tagged."
-      inputs:
-        tag:
-          label: false
-          complete: arcs.utils.complete.tag
-          focused: true
-      backdrop: true
-      buttons: 
-        save:
-          class: 'btn success'
-          callback: @tagSelected
-          context: @
-        cancel: ->
-
-  attributeModal: ->
-    return unless @_anySelected()
-    return @multiAttributeModal() if @_nsel() > 1
-    new arcs.views.Modal
-      title: 'Edit Attributes'
-      subtitle: ''
-      buttons:
-        save: 
-          class: 'btn success'
-          callback: ->
-        cancel: ->
-
-  multiAttributeModal: ->
-    models = (@_getModel(r) for r in @_selected().get())
-    inputs = {}
-    for input in models[0].batchModifiable()
-      inputs[input] = true
-    new arcs.views.Modal
-      title: 'Edit Attributes (Multiple)'
-      subtitle: "The values of checked fields will be applied to all " +
-        "of the selected results."
-      inputs: inputs
-      buttons:
-        save: 
-          class: 'btn success'
-          callback: ->
-        cancel: ->
-
-  collectionModal: ->
-    return unless @_anySelected()
-    new arcs.views.Modal
-      title: 'Create a Collection'
-      subtitle: "A collection with #{@_nsel()} " +
-        "resource#{if 0 < @_nsel() > 1 then 's' else ''} will be created."
-      inputs:
-        title: 
-          focused: true
-        description:
-          type: 'textarea'
-      buttons:
-        save:
-          class: 'btn success'
-          callback: @collectionFromSelected
-          context: @
-        cancel: ->
-
-  # Call bookmarkResult on all selected results.
-  bookmarkSelected: -> 
-    @_doForSelected @bookmarkResult, ['bookmark', 'bookmarked']
-
-  # Open all selected results through openResult
-  openSelected: -> 
-    @_doForSelected @openResult, ['open', 'opened']
-
-  # Call tagResult on all selected results.
-  # This is used as a callback to arcs.modal
-  tagSelected: (val) ->
-    tag = if _.isString(val) then val else val.tag
-    @_doForSelected @tagResult, tag, ['tag', 'tagged']
-
-  # Find and return the Resource model that corresponds to a .result
-  # DOM element.
-  _getModel: ($result) ->
-    id = $($result).find('img').attr 'data-id'
-    @search.results.get id
-
-  # Do something for each selected result. If nothing is selected,
-  # display an error notification.
-  _doForSelected: (cbk, cbkArgs..., name) ->
-    return unless @_anySelected()
-
-    @_selected().each (i, el) =>
-      cbk.call @, el, cbkArgs...
-
-    n = @_selected().length
-    arcs.notify "#{@_nsel()} resource#{'s' if 0 < @_nsel() > 1} " +
-      "#{if 0 < @_nsel() > 1 then "were" else "was"} #{name[1]}", 'success'
-
   # Toggle between list and grid view.
   toggleView: ->
     @grid = !@grid
-    $('#grid-btn').toggleClass 'active'
-    $('#list-btn').toggleClass 'active'
+    @$('#grid-btn').toggleClass 'active'
+    @$('#list-btn').toggleClass 'active'
     @render()
 
   scrollTop: ->
     $('html, body').animate {scrollTop: 0}, 1000
 
+  unselectAll: -> 
+    @$('.result').removeClass('selected') and @syncSelection()
+
+  selectAll: -> 
+    @$('.result').addClass('selected') and @syncSelection()
+  
+  # Select a result and unselect everything else, unless a modifier key
+  # is pressed.n
+  toggle: (e) ->
+    # If <ctrl> <shift> or <meta> is pressed allow multi-select
+    if not (e.ctrlKey or e.shiftKey or e.metaKey)
+      @unselectAll()
+    $(e.currentTarget).parent().toggleClass('selected')
+    @syncSelection()
+
+  # Unselect all results unless a modifier key is held down, or
+  # the target isn't right.
+  maybeUnselectAll: (e) ->
+    # If e is not an Event object, do it.
+    return @unselectAll() unless e instanceof jQuery.Event 
+    # If one of the modifier keys is held down, we won't do anything.
+    return false if (e.metaKey or e.ctrlKey or e.shiftKey)
+    # If the target is the image, we won't do anything.
+    return false if $(e.target).attr 'src'
+    @unselectAll()
+
   ### Render the search results ###
+  
+  # Syncs selection states between the ResultSet and the DOM elements that
+  # represent them. Uses Underscore's defer to wait for the call stack to
+  # clear.
+  syncSelection: ->
+    _.defer =>
+      selected = $('.result.selected').map ->
+        $(@).attr('data-id')
+      unselected = $('.result').not('.selected').map ->
+        $(@).attr('data-id')
+      @search.results.select selected.get()
+      @search.results.unselect unselected.get()
 
   # Append more results. 
   #
@@ -318,7 +158,7 @@ class arcs.views.Search extends Backbone.View
   # jumping in certain browsers.
   append: ->
     # Get new results after the ones already displayed.
-    rest = @search.results.rest @_all().length 
+    rest = @search.results.rest(@search.results.length - 30)
     results = new arcs.collections.ResultSet rest
     @_render results: results.toJSON(), true
 
@@ -336,5 +176,5 @@ class arcs.views.Search extends Backbone.View
       $results.append content
     else
       $results.html content
-    unless @_all().length
+    unless @search.results.length
       $results.html @make 'div', id:'no-results', 'No Results'

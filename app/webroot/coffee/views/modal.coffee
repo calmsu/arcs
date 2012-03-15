@@ -25,6 +25,7 @@ class arcs.views.Modal extends Backbone.View
     class: ''
     title: 'No Title'
     subtitle: null
+    template: 'ui/modal'
     inputs: {}
     buttons: {}
 
@@ -38,7 +39,7 @@ class arcs.views.Modal extends Backbone.View
 
     # Render the template into the wrapper, make it use Underscore's template
     # function.
-    @$el.html arcs.tmpl 'ui/modal', @options
+    @$el.html arcs.tmpl @options.template, @options
 
     # Do some extra setting up.
     _.each @options.inputs, (opts, k) -> 

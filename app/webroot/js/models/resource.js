@@ -15,27 +15,15 @@
       mime_type: "unknown",
       modified: null,
       created: null,
-      public: false
+      public: false,
+      selected: false
     };
 
     Resource.prototype.urlRoot = arcs.baseURL + 'resources';
 
-    Resource.prototype.modifiable = ['title', 'identifier', 'copyright', 'creator', 'location', 'subject'];
+    Resource.prototype.MODIFIABLE = ['title', 'identifier', 'copyright', 'creator', 'location', 'subject', 'coverage', 'date', 'format', 'date-modified', 'language', 'description', 'medium'];
 
-    /*
-        'coverage',
-        'date',
-        'format',
-        'date-modified',
-        'language',
-        'description',
-        'medium'
-      ]
-    */
-
-    Resource.prototype.batchModifiable = function() {
-      return _.without(this.modifiable, 'title', 'identifier');
-    };
+    Resource.prototype.SINGULAR = ['title', 'identifier'];
 
     Resource.prototype.parse = function(r) {
       var k, m, t, v, _i, _len, _ref, _ref2;

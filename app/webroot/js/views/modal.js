@@ -19,6 +19,7 @@
       "class": '',
       title: 'No Title',
       subtitle: null,
+      template: 'ui/modal',
       inputs: {},
       buttons: {}
     };
@@ -27,7 +28,7 @@
       if (!$('#modal').length) $('body').append(arcs.tmpl('ui/modal_wrapper'));
       this.el = this.$el = $('#modal');
       this.$el.addClass(this.options["class"]);
-      this.$el.html(arcs.tmpl('ui/modal', this.options));
+      this.$el.html(arcs.tmpl(this.options.template, this.options));
       _.each(this.options.inputs, function(opts, k) {
         var $sel, _ref;
         $sel = this.$("#modal-" + k + "-input");
