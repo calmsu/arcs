@@ -26,7 +26,7 @@
     Resource.prototype.SINGULAR = ['title', 'identifier'];
 
     Resource.prototype.parse = function(r) {
-      var k, m, t, v, _i, _len, _ref, _ref2;
+      var k, m, v, _i, _len, _ref, _ref2;
       if (r.Resource != null) {
         _ref = r.Resource;
         for (k in _ref) {
@@ -37,18 +37,18 @@
           r.user = r.User;
           delete r.User;
         }
-        if (r.Tag != null) {
-          r.tags = (function() {
+        if (r.Keyword != null) {
+          r.keywords = (function() {
             var _i, _len, _ref2, _results;
-            _ref2 = r.Tag;
+            _ref2 = r.Keyword;
             _results = [];
             for (_i = 0, _len = _ref2.length; _i < _len; _i++) {
-              t = _ref2[_i];
-              _results.push(t.tag);
+              k = _ref2[_i];
+              _results.push(k.keyword);
             }
             return _results;
           })();
-          delete r.Tag;
+          delete r.Keyword;
         }
         if (r.Comment != null) {
           r.comments = r.Comment;

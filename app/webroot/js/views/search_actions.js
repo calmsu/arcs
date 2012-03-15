@@ -23,7 +23,7 @@
       'click #attribute-btn': 'editSelected',
       'click #flag-btn': 'flagSelected',
       'click #bookmark-btn': 'bookmarkSelected',
-      'click #tag-btn': 'tagSelected'
+      'click #keyword-btn': 'keywordSelected'
     };
 
     SearchActions.prototype.openResult = function(result) {
@@ -31,13 +31,13 @@
       return window.open(arcs.baseURL + 'resource/' + result.id);
     };
 
-    SearchActions.prototype.tagResult = function(result, keyword) {
-      var tag;
-      tag = new arcs.models.Tag({
+    SearchActions.prototype.keywordResult = function(result, string) {
+      var keyword;
+      keyword = new arcs.models.Keyword({
         resource_id: result.id,
-        tag: keyword
+        keyword: string
       });
-      return tag.save();
+      return keyword.save();
     };
 
     SearchActions.prototype.flagResult = function(result, reason, explanation) {
@@ -59,19 +59,19 @@
       return bkmk.save();
     };
 
-    SearchActions.prototype.tagSelected = function() {
+    SearchActions.prototype.keywordSelected = function() {
       var n,
         _this = this;
       if (!this.results.anySelected()) return;
       n = this.results.numSelected();
       return new arcs.views.Modal({
-        title: 'Tag Selected',
-        subtitle: "" + n + " " + (arcs.pluralize('resource', n)) + " will be tagged.",
+        title: 'Keyword Selected',
+        subtitle: ("The keyword will be applied to " + n + " ") + ("" + (arcs.pluralize('resource', n)) + "."),
         backdrop: true,
         inputs: {
-          tag: {
+          keyword: {
             label: false,
-            complete: arcs.utils.complete.tag,
+            complete: arcs.utils.complete.keyword,
             focused: true
           }
         },
@@ -83,9 +83,9 @@
               _ref = _this.results.selected();
               for (_i = 0, _len = _ref.length; _i < _len; _i++) {
                 result = _ref[_i];
-                _this.tagResult(result, vals.tag);
+                _this.keywordResult(result, vals.keyword);
               }
-              return _this._notify('tagged');
+              return _this._notify('keyworded');
             }
           },
           cancel: function() {}

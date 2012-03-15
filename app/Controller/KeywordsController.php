@@ -1,23 +1,20 @@
 <?php
 App::uses('MetaResourcesController', 'Controller');
 /**
- * Tags controller.
+ * Keywords controller.
  *
  * This controller will only respond to ajax requests.
  *
  * @package      ARCS
  * @copyright    Copyright 2012, Michigan State University Board of Trustees
  */
-class TagsController extends MetaResourcesController {
-    public $name = 'Tags';
+class KeywordsController extends MetaResourcesController {
+    public $name = 'Keywords';
 
     /**
-     * Complete tag names.
+     * Complete keywords.
      */
     public function complete() {
-        $this->jsonResponse(200, $this->Tag->find('list', array(
-            'fields' => array('Tag.tag')
-        )));
+        $this->jsonResponse(200, $this->Keyword->complete('Keyword.keyword'));
     }
-
 }

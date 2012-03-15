@@ -3,56 +3,55 @@
     __hasProp = Object.prototype.hasOwnProperty,
     __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor; child.__super__ = parent.prototype; return child; };
 
-  arcs.views.Tag = (function(_super) {
+  arcs.views.Keyword = (function(_super) {
 
-    __extends(Tag, _super);
+    __extends(Keyword, _super);
 
-    function Tag() {
+    function Keyword() {
       this.keydownDelegate = __bind(this.keydownDelegate, this);
-      Tag.__super__.constructor.apply(this, arguments);
+      Keyword.__super__.constructor.apply(this, arguments);
     }
 
-    Tag.prototype.events = {
-      'keydown #new-tag': 'keydownDelegate'
+    Keyword.prototype.events = {
+      'keydown #keyword-btn': 'keydownDelegate'
     };
 
-    Tag.prototype.initialize = function() {
+    Keyword.prototype.initialize = function() {
       var _this = this;
-      this.collection = new arcs.collections.TagList;
+      this.collection = new arcs.collections.KeywordList;
       arcs.bind('resourceChange', function() {
         return _this.update();
       });
       _.bindAll(this, 'render');
-      this.collection.bind('add', this.render, this);
-      this.collection.bind('remove', this.render, this);
+      this.collection.on('add remove', this.render, this);
       arcs.utils.autocomplete({
-        sel: '#new-tag',
-        source: arcs.utils.complete.tag()
+        sel: '#keyword-btn',
+        source: arcs.utils.complete.keyword()
       });
       return this.update();
     };
 
-    Tag.prototype.keydownDelegate = function(e) {
+    Keyword.prototype.keydownDelegate = function(e) {
       if (e.keyCode === 13) {
-        this.saveTag();
+        this.saveKeyword();
         e.preventDefault();
         return false;
       }
     };
 
-    Tag.prototype.saveTag = function() {
-      var $input, tag;
-      $input = this.$el.find('input#new-tag');
-      tag = new arcs.models.Tag({
+    Keyword.prototype.saveKeyword = function() {
+      var $input, keyword;
+      $input = this.$el.find('input#keyword-btn');
+      keyword = new arcs.models.Keyword({
         resource_id: arcs.resource.id,
-        tag: $input.val()
+        keyword: $input.val()
       });
       $input.val('');
-      tag.save();
-      return this.collection.add(tag);
+      keyword.save();
+      return this.collection.add(keyword);
     };
 
-    Tag.prototype.update = function() {
+    Keyword.prototype.update = function() {
       var _this = this;
       return this.collection.fetch({
         success: function() {
@@ -61,16 +60,16 @@
       });
     };
 
-    Tag.prototype.render = function() {
-      var $tags;
-      $tags = $('#tags-wrapper');
-      $tags.html(arcs.tmpl('resource/tags', {
-        tags: this.collection.toJSON()
+    Keyword.prototype.render = function() {
+      var $keywords;
+      $keywords = $('#keywords-wrapper');
+      $keywords.html(arcs.tmpl('resource/keywords', {
+        keywords: this.collection.toJSON()
       }));
       return this;
     };
 
-    return Tag;
+    return Keyword;
 
   })(Backbone.View);
 

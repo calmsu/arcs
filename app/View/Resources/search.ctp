@@ -7,9 +7,9 @@
                 data-original-title="Bookmark the selected results">
                 <i class="icon-bookmark"></i> Bookmark
             </button>
-            <button id="tag-btn" class="btn" rel="tooltip"
-                data-original-title="Tag the selected results">
-                <i class="icon-tag"></i> Tag
+            <button id="keyword-btn" class="btn" rel="tooltip"
+                data-original-title="Keyword the selected results">
+                <i class="icon-tag"></i> Keyword
             </button>
             <button id="collection-btn" class="btn" rel="tooltip"
                 data-original-title="Create or add to a collection from selected">

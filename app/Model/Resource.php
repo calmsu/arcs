@@ -9,7 +9,7 @@ class Resource extends AppModel {
     public $hasMany = array(
         'Membership',
         'Comment',
-        'Tag',
+        'Keyword',
         'Hotspot'
     );
 

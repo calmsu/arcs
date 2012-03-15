@@ -17,7 +17,7 @@ class arcs.views.Collection extends Backbone.View
     # Init sub-views
     @discussion = new arcs.views.Discussion
       el: $('#discussion')
-    @tags = new arcs.views.Tag
+    @keywords = new arcs.views.Keyword
       el: $('#information')
     @hotspots = new arcs.views.Hotspot
       el: $('#resource')

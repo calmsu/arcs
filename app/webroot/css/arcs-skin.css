@@ -5029,7 +5029,7 @@ div#toolbar {
   top: 3px;
 }
 a.annotation,
-a.tag {
+a.keyword {
   font-size: 13px;
   line-height: 14px;
   margin: 5px 20px 0;
@@ -5444,7 +5444,7 @@ div::-webkit-scrollbar-thumb {
 .hotspot-modal #url-link #url {
   width: 80%;
 }
-span.tag-link {
+span.keyword-link {
   font-family: Monospace;
   padding: 1px;
   border: 1px solid #888;

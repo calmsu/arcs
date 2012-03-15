@@ -4,7 +4,7 @@ class User extends AppModel {
     public $name = 'User';
     public $hasMany = array(
         'Resource', 
-        'Tag', 
+        'Keyword', 
         'Comment',
         'Bookmark',
         'Hotspot',

@@ -86,7 +86,7 @@ class arcs.utils.Search
     # doesn't matter. Functions can also be given directly.
     title: -> arcs.utils.complete.title()
     user: -> arcs.utils.complete.user()
-    tag: -> arcs.utils.complete.tag()
+    keyword: -> arcs.utils.complete.keyword()
     collection: -> arcs.utils.complete.collection()
     created: -> arcs.utils.complete.created()
     uploaded: -> arcs.utils.complete.created()

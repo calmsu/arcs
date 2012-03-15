@@ -37,7 +37,7 @@ class ResourcesControllerTestCase extends CakeTestCase {
  * @var array
  */
     public $fixtures = array(
-        'app.resource', 'app.user', 'app.tag', 'app.comment', 'app.bookmark', 
+        'app.resource', 'app.user', 'app.keyword', 'app.comment', 'app.bookmark', 
         'app.collection', 'app.membership', 'app.hotspot'
     );
 
@@ -147,11 +147,11 @@ class ResourcesControllerTestCase extends CakeTestCase {
 	}
 
 /**
- * testTag method
+ * testkeyword method
  *
  * @return void
  */
-	public function testTag() {
+	public function testKeyword() {
 
 	}
 

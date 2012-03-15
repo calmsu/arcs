@@ -26,7 +26,7 @@ class ResourcesController extends AppController {
         # are allowed by default.
         $this->Auth->allow(
             'index', 'view', 'search', 'comments', 
-            'hotspots', 'tags', 'complete'
+            'hotspots', 'keywords', 'complete'
         );
     }
 
@@ -78,18 +78,18 @@ class ResourcesController extends AppController {
             if ($collection_id)
                 $this->Resource->Membership->pair($id, $collection_id);
 
-            # Save any tags.
-            if ($data['tags']) {
-                $tags = $this->Resource->Tag->fromString($data['tags']);
+            # Save any keywords.
+            if ($data['keywords']) {
+                $keywords = $this->Resource->Keyword->fromString($data['keywords']);
                 $records = array();
-                foreach ($tags as $t) {
+                foreach ($keywords as $k) {
                     $records[] = array(
                         'resource_id' => $id,
                         'user_id' => $this->Auth->user('id'),
-                        'tag' => $t
+                        'keyword' => $k
                     );
                 }
-                $this->Resource->Tag->saveMany($records);
+                $this->Resource->Keyword->saveMany($records);
             }
 
             # Make a task to get a thumbnail made, don't have time now.
@@ -309,13 +309,13 @@ class ResourcesController extends AppController {
     }
 
     /**
-     * Return associated tags.
+     * Return associated keywords.
      *
      * @param id    resource id
      */
-    public function tags($id) {
+    public function keywords($id) {
         if ($this->request->is('ajax')) {
-            $this->jsonResponse(200, $this->Resource->Tag->find('all',
+            $this->jsonResponse(200, $this->Resource->Keyword->find('all',
                 array('conditions' => array('Resource.id' => $id))
             ));
         }

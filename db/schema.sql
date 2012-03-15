@@ -93,14 +93,14 @@ CREATE TABLE IF NOT EXISTS tasks (
     modified DATETIME DEFAULT NULL
 );
 
--- tags
-CREATE TABLE IF NOT EXISTS tags (
+-- keywords
+CREATE TABLE IF NOT EXISTS keywords (
     id CHAR(36) PRIMARY KEY,
     resource_id CHAR(36),
     user_id CHAR(36),
-    tag TEXT,
+    keyword TEXT,
     created DATETIME DEFAULT NULL,
-    FULLTEXT(tag)
+    FULLTEXT(keyword)
 );
 
 -- comments

@@ -9,8 +9,8 @@ arcs.utils.complete =
   user: ->
     @_get 'users/complete'
 
-  tag: ->
-    @_get 'tags/complete'
+  keyword: ->
+    @_get 'keywords/complete'
 
   title: ->
     @_get 'resources/complete/title'
@@ -73,7 +73,7 @@ _.bindAll(arcs.utils.complete)
 # options
 #   source   - array of completion values, or function that returns one.
 #   multiple - handle multiple value completion.
-#   sel:     - input selectior (e.g. #tag-field or .some-input)
+#   sel:     - input selectior (e.g. #keyword-input or .title-input)
 arcs.utils.autocomplete = (opts) ->
 
   # Set our defaults

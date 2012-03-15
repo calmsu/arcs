@@ -1,7 +1,7 @@
 # inflection.coffee
 # -----------------
 # Handles inflecting nouns, which is useful in generating dialogs. For example:
-#   "12 resources were tagged" vs. "1 resource was tagged"
+#   "12 resources were flagged" vs. "1 resource was flagged"
 
 PLURALS =
   '(m)an$'                 : '$1en'

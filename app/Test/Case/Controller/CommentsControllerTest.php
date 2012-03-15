@@ -36,7 +36,7 @@ class CommentsControllerTestCase extends CakeTestCase {
  *
  * @var array
  */
-	public $fixtures = array('app.comment', 'app.user', 'app.resource', 'app.membership', 'app.collection', 'app.tag', 'app.hotspot', 'app.bookmark');
+	public $fixtures = array('app.comment', 'app.user', 'app.resource', 'app.membership', 'app.collection', 'app.keyword', 'app.hotspot', 'app.bookmark');
 
 /**
  * setUp method

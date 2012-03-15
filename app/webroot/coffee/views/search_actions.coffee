@@ -16,7 +16,7 @@ class arcs.views.SearchActions extends Backbone.View
     'click #attribute-btn'   : 'editSelected'
     'click #flag-btn'        : 'flagSelected'
     'click #bookmark-btn'    : 'bookmarkSelected'
-    'click #tag-btn'         : 'tagSelected'
+    'click #keyword-btn'     : 'keywordSelected'
 
   # Open the resource view for a result.
   openResult: (result) ->
@@ -25,12 +25,12 @@ class arcs.views.SearchActions extends Backbone.View
     result = @_modelFromRef(result)
     window.open arcs.baseURL + 'resource/' + result.id
 
-  # Creates a new Tag
-  tagResult: (result, keyword) -> 
-    tag = new arcs.models.Tag
+  # Creates a new Keyword
+  keywordResult: (result, string) -> 
+    keyword = new arcs.models.Keyword
       resource_id: result.id
-      tag: keyword
-    tag.save()
+      keyword: string
+    keyword.save()
 
   # Creates a new Flag
   flagResult: (result, reason, explanation) ->
@@ -48,27 +48,28 @@ class arcs.views.SearchActions extends Backbone.View
       description: note 
     bkmk.save()
 
-  # Open a modal (called when tag button is clicked) and ask the user for 
-  # a tag string. Delegate further action through callbacks.
-  tagSelected: ->
+  # Open a modal (called when keyword button is clicked) and ask the user for 
+  # a keyword string. Delegate further action through callbacks.
+  keywordSelected: ->
     return unless @results.anySelected()
     n = @results.numSelected()
     new arcs.views.Modal
-      title: 'Tag Selected'
-      subtitle: "#{n} #{arcs.pluralize('resource', n)} will be tagged."
+      title: 'Keyword Selected'
+      subtitle: "The keyword will be applied to #{n} " +
+        "#{arcs.pluralize('resource', n)}."
       backdrop: true
       inputs:
-        tag:
+        keyword:
           label: false
-          complete: arcs.utils.complete.tag
+          complete: arcs.utils.complete.keyword
           focused: true
       buttons: 
         save:
           class: 'btn success'
           callback: (vals) =>
             for result in @results.selected()
-              @tagResult result, vals.tag
-            @_notify 'tagged'
+              @keywordResult result, vals.keyword
+            @_notify 'keyworded'
         cancel: ->
 
   # Opens a modal and prompts the user for information about flagging.

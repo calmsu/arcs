@@ -28,14 +28,14 @@
     <td class="keys">
       <div><em>access:</em></div>
       <div><em>created:</em></div>
-      <div><em>tags:</em></div>
+      <div><em>keywords:</em></div>
     </td>
     <td class="values">
       <div><strong><%= r.public ? 'public' : 'private' %></strong></div>
       <div><%= r.created %></div>
       <div>
-      <% _.each(r.tags, function(t) { %>
-        <span class="tag-link"><%= t %></span>
+      <% _.each(r.keywords, function(k) { %>
+        <span class="keyword-link"><%= k %></span>
       <% }) %> &nbsp;
       </div>
     </td>

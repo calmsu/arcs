@@ -20,9 +20,7 @@ class AppModel extends Model {
      * @param fieldList
      */
     public function save($data=null, $validate=true, $fieldList=array()) {
-        debug($data);
         if (is_array($data)) $data = $this->_filterWhitelist($data);
-        debug($data);
         return parent::save($data, $validate, $fieldList);
     }
 

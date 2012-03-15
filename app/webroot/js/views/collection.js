@@ -22,7 +22,7 @@
       this.discussion = new arcs.views.Discussion({
         el: $('#discussion')
       });
-      this.tags = new arcs.views.Tag({
+      this.keywords = new arcs.views.Keyword({
         el: $('#information')
       });
       this.hotspots = new arcs.views.Hotspot({

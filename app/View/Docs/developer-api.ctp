@@ -63,7 +63,7 @@ make a <code>POST</code> with a JSON array containing facet objects. For example
         "value": "Nick Reynolds"
     },
     {
-        "category": "tag",
+        "category": "keyword",
         "value": "East Field",
     }
 ]
@@ -83,7 +83,7 @@ make a <code>POST</code> with a JSON array containing facet objects. For example
 });
 </code></pre>
 <p>The response will be an array of objects containing resources (and related user,
-tags, comments, and hotspots:</p>
+keywords, comments, and hotspots:</p>
 <pre><code>[
     {
         "Resource": {
@@ -102,7 +102,7 @@ tags, comments, and hotspots:</p>
         "User": {
             ...
         },
-        "Tag": [],
+        "keyword": [],
         "Comment": []
     },
     {
@@ -171,31 +171,31 @@ this will be returned:</p>
     "resource_id":
 }
 </code></pre>
-<h2>Tags</h2>
-<h3>Creating a new tag (<code>POST</code>)</h3>
-<pre><code>/tags
+<h2>keywords</h2>
+<h3>Creating a new keyword (<code>POST</code>)</h3>
+<pre><code>/keywords
 </code></pre>
 <p>The <code>POST</code> should contain a JSON object with the following information:</p>
 <pre><code>{
-    "tag": "East-Field",
+    "keyword": "East-Field",
     "resource_id": "4f136ac5-b264-485f-952e-343c54c5f7e9"
 }
 </code></pre>
-<h3>Updating a tag (<code>PUT</code>)</h3>
-<pre><code>/tags/:id
+<h3>Updating a keyword (<code>PUT</code>)</h3>
+<pre><code>/keywords/:id
 </code></pre>
 <p>The <code>POST</code> should contain a JSON object with information that will be updated:</p>
 <pre><code>{
-    "tag": "West-Field"
+    "keyword": "West-Field"
 }
 </code></pre>
-<h3>Deleting a tag (<code>DELETE</code>)</h3>
-<pre><code>/tags/:id
+<h3>Deleting a keyword (<code>DELETE</code>)</h3>
+<pre><code>/keywords/:id
 </code></pre>
-<p>After sending a <code>DELETE</code> to the url above, if deleting the tag was 
+<p>After sending a <code>DELETE</code> to the url above, if deleting the keyword was 
 successful, a <code>204</code> status will be returned. </p>
-<h3>Showing a specific tag (<code>GET</code>)</h3>
-<pre><code>/tags/:id
+<h3>Showing a specific keyword (<code>GET</code>)</h3>
+<pre><code>/keywords/:id
 </code></pre>
-<p>After sending a <code>GET</code> to the url above, a JSON object containing the tag's
+<p>After sending a <code>GET</code> to the url above, a JSON object containing the keyword's
 properties will be returned.</p>

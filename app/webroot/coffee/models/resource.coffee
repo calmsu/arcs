@@ -42,9 +42,9 @@ class arcs.models.Resource extends Backbone.Model
       if r.User?
         r.user = r.User
         delete r.User
-      if r.Tag?
-        r.tags = (t.tag for t in r.Tag)
-        delete r.Tag
+      if r.Keyword?
+        r.keywords = (k.keyword for k in r.Keyword)
+        delete r.Keyword
       if r.Comment?
         r.comments = r.Comment
         delete r.Comment

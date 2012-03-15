@@ -79,7 +79,7 @@ make a `POST` with a JSON array containing facet objects. For example:
             "value": "Nick Reynolds"
         },
         {
-            "category": "tag",
+            "category": "keyword",
             "value": "East Field",
         }
     ]
@@ -100,7 +100,7 @@ An example request using `jQuery.ajax`:
     });
 
 The response will be an array of objects containing resources (and related user,
-tags, comments, and hotspots:
+keywords, comments, and hotspots:
 
     [
         {
@@ -120,7 +120,7 @@ tags, comments, and hotspots:
             "User": {
                 ...
             },
-            "Tag": [],
+            "keyword": [],
             "Comment": []
         },
         {
@@ -207,42 +207,42 @@ this will be returned:
     }
 
 
-Tags
+keywords
 ----
 
-### Creating a new tag (`POST`)
+### Creating a new keyword (`POST`)
 
-    /tags
+    /keywords
 
 The `POST` should contain a JSON object with the following information:
     
     {
-        "tag": "East-Field",
+        "keyword": "East-Field",
         "resource_id": "4f136ac5-b264-485f-952e-343c54c5f7e9"
     }
 
-### Updating a tag (`PUT`)
+### Updating a keyword (`PUT`)
 
-    /tags/:id
+    /keywords/:id
 
 The `POST` should contain a JSON object with information that will be updated:
     
     {
-        "tag": "West-Field"
+        "keyword": "West-Field"
     }
 
-### Deleting a tag (`DELETE`)
+### Deleting a keyword (`DELETE`)
 
-    /tags/:id
+    /keywords/:id
 
-After sending a `DELETE` to the url above, if deleting the tag was 
+After sending a `DELETE` to the url above, if deleting the keyword was 
 successful, a `204` status will be returned. 
 
-### Showing a specific tag (`GET`)
+### Showing a specific keyword (`GET`)
 
-    /tags/:id 
+    /keywords/:id 
 
-After sending a `GET` to the url above, a JSON object containing the tag's
+After sending a `GET` to the url above, a JSON object containing the keyword's
 properties will be returned.
 
 [1]:http://stackoverflow.com/questions/3297048/403-forbidden-vs-401-unauthorized-http-responses#answer-6937030

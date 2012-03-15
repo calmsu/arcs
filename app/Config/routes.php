@@ -87,8 +87,8 @@
         array('controller' => 'resources', 'action' => 'comments'),
         array('id' => '[\d]+')
     );
-    Router::connect('/resources/:id/tags',
-        array('controller' => 'resources', 'action' => 'tags'),
+    Router::connect('/resources/:id/keywords',
+        array('controller' => 'resources', 'action' => 'keywords'),
         array('id' => '[\d]+')
     );
     Router::connect('/resources/:id/hotspots',
@@ -112,7 +112,7 @@
     # Map resources for the ajax-only controllers
     Router::mapResources(array(
         'comments',
-        'tags',
+        'keywords',
         'hotspots',
         'bookmarks',
         'flags'
