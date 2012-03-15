@@ -114,7 +114,8 @@
         'comments',
         'tags',
         'hotspots',
-        'bookmarks'
+        'bookmarks',
+        'flags'
     ));
 
     # Parse extensions (not super useful for us)

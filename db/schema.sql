@@ -140,3 +140,12 @@ CREATE TABLE IF NOT EXISTS bookmarks (
     description TEXT,
     created DATETIME DEFAULT NULL
 );
+
+-- flags
+CREATE TABLE IF NOT EXISTS flags (
+    id CHAR(36) PRIMARY KEY,
+    resource_id CHAR(36),
+    user_id CHAR(36),
+    reason VARCHAR(100),
+    explanation TEXT
+);
