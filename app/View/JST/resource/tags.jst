@@ -1,0 +1,5 @@
+<% _.each(tags, function(t) { %>
+<a class="tag" id="tag-<%= t.id %>" href="<% t.link %>">
+    <%= t.tag %>
+</a><br>
+<% }) %>

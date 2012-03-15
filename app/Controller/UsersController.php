@@ -62,6 +62,7 @@ class UsersController extends AppController {
      * Display the login form or authenticate a POSTed form.
      */
     public function login() {
+        $this->set('show_toolbar', false);
         $redirect = $this->Session->read('redirect');
         if ($redirect) {
             $this->Session->write('Auth.redirect', $redirect);

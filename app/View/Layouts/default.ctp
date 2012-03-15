@@ -18,7 +18,9 @@
     </head>
     <body>
         <div class="page fluid-container">
-            <?php echo $this->element('toolbar', $toolbar) ?>
+            <?php if ($show_toolbar): ?>
+                <?php echo $this->element('toolbar', $toolbar) ?>
+            <?php endif ?>
             <?php echo $this->Session->flash() ?>
             <?php echo $this->Session->flash('auth') ?>
             <?php echo $this->fetch('content'); ?>

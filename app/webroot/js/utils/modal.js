@@ -1,69 +1,101 @@
+(function() {
 
-arcs.utils.modal = function(options) {
-  var $modal, defaults, id, _i, _len, _ref,
-    _this = this;
-  defaults = {
-    template: '',
-    templateValues: {},
-    draggable: false,
-    handle: null,
-    backdrop: true,
-    inputs: [],
-    buttons: {
-      save: {
-        callback: function(vals, $modal) {
-          return $modal.modal('hide');
-        },
-        context: this,
-        closeAfter: true
+  arcs.utils.Modal = (function() {
+
+    function Modal(options) {
+      var defaults;
+      defaults = {
+        template: '',
+        templateValues: {},
+        draggable: false,
+        handle: null,
+        backdrop: true,
+        "class": null,
+        inputs: [],
+        buttons: {}
+      };
+      this.options = _.extend(defaults, options);
+      this._setEl();
+      if (this.options["class"] != null) this.el.addClass(this.options["class"]);
+      if (this.options.draggable) {
+        this.el.draggable({
+          handle: this.options.handle
+        });
       }
+      this.el.modal({
+        backdrop: this.options.backdrop,
+        keyboard: true,
+        show: false
+      });
+      if (this.el.attr('data-first') !== 'false') {
+        this.el.attr('data-first', 'true');
+      }
+      this.show();
+      this._bindButtons();
     }
-  };
-  options = _.extend(defaults, options);
-  if (!(options.buttons.cancel != null)) {
-    options.buttons.cancel = {
-      closeAfter: true
+
+    Modal.prototype._setEl = function() {
+      if (!$('#modal').length) $('body').append(arcs.tmpl('ui/modal_wrapper'));
+      return this.el = $('#modal');
     };
-  }
-  if (!$('#modal').length) $('body').append(arcs.templates.modalWrapper);
-  $modal = $('#modal');
-  $modal.modal({
-    backdrop: options.backdrop
-  });
-  $modal.html(Mustache.render(options.template, options.templateValues));
-  $modal.modal('show');
-  if (options.draggable) {
-    $modal.draggable({
-      handle: options.handle
-    });
-  }
-  _ref = _.keys(options.buttons);
-  for (_i = 0, _len = _ref.length; _i < _len; _i++) {
-    id = _ref[_i];
-    $modal.find("#" + id).one('click', function(e) {
-      var button, callback, closeAfter, context, id_, vals, _j, _len2, _ref2, _ref3, _ref4, _ref5;
+
+    Modal.prototype.hide = function() {
+      return this.el.modal('hide');
+    };
+
+    Modal.prototype.show = function() {
+      this.el.html(arcs.tmpl(this.options.template, this.options.templateValues));
+      this.el.modal('show');
+      if (this.el.attr('data-first') === 'true') {
+        this.el.css('right', '-400px').animate({
+          right: '0px'
+        });
+        return this.el.attr('data-first', 'false');
+      }
+    };
+
+    Modal.prototype.visible = function() {
+      return this.el.is(':visible');
+    };
+
+    Modal.prototype.values = function() {
+      var id, vals, _i, _len, _ref;
       vals = {};
-      if (options.inputs.length) {
-        _ref2 = options.inputs;
-        for (_j = 0, _len2 = _ref2.length; _j < _len2; _j++) {
-          id_ = _ref2[_j];
-          vals[id_] = $modal.find("#" + id_).val();
+      if (this.options.inputs.length) {
+        _ref = this.options.inputs;
+        for (_i = 0, _len = _ref.length; _i < _len; _i++) {
+          id = _ref[_i];
+          vals[id] = this.el.find("#" + id).val();
         }
       }
-      button = options.buttons[e.target.id];
-      if (typeof button === 'function') {
-        callback = button;
-        context = _this;
-        closeAfter = true;
-      } else {
-        context = (_ref3 = button.context) != null ? _ref3 : _this;
-        callback = (_ref4 = button.callback) != null ? _ref4 : function() {};
-        closeAfter = (_ref5 = button.closeAfter) != null ? _ref5 : true;
+      return vals;
+    };
+
+    Modal.prototype._bindButtons = function() {
+      var id, _i, _len, _ref, _results,
+        _this = this;
+      _ref = _.keys(this.options.buttons);
+      _results = [];
+      for (_i = 0, _len = _ref.length; _i < _len; _i++) {
+        id = _ref[_i];
+        _results.push(this.el.find("a#" + id + ", button#" + id).one('click', function(e) {
+          var button, callback, context, _ref2, _ref3;
+          button = _this.options.buttons[e.target.id];
+          if (_.isFunction(button)) {
+            button(_this.values());
+          } else {
+            _ref3 = [button.callback, (_ref2 = button.context) != null ? _ref2 : null], callback = _ref3[0], context = _ref3[1];
+            if (context != null) callback = _.bind(callback, context);
+            callback(_this.values());
+          }
+          if (!button.keepOpen) return _this.hide();
+        }));
       }
-      callback = _.bind(callback, context);
-      callback(vals, $modal);
-      if (closeAfter) return $modal.modal('hide');
-    });
-  }
-  return $modal;
-};
+      return _results;
+    };
+
+    return Modal;
+
+  })();
+
+}).call(this);

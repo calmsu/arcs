@@ -1,0 +1,5 @@
+<% _.each(hotspots, function(h) { %>
+<a class="hotspot" style="left:<%= h.left %>px; top:<%= h.top %>px; width:<%= h.width %>px;
+    height:<%= h.height %>px;" rel="popover" data-original-title="<%= h.type %>"
+    data-content="<%= h.caption %>" href="<%= h.link %>"></a>
+<% }) %>

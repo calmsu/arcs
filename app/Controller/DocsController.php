@@ -23,6 +23,7 @@ class DocsController extends AppController {
             'Resources' => 'about-resources',
             'Collections' => 'about-collections',
             'Uploading Resources' => 'uploading',
+            'Your Account' => 'account',
             'Searching the Catalog' => 'searching',
             'Bulk Actions' => 'bulk-actions',
             'Developer' => null,
@@ -38,9 +39,10 @@ class DocsController extends AppController {
      * @param doc
      * @return void
      */
-	public function display($doc='index') {
+	public function display($doc) {
         $title_for_layout = 'ARCS Help';
-        $this->set('active', $doc);
+        $active = $doc == 'index' ? '' : $doc;
+        $this->set('active', $active);
 		$this->render($doc);
 	}
 }

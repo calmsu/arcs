@@ -16,7 +16,7 @@
         ?>
     </head>
     <body>
-        <div class="page fluid-container">
+        <div class="page doc-page fluid-container">
             <?php echo $this->element('toolbar', $toolbar) ?>
             <?php echo $this->Session->flash() ?>
             <?php echo $this->Session->flash('auth') ?>
@@ -27,7 +27,7 @@
                     'active' => $active
                 )) ?>
                 </div>
-                <div class="span9">
+                <div class="span9 doc">
                 <?php echo $this->fetch('content'); ?>
                 </div>
             </div>

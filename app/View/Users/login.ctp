@@ -1,3 +1,7 @@
+<div id="login-header">
+    <?php echo $this->Html->image('arcs-icon-big'); ?>
+    <h1>Login to ARCS</h1>
+</div>
 <div id="login">
     <?php echo $this->Form->create('User'); ?>
     <label for="data[User][username]">
@@ -19,6 +23,12 @@
     <br>
     <?php echo $this->Form->submit('Login', array('class' => 'btn')); ?>
     <?php echo $this->Form->end() ?>
+</div>
+<div id="login-footer">
+    <?php echo $this->Html->link('About', '/about'); ?> &nbsp;|&nbsp;
+    <?php echo $this->Html->link('Help', '/docs/'); ?> &nbsp;|&nbsp;
+    <?php echo $this->Html->link('Public Access', '/search/'); ?> 
+    <span style="color:#666">&copy; 2012 MSU</span>
 </div>
 
 <script type="text/javascript">

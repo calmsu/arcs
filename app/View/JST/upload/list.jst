@@ -1,0 +1,20 @@
+<div class="accordion-group upload" data-id="<%= cid %>">
+    <div class="accordion-heading">
+        <div class="accordion-toggle">
+        <%= name %> &nbsp;&nbsp;
+        <em><%= arcs.utils.convertBytes(size) %></em>
+        <span class="progress">
+            <div class="bar" style="width: <%= progress %>%"></div>
+        </span>
+        <span id="progress-done" class="pull-right" style="display:none">
+          <i class="icon-ok"></i> Done
+        </span>
+        </div>
+    </div>
+    <div class="accordion-body collapse in">
+        <div class="accordion-inner">
+            <input type="text" id="upload-title" placeholder="Title" />
+            <input type="text" id="upload-identifier" placeholder="Identifier" />
+        </div>
+    </div>
+</div>

@@ -35,7 +35,7 @@ HEADER="/**\n\
 
 # Compile coffee in webroot/coffee to webroot/js
 coffee:
-	coffee --compile --bare --output $(JS) $(COFFEE)
+	coffee --compile --output $(JS) $(COFFEE)
 
 # Compile less in css/lib to css/arcs-skin.css
 less:

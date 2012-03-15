@@ -5,42 +5,36 @@
 # Display existing comments and save new ones.
 class arcs.views.Discussion extends Backbone.View
 
-    events:
-        'click #comment-button': 'saveComment'
+  events:
+    'click #comment-button': 'saveComment'
 
-    initialize: ->
-        @collection = new arcs.collections.Discussion
+  initialize: ->
+    @collection = new arcs.collections.Discussion
 
-        arcs.bind 'resourceChange', =>
-            @update()
+    arcs.on 'arcs:indexchange', @update, @
+    @collection.on 'add remove', @render, @
 
-        _.bindAll @, 'render'
+    @update()
 
-        @collection.bind 'add', @render, @
-        @collection.bind 'remove', @render, @
+  saveComment: ->
+    $textarea = @$el.find('textarea#content')
+    comment = new arcs.models.Comment
+      resource_id: arcs.resource.id
+      content: $textarea.val()
+    $textarea.val ''
+    comment.save()
+    comment.set 
+      name: 'You' 
+      created: 'just now'
+    @collection.add(comment)
 
-        @update()
+  update: ->
+    @collection.fetch
+      success: =>
+        @render()
 
-    saveComment: ->
-        $textarea = @el.find('textarea#content')
-        comment = new arcs.models.Comment
-            resource_id: arcs.resource.id
-            content: $textarea.val()
-            # These next two are just temporary values so we don't need to 
-            # fetch the collection again to get them.
-            _name: 'You'
-            _created: 'just now'
-        $textarea.val ''
-        comment.save()
-        @collection.add(comment)
-
-    update: ->
-        @collection.fetch
-            success: =>
-                @render()
-
-    render: ->
-        $discussion = $('#comment-wrapper')
-        $discussion.html Mustache.render arcs.templates.discussion,
-            comments: @collection.toJSON()
-        @
+  render: ->
+    $discussion = $('#comment-wrapper')
+    $discussion.html arcs.tmpl 'resource/discussion', 
+      comments: @collection.toJSON()
+    @

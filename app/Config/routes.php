@@ -73,6 +73,10 @@
         array('controller' => 'resources', 'action' => 'search')
     );
 
+    # Search must have a trailing slash, for the client-side code's
+    # sanity. IMO it shouldn't be optional to begin with.
+    Router::redirect('/search', '/search/');
+
     # Configuration status
     Router::connect('/status',
         array('controller' => 'pages', 'action' => 'status')

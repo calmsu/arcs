@@ -10,13 +10,32 @@ CREATE TABLE IF NOT EXISTS resources (
     public BOOL,
     exclusive BOOL,
     file_name VARCHAR(200),
+    file_size INT(11),
     mime_type VARCHAR(100),
-    type VARCHAR(100),
-    first_req BOOL DEFAULT TRUE,
     title TEXT,
+    context CHAR(36) DEFAULT NULL,
+    first_req BOOL DEFAULT TRUE,
+    created DATETIME DEFAULT NULL,
+    modified DATETIME DEFAULT NULL
+);
+
+-- metadata
+CREATE TABLE IF NOT EXISTS metadata (
+    id CHAR(36) PRIMARY KEY,
+    resource_id CHAR(36),
+    property VARCHAR(50),
+    value TEXT,
     created DATETIME DEFAULT NULL,
     modified DATETIME DEFAULT NULL,
-    FULLTEXT(title)
+    FULLTEXT(value)
+);
+
+-- uploads
+CREATE TABLE IF NOT EXISTS uploads (
+    id CHAR(36) PRIMARY KEY,
+    file_name VARCHAR(200),
+    tmp_name VARCHAR(40),
+    created DATETIME DEFAULT NULL
 );
 
 -- collections

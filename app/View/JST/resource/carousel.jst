@@ -1,0 +1,9 @@
+<% _.each(resources, function(r, i) { %>
+  <li>
+    <img class="thumb" src="<%= r.thumb %>" alt="thumbnail"
+      style="width:100px; height:90px;" data-id="<%= r.id %>"/>
+    <div class="overlay">
+      <span><%= i + 1 + offset %></span>
+    </div>
+  </li>
+<% }) %>

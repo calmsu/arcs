@@ -1,5 +1,8 @@
 <?php
 
+require_once(APPLIBS . 'Mime.php');
+require_once(APPLIBS . 'ImageUtility.php');
+
 class Resource extends AppModel {
     public $name = 'Resource';
     public $belongsTo = 'User';
@@ -10,156 +13,169 @@ class Resource extends AppModel {
         'Hotspot'
     );
 
-    /* MIME-type translation arrays */
-
-    public $imageMimes = array(
-        'image/png' => 'png',
-        'image/jpeg' => 'jpeg',
-        'image/jpg' => 'jpg',
-        'image/gif' => 'gif',
-    );
-
-    public $documentMimes = array(
-        'application/pdf' => 'pdf',
-        'application/vnd.openxmlformats-officedocument.wordprocessingml.document' => 'docx',
-        'application/msword' => 'doc',
-        'text/plain' => 'plaintext',
-        'text/richtext' => 'richtext',
-        'text/rtf' => 'rtf'
-    );
-
-    public $videoMimes = array(
-        'video/mpeg' => 'mpeg',
-        'video/msvideo' => 'avi',
-        'video/quicktime' => 'mov'
-    );
-
     /**
      * Adds the URLs to the Resource's file and thumbnail to the return array.
      * Note that we don't store those, so we must dynamically generate them.
      */
     public function afterFind($results, $primary) {
-        if (!$primary) {
-            if (isset($results['sha'])) {
-                $sha = $results['sha'];
-                $name = $results['file_name'];
-                $results['url'] = $this->getURL($sha) . '/' . $name;
-                $results['thumb'] = $this->getURL($sha) . '/thumb.png';
+        # Add the thumbnail and resource urls to the results array.
+        # We're using our resultsMap method, passing in $this and using it
+        # internally as $c.
+        $results = $this->resultsMap($results, function($r, $c) {
+            if (isset($r['sha']) && isset($r['file_name'])) {
+                $r['url'] = $c->url($r['sha'], $r['file_name']);
+                $r['thumb'] = $c->url($r['sha'], 'thumb.png');
             }
-            return $results;
-        } else if (isset($results[0]['Resource']['sha'])) { 
-            foreach($results as $k=>$v) {
-                $sha = $results[$k]['Resource']['sha'];
-                $name = $results[$k]['Resource']['file_name'];
-                $results[$k]['Resource']['url'] = $this->getURL($sha) . '/' . $name;
-                $results[$k]['Resource']['thumb'] = $this->getURL($sha) . '/thumb.png';
-            }
-            return $results;
-        } else {
-            return $results;
-        }
+            return $r;
+        }, $this);
+        return $results;
     }
 
     /**
-     * Determines if the file with the given MIME type is a document (with 
-     * reasonable assurance). A document is defined as anything with a .pdf, 
-     * .doc, or .docx file extension (but of course we don't trust those, so 
-     * we're checking the MIME type).
+     * Creates the file-level components of a Resource.
      *
-     * @param mime    a valid MIME type
-     * @returns       true if it might be a document, false otherwise.
+     * Given a file path, it will calculate a SHA1 checksum of it, then build a
+     * path for the file from the hexdigest and put it there. 
+     *
+     * @param src    path to a readable file.
+     * @param fname  provide the desired filename, if different than 
+     *               src path basename.
+     * @param move   if false, copy the file rather than move it. Will
+     *               move by default.
+     * @return       a SHA1 hexdigest that can be used to get the 
+     *               resource's path.
      */
-    public function isDoc($mime) {
-        $documents = array_keys($this->documentMimes);
-        if (in_array($mime, $documents)) {
-            return true;
-        }
-        return false;
-    }
+    public function createFile($src, $fname=null, $move=true) {
 
-    /**
-     * Computes a SHA1 given the file name, using the time, and the application
-     * security salt for use in generating the resource file path.
-     *
-     * @param name   file name, or any suitable string
-     * @return       a SHA1 hexdigest
-     */
-    public function getSHA($name) {
-        $salt = Configure::read('Security.salt');
-        return sha1($name . time() . $salt);
-    }
+        # If we can't read the src path, return false.
+        if (!is_readable($src)) return false;
 
-    /**
-     * Computes (and if necessary, builds) the resource path, given its SHA1.
-     * It uses the `filestore_path` defined in arcs.ini.
-     *
-     * @param sha    resource SHA1
-     * @param make   if true, create directories above the path, if permitted.
-     * @return       resource path 
-     */
-    public function getPath($sha, $make=false) {
-        # Get the filestore setting
-        $root = realpath(Configure::read('paths.uploads'));
-        # Resource paths are relative to the filestore, and are stored 3
-        # directories deep, using the first 3 digits of the sha.
-        $path = $root . DS . substr($sha, 0, 1) . DS . substr($sha, 1, 1) . 
-                DS . substr($sha, 2, 1) . DS . substr($sha, 3);
-        # Make the path if desired and non-existent
-        if ($make) {
-            if (!is_dir($path)) {
-                $success = mkdir($path, 0777, true);
-                if (!$success) {
-                    return false;
-                }
+        # Get the SHA, destination path, and filename.
+        $sha = $this->_getSHA($src);
+        $fname = is_null($fname) ? basename($src) : $fname;
+        $dst = $this->path($sha);
+
+        # Try to make the new directory if it's not already there.
+        if (!is_dir($dst))
+            # Return false if we can't make it.
+            if (!mkdir($dst, 0777, true)) return false;
+
+        # If the file doesn't already exist (it may be a duplicate):
+        if (!is_file($dst . DS . $sha)) {
+            # Try to move if move and writable.
+            if ($move && is_writable($src)) {
+                $success = rename($src, $dst . DS . $sha);
+            # Otherwise try to copy. (Maybe it's read-only)
+            } else {
+                $success = copy($src, $dst . DS . $sha);
             }
+            # Return false on failure.
+            if (!$success) return false;
+            # Copy over a default thumbnail.
+            $this->_setDefaultThumb($sha);
         }
+
+        # Create a hard link to the file, if the file doesn't already exist.
+        if (!is_file($dst . DS . $fname))
+            # Return false if we can't make the link.
+            if (!link($dst . DS . $sha, $dst . DS . $fname)) return false;
+
+        # Return the hexdigest.
+        return $sha;
+    }
+
+    /**
+     * Return the file path to the resource's directory.
+     *
+     * This is based on the paths.uploads setting in `arcs.ini`
+     *
+     * @param sha    resource's SHA1
+     * @param fname  filename
+     */
+    public function path($sha, $fname=null) {
+        $path = $this->_path($sha, Configure::read('paths.uploads'), DS);
+        if ($fname) return $path . DS . $fname;
         return $path;
     }
 
     /**
-     * Constructs a URL relative to the configured 'filestore_url', given the
-     * Resource's SHA. 
+     * Return the url to the resource's directory.
      *
-     * @param   resource's SHA1
+     * This is based on the urls.uploads setting in `arcs.ini`
+     *
+     * @param sha   resource's SHA1
+     * @param fname resource's filename
      */
-    public function getURL($sha) {
-        $root = Configure::read('urls.uploads');
-        $root = rtrim($root, '/');
-        return sprintf("%s/%s/%s/%s/%s", $root, substr($sha, 0, 1), 
-                       substr($sha, 1, 1), substr($sha, 2, 1), substr($sha, 3));
+    public function url($sha, $fname=null) {
+        $url = $this->_path($sha, Configure::read('urls.uploads'));
+        if ($fname) return $url . DS . $fname;
+        return $url;
     }
 
     /**
-     * Copies over the default thumbnail for the mime-type, while the real one
-     * is being created.
+     * Return the file size of a Resource, in bytes.
      *
-     * @param mime   resource's MIME type (for example 'image/gif')
-     * @param path   result of getPath() called with the resource's sha
+     * @param sha   resource's SHA1
+     * @param fname resource's filename
      */
-    public function setDefaultThumb($mime, $path) {
-        $types = array_merge($this->documentMimes, $this->imageMimes, 
-                             $this->videoMimes);
-        if (array_key_exists($mime, $types)) {
-            $src = $types[$mime] . '.png';
-        } else {
-            $src = 'generic.png';
-        }
-        copy(IMAGES . 'default_thumbs' . DS . $src, $path . DS . 'thumb.png');
+    public function size($sha, $fname) {
+        return filesize($this->path($sha, $fname));
+    }
+
+    public function makeThumbnail($sha) {
+        $src = $this->path($sha, $sha);
+        $dst = $this->path($sha, 'thumb.png');
+        return ImageUtility::thumbnail($src, $dst);
+    }
+
+    /* PRIVATE METHODS */
+
+    /**
+     * Builds paths for resources using the ARCS spec. For example:
+     *
+     * $this->_path('123456789abcdef...', '/root/dir/')
+     *
+     * # '/root/dir/1/2/3/456789abcdef...'
+     *
+     * @param sha   resource's SHA1
+     * @param root  root path to prepend
+     * @param sep   separator to use, in most cases '/' or '\'
+     * @return      full path
+     */
+    private function _path($sha, $root='', $sep='/') {
+        # Trim any trailing sep
+        $root = rtrim($root, $sep);
+        return $root . $sep . 
+            substr($sha, 0, 1) . $sep . 
+            substr($sha, 1, 1) . $sep . 
+            substr($sha, 2, 1) . $sep . 
+            substr($sha, 3);
     }
 
     /**
-     * Return a JOIN statement relative to Resource, given parameters.
+     * Computes a SHA1 checksum of the file at the given path.
      *
-     * @param table   result of $dbo->fullTableName($this->Model), with 
-     *                quotes.
-     * @param alias   the alias to use, most likely the model name, 
-     *                unquoted.
-     * @param rcol    resource column to join on
-     * @param fcol    foreign column to join on
+     * @param name   file path
+     * @return       a SHA1 hexdigest
      */
-    public function makeInnerJoin($table, $alias, $rcol, $fcol) {
-        return "INNER JOIN {$table} `{$alias}` " .
-            "ON `Resource`.`{$rcol}` = `{$alias}`.`{$fcol}` ";
+    private function _getSHA($path) {
+        return sha1_file($path);
     }
 
+    /**
+     * Puts a default thumbnail within the path, given a MIME type.
+     *
+     * We don't create thumbnails during the Request-Response loop, but 
+     * we'll copy over a placeholder.
+     *
+     * @param sha
+     */
+    private function _setDefaultThumb($sha) {
+        $type = Mime::getExt($this->path($sha, $sha));
+        $thumb = $type ? $type . '.png' : 'generic.png';
+        copy(
+            IMAGES . 'default_thumbs' . DS . $thumb, 
+            $this->path($sha, 'thumb.png')
+        );
+    }
 }

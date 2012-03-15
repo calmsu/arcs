@@ -1,0 +1,11 @@
+<% _.each(results, function(r, i) { %>
+<div class="result grid">
+  <img src="<%= r.thumb %>" data-id="<%= r.id %>" style="height:100px" />
+  <div>
+    <strong>
+      <%= r.title.length > 50 ? r.title.substring(0, 50) + '...' : r.title %>
+    </strong>
+  </div>
+  <div><%= r.user.name %></div>
+</div>
+<% }) %>

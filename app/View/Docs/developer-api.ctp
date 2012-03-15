@@ -34,15 +34,14 @@ operation. For reference, the relevant status codes are:</p>
 </ul>
 <h3>Forbidden vs. Unauthorized</h3>
 <p>When there is no user authenticated (and the request requires being 
-authenticated), a <code>403</code> is returned. If the user <em>is</em> authenticated, but not
-permitted to request the specified action, a <code>401</code> is returned.</p>
+authenticated), a <code>401</code> is returned. If the user <em>is</em> authenticated, but not
+permitted to request the specified action, a <code>403</code> is returned.</p>
+<p>For further clarification, see this StackOverflow <a href="http://stackoverflow.com/questions/3297048/403-forbidden-vs-401-unauthorized-http-responses#answer-6937030">answer</a>.</p>
 <h3>Accepted</h3>
 <p>Some requested actions take longer to perform than a normal Request-Response
 loop allows. In these cases, ARCS will queue the action and it will be performed
 as soon as possible. The <code>202</code> code is returned in such a scenario--meaning
 it's been accepted, and we're working on it.</p>
-<h2>Formatting a request</h2>
-<p>Blah, blah jQuery, blah, blah MooTools, blah, blah Zepto</p>
 <h2>Resources</h2>
 <h3>Creating a new resource (<code>POST</code>)</h3>
 <pre><code>/resources
