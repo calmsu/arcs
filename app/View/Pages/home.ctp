@@ -115,4 +115,30 @@
 
 </div><!-- page fluid-container -->
 
+<footer id="credits">
+	<?php 
+		echo $this->Html->image( 'neh-logo.png',
+			array(	'alt'=> 'NEH Logo', 
+					'id' => 'neh_logo', 
+					'class' => 'logo', 
+					'title' => 'Any views, findings, conclusions, or recommendations expressed in this website do not necessarily represent those of the National Endowment for the Humanities', 
+					'url' => 'http://www.neh.gov/'
+				)); 
+		echo $this->Html->image( 'msu-wordmark.png',
+			array(	'alt'=> 'MSU Wordmark', 
+					'id' => 'msu_wordmark', 
+					'class' => 'logo', 
+					'title' => 'Any views, findings, conclusions, or recommendations expressed in this website do not necessarily represent those of Michigan State University', 
+					'url' => 'http://www.msu.edu/'
+				)); 
+	?>
+		<p><?php echo $this->Html->link('College of Arts and Letters', 'http://cal.msu.edu', array('class' => 'footer-links','target' => '_blank', 'title' => 'Any views, findings, conclusions, or recommendations expressed in this website do not necessarily represent those of the College of Arts and Letters'));?></p>
+		
+		<p><?php echo $this->Html->link('CE @ CAL', 'http://ce.cal.msu.edu', array('class' => 'footer-links', 'target' => '_blank', 'title' => 'Any views, findings, conclusions, or recommendations expressed in this website do not necessarily represent those of the Creativity Exploratory'));?></p>
+	
+	<p class="disclaimer">Any views, findings, conclusions, or recommendations expressed in this website do not necessarily represent those of the National Endowment for the Humanities, Michigan State University, the College of Arts and Letters, or the Creativity Exploratory.</p>
+
+</footer>
+
+
 <?php echo $this->Html->script('toggle-panels.js'); ?>
