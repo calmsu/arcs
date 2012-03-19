@@ -1,9 +1,12 @@
-<div class="alert alert-info">
-    <strong>Need help?</strong> See our 
-    <?php echo $this->Html->link('uploading tutorial', '/docs/uploading') ?>. 
-    &nbsp;
-    <strong>Not working?</strong> Try our 
-    <?php echo $this->Html->link('standard uploader', '/upload/standard') ?>.
+<div class="btn-group pull-left">
+    <a class="btn active" href="<?php echo $this->Html->url(
+        array('controller' => 'uploads', 'action' => 'batch')) ?>">Batch</a>
+    <a class="btn" href="<?php echo $this->Html->url(
+        array('controller' => 'resources', 'action' => 'add')) ?>">Standard</a>
+</div>
+<div class="pull-left" style="padding:7px; padding-left:20px;">
+    Need some help? See our 
+    <?php echo $this->Html->link('Uploading', '/docs/uploading') ?> documentation.
 </div>
 
 <div id="batch-upload">
