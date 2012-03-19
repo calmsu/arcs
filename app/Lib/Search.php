@@ -301,10 +301,10 @@ class Search {
      */
     public function results($limit=null, $offset=null) {
         if (!is_null($limit)) {
-            $this->limit = $limit;
+            $this->LIMIT = $limit;
         }
         if (!is_null($offset)) {
-            $this->offset = $offset;
+            $this->OFFSET = $offset;
         }
         $sql = $this->_buildStatement();
         $rows = $this->_execute($sql, $this->values);
