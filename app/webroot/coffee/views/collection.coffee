@@ -39,7 +39,7 @@ class arcs.views.Collection extends Backbone.View
 
     # Special logic for a resource's first request post-upload.
     if @model.get 'first_req'
-      if @model.get 'mime_type' == 'application/pdf'
+      if @model.get('mime_type') == 'application/pdf'
         @splitPrompt()
 
     @index ?= 0
@@ -112,19 +112,17 @@ class arcs.views.Collection extends Backbone.View
 
   # Prompt the user to consider splitting a PDF.
   splitPrompt: ->
-    if @model.get('mime_type') == 'application/pdf'
-      new arcs.views.Modal
-        title: "Split into a PDF?"
-        subtitle: "We noticed you've uploaded a PDF. If you'd like, " +
-          "we can split the PDF into a collection, where it can be " +
-          "annotated and commented on--page by page."
-        buttons:
-          yes: 
-            class: 'btn-success'
-            callback: =>
-              $.get arcs.baseURL + 'resources/split_pdf/' + @model.id
-          no:
-            text: 'No, leave it alone'
+    new arcs.views.Modal
+      title: "Split into a PDF?"
+      subtitle: "We noticed you've uploaded a PDF. If you'd like, " +
+        "we can split the PDF into a collection, where it can be " +
+        "annotated and commented on--page by page."
+      buttons:
+        yes: 
+          class: 'btn success'
+          callback: =>
+            $.get arcs.baseURL + 'resources/split_pdf/' + @model.id
+        no: ->
   
   # Render the resource.
   render: ->

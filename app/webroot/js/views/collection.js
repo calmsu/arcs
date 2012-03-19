@@ -45,7 +45,7 @@
         return arcs.trigger('arcs:resourceresize');
       });
       if (this.model.get('first_req')) {
-        if (this.model.get('mime_type' === 'application/pdf')) this.splitPrompt();
+        if (this.model.get('mime_type') === 'application/pdf') this.splitPrompt();
       }
       return (_ref2 = this.index) != null ? _ref2 : this.index = 0;
     };
@@ -112,23 +112,19 @@
 
     Collection.prototype.splitPrompt = function() {
       var _this = this;
-      if (this.model.get('mime_type') === 'application/pdf') {
-        return new arcs.views.Modal({
-          title: "Split into a PDF?",
-          subtitle: "We noticed you've uploaded a PDF. If you'd like, " + "we can split the PDF into a collection, where it can be " + "annotated and commented on--page by page.",
-          buttons: {
-            yes: {
-              "class": 'btn-success',
-              callback: function() {
-                return $.get(arcs.baseURL + 'resources/split_pdf/' + _this.model.id);
-              }
-            },
-            no: {
-              text: 'No, leave it alone'
+      return new arcs.views.Modal({
+        title: "Split into a PDF?",
+        subtitle: "We noticed you've uploaded a PDF. If you'd like, " + "we can split the PDF into a collection, where it can be " + "annotated and commented on--page by page.",
+        buttons: {
+          yes: {
+            "class": 'btn success',
+            callback: function() {
+              return $.get(arcs.baseURL + 'resources/split_pdf/' + _this.model.id);
             }
-          }
-        });
-      }
+          },
+          no: function() {}
+        }
+      });
     };
 
     Collection.prototype.render = function() {
