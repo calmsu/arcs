@@ -5040,10 +5040,22 @@ div#search-wrapper {
   margin-right: auto;
 }
 .result.grid {
+  font-size: 85%;
+  line-height: 16px;
   float: left;
   width: 170px;
   max-height: 140px;
   margin: 20px;
+}
+.result.grid strong {
+  font-size: 120%;
+}
+.result.grid .img-wrapper {
+  height: 110px;
+  line-height: 110px;
+}
+.result.grid .img-wrapper img {
+  vertical-align: middle;
 }
 .result.list {
   border-bottom: 1px solid #888;
@@ -5060,11 +5072,12 @@ div#search-wrapper {
   float: right;
   width: 100px;
 }
-.result.list td.thumb-wrapper div div.overlay {
+.result.list td.thumb-wrapper div span.overlay {
   position: relative;
+  display: inline-block;
   float: right;
-  bottom: 25px;
   text-align: right;
+  bottom: 0px;
   right: 0px;
 }
 .result.list td.keys {
@@ -5471,6 +5484,16 @@ span.keyword-link {
   margin-bottom: 100px;
   padding-bottom: 0px;
   width: 700px;
+}
+#batch-upload.disabled {
+  opacity: 0.4;
+  filter: alpha(opacity=40);
+  filter: alpha(opacity=30);
+  -moz-opacity: 0.4;
+  -khtml-opacity: 0.4;
+  opacity: 0.4;
+  opacity: 0.4;
+  filter: alpha(opacity=40);
 }
 #batch-upload .accordion-group {
   margin-bottom: 10px;

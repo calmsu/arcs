@@ -3,6 +3,8 @@
 # Search View. Select and perform bulk actions on search results.
 class arcs.views.Search extends Backbone.View
 
+  RESULTS_PER_PAGE: 30 
+
   ### Initialize and define events ###
 
   initialize: ->
@@ -25,6 +27,8 @@ class arcs.views.Search extends Backbone.View
     # Search unless the Router already delegated it.
     @search.run() unless @router.searched
 
+    @search.results.on 'remove', @render, @
+
     # Grid view unless init-ed with false
     @grid ?= true
 
@@ -39,8 +43,7 @@ class arcs.views.Search extends Backbone.View
     'click #list-btn'        : 'toggleView'
     'click #top-btn'         : 'scrollTop'
 
-
-  ## More involved setups run by the initialize method ###
+  ### More involved setups run by the initialize method ###
 
   # Set up drag-to-select, using jQuery.ui.selectable
   setupSelect: ->
@@ -48,16 +51,20 @@ class arcs.views.Search extends Backbone.View
       # Little bit of drag tolerance
       distance: 20
       # Images are the selectables
-      filter: 'img'
+      filter: 'div.img-wrapper img'
       # Make jQuery UI call our selection methods.
       selecting: (e, ui) => 
-        $(ui.selecting).parent().addClass('selected') and @syncSelection()
+        $(ui.selecting).parents('.result').addClass('selected')
+        @syncSelection()
       selected: (e, ui) =>
-        $(ui.selected).parent().addClass('selected') and @syncSelection()
+        $(ui.selected).parents('.result').addClass('selected')
+        @syncSelection()
       unselecting: (e, ui) =>
-        $(ui.unselecting).parent().removeClass('selected') and @syncSelection()
+        $(ui.unselecting).parents('.result').removeClass('selected')
+        @syncSelection()
       unselected: (e, ui) =>
-        $(ui.unselected).parent().removeClass('selected') and @syncSelection()
+        $(ui.unselected).parents('.result').removeClass('selected')
+        @syncSelection()
 
   # Make an instance of our Search utility and setup endless scrolling.
   setupSearch: ->
@@ -77,7 +84,7 @@ class arcs.views.Search extends Backbone.View
     $actions = @$('#search-actions')
     $results = @$('#search-results')
     $window = $(window)
-    pos = $actions.offset().top
+    pos = $actions.offset().top - 10
 
     $window.scroll =>
       # Toggle the toolbar's fixed position
@@ -90,6 +97,9 @@ class arcs.views.Search extends Backbone.View
 
       # If the scroll position is at the bottom, get the more results.
       if $window.scrollTop() == $(document).height() - $window.height()
+        # When the modulus is non-zero, it means the last search returned
+        # fewer results than allowed, and we don't need to search again.
+        return unless @search.results.length % @RESULTS_PER_PAGE == 0
         @searchPage += 1
         @search.run null,
           add: true
@@ -124,7 +134,7 @@ class arcs.views.Search extends Backbone.View
     # If <ctrl> <shift> or <meta> is pressed allow multi-select
     if not (e.ctrlKey or e.shiftKey or e.metaKey)
       @unselectAll()
-    $(e.currentTarget).parent().toggleClass('selected')
+    $(e.currentTarget).parents('.result').toggleClass('selected')
     @syncSelection()
 
   # Unselect all results unless a modifier key is held down, or
@@ -157,8 +167,9 @@ class arcs.views.Search extends Backbone.View
   # We do this instead of a full render to stop the scrollbar from 
   # jumping in certain browsers.
   append: ->
+    return unless @search.results.length > @RESULTS_PER_PAGE
     # Get new results after the ones already displayed.
-    rest = @search.results.rest(@search.results.length - 30)
+    rest = @search.results.rest @search.results.length - @RESULTS_PER_PAGE
     results = new arcs.collections.ResultSet rest
     @_render results: results.toJSON(), true
 

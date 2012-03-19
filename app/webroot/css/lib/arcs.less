@@ -907,6 +907,18 @@ div#search-wrapper {
 .result {
 
   &.grid {
+    strong {
+      font-size:120%;
+    }
+    .img-wrapper {
+      height:110px;
+      line-height:110px;
+      img {
+        vertical-align:middle;
+      }
+    }
+    font-size:85%;
+    line-height:16px;
     float:left;
     width:170px;
     max-height:140px;
@@ -926,11 +938,12 @@ div#search-wrapper {
           float:right;
           width:100px;
         }
-        div.overlay {
+        span.overlay {
           position:relative;
+          display:inline-block;
           float:right;
-          bottom:25px;
           text-align:right;
+          bottom:0px;
           right:0px;
         }
       }
@@ -1307,6 +1320,10 @@ span.keyword-link {
 #batch-upload {
   .arcs-form;
   width:700px;
+
+  &.disabled {
+    .opacity(40);
+  }
 
   .accordion-group {
     margin-bottom: 10px;

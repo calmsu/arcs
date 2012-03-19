@@ -6,7 +6,7 @@
 class arcs.views.Discussion extends Backbone.View
 
   events:
-    'click #comment-button': 'saveComment'
+    'click #comment-btn': 'saveComment'
 
   initialize: ->
     @collection = new arcs.collections.Discussion

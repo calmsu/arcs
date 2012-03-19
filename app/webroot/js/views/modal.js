@@ -54,7 +54,8 @@
     };
 
     Modal.prototype.hide = function() {
-      return this.$el.modal('hide');
+      this.$el.modal('hide');
+      return this.remove();
     };
 
     Modal.prototype.show = function() {

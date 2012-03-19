@@ -23,6 +23,10 @@
                 data-original-title="Flag the selected results">
                 <i class="icon-flag"></i> Flag
             </button>
+            <button id="delete-btn" class="btn" rel="tooltip"
+                data-original-title="Delete the selected results">
+                <i class="icon-trash"></i> Delete
+            </button>
         <?php else: // placeholder ?>
             <div style="height:28px"></div>
         <?php endif ?>

@@ -10,6 +10,8 @@
       Search.__super__.constructor.apply(this, arguments);
     }
 
+    Search.prototype.RESULTS_PER_PAGE = 30;
+
     /* Initialize and define events
     */
 
@@ -27,6 +29,7 @@
         root: arcs.baseURL + 'search/'
       });
       if (!this.router.searched) this.search.run();
+      this.search.results.on('remove', this.render, this);
       if (this.grid == null) this.grid = true;
       return arcs.keys.add('a', true, this.selectAll, this);
     };
@@ -40,22 +43,29 @@
       'click #top-btn': 'scrollTop'
     };
 
+    /* More involved setups run by the initialize method
+    */
+
     Search.prototype.setupSelect = function() {
       var _this = this;
       return this.$el.find('#search-results').selectable({
         distance: 20,
-        filter: 'img',
+        filter: 'div.img-wrapper img',
         selecting: function(e, ui) {
-          return $(ui.selecting).parent().addClass('selected') && _this.syncSelection();
+          $(ui.selecting).parents('.result').addClass('selected');
+          return _this.syncSelection();
         },
         selected: function(e, ui) {
-          return $(ui.selected).parent().addClass('selected') && _this.syncSelection();
+          $(ui.selected).parents('.result').addClass('selected');
+          return _this.syncSelection();
         },
         unselecting: function(e, ui) {
-          return $(ui.unselecting).parent().removeClass('selected') && _this.syncSelection();
+          $(ui.unselecting).parents('.result').removeClass('selected');
+          return _this.syncSelection();
         },
         unselected: function(e, ui) {
-          return $(ui.unselected).parent().removeClass('selected') && _this.syncSelection();
+          $(ui.unselected).parents('.result').removeClass('selected');
+          return _this.syncSelection();
         }
       });
     };
@@ -80,7 +90,7 @@
       $actions = this.$('#search-actions');
       $results = this.$('#search-results');
       $window = $(window);
-      pos = $actions.offset().top;
+      pos = $actions.offset().top - 10;
       $window.scroll(function() {
         if ($window.scrollTop() > pos) {
           $actions.addClass('toolbar-fixed').width($results.width() + 23);
@@ -90,6 +100,7 @@
           _this.$('#top-btn').hide();
         }
         if ($window.scrollTop() === $(document).height() - $window.height()) {
+          if (_this.search.results.length % _this.RESULTS_PER_PAGE !== 0) return;
           _this.searchPage += 1;
           return _this.search.run(null, {
             add: true,
@@ -130,7 +141,7 @@
 
     Search.prototype.toggle = function(e) {
       if (!(e.ctrlKey || e.shiftKey || e.metaKey)) this.unselectAll();
-      $(e.currentTarget).parent().toggleClass('selected');
+      $(e.currentTarget).parents('.result').toggleClass('selected');
       return this.syncSelection();
     };
 
@@ -161,7 +172,8 @@
 
     Search.prototype.append = function() {
       var rest, results;
-      rest = this.search.results.rest(this.search.results.length - 30);
+      if (!(this.search.results.length > this.RESULTS_PER_PAGE)) return;
+      rest = this.search.results.rest(this.search.results.length - this.RESULTS_PER_PAGE);
       results = new arcs.collections.ResultSet(rest);
       return this._render({
         results: results.toJSON()

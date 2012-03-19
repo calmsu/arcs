@@ -11,7 +11,7 @@
     }
 
     Discussion.prototype.events = {
-      'click #comment-button': 'saveComment'
+      'click #comment-btn': 'saveComment'
     };
 
     Discussion.prototype.initialize = function() {

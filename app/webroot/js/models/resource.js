@@ -19,6 +19,10 @@
       selected: false
     };
 
+    Resource.prototype.url = function() {
+      return arcs.baseURL + 'resources/' + this.id;
+    };
+
     Resource.prototype.urlRoot = arcs.baseURL + 'resources';
 
     Resource.prototype.MODIFIABLE = ['title', 'identifier', 'copyright', 'creator', 'location', 'subject', 'coverage', 'date', 'format', 'date-modified', 'language', 'description', 'medium'];
@@ -53,6 +57,10 @@
         if (r.Comment != null) {
           r.comments = r.Comment;
           delete r.Comment;
+        }
+        if (r.Flag != null) {
+          r.flags = r.Flag;
+          delete r.Flag;
         }
         if (r.Membership != null) {
           _ref2 = r.Membership;

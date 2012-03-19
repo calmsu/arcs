@@ -4,13 +4,15 @@
     <td class="thumb-wrapper">
       <div>
         <img src="<%= r.thumb %>" data-id="<%= r.id %>" />
-        <div class="overlay">
+        <span class="overlay">
           <% if (r.comments.length) { %>
             <%= r.comments.length %> <i class="icon-comment"></i>
           <% } if (r.hotspots.length) { %>
             <%= r.hotspots.length %> <i class="icon-map-marker"></i>
+          <% } if (r.flags.length) { %>
+            <%= r.flags.length %> <i class="icon-flag"></i>
           <% } %> &nbsp;
-        </div>
+        </span>
       </div>
     </td>
     <td class="keys">

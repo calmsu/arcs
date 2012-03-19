@@ -15,6 +15,7 @@ class arcs.views.SearchActions extends Backbone.View
     'click #collection-btn'  : 'namedCollectionFromSelected'
     'click #attribute-btn'   : 'editSelected'
     'click #flag-btn'        : 'flagSelected'
+    'click #delete-btn'      : 'deleteSelected'
     'click #bookmark-btn'    : 'bookmarkSelected'
     'click #keyword-btn'     : 'keywordSelected'
 
@@ -48,10 +49,26 @@ class arcs.views.SearchActions extends Backbone.View
       description: note 
     bkmk.save()
 
+  deleteSelected: ->
+    return arcs.notify "Select a result" unless @results.anySelected()
+    n = @results.numSelected()
+    new arcs.views.Modal
+      title: 'Delete Selected'
+      subtitle: "#{n} #{arcs.pluralize('resource', n)} will be " +
+        "permanently deleted."
+      buttons:
+        delete:
+          class: 'btn danger'
+          callback: =>
+            for result in @results.selected()
+              result.destroy()
+            @_notify 'deleted', n
+        cancel: ->
+
   # Open a modal (called when keyword button is clicked) and ask the user for 
   # a keyword string. Delegate further action through callbacks.
   keywordSelected: ->
-    return unless @results.anySelected()
+    return arcs.notify "Select a result" unless @results.anySelected()
     n = @results.numSelected()
     new arcs.views.Modal
       title: 'Keyword Selected'
@@ -94,7 +111,7 @@ class arcs.views.SearchActions extends Backbone.View
           class: 'btn success'
           callback: (vals) =>
             for result in @results.selected()
-              @flagResult result, vals.reason, vals.explanation
+              @flagResult result, vals.reason, vals.explain
             @_notify 'flagged'
         cancel: ->
 
@@ -103,10 +120,16 @@ class arcs.views.SearchActions extends Backbone.View
   editSelected: ->
     return arcs.notify "Select a result" unless @results.anySelected()
     return @batchEditSelected() if @results.numSelected() > 1
+    result = @results.selected()[0]
+    inputs = {}
+    for field in result.MODIFIABLE
+      inputs[field] = value: result.get(field) ? ''
 
     new arcs.views.Modal
       title: 'Edit Attributes'
       subtitle: ''
+      template: 'ui/modal_columned'
+      inputs: inputs
       buttons:
         save: 
           class: 'btn success'
@@ -151,7 +174,7 @@ class arcs.views.SearchActions extends Backbone.View
     new arcs.views.Modal
       title: 'Create a Collection'
       subtitle: "A collection with #{n} #{arcs.pluralize('resource', n)} " +
-        "will  be created."
+        "will be created."
       inputs:
         title: 
           focused: true
@@ -183,17 +206,17 @@ class arcs.views.SearchActions extends Backbone.View
 
   # Call bookmarkResult on all selected results.
   bookmarkSelected: ->
-    for result in @results.selected()
-      @bookmarkResult result
+    @bookjmarkResult(result) for result in @results.selected()
     @_notify 'bookmarked'
 
   # Open all selected results through openResult
   openSelected: -> 
-    @_forSelected @openResult, 'opened'
+    @openResult(result) for result in @results.selected()
+    @_notify 'opened'
 
   # Displays a success notification given a past-tense verb.
-  _notify: (verb='affected') ->
-    n = @results.numSelected()
+  _notify: (verb='affected', n) ->
+    n ?= @results.numSelected()
     msg = "#{n} #{arcs.pluralize('resource', n)} #{arcs.conjugate('was', n)} #{verb}."
     arcs.notify msg, 'success'
 

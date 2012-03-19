@@ -1,11 +1,24 @@
 <% _.each(results, function(r, i) { %>
 <div class="result grid" data-id="<%= r.id %>">
-  <img src="<%= r.thumb %>" data-id="<%= r.id %>" style="height:100px" />
+  <div class="img-wrapper">
+    <img src="<%= r.thumb %>" data-id="<%= r.id %>" />
+  </div>
   <div>
     <strong>
-      <%= r.title.length > 50 ? r.title.substring(0, 50) + '...' : r.title %>
+      <%= r.title.length > 30 ? r.title.substring(0, 30) + '...' : r.title %>
     </strong>
   </div>
-  <div><%= r.user.name %></div>
+  <div>
+    <%= r.user.name %>
+  </div>
+  <div>
+    <% if (r.comments.length) { %>
+      <%= r.comments.length %> <i class="icon-comment"></i>
+    <% } if (r.hotspots.length) { %>
+      <%= r.hotspots.length %> <i class="icon-map-marker"></i>
+    <% } if (r.flags.length) { %>
+      <%= r.flags.length %> <i class="icon-flag"></i>
+    <% } %> &nbsp;
+  </div>
 </div>
 <% }) %>

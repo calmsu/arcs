@@ -10,6 +10,7 @@ class arcs.models.Resource extends Backbone.Model
     public: false
     selected: false
 
+  url: -> arcs.baseURL + 'resources/' + @id
   urlRoot: arcs.baseURL + 'resources'
 
   # List of attributes that the server will accept updates to.
@@ -48,6 +49,9 @@ class arcs.models.Resource extends Backbone.Model
       if r.Comment?
         r.comments = r.Comment
         delete r.Comment
+      if r.Flag?
+        r.flags = r.Flag
+        delete r.Flag
       if r.Membership?
         r.memberships = m.collection_id for m in r.Membership
         delete r.Membership

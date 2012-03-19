@@ -62,10 +62,13 @@ class arcs.views.Modal extends Backbone.View
     @_bindButtons()
   
   # Hide the dialog
-  hide: -> @$el.modal 'hide'
+  hide: -> 
+    @$el.modal 'hide'
+    @remove()
    
   # Show the dialog
-  show: -> @$el.modal 'show'
+  show: -> 
+    @$el.modal 'show'
 
   # Gather the values from each input.
   _getValues: ->

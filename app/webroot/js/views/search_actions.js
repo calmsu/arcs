@@ -22,6 +22,7 @@
       'click #collection-btn': 'namedCollectionFromSelected',
       'click #attribute-btn': 'editSelected',
       'click #flag-btn': 'flagSelected',
+      'click #delete-btn': 'deleteSelected',
       'click #bookmark-btn': 'bookmarkSelected',
       'click #keyword-btn': 'keywordSelected'
     };
@@ -59,10 +60,36 @@
       return bkmk.save();
     };
 
+    SearchActions.prototype.deleteSelected = function() {
+      var n,
+        _this = this;
+      if (!this.results.anySelected()) return arcs.notify("Select a result");
+      n = this.results.numSelected();
+      return new arcs.views.Modal({
+        title: 'Delete Selected',
+        subtitle: ("" + n + " " + (arcs.pluralize('resource', n)) + " will be ") + "permanently deleted.",
+        buttons: {
+          "delete": {
+            "class": 'btn danger',
+            callback: function() {
+              var result, _i, _len, _ref;
+              _ref = _this.results.selected();
+              for (_i = 0, _len = _ref.length; _i < _len; _i++) {
+                result = _ref[_i];
+                result.destroy();
+              }
+              return _this._notify('deleted', n);
+            }
+          },
+          cancel: function() {}
+        }
+      });
+    };
+
     SearchActions.prototype.keywordSelected = function() {
       var n,
         _this = this;
-      if (!this.results.anySelected()) return;
+      if (!this.results.anySelected()) return arcs.notify("Select a result");
       n = this.results.numSelected();
       return new arcs.views.Modal({
         title: 'Keyword Selected',
@@ -123,7 +150,7 @@
               _ref = _this.results.selected();
               for (_i = 0, _len = _ref.length; _i < _len; _i++) {
                 result = _ref[_i];
-                _this.flagResult(result, vals.reason, vals.explanation);
+                _this.flagResult(result, vals.reason, vals.explain);
               }
               return _this._notify('flagged');
             }
@@ -134,11 +161,23 @@
     };
 
     SearchActions.prototype.editSelected = function() {
+      var field, inputs, result, _i, _len, _ref, _ref2;
       if (!this.results.anySelected()) return arcs.notify("Select a result");
       if (this.results.numSelected() > 1) return this.batchEditSelected();
+      result = this.results.selected()[0];
+      inputs = {};
+      _ref = result.MODIFIABLE;
+      for (_i = 0, _len = _ref.length; _i < _len; _i++) {
+        field = _ref[_i];
+        inputs[field] = {
+          value: (_ref2 = result.get(field)) != null ? _ref2 : ''
+        };
+      }
       return new arcs.views.Modal({
         title: 'Edit Attributes',
         subtitle: '',
+        template: 'ui/modal_columned',
+        inputs: inputs,
         buttons: {
           save: {
             "class": 'btn success',
@@ -196,7 +235,7 @@
       n = this.results.numSelected();
       return new arcs.views.Modal({
         title: 'Create a Collection',
-        subtitle: ("A collection with " + n + " " + (arcs.pluralize('resource', n)) + " ") + "will  be created.",
+        subtitle: ("A collection with " + n + " " + (arcs.pluralize('resource', n)) + " ") + "will be created.",
         inputs: {
           title: {
             focused: true
@@ -244,19 +283,25 @@
       _ref = this.results.selected();
       for (_i = 0, _len = _ref.length; _i < _len; _i++) {
         result = _ref[_i];
-        this.bookmarkResult(result);
+        this.bookjmarkResult(result);
       }
       return this._notify('bookmarked');
     };
 
     SearchActions.prototype.openSelected = function() {
-      return this._forSelected(this.openResult, 'opened');
+      var result, _i, _len, _ref;
+      _ref = this.results.selected();
+      for (_i = 0, _len = _ref.length; _i < _len; _i++) {
+        result = _ref[_i];
+        this.openResult(result);
+      }
+      return this._notify('opened');
     };
 
-    SearchActions.prototype._notify = function(verb) {
-      var msg, n;
+    SearchActions.prototype._notify = function(verb, n) {
+      var msg;
       if (verb == null) verb = 'affected';
-      n = this.results.numSelected();
+      if (n == null) n = this.results.numSelected();
       msg = "" + n + " " + (arcs.pluralize('resource', n)) + " " + (arcs.conjugate('was', n)) + " " + verb + ".";
       return arcs.notify(msg, 'success');
     };
