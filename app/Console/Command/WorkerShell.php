@@ -1,7 +1,7 @@
-<?php
+<?php 
 
-include_once(APPLIBS . 'ImageUtility.php');
-include_once(APPLIBS . 'PdfExtractor.php');
+include_once(APPLIBS . 'relic' . DS . 'library' . DS . 'Relic' . DS . 'Image.php');
+include_once(APPLIBS . 'relic' . DS . 'library' . DS . 'Relic' . DS . 'PDF.php');
 
 class WorkerShell extends AppShell {
 
@@ -9,6 +9,8 @@ class WorkerShell extends AppShell {
 
     /**
      * Checks the queue and delegates tasks.
+     *
+     * @return void
      */
     public function main() {
         while (true) {
@@ -17,7 +19,7 @@ class WorkerShell extends AppShell {
             # ...or die if there aren't any.
             if (!$task) return $this->out('Nothing to do.');
             
-            # Start the task.
+            # Start the task. (Marks it in-progress.)
             $this->Task->start($task['id']);
             $this->out("Task: {$task['id']} ({$task['job']})");
 
@@ -42,8 +44,10 @@ class WorkerShell extends AppShell {
      *
      * @param id
      */
-    public function thumb($id) {
+    public function thumb($id=null) {
+        $id = is_null($id) ? $this->args[0] : $id;
         $resource = $this->Resource->findById($id);
+        if (!$resource) return false;
         return $this->Resource->makeThumbnail($resource['Resource']['sha']);
     }
 
@@ -51,9 +55,10 @@ class WorkerShell extends AppShell {
      * Converts a single PDF resource into a collection of resources 
      * (as JPEGs)--one for each page of the PDF.
      *
-     * @param id              resource id of the PDF
-     * @param collection_id   id of the collection to fill. (This method
+     * @param  id             resource id of the PDF
+     * @param  collection_id  id of the collection to fill. (This method
      *                        doesn't create one.)
+     * @return void
      */
     public function split_pdf($id, $collection_id) {
         # Find the PDF resource.
@@ -63,24 +68,22 @@ class WorkerShell extends AppShell {
         # Get and set its path.
         $path = $this->Resource->path($resource['sha'], $resource['file_name']);
 
-        $pdf = new PdfExtractor($path);
+        $pdf = new \Relic\PDF($path);
 
         # For each page in the PDF:
-        for ($page=1; $page<=$pdf->npages; $page++) {
-            # Output our progress.
-            $this->out("$page/{$pdf->npages}");
-
+        for ($page = 1; $page <= $pdf->npages; $page++) {
             # Create a tmp file to write to.
             $tmp_file = tempnam(sys_get_temp_dir(), 'ARCS');
             # Extract the page.
             $pdf->extractPage($page, $tmp_file);
 
             # The name is just the PDF file name plus "-pX.jpeg"
-            $basename = str_ireplace('.pdf', $resource['file_name']);
+            $basename = str_ireplace('.pdf', '', $resource['file_name']);
             $fname = $basename . "-p$page.jpeg";
             # Create the resource file.
-            $sha = $this->Resource->createFile($tmp_file, $fname);
+            $sha = $this->Resource->createFile($tmp_file, $fname, true, true);
 
+            $this->Resource->permit('sha', 'file_size', 'file_name', 'user_id');
             # Save the resource.
             $this->Resource->add(array(
                 'sha' => $sha,
@@ -95,8 +98,10 @@ class WorkerShell extends AppShell {
 
             # Save the collection membership.
             $this->Membership->pair($this->Resource->id, $collection_id);
-            # Make a thumbnail for it.
-            $this->Resource->makeThumbnail($sha);
+
+            # Output our progress.
+            $this->out("$page/{$pdf->npages} $sha");
+
             # Reset the Resource and Membership models for the next round.
             $this->Resource->create();
             $this->Membership->create();
@@ -106,6 +111,8 @@ class WorkerShell extends AppShell {
 
     /**
      * Prints out the startup message.
+     *
+     * @return void
      */
     public function startup() {
         $this->out();

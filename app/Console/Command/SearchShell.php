@@ -24,6 +24,8 @@ class SearchShell extends AppShell {
             $query = $this->promptFacets();
         }
 
+        $this->n = 
+
         # Set up a Search instance.
         $search = new Search($config, $query);
 

@@ -7,12 +7,4 @@
 # in as someone else.
 
 DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
-WWW_USER="www-data"
-USER=`whoami`
-
-if [ $USER != $WWW_USER ]
-then
-    sudo -u $WWW_USER ${DIR}/../app/Console/cake worker
-else
-    ${DIR}/../app/Console/cake worker
-fi
+${DIR}/cake worker $@
