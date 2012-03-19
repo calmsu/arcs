@@ -68,7 +68,7 @@ class MetaResourcesController extends AppController {
         $model = $this->modelClass;
         if ($this->$model->delete($id)) {
             return $this->jsonResponse(204);
-        } 
+        }
         return $this->jsonResponse(500);
     }
 }

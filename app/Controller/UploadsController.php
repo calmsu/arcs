@@ -20,9 +20,11 @@ class UploadsController extends AppController {
         foreach($_FILES as $f) {
             $tmp = is_array($f['tmp_name']) ? $f['tmp_name'][0] : $f['tmp_name'];
             $name = is_array($f['name']) ? $f['name'][0] : $f['name'];
-            $sha = $this->Resource->createFile($tmp, $name);
+            $error = is_array($f['error']) ? $f['error'][0] : $f['error'];
+            $sha = $this->Resource->createFile($tmp, $name, true, true);
             $files[] = array(
                 'name' => $name,
+                'error' => $error,
                 'sha' => $sha,
                 'thumb' => $this->Resource->url($sha, 'thumb.png')
             );
@@ -36,6 +38,10 @@ class UploadsController extends AppController {
     public function batch() {
         if ($this->request->is('ajax') && $this->request->data) {
             foreach($this->request->data as $upload) {
+                # Temporarily whitelist a few fields.
+                $this->Resource->permit(
+                    'sha', 'file_name', 'file_size', 'user_id'
+                );
                 $this->Resource->add(array(
                     'sha' => $upload['sha'],
                     'file_name' => $upload['name'],
@@ -45,7 +51,6 @@ class UploadsController extends AppController {
                     'user_id'   => $this->Auth->user('id'),
                     'public'    => false
                 ));
-                $this->Task->queue('thumb', $this->Resource->id);
                 $this->Resource->create();
                 $this->Task->create();
             }

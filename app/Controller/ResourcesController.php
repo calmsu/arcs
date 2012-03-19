@@ -18,14 +18,14 @@ class ResourcesController extends AppController {
 
     public function beforeFilter() {
         # The App Controller will set some common view variables (namely a 
-        # user array), so the parent's beforeFilter is run in this and most 
+        # user array), so the parent's beforeFilter is run in this and most
         # other controllers.
         parent::beforeFilter();
 
         # Read-only actions, such as viewing resources and associated comments
         # are allowed by default.
         $this->Auth->allow(
-            'index', 'view', 'search', 'comments', 
+            'index', 'view', 'search', 'comments',
             'hotspots', 'keywords', 'complete'
         );
     }
@@ -61,6 +61,10 @@ class ResourcesController extends AppController {
                 return $this->redirect('/status');
             }
 
+            # Temporarily whitelist a few fields.
+            $this->Resource->permit(
+                'sha', 'file_name', 'file_size', 'user_id'
+            );
             # Save a DB record.
             $this->Resource->add(array(
                 'sha' => $sha,
@@ -121,6 +125,7 @@ class ResourcesController extends AppController {
         $resource = $this->Resource->findById($id);
         if ($resource['Resource']['mime_type'] == 'application/pdf') {
             # Create a new collection for the split.
+            $this->Collection->permit('user_id');
             $this->Collection->save(array(
                 'Collection' => array(
                     'title' => $resource['Resource']['title'],
@@ -243,6 +248,8 @@ class ResourcesController extends AppController {
         if ($this->request->is('ajax')) {
             if ($this->Auth->loggedIn() && $this->Resource->delete($id)) {
                 return $this->jsonResponse(200);
+            } else {
+                return $this->jsonResponse(401);
             }
         }
     }

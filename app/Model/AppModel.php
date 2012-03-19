@@ -2,58 +2,16 @@
 class AppModel extends Model {
 
     /**
-     * Whitelist of fields. By default, everything is whitelisted, extending 
-     * models should override this behavior.
+     * Temporarily permit a field, by adding it to the whitelist.
+     *
+     * @param  field  one or more fields as arguments.
+     * @return void
      */
-    public $whitelist = array('*');
-
-    /**
-     * Overrides the save method to automatically remove non-whitelisted fields
-     * from the data array.
-     *
-     * The goal here is to prevent mass assignment of fields that should not be
-     * user-defineable (e.g. id). The Security component provides this, but only
-     * through the Form Helper, which we don't often use.
-     *
-     * @param data
-     * @param validate
-     * @param fieldList
-     */
-    public function save($data=null, $validate=true, $fieldList=array()) {
-        if (is_array($data)) $data = $this->_filterWhitelist($data);
-        return parent::save($data, $validate, $fieldList);
-    }
-
-    /**
-     * Convieniece method for temporarily whitelisting a field.
-     *
-     * It's necessary to call this if, for example, a controller action will
-     * set a field that the user may not (such as `user_id`). The field should
-     * not be added to the whitelist, but instead be temporarily permitted.
-     *
-     * @param fields    string or array of strings to whitelist.
-     */
-    public function permit($fields) {
-        if (!is_array($fields)) $fields = array($fields);
-        $this->_whitelist = $this->whitelist;
-        $this->whitelist = array_merge($this->whitelist, $fields);
-    }
-
-    /**
-     * Removes keys that are not present in the whitelist property from the
-     * save-formatted data array.
-     *
-     * @param data
-     */
-    private function _filterWhitelist($data) {
-        if ($this->whitelist[0] == '*') return $data;
-        if (!isset($data[$this->name])) return $data;
-
-        foreach ($data[$this->name] as $field => $value) {
-            if (!in_array($field, $this->whitelist)) 
-                unset($data[$this->name][$field]);
+    public function permit($field) {
+        $fields = func_get_args();
+        foreach ($fields as $f) {
+            $this->whitelist[] = $f;
         }
-        return $data;
     }
 
     /**
@@ -79,9 +37,7 @@ class AppModel extends Model {
      * off to save().
      */
     public function add($data) {
-        return $this->save(array(
-            $this->name => $data
-        ));
+        return $this->save(array($this->name => $data));
     }
 
     /*
