@@ -53,12 +53,12 @@ class Image {
      * @param  string $dst
      * @return bool
      */
-    public static function preview($options) {
+    public static function preview($src, $dst, $options=array()) {
         if (!is_readable($src)) return false;
+        if (Mime::mime($src) == 'application/pdf') $src .= '[0]';
         $image = new static($src);
         $image->format('jpeg');
         $image->scale(700, 700);
-        $image->resample(100);
         return $image->save($dst);
     }
 

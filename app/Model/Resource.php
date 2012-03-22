@@ -30,11 +30,14 @@ class Resource extends AppModel {
     public function afterFind($results, $primary) {
         # Add the thumbnail and resource urls to the results array.
         # We're using our resultsMap method, passing in $this and using it
-        # internally as $c.
-        $results = $this->resultsMap($results, function($r, $c) {
+        # internally as $ctx, as a way of accessing our methods within the 
+        # callback.
+        $results = $this->resultsMap($results, function($r, $ctx) {
             if (isset($r['sha']) && isset($r['file_name'])) {
-                $r['url'] = $c->url($r['sha'], $r['file_name']);
-                $r['thumb'] = $c->url($r['sha'], 'thumb.png');
+                $r['url'] = $ctx->url($r['sha'], $r['file_name']);
+                $r['thumb'] = $ctx->url($r['sha'], 'thumb.png');
+                if (is_file($ctx->path($r['sha'], 'preview.png')))
+                    $r['preview'] = $ctx->url($r['sha'], 'preview.png');
             }
             return $r;
         }, $this);
@@ -90,6 +93,9 @@ class Resource extends AppModel {
         if (!is_file($dst . DS . $fname))
             # Return false if we can't make the link.
             if (!link($dst . DS . $sha, $dst . DS . $fname)) return false;
+        
+        # Make a preview image, if we need one.
+        if ($this->_needsPreview($sha)) $this->makePreview($sha);
 
         # Return the hexdigest.
         return $sha;
@@ -137,6 +143,13 @@ class Resource extends AppModel {
         return \Relic\Image::thumbnail(
             $this->path($sha, $sha),
             $this->path($sha, 'thumb.png')
+        );
+    }
+
+    public function makePreview($sha) {
+        return \Relic\Image::preview(
+            $this->path($sha, $sha),
+            $this->path($sha, 'preview.png')
         );
     }
 
@@ -189,6 +202,16 @@ class Resource extends AppModel {
      */
     private function _getSHA($path) {
         return sha1_file($path);
+    }
+
+    private function _needsPreview($sha) {
+        $path = $this->path($sha, $sha);
+        # Anything greater than a megabyte.
+        if (filesize($path) > 1000000) return true;
+        $mime = \Relic\Mime::mime($path);
+        # PDFs and TIFFs need previews, too.
+        if (in_array($mime, array('application/pdf', 'image/tiff'))) return true;
+        return false;
     }
 
     /**

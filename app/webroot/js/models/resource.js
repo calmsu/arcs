@@ -15,6 +15,7 @@
       mime_type: "unknown",
       modified: null,
       created: null,
+      preview: false,
       public: false,
       selected: false
     };

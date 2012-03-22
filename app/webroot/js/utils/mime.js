@@ -6,7 +6,8 @@
       'image/png': 'png',
       'image/jpeg': 'jpeg',
       'image/jpg': 'jpg',
-      'image/gif': 'gif'
+      'image/gif': 'gif',
+      'image/tiff': 'tiff'
     },
     documentTypes: {
       'application/pdf': 'pdf',
