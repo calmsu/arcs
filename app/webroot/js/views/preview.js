@@ -39,9 +39,7 @@
 
     Preview.prototype.set = function(index, force) {
       if (force == null) force = false;
-      if (!((0 <= index && index < this.collection.models.length) || force)) {
-        return;
-      }
+      if (!((0 <= index && index < this.collection.length) || force)) return;
       this.model = this.collection.at(index);
       this.index = index;
       this._preloadNext();
@@ -49,16 +47,22 @@
     };
 
     Preview.prototype._preloadNext = function() {
-      if (this.index + 1 < this.collection.models.length) {
+      if (this.index + 1 < this.collection.length) {
         return arcs.preload(this.collection.at(this.index + 1).get('url'));
       }
+    };
+
+    Preview.prototype.remove = function() {
+      this.$el.modal('hide');
+      Preview.__super__.remove.call(this);
+      return this.undelegateEvents();
     };
 
     Preview.prototype.render = function() {
       var pageInfo;
       pageInfo = {
         page: this.index + 1,
-        count: this.collection.models.length
+        count: this.collection.length
       };
       this.$el.html(arcs.tmpl(this.options.template, _.extend(pageInfo, this.model.toJSON())));
       return this;

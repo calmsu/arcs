@@ -225,9 +225,14 @@ class arcs.views.SearchActions extends Backbone.View
 
   previewSelected: ->
     return unless @results.anySelected()
-    if $('#modal').is(':visible')
-      return $('#modal').modal('hide')
-    new arcs.views.Preview
+    # The method doubles as a toggle. If a preview is already open, we'll close
+    # it and return.
+    if @preview?
+      # Kill the old preview, otherwise the zombie events will come back to 
+      # bite us. Preview.remove() is set up to undelegate events.
+      @preview.remove()
+      return @preview = null
+    @preview = new arcs.views.Preview
       collection: new arcs.collections.ResultSet(@results.selected())
 
   # Download selected files.

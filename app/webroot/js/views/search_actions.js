@@ -306,8 +306,11 @@
 
     SearchActions.prototype.previewSelected = function() {
       if (!this.results.anySelected()) return;
-      if ($('#modal').is(':visible')) return $('#modal').modal('hide');
-      return new arcs.views.Preview({
+      if (this.preview != null) {
+        this.preview.remove();
+        return this.preview = null;
+      }
+      return this.preview = new arcs.views.Preview({
         collection: new arcs.collections.ResultSet(this.results.selected())
       });
     };

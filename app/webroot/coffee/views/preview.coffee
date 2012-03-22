@@ -36,7 +36,7 @@ class arcs.views.Preview extends Backbone.View
   # Set the index and `render`.
   set: (index, force=false) ->
     # Don't set the index unless it's valid.
-    return unless 0 <= index < @collection.models.length or force
+    return unless 0 <= index < @collection.length or force
     # Grab the model at the index.
     @model = @collection.at index
     @index = index
@@ -46,15 +46,21 @@ class arcs.views.Preview extends Backbone.View
 
   # Preload the next resource. This delegates to `arcs.preload`
   _preloadNext: ->
-    if @index + 1 < @collection.models.length
+    if @index + 1 < @collection.length
       arcs.preload @collection.at(@index + 1).get 'url'
+
+  # Hide the modal, remove it from the DOM, and kill the events.
+  remove: ->
+    @$el.modal 'hide'
+    super()
+    @undelegateEvents()
     
   # Render the preview using the given or default template.
   render: ->
     # Provide the page info to the template.
     pageInfo =
       page: @index + 1
-      count: @collection.models.length
+      count: @collection.length
     # Extend the page info with the Resource model and interpolate.
     @$el.html arcs.tmpl @options.template, 
       _.extend pageInfo, @model.toJSON()
