@@ -1,0 +1,16 @@
+<div class="preview">
+  <img class="preview-image" src="<%= url %>" alt="preview"/>
+  <div class="preview-footer">
+    <a id="title" href="<%= arcs.baseURL + "resource/" + id %>">
+      <%= title %>
+    </a>
+    <span class="pull-right">
+      <% if (page > 1) { %>
+        <span id="prev-btn">&larr;</span>
+      <% } %>
+      <%= page %> / <%= count %>
+      <span id="next-btn" 
+        class="<%= page < count ? '' : 'invisible' %>">&rarr;</span>
+    </span>
+  </div>
+</div>
