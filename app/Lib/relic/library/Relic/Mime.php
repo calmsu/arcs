@@ -255,7 +255,7 @@ class Mime {
      */
     public static function extensions($mime) {
         $matches = array();
-        foreach(self::types as $ext => $type)
+        foreach(self::$types as $ext => $type)
             if ($mime == $type) $matches[] = $ext;
         return $matches;
     }

@@ -140,6 +140,23 @@ class Resource extends AppModel {
         );
     }
 
+    /**
+     *
+     * @param files
+     */
+    public function makeZipfile($files, $zipname) {
+        if (!class_exists('ZipArchive')) return false;
+        $tmp_file = tempnam(sys_get_temp_dir(), 'ARCS');
+        $zip = new ZipArchive();
+        $zip->open($tmp_file);
+        $zip->addEmptyDir($zipname);
+        foreach ($files as $name => $sha) {
+            $zip->addFile($this->path($sha, $name), $zipname . DS . $name);
+        }
+        $zip->close();
+        return $this->createFile($tmp_file, $zipname . '.zip');
+    }
+
     /* PRIVATE METHODS */
 
     /**
@@ -183,10 +200,16 @@ class Resource extends AppModel {
      * @param sha
      */
     private function _setDefaultThumb($sha) {
-        $type = \Relic\Mime::extensions($this->path($sha, $sha));
-        $thumb = $type ? $type . '.png' : 'generic.png';
+        $types = \Relic\Mime::extensions($this->path($sha, $sha));
+        $image = 'generic';
+        foreach($types as $type) {
+            if (is_file(IMAGES . 'default_thumbs' . DS . $type . '.png')) {
+                $image = $type;
+                break;
+            }
+        }
         copy(
-            IMAGES . 'default_thumbs' . DS . $thumb, 
+            IMAGES . 'default_thumbs' . DS . $image . '.png', 
             $this->path($sha, 'thumb.png')
         );
     }

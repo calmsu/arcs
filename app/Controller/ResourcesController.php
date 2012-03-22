@@ -302,6 +302,52 @@ class ResourcesController extends AppController {
         } 
     }
 
+    public function download($id) {
+        $resource = $this->Resource->findById($id);
+        if (!$resource) return $this->redirect('/404');
+        $this->layout = false;
+        Configure::write('debug', 0);
+        $sha = $resource['Resource']['sha'];
+        $this->set('fname', $resource['Resource']['file_name']);
+        $this->set('fsize', $resource['Resource']['file_size']);
+        $this->set('path', $this->Resource->path($sha, $sha));
+        $this->render('/Elements/download');
+    }
+
+    public function zipped() {
+        if (!$this->request->is('ajax')) return $this->redirect('/404');
+        if (!($this->request->is('post') && $this->request->data))
+            return $this->jsonResponse(400);
+        $ids = $this->request->data['resources'];
+        $resources = $this->Resource->find('all', array(
+            'conditions' => array(
+                'Resource.id' => $ids
+            )
+        ));
+        $files = array();
+        foreach ($resources as $r) {
+            $files[$r['Resource']['file_name']] = $r['Resource']['sha'];
+        }
+        $title = str_replace(' ', '-', $resources[0]['Resource']['title']);
+        $name = $title . '-and-' . 
+            (count($files) - 1) . '-' .
+            (count($files) > 2 ? 'others' : 'other');
+        $sha = $this->Resource->makeZipfile($files, $name);
+        $this->jsonResponse(200, array(
+            'url' => $this->Resource->url($sha, $name . '.zip')
+        ));
+    }
+
+    public function rethumb($id) {
+        if (!$this->request->is('ajax')) $this->redirect('/404');
+        if (!$this->Auth->user('id')) return $this->jsonResponse(401);
+        $resource = $this->Resource->findById($id);
+        if (!$resource) return $this->jsonResponse(404);
+        $this->loadModel('Task');
+        $this->Task->queue('thumb', $resource['Resource']['id']);
+        return $this->jsonResponse(202);
+    }
+
     /**
      * Return associated comments.
      *
