@@ -1,12 +1,15 @@
-<div class="btn-group pull-left">
-    <a class="btn" href="<?php echo $this->Html->url(
-        array('controller' => 'uploads', 'action' => 'batch')) ?>">Batch</a>
-    <a class="btn active" href="<?php echo $this->Html->url(
-        array('controller' => 'resources', 'action' => 'add')) ?>">Standard</a>
-</div>
-<div class="pull-left" style="padding:7px; padding-left:20px;">
-    Need some help? See our 
-    <?php echo $this->Html->link('Uploading', '/docs/uploading') ?> documentation.
+<div id="upload-nav" class="well">
+    <span class="btn-group" style="bottom:5px;">
+        <a class="btn" href="<?php echo $this->Html->url(
+            array('controller' => 'uploads', 'action' => 'batch')) ?>">Batch</a>
+        <a class="btn active" href="<?php echo $this->Html->url(
+            array('controller' => 'resources', 'action' => 'add')) ?>">Standard</a>
+    </span>
+    &nbsp;
+    <span>
+        Need some help? See our 
+        <?php echo $this->Html->link('Uploading', '/docs/uploading') ?> documentation.
+    </span>
 </div>
 
 <div class="arcs-form" style="width:500px;">
