@@ -228,7 +228,6 @@ class arcs.views.SearchActions extends Backbone.View
     if $('#modal').is(':visible')
       return $('#modal').modal('hide')
     new arcs.views.Preview
-      model: @results.selected()[0]
       collection: new arcs.collections.ResultSet(@results.selected())
 
   # Download selected files.

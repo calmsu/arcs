@@ -11,7 +11,8 @@
     }
 
     Preview.prototype.options = {
-      index: 0
+      index: 0,
+      template: 'search/preview'
     };
 
     Preview.prototype.initialize = function() {
@@ -20,7 +21,7 @@
       this.$el.modal();
       arcs.keys.add('left', false, this.prev, this);
       arcs.keys.add('right', false, this.next, this);
-      return this.set(this.options.index);
+      return this.set(this.options.index, true);
     };
 
     Preview.prototype.events = {
@@ -36,9 +37,11 @@
       return this.set(this.index + 1);
     };
 
-    Preview.prototype.set = function(index) {
-      if (index < 0) index = 0;
-      if (index >= this.collection.length) index = this.collection.length - 1;
+    Preview.prototype.set = function(index, force) {
+      if (force == null) force = false;
+      if (!((0 <= index && index < this.collection.models.length) || force)) {
+        return;
+      }
       this.model = this.collection.at(index);
       this.index = index;
       this._preloadNext();
@@ -46,7 +49,7 @@
     };
 
     Preview.prototype._preloadNext = function() {
-      if (this.index + 1 < this.collection.length) {
+      if (this.index + 1 < this.collection.models.length) {
         return arcs.preload(this.collection.at(this.index + 1).get('url'));
       }
     };
@@ -55,9 +58,9 @@
       var pageInfo;
       pageInfo = {
         page: this.index + 1,
-        count: this.collection.length
+        count: this.collection.models.length
       };
-      this.$el.html(arcs.tmpl('search/preview', _.extend(pageInfo, this.model.toJSON())));
+      this.$el.html(arcs.tmpl(this.options.template, _.extend(pageInfo, this.model.toJSON())));
       return this;
     };
 

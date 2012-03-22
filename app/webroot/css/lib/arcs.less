@@ -1538,7 +1538,6 @@ div#search-results-wrapper {
   .preview-footer {
     .gradient(#ccc, #bbb);
     padding:10px;
-    color:#000;
     border-top:1px solid #fff;
     outline: 1px solid #333;
     .text-shadow(#fff);
@@ -1558,11 +1557,14 @@ div#search-results-wrapper {
 }
 
 .context-menu {
-  background: #ddd;
+  background: #f8f8f8;
   border:1px solid #888;
   min-width:100px;
-  .shadow(0, 0, 2px, 2px, rgba(0, 0, 0, 0.3));
+  .shadow(0, 0, 2px, 2px, rgba(0, 0, 0, 0.2));
   li {
+    a {
+      color:#333;
+    }
     a:hover {
       background-color:#08c;
       color:#fff;

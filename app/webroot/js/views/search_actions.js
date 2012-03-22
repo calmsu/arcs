@@ -308,7 +308,6 @@
       if (!this.results.anySelected()) return;
       if ($('#modal').is(':visible')) return $('#modal').modal('hide');
       return new arcs.views.Preview({
-        model: this.results.selected()[0],
         collection: new arcs.collections.ResultSet(this.results.selected())
       });
     };

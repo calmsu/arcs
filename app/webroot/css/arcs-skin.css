@@ -5713,7 +5713,6 @@ div#search-results-wrapper .toolbar-fixed {
   /* IE */
 
   padding: 10px;
-  color: #000;
   border-top: 1px solid #fff;
   outline: 1px solid #333;
   text-shadow: 0 1px 1px #ffffff;
@@ -5729,12 +5728,15 @@ div#search-results-wrapper .toolbar-fixed {
   color: #333;
 }
 .context-menu {
-  background: #ddd;
+  background: #f8f8f8;
   border: 1px solid #888;
   min-width: 100px;
-  -moz-box-shadow: 0 0 2px 2px rgba(0, 0, 0, 0.3);
-  -webkit-box-shadow: 0 0 2px 2px rgba(0, 0, 0, 0.3);
-  box-shadow: 0 0 2px 2px rgba(0, 0, 0, 0.3);
+  -moz-box-shadow: 0 0 2px 2px rgba(0, 0, 0, 0.2);
+  -webkit-box-shadow: 0 0 2px 2px rgba(0, 0, 0, 0.2);
+  box-shadow: 0 0 2px 2px rgba(0, 0, 0, 0.2);
+}
+.context-menu li a {
+  color: #333;
 }
 .context-menu li a:hover {
   background-color: #08c;
