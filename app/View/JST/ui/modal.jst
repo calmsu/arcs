@@ -6,8 +6,9 @@
 <div class="modal-body">
 <% if (subtitle) { %>
   <%= subtitle %>
-<% } %>
   <br><br>
+<% } %>
+  <div id="validation-error"></div>
 <% _.each(inputs, function(i, name) { %>
   <% if (_.isUndefined(i.label) || i.label !== false) { %>
     <label for="modal-<%= name %>">
