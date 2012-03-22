@@ -5,8 +5,18 @@ class arcs.views.SearchActions extends Backbone.View
   initialize: ->
     @results = @collection
 
+    @ctxMenu = new arcs.views.ContextMenu
+      el: $(document)
+      filter: 'img'
+      options:
+        'Open'    : 'openSelected'
+        'Preview' : 'previewSelected'
+        'Download': 'downloadSelected'
+      context: @
+
     # <ctrl>-o to open selected
     arcs.keys.add 'o', true, @openSelected, @
+    arcs.keys.add 'space', false, @previewSelected, @
 
   events:
     'dblclick img'           : 'openResult'
@@ -18,6 +28,9 @@ class arcs.views.SearchActions extends Backbone.View
     'click #delete-btn'      : 'deleteSelected'
     'click #bookmark-btn'    : 'bookmarkSelected'
     'click #keyword-btn'     : 'keywordSelected'
+    'click #download-btn'    : 'downloadSelected'
+    'click #zipped-btn'      : 'zippedDownloadSelected'
+    'click #rethumb-btn'     : 'rethumbSelected'
 
   # Open the resource view for a result.
   openResult: (result) ->
@@ -49,8 +62,9 @@ class arcs.views.SearchActions extends Backbone.View
       description: note 
     bkmk.save()
 
+  # Delete the selected results, by calling Resource.destroy() on each model.
   deleteSelected: ->
-    return arcs.notify "Select a result" unless @results.anySelected()
+    return unless @results.anySelected()
     n = @results.numSelected()
     new arcs.views.Modal
       title: 'Delete Selected'
@@ -68,7 +82,7 @@ class arcs.views.SearchActions extends Backbone.View
   # Open a modal (called when keyword button is clicked) and ask the user for 
   # a keyword string. Delegate further action through callbacks.
   keywordSelected: ->
-    return arcs.notify "Select a result" unless @results.anySelected()
+    return unless @results.anySelected()
     n = @results.numSelected()
     new arcs.views.Modal
       title: 'Keyword Selected'
@@ -88,6 +102,11 @@ class arcs.views.SearchActions extends Backbone.View
               @keywordResult result, vals.keyword
             @_notify 'keyworded'
         cancel: ->
+
+  rethumbSelected: ->
+    return unless @results.anySelected()
+    for result in @results.selected()
+      $.get arcs.baseURL + 'resources/rethumb/' + result.id
 
   # Opens a modal and prompts the user for information about flagging.
   flagSelected: ->
@@ -118,7 +137,7 @@ class arcs.views.SearchActions extends Backbone.View
   # Edit the selected results. Delegates to batchEditSelected when more than one
   # result is selected.
   editSelected: ->
-    return arcs.notify "Select a result" unless @results.anySelected()
+    return unless @results.anySelected()
     return @batchEditSelected() if @results.numSelected() > 1
     result = @results.selected()[0]
     inputs = {}
@@ -168,7 +187,7 @@ class arcs.views.SearchActions extends Backbone.View
 
   # Create a named collection from the selected results.
   namedCollectionFromSelected: ->
-    return arcs.notify "Select a result" unless @results.anySelected()
+    return unless @results.anySelected()
 
     n = @results.numSelected()
     new arcs.views.Modal
@@ -189,7 +208,7 @@ class arcs.views.SearchActions extends Backbone.View
 
   # Create a new collection from the selected results, and open it.
   collectionFromSelected: (vals) ->
-    return arcs.notify "Select a result" unless @results.anySelected()
+    return unless @results.anySelected()
 
     collection = new arcs.models.Collection
       title: vals.title ? "Temporary Collection"
@@ -204,9 +223,44 @@ class arcs.views.SearchActions extends Backbone.View
       error: =>
         arcs.notify 'An error occurred.', 'error'
 
+  previewSelected: ->
+    return unless @results.anySelected()
+    if $('#modal').is(':visible')
+      return $('#modal').modal('hide')
+    new arcs.views.Preview
+      model: @results.selected()[0]
+      collection: new arcs.collections.ResultSet(@results.selected())
+
+  # Download selected files.
+  downloadSelected: ->
+    for result in @results.selected()
+      iframe = @make 'iframe',
+        style: 'display:none'
+        id: "downloader-for-#{result.id}"
+      $('body').append(iframe)
+      iframe.src = arcs.baseURL + 'resources/download/' + result.id
+
+  zippedDownloadSelected: ->
+    unless @results.numSelected() > 1
+      return arcs.notify 'To download resources zipped, select at least 2.',
+    data = resources: _.pluck @results.selected(), 'id'
+    $.ajax
+      url: arcs.baseURL + 'resources/zipped'
+      type: 'POST'
+      contentType: 'application/json'
+      dataType: 'json'
+      data: JSON.stringify data
+      success: (data) =>
+        if data.url?
+          arcs.log data
+          iframe = @make 'iframe', 
+            style: 'display:none'
+          $('body').append(iframe)
+          iframe.src = data.url
+
   # Call bookmarkResult on all selected results.
   bookmarkSelected: ->
-    @bookjmarkResult(result) for result in @results.selected()
+    @bookmarkResult(result) for result in @results.selected()
     @_notify 'bookmarked'
 
   # Open all selected results through openResult

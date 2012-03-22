@@ -53,19 +53,19 @@
         filter: 'div.img-wrapper img',
         selecting: function(e, ui) {
           $(ui.selecting).parents('.result').addClass('selected');
-          return _this.syncSelection();
+          return _this.afterSelection();
         },
         selected: function(e, ui) {
           $(ui.selected).parents('.result').addClass('selected');
-          return _this.syncSelection();
+          return _this.afterSelection();
         },
         unselecting: function(e, ui) {
           $(ui.unselecting).parents('.result').removeClass('selected');
-          return _this.syncSelection();
+          return _this.afterSelection();
         },
         unselected: function(e, ui) {
           $(ui.unselected).parents('.result').removeClass('selected');
-          return _this.syncSelection();
+          return _this.afterSelection();
         }
       });
     };
@@ -77,7 +77,8 @@
         run: false,
         loader: true,
         success: function() {
-          _this.router.navigate(_this.search.query);
+          _this.router.navigate(encodeURIComponent(_this.search.query));
+          _this.searchPage = 1;
           return _this.render();
         }
       });
@@ -126,23 +127,25 @@
     };
 
     Search.prototype.scrollTop = function() {
+      var time;
+      time = ($(window).scrollTop() / $(document).height()) * 1000;
       return $('html, body').animate({
         scrollTop: 0
-      }, 1000);
+      }, time);
     };
 
     Search.prototype.unselectAll = function() {
-      return this.$('.result').removeClass('selected') && this.syncSelection();
+      return this.$('.result').removeClass('selected') && this.afterSelection();
     };
 
     Search.prototype.selectAll = function() {
-      return this.$('.result').addClass('selected') && this.syncSelection();
+      return this.$('.result').addClass('selected') && this.afterSelection();
     };
 
     Search.prototype.toggle = function(e) {
       if (!(e.ctrlKey || e.shiftKey || e.metaKey)) this.unselectAll();
       $(e.currentTarget).parents('.result').toggleClass('selected');
-      return this.syncSelection();
+      return this.afterSelection();
     };
 
     Search.prototype.maybeUnselectAll = function(e) {
@@ -155,7 +158,7 @@
     /* Render the search results
     */
 
-    Search.prototype.syncSelection = function() {
+    Search.prototype.afterSelection = function() {
       var _this = this;
       return _.defer(function() {
         var selected, unselected;
@@ -166,7 +169,12 @@
           return $(this).attr('data-id');
         });
         _this.search.results.select(selected.get());
-        return _this.search.results.unselect(unselected.get());
+        _this.search.results.unselect(unselected.get());
+        if (_this.search.results.anySelected()) {
+          return $('.btn.needs-resource').removeClass('disabled');
+        } else {
+          return $('.btn.needs-resource').addClass('disabled');
+        }
       });
     };
 

@@ -55,16 +55,16 @@ class arcs.views.Search extends Backbone.View
       # Make jQuery UI call our selection methods.
       selecting: (e, ui) => 
         $(ui.selecting).parents('.result').addClass('selected')
-        @syncSelection()
+        @afterSelection()
       selected: (e, ui) =>
         $(ui.selected).parents('.result').addClass('selected')
-        @syncSelection()
+        @afterSelection()
       unselecting: (e, ui) =>
         $(ui.unselecting).parents('.result').removeClass('selected')
-        @syncSelection()
+        @afterSelection()
       unselected: (e, ui) =>
         $(ui.unselected).parents('.result').removeClass('selected')
-        @syncSelection()
+        @afterSelection()
 
   # Make an instance of our Search utility and setup endless scrolling.
   setupSearch: ->
@@ -74,10 +74,10 @@ class arcs.views.Search extends Backbone.View
       loader: true
       # This callback will be fired each time a search is done.
       success: =>
-        @router.navigate(@search.query)
+        @router.navigate encodeURIComponent(@search.query)
+        @searchPage = 1
         # Render the our results.
         @render()
-
     @searchPage = 1
 
   setupScroll: ->
@@ -119,14 +119,17 @@ class arcs.views.Search extends Backbone.View
     @$('#list-btn').toggleClass 'active'
     @render()
 
+  # Scroll to the top of the page.
   scrollTop: ->
-    $('html, body').animate {scrollTop: 0}, 1000
+    # The animation time should be relative to our position on the page.
+    time = ($(window).scrollTop() / $(document).height()) * 1000
+    $('html, body').animate {scrollTop: 0}, time
 
   unselectAll: -> 
-    @$('.result').removeClass('selected') and @syncSelection()
+    @$('.result').removeClass('selected') and @afterSelection()
 
   selectAll: -> 
-    @$('.result').addClass('selected') and @syncSelection()
+    @$('.result').addClass('selected') and @afterSelection()
   
   # Select a result and unselect everything else, unless a modifier key
   # is pressed.n
@@ -135,7 +138,7 @@ class arcs.views.Search extends Backbone.View
     if not (e.ctrlKey or e.shiftKey or e.metaKey)
       @unselectAll()
     $(e.currentTarget).parents('.result').toggleClass('selected')
-    @syncSelection()
+    @afterSelection()
 
   # Unselect all results unless a modifier key is held down, or
   # the target isn't right.
@@ -153,7 +156,7 @@ class arcs.views.Search extends Backbone.View
   # Syncs selection states between the ResultSet and the DOM elements that
   # represent them. Uses Underscore's defer to wait for the call stack to
   # clear.
-  syncSelection: ->
+  afterSelection: ->
     _.defer =>
       selected = $('.result.selected').map ->
         $(@).attr('data-id')
@@ -161,6 +164,10 @@ class arcs.views.Search extends Backbone.View
         $(@).attr('data-id')
       @search.results.select selected.get()
       @search.results.unselect unselected.get()
+      if @search.results.anySelected()
+        $('.btn.needs-resource').removeClass 'disabled'
+      else
+        $('.btn.needs-resource').addClass 'disabled'
 
   # Append more results. 
   #

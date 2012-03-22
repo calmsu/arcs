@@ -12,7 +12,18 @@
 
     SearchActions.prototype.initialize = function() {
       this.results = this.collection;
-      return arcs.keys.add('o', true, this.openSelected, this);
+      this.ctxMenu = new arcs.views.ContextMenu({
+        el: $(document),
+        filter: 'img',
+        options: {
+          'Open': 'openSelected',
+          'Preview': 'previewSelected',
+          'Download': 'downloadSelected'
+        },
+        context: this
+      });
+      arcs.keys.add('o', true, this.openSelected, this);
+      return arcs.keys.add('space', false, this.previewSelected, this);
     };
 
     SearchActions.prototype.events = {
@@ -24,7 +35,10 @@
       'click #flag-btn': 'flagSelected',
       'click #delete-btn': 'deleteSelected',
       'click #bookmark-btn': 'bookmarkSelected',
-      'click #keyword-btn': 'keywordSelected'
+      'click #keyword-btn': 'keywordSelected',
+      'click #download-btn': 'downloadSelected',
+      'click #zipped-btn': 'zippedDownloadSelected',
+      'click #rethumb-btn': 'rethumbSelected'
     };
 
     SearchActions.prototype.openResult = function(result) {
@@ -63,7 +77,7 @@
     SearchActions.prototype.deleteSelected = function() {
       var n,
         _this = this;
-      if (!this.results.anySelected()) return arcs.notify("Select a result");
+      if (!this.results.anySelected()) return;
       n = this.results.numSelected();
       return new arcs.views.Modal({
         title: 'Delete Selected',
@@ -89,7 +103,7 @@
     SearchActions.prototype.keywordSelected = function() {
       var n,
         _this = this;
-      if (!this.results.anySelected()) return arcs.notify("Select a result");
+      if (!this.results.anySelected()) return;
       n = this.results.numSelected();
       return new arcs.views.Modal({
         title: 'Keyword Selected',
@@ -118,6 +132,18 @@
           cancel: function() {}
         }
       });
+    };
+
+    SearchActions.prototype.rethumbSelected = function() {
+      var result, _i, _len, _ref, _results;
+      if (!this.results.anySelected()) return;
+      _ref = this.results.selected();
+      _results = [];
+      for (_i = 0, _len = _ref.length; _i < _len; _i++) {
+        result = _ref[_i];
+        _results.push($.get(arcs.baseURL + 'resources/rethumb/' + result.id));
+      }
+      return _results;
     };
 
     SearchActions.prototype.flagSelected = function() {
@@ -162,7 +188,7 @@
 
     SearchActions.prototype.editSelected = function() {
       var field, inputs, result, _i, _len, _ref, _ref2;
-      if (!this.results.anySelected()) return arcs.notify("Select a result");
+      if (!this.results.anySelected()) return;
       if (this.results.numSelected() > 1) return this.batchEditSelected();
       result = this.results.selected()[0];
       inputs = {};
@@ -231,7 +257,7 @@
 
     SearchActions.prototype.namedCollectionFromSelected = function() {
       var n;
-      if (!this.results.anySelected()) return arcs.notify("Select a result");
+      if (!this.results.anySelected()) return;
       n = this.results.numSelected();
       return new arcs.views.Modal({
         title: 'Create a Collection',
@@ -258,7 +284,7 @@
     SearchActions.prototype.collectionFromSelected = function(vals) {
       var collection, _ref, _ref2,
         _this = this;
-      if (!this.results.anySelected()) return arcs.notify("Select a result");
+      if (!this.results.anySelected()) return;
       collection = new arcs.models.Collection({
         title: (_ref = vals.title) != null ? _ref : "Temporary Collection",
         description: (_ref2 = vals.description) != null ? _ref2 : "Results from search",
@@ -278,12 +304,66 @@
       });
     };
 
+    SearchActions.prototype.previewSelected = function() {
+      if (!this.results.anySelected()) return;
+      if ($('#modal').is(':visible')) return $('#modal').modal('hide');
+      return new arcs.views.Preview({
+        model: this.results.selected()[0],
+        collection: new arcs.collections.ResultSet(this.results.selected())
+      });
+    };
+
+    SearchActions.prototype.downloadSelected = function() {
+      var iframe, result, _i, _len, _ref, _results;
+      _ref = this.results.selected();
+      _results = [];
+      for (_i = 0, _len = _ref.length; _i < _len; _i++) {
+        result = _ref[_i];
+        iframe = this.make('iframe', {
+          style: 'display:none',
+          id: "downloader-for-" + result.id
+        });
+        $('body').append(iframe);
+        _results.push(iframe.src = arcs.baseURL + 'resources/download/' + result.id);
+      }
+      return _results;
+    };
+
+    SearchActions.prototype.zippedDownloadSelected = function() {
+      var data,
+        _this = this;
+      if (!(this.results.numSelected() > 1)) {
+        return arcs.notify('To download resources zipped, select at least 2.');
+      }
+      data = {
+        resources: _.pluck(this.results.selected(), 'id')
+      };
+      return $.ajax({
+        url: arcs.baseURL + 'resources/zipped',
+        type: 'POST',
+        contentType: 'application/json',
+        dataType: 'json',
+        data: JSON.stringify(data),
+        success: function(data) {
+          var iframe;
+          if (data.url != null) {
+            arcs.log(data);
+            iframe = _this.make('iframe', {
+              style: 'display:none'
+            });
+            $('body').append(iframe);
+            return iframe.src = data.url;
+          }
+        }
+      });
+    };
+
     SearchActions.prototype.bookmarkSelected = function() {
       var result, _i, _len, _ref;
       _ref = this.results.selected();
       for (_i = 0, _len = _ref.length; _i < _len; _i++) {
         result = _ref[_i];
-        this.bookjmarkResult(result);
+        this.bookmarkResult(result);
       }
       return this._notify('bookmarked');
     };

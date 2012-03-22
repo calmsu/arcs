@@ -6,31 +6,26 @@
 class arcs.views.Keyword extends Backbone.View
 
   events:
-    'keydown #keyword-btn': 'keydownDelegate'
+    'keydown #keyword-btn': 'saveKeyword'
 
   initialize: ->
     @collection = new arcs.collections.KeywordList
 
-    arcs.bind 'resourceChange', =>
-      @update()
+    arcs.on 'resourceChange', =>
+      @collection.fetch()
 
-    _.bindAll @, 'render'
-
-    @collection.on 'add remove', @render, @
+    @collection.on 'add remove reset', @render, @
 
     arcs.utils.autocomplete 
       sel: '#keyword-btn'
       source: arcs.utils.complete.keyword()
 
-    @update()
+    @collection.fetch()
 
-  keydownDelegate: (e) =>
-    if e.keyCode == 13
-      @saveKeyword()
-      e.preventDefault()
-      return false
+  saveKeyword: (e) ->
+    return unless e.keyCode == 13
+    e.preventDefault()
 
-  saveKeyword: ->
     $input = @$el.find('input#keyword-btn')
     keyword = new arcs.models.Keyword
       resource_id: arcs.resource.id
@@ -39,12 +34,10 @@ class arcs.views.Keyword extends Backbone.View
     keyword.save()
     @collection.add(keyword)
 
-  update: ->
-    @collection.fetch
-      success: =>
-        @render()
+    # Return false to ensure the keydown doesn't bubble up.
+    return false
 
   render: ->
-    $keywords = $('#keywords-wrapper')
-    $keywords.html arcs.tmpl 'resource/keywords', keywords: @collection.toJSON()
+    @$('#keywords-wrapper').html arcs.tmpl 'resource/keywords', 
+      keywords: @collection.toJSON()
     @

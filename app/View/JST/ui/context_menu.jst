@@ -1,0 +1,6 @@
+<ul class="nav list context-menu" style="display:none">
+  <% for (o in options) { %>
+  <li><a class="context-menu-option" id="context-menu-option-<%= o.replace('/\s/g', '-') %>">
+    <%= o %></a></li>
+  <% } %>
+</ul>

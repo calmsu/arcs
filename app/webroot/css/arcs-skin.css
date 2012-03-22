@@ -4140,6 +4140,11 @@ a.thumbnail:hover {
   visibility: hidden;
 }
 /* General Effects */
+.no-rounded {
+  border-radius: 0px !important;
+  -webkit-border-radius: 0px !important;
+  -moz-border-radius: 0px !important;
+}
 .centered {
   margin-left: auto;
   margin-right: auto;
@@ -4186,6 +4191,23 @@ input[type=text]:focus,
 input[type=password]:focus,
 textarea:focus {
   border-color: rgba(82, 168, 236, 0.8);
+}
+div#toolbar {
+  background: -webkit-gradient(linear, left top, left bottom, from(#cccccc), to(#bbbbbb));
+  /* webkit */
+
+  background: -moz-linear-gradient(center bottom, #bbbbbb, #cccccc);
+  /* mozilla */
+
+  filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#dddddd', endColorstr='#bbbbbb');
+  /* IE */
+
+  border: 1px solid #888;
+  margin-right: -20px;
+  margin-bottom: 10px;
+  height: 40px;
+  padding: 3px;
+  padding-bottom: 1px;
 }
 div#toolbar a#logo-wrapper:hover {
   text-decoration: none;
@@ -4631,11 +4653,15 @@ ul.resource-thumbs li:hover a {
 #user-info p {
   margin-bottom: 0;
 }
-#user-info #prof-img {
+#user-info .profile-image {
+  float: left;
   margin-right: 10px;
+  background: #fff;
 }
 #user-info div h2 {
   margin-left: 0;
+  font-weight: 300;
+  text-shadow: 0 1px 1px #ffffff;
 }
 #user-actions {
   margin-left: 0;
@@ -4860,23 +4886,6 @@ section#upload-form form[name="upload-pt2"] select[multiple].extra-stuff {
 section#upload-form select#resource-type,
 section#upload-form select#choose-notebook {
   display: block;
-}
-div#toolbar {
-  background: -webkit-gradient(linear, left top, left bottom, from(#cccccc), to(#bbbbbb));
-  /* webkit */
-
-  background: -moz-linear-gradient(center bottom, #bbbbbb, #cccccc);
-  /* mozilla */
-
-  filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#dddddd', endColorstr='#bbbbbb');
-  /* IE */
-
-  border: 1px solid #888;
-  margin-right: -20px;
-  margin-bottom: 10px;
-  height: 40px;
-  padding: 3px;
-  padding-bottom: 1px;
 }
 .btn {
   border: 1px solid #999;
@@ -5622,6 +5631,11 @@ div#search-results-wrapper div#search-actions .actions-right {
   position: relative;
   bottom: 28px;
 }
+div#search-results-wrapper div#search-actions #export-btn {
+  border-radius: 5px;
+  -webkit-border-radius: 5px;
+  -moz-border-radius: 5px;
+}
 div#search-results-wrapper div#search-actions #open-buttons {
   right: 20px;
 }
@@ -5664,6 +5678,73 @@ div#search-results-wrapper .toolbar-fixed {
   color: #333;
   font-weight: normal;
   text-shadow: 0 1px 1px #ffffff;
+}
+.modal input.error,
+.modal textarea.error,
+.modal select.error,
+.modal label.error {
+  border-color: #B94A48;
+  color: #B94A48;
+}
+.modal input.error:focus,
+.modal textarea.error:focus,
+.modal select.error:focus,
+.modal label.error:focus {
+  -moz-box-shadow: 0 0 6px 0 #d59392;
+  -webkit-box-shadow: 0 0 6px 0 #d59392;
+  box-shadow: 0 0 6px 0 #d59392;
+}
+.modal #validation-error {
+  display: none;
+  color: #B94A48;
+  margin-bottom: 10px;
+}
+.preview .preview-image {
+  margin-bottom: -5px;
+}
+.preview .preview-footer {
+  background: -webkit-gradient(linear, left top, left bottom, from(#cccccc), to(#bbbbbb));
+  /* webkit */
+
+  background: -moz-linear-gradient(center bottom, #bbbbbb, #cccccc);
+  /* mozilla */
+
+  filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#dddddd', endColorstr='#bbbbbb');
+  /* IE */
+
+  padding: 10px;
+  color: #000;
+  border-top: 1px solid #fff;
+  outline: 1px solid #333;
+  text-shadow: 0 1px 1px #ffffff;
+}
+.preview span#prev-btn:hover,
+.preview span#next-btn:hover {
+  cursor: pointer;
+}
+.preview a {
+  color: #333;
+}
+.preview a:hover {
+  color: #333;
+}
+.context-menu {
+  background: #ddd;
+  border: 1px solid #888;
+  min-width: 100px;
+  -moz-box-shadow: 0 0 2px 2px rgba(0, 0, 0, 0.3);
+  -webkit-box-shadow: 0 0 2px 2px rgba(0, 0, 0, 0.3);
+  box-shadow: 0 0 2px 2px rgba(0, 0, 0, 0.3);
+}
+.context-menu li a:hover {
+  background-color: #08c;
+  color: #fff;
+  cursor: pointer;
+  text-shadow: 0 1px 1px #444444;
+}
+#upload-nav {
+  border: 1px solid #cdcdcd;
+  background-color: #ddd;
 }
 .hidden {
   display: none;
