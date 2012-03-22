@@ -52,7 +52,7 @@
 <script>
   arcs.resource = new arcs.models.Resource(<?php echo json_encode($resource) ?>);
   arcs.collection = new arcs.collections.Collection();
-  arcs.view = new arcs.views.Collection({
+  arcs.view = new arcs.views.Viewer({
     model: arcs.resource,
     collection: arcs.collection,
     el: $('#resource-wrapper')

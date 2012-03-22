@@ -1,6 +1,6 @@
-# collection.coffee
-# -----------------
-class arcs.views.Collection extends Backbone.View
+# viewer.coffee
+# -------------
+class arcs.views.Viewer extends Backbone.View
 
   initialize: ->
     # Set the resource on the `indexchange` event.
@@ -85,8 +85,16 @@ class arcs.views.Collection extends Backbone.View
     # Update the location
     route = "#{arcs.collectionData?.id ? @model.id}/#{@index + 1}"
     @router.navigate(route) unless options.noNavigate
+    @_preloadNeighbors() unless options.noPreload
     # Return true if we were able to set the model and index.
     return true
+
+  # Preload the neighboring resources, so that browsing appears smoother.
+  _preloadNeighbors: ->
+    if @collection.at(@index + 1)?
+      arcs.preload @collection.at(@index + 1).get 'url'
+    if @collection.at(@index - 1)?
+      arcs.preload @collection.at(@index - 1).get 'url'
 
   # Set the resource to the next one, by index.
   next: -> @set @index + 1, trigger: true

@@ -2,15 +2,15 @@
   var __hasProp = Object.prototype.hasOwnProperty,
     __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor; child.__super__ = parent.prototype; return child; };
 
-  arcs.views.Collection = (function(_super) {
+  arcs.views.Viewer = (function(_super) {
 
-    __extends(Collection, _super);
+    __extends(Viewer, _super);
 
-    function Collection() {
-      Collection.__super__.constructor.apply(this, arguments);
+    function Viewer() {
+      Viewer.__super__.constructor.apply(this, arguments);
     }
 
-    Collection.prototype.initialize = function() {
+    Viewer.prototype.initialize = function() {
       var _ref, _ref2,
         _this = this;
       arcs.on('arcs:indexchange', this.set, this);
@@ -50,13 +50,13 @@
       return (_ref2 = this.index) != null ? _ref2 : this.index = 0;
     };
 
-    Collection.prototype.events = {
+    Viewer.prototype.events = {
       'dblclick img': 'open',
       'click #next-button': 'next',
       'click #prev-button': 'prev'
     };
 
-    Collection.prototype.set = function(identifier, options) {
+    Viewer.prototype.set = function(identifier, options) {
       var index, model, route, _ref, _ref2, _ref3;
       if (options == null) options = {};
       if (options.noSet) return false;
@@ -78,26 +78,36 @@
       if (!options.noRender) this.render();
       route = "" + ((_ref2 = (_ref3 = arcs.collectionData) != null ? _ref3.id : void 0) != null ? _ref2 : this.model.id) + "/" + (this.index + 1);
       if (!options.noNavigate) this.router.navigate(route);
+      if (!options.noPreload) this._preloadNeighbors();
       return true;
     };
 
-    Collection.prototype.next = function() {
+    Viewer.prototype._preloadNeighbors = function() {
+      if (this.collection.at(this.index + 1) != null) {
+        arcs.preload(this.collection.at(this.index + 1).get('url'));
+      }
+      if (this.collection.at(this.index - 1) != null) {
+        return arcs.preload(this.collection.at(this.index - 1).get('url'));
+      }
+    };
+
+    Viewer.prototype.next = function() {
       return this.set(this.index + 1, {
         trigger: true
       });
     };
 
-    Collection.prototype.prev = function() {
+    Viewer.prototype.prev = function() {
       return this.set(this.index - 1, {
         trigger: true
       });
     };
 
-    Collection.prototype.open = function() {
+    Viewer.prototype.open = function() {
       return window.open(this.model.get('url'), '_blank', 'menubar=no');
     };
 
-    Collection.prototype.checkNav = function() {
+    Viewer.prototype.checkNav = function() {
       if (this.collection.length === this.index + 1) {
         this.$('#next-button').addClass('disabled');
       } else {
@@ -110,7 +120,7 @@
       }
     };
 
-    Collection.prototype.splitPrompt = function() {
+    Viewer.prototype.splitPrompt = function() {
       var _this = this;
       return new arcs.views.Modal({
         title: "Split into a PDF?",
@@ -127,7 +137,7 @@
       });
     };
 
-    Collection.prototype.render = function() {
+    Viewer.prototype.render = function() {
       var mimeInfo, template;
       mimeInfo = arcs.utils.mime.getInfo(this.model.get('mime_type'));
       switch (mimeInfo.type) {
@@ -153,7 +163,7 @@
       return this;
     };
 
-    return Collection;
+    return Viewer;
 
   })(Backbone.View);
 
