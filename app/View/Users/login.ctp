@@ -1,5 +1,5 @@
 <div id="login-header">
-    <?php echo $this->Html->image('arcs-icon-big'); ?>
+    <img src="<?php echo $this->Html->url('/img/arcs-icon-big.png') ?>" />
     <h1>Login to ARCS</h1>
 </div>
 <div id="login">
