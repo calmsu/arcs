@@ -109,7 +109,7 @@ class AssetsHelper extends AppHelper {
     public function scripts() {
         if ($this->_isProd()) {
             $path = Configure::read('js.prod');
-            return $this->Html->script($path);
+            return $this->Html->script('/assets/' . $path);
         } else {
             $paths = Configure::read('js.files');
             if (Configure::read('js.dev')) {
@@ -134,7 +134,7 @@ class AssetsHelper extends AppHelper {
     public function stylesheets() {
         if ($this->_isProd()) {
             $path = Configure::read('css.prod');
-            return $this->Html->css($path);
+            return $this->Html->css('/assets/' . $path);
         } else {
             $paths = Configure::read('css.files');
             if (Configure::read('css.dev')) {
