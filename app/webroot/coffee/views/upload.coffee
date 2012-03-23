@@ -124,7 +124,7 @@ class arcs.views.Upload extends Backbone.View
 
       # Tack on a help link and notify the user.
       msg += " For more information, see our " +
-        "<a href='#{arcs.baseURL + 'docs/uploading'}'>Uploading " +
+        "<a href='#{arcs.baseURL + 'help/uploading'}'>Uploading " +
         "documentation.</a>"
       arcs.notify msg, 'error', false
 

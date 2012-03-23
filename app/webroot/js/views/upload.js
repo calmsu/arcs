@@ -160,7 +160,7 @@
         } else {
           msg = "Something went wrong. Please refresh the page and " + "try again. If the problem persists, contact the system " + "administrator.";
         }
-        msg += " For more information, see our " + ("<a href='" + (arcs.baseURL + 'docs/uploading') + "'>Uploading ") + "documentation.</a>";
+        msg += " For more information, see our " + ("<a href='" + (arcs.baseURL + 'help/uploading') + "'>Uploading ") + "documentation.</a>";
         arcs.notify(msg, 'error', false);
         arcs.log(upload, error);
         _results.push(this.disable());

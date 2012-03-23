@@ -26,7 +26,7 @@
 </div>
 <div id="login-footer">
     <?php echo $this->Html->link('About', '/about'); ?> &nbsp;|&nbsp;
-    <?php echo $this->Html->link('Help', '/docs/'); ?> &nbsp;|&nbsp;
+    <?php echo $this->Html->link('Help', '/help/'); ?> &nbsp;|&nbsp;
     <?php echo $this->Html->link('Public Access', '/search/'); ?> 
     <span style="color:#666">&copy; 2012 MSU</span>
 </div>

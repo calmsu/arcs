@@ -63,7 +63,7 @@
 
 <h3>Dependencies</h3>
 For information on installing dependencies, see the 
-<?php echo $this->Html->link('Installation Guide', '/docs/installing') ?>.
+<?php echo $this->Html->link('Installation Guide', '/help/installing') ?>.
 <br><br>
 
 <?php if ($executables['ghostscript']): ?>
