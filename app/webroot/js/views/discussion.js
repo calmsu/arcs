@@ -15,10 +15,13 @@
     };
 
     Discussion.prototype.initialize = function() {
+      var _this = this;
       this.collection = new arcs.collections.Discussion;
-      arcs.on('arcs:indexchange', this.update, this);
-      this.collection.on('add remove', this.render, this);
-      return this.update();
+      arcs.on('arcs:indexChange', function() {
+        return _this.collection.fetch;
+      });
+      this.collection.on('add remove reset', this.render, this);
+      return this.collection.fetch();
     };
 
     Discussion.prototype.saveComment = function() {
@@ -37,19 +40,8 @@
       return this.collection.add(comment);
     };
 
-    Discussion.prototype.update = function() {
-      var _this = this;
-      return this.collection.fetch({
-        success: function() {
-          return _this.render();
-        }
-      });
-    };
-
     Discussion.prototype.render = function() {
-      var $discussion;
-      $discussion = $('#comment-wrapper');
-      $discussion.html(arcs.tmpl('resource/discussion', {
+      $('#comment-wrapper').html(arcs.tmpl('resource/discussion', {
         comments: this.collection.toJSON()
       }));
       return this;

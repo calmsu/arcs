@@ -13,9 +13,9 @@
     Viewer.prototype.initialize = function() {
       var _ref, _ref2,
         _this = this;
-      arcs.on('arcs:indexchange', this.set, this);
-      arcs.on('arcs:indexchange', function() {
-        return arcs.log('arcs:indexchange', arguments);
+      arcs.on('arcs:indexChange', this.set, this);
+      arcs.on('arcs:indexChange', function() {
+        return arcs.log('arcs:indexChange', arguments);
       });
       arcs.keys.add('left', false, this.prev, this);
       arcs.keys.add('right', false, this.next, this);
@@ -42,7 +42,7 @@
         root: arcs.baseURL + (this.collection.length ? 'collection/' : 'resource/')
       });
       $(window).resize(function() {
-        return arcs.trigger('arcs:resourceresize');
+        return arcs.trigger('arcs:resourceResize');
       });
       if (this.model.get('first_req')) {
         if (this.model.get('mime_type') === 'application/pdf') this.splitPrompt();
@@ -71,7 +71,7 @@
       if (!(model && index >= 0)) return false;
       _ref = [model, model, index], this.model = _ref[0], arcs.resource = _ref[1], this.index = _ref[2];
       if (options.trigger) {
-        arcs.trigger('arcs:indexchange', index, {
+        arcs.trigger('arcs:indexChange', index, {
           noSet: true
         });
       }
@@ -154,7 +154,7 @@
           template = 'resource/unknown';
       }
       this.$('#resource').html(arcs.tmpl(template, this.model.toJSON()));
-      arcs.trigger('arcs:resourceloaded');
+      arcs.trigger('arcs:resourceLoaded');
       this.$('#resource-details').html(arcs.tmpl('resource/table', this.model.toJSON()));
       if (_.has(arcs, 'collectionData')) {
         this.$('#collection-details').html(arcs.tmpl('resource/collection_table', arcs.collectionData));

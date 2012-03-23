@@ -13,16 +13,16 @@
     Hotspot.prototype.initialize = function() {
       this.collection = new arcs.collections.HotspotMap;
       this.reRender = _.throttle(this.render, 50);
-      arcs.bind('arcs:resourceresize', this.reRender, this);
-      arcs.bind('arcs:resourceloaded', this.setup, this);
-      return this.collection.bind('add remove', this.render, this);
+      arcs.bind('arcs:resourceResize', this.reRender, this);
+      arcs.bind('arcs:resourceLoaded', this.setup, this);
+      return this.collection.bind('add remove reset', this.render, this);
     };
 
     Hotspot.prototype.setup = function() {
       this.img = this.$el.find('img');
       if (this.img != null) {
         this.startImgAreaSelect();
-        return this.update();
+        return this.collection.fetch();
       }
     };
 
@@ -44,18 +44,33 @@
     Hotspot.prototype.openModal = function() {
       var $results, modal, search,
         _this = this;
-      modal = new arcs.utils.Modal({
-        template: 'resource/hotspot_modal',
+      modal = new arcs.views.Modal({
+        title: 'Annotation Sidebar',
         backdrop: false,
         "class": 'hotspot-modal',
-        inputs: ['caption', 'title', 'type', 'url'],
+        inputs: {
+          type: {
+            type: 'select',
+            options: {
+              'Photo': 'photo',
+              'Sketch': 'sketch'
+            }
+          },
+          title: true,
+          caption: {
+            type: 'textarea'
+          }
+        },
         buttons: {
-          save: function(vals) {
-            vals.resource = $('.result.selected img').attr('data-id');
-            _this.saveHotspot(vals);
-            return _this.img.imgAreaSelect({
-              hide: true
-            });
+          save: {
+            "class": 'btn success',
+            callback: function(vals) {
+              vals.resource = $('.result.selected img').data('id');
+              _this.saveHotspot(vals);
+              return _this.img.imgAreaSelect({
+                hide: true
+              });
+            }
           },
           cancel: function() {
             return _this.img.imgAreaSelect({
@@ -64,11 +79,12 @@
           }
         }
       });
-      modal.el.find('.img-wrapper img').live('click', function() {
+      modal.$('.modal-body').append(arcs.tmpl('resource/hotspot_modal'));
+      modal.$('.img-wrapper img').live('click', function() {
         $('.result').removeClass('selected');
         return $(this).parents('.result').addClass('selected');
       });
-      modal.el.find('input#url').keyup(function() {
+      modal.$('input#url').keyup(function() {
         var val;
         val = $(this).val();
         if (val.substring(0, 7) === 'http://') {
@@ -127,22 +143,15 @@
       return cds;
     };
 
-    Hotspot.prototype.update = function() {
-      var _this = this;
-      return this.collection.fetch({
-        success: function() {
-          return _this.render();
-        }
-      });
-    };
-
     Hotspot.prototype.render = function() {
-      var $annotations, $hotspots, data, hotspots, m, _i, _len, _ref;
+      var $annotations, $hotspots, data, json, m, _i, _len, _ref;
       $hotspots = $('#hotspots-wrapper');
       $annotations = $('#annotations-wrapper');
       $hotspots.html('');
       $annotations.html('');
-      hotspots = [];
+      json = {
+        hotspots: []
+      };
       _ref = this.collection.models;
       for (_i = 0, _len = _ref.length; _i < _len; _i++) {
         m = _ref[_i];
@@ -154,14 +163,10 @@
         if ((data.link != null) && data.link.substring(0, 7) === 'arcs://') {
           data.link = arcs.baseURL + 'resource/' + data.link.substring(7);
         }
-        hotspots.push(data);
+        json.hotspots.push(data);
       }
-      $hotspots.html(arcs.tmpl('resource/hotspots', {
-        hotspots: hotspots
-      }));
-      $annotations.html(arcs.tmpl('resource/annotations', {
-        hotspots: hotspots
-      }));
+      $hotspots.html(arcs.tmpl('resource/hotspots', json));
+      $annotations.html(arcs.tmpl('resource/annotations', json));
       return this;
     };
 

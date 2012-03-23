@@ -17,8 +17,14 @@
         filter: 'img',
         options: {
           'Open': 'openSelected',
+          'Info': 'editSelected',
+          'Flag': 'flagSelected',
           'Preview': 'previewSelected',
           'Download': 'downloadSelected'
+        },
+        onShow: function(e) {
+          $(e.currentTarget).parents('.result').addClass('selected');
+          return arcs.trigger('arcs:selection');
         },
         context: this
       });
