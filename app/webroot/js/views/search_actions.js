@@ -306,7 +306,7 @@
 
     SearchActions.prototype.previewSelected = function() {
       if (!this.results.anySelected()) return;
-      if (this.preview != null) {
+      if ((this.preview != null) && $('#modal').is(':visible')) {
         this.preview.remove();
         return this.preview = null;
       }

@@ -9,6 +9,8 @@
         container: null,
         query: '',
         loader: false,
+        order: 'modified',
+        add: false,
         run: true,
         success: function() {},
         error: function() {}
@@ -95,13 +97,10 @@
       var defaults, offset, params,
         _this = this;
       defaults = {
-        add: false,
         n: 30,
-        page: 1,
-        success: this.options.success,
-        error: this.options.error
+        page: 1
       };
-      options = _.extend(defaults, options);
+      options = _.extend(defaults, this.options, options);
       if (!(facets != null) && (this.vs != null)) {
         facets = this.vs.searchQuery.toJSON();
       }
@@ -109,7 +108,7 @@
         return delete f.app;
       });
       offset = (options.page - 1) * options.n;
-      params = "?n=" + options.n + "&offset=" + offset;
+      params = "?n=" + options.n + "&offset=" + offset + "&order=" + options.order;
       if (this.options.loader) arcs.utils.loader.show();
       this.results.fetch({
         add: options.add,

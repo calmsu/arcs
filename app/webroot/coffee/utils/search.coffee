@@ -22,6 +22,7 @@ class arcs.utils.Search
   #   query:     Starting query.
   #   loader:    Use arcs.utils.loader to display a loading gif while the
   #              results are being fetched. Off by default.
+  #   order:     Order in which the results should be returned.
   #   run:       Call the run method after construct. Defaults to true.
   #   success:   Called after results are successfully fetched.
   #   error:     Called when fetching results fails.
@@ -33,6 +34,8 @@ class arcs.utils.Search
       container: null
       query: ''
       loader: false
+      order: 'modified'
+      add: false
       run: true
       success: ->
       error: ->
@@ -113,12 +116,9 @@ class arcs.utils.Search
   # via the `results` property.
   run: (facets, options) ->
     defaults =
-      add: false
       n: 30
       page: 1
-      success: @options.success
-      error: @options.error
-    options = _.extend defaults, options
+    options = _.extend defaults, @options, options
 
     # Get the facets from the VS object if not given.
     if not facets? and @vs?
@@ -130,7 +130,7 @@ class arcs.utils.Search
 
     # Calculate the url parameters
     offset = (options.page - 1) * options.n
-    params = "?n=#{options.n}&offset=#{offset}"
+    params = "?n=#{options.n}&offset=#{offset}&order=#{options.order}"
 
     arcs.utils.loader.show() if @options.loader
 

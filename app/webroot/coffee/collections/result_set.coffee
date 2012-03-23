@@ -39,6 +39,10 @@ class arcs.collections.ResultSet extends Backbone.Collection
   unselect: (result) ->
     @_eachSetSelected result, -> 
       false
+  
+  unselectAll: ->
+    @each (result) ->
+      result.set 'selected', false
 
   # Given one or more result ids, set the `selected` property of each
   # of the resolved results to the return of the given function, which 

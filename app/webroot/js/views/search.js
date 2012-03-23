@@ -10,13 +10,19 @@
       Search.__super__.constructor.apply(this, arguments);
     }
 
-    Search.prototype.RESULTS_PER_PAGE = 30;
+    Search.prototype.options = {
+      sort: 'modified',
+      grid: true,
+      url: arcs.baseURL + 'search/',
+      numResults: 30
+    };
 
     /* Initialize and define events
     */
 
     Search.prototype.initialize = function() {
-      this.setupSelect() && this.setupSearch() && this.setupScroll();
+      this.setupSelect() && this.setupSearch();
+      this.sort = 'modified';
       this.actions = new arcs.views.SearchActions({
         el: this.$el,
         collection: this.search.results
@@ -26,11 +32,11 @@
       });
       Backbone.history.start({
         pushState: true,
-        root: arcs.baseURL + 'search/'
+        root: this.options.url
       });
       if (!this.router.searched) this.search.run();
       this.search.results.on('remove', this.render, this);
-      if (this.grid == null) this.grid = true;
+      arcs.on('arcs:selection', this.afterSelection, this);
       return arcs.keys.add('a', true, this.selectAll, this);
     };
 
@@ -40,7 +46,8 @@
       'click #search-results': 'maybeUnselectAll',
       'click #grid-btn': 'toggleView',
       'click #list-btn': 'toggleView',
-      'click #top-btn': 'scrollTop'
+      'click #top-btn': 'scrollTop',
+      'click .sort-btn': 'setSort'
     };
 
     /* More involved setups run by the initialize method
@@ -72,17 +79,22 @@
 
     Search.prototype.setupSearch = function() {
       var _this = this;
-      this.search = new arcs.utils.Search({
+      this.searchPage = 1;
+      this.scrollReady = false;
+      return this.search = new arcs.utils.Search({
         container: $('#search-wrapper'),
+        order: this.options.sort,
         run: false,
         loader: true,
         success: function() {
           _this.router.navigate(encodeURIComponent(_this.search.query));
           _this.searchPage = 1;
-          return _this.render();
+          _this.render();
+          if (!_this.scrollReady) {
+            return _this.setupScroll() && (_this.scrollReady = true);
+          }
         }
       });
-      return this.searchPage = 1;
     };
 
     Search.prototype.setupScroll = function() {
@@ -101,11 +113,12 @@
           _this.$('#top-btn').hide();
         }
         if ($window.scrollTop() === $(document).height() - $window.height()) {
-          if (_this.search.results.length % _this.RESULTS_PER_PAGE !== 0) return;
+          if (_this.search.results.length % _this.options.numResults !== 0) return;
           _this.searchPage += 1;
           return _this.search.run(null, {
             add: true,
             page: _this.searchPage,
+            order: _this.options.sort,
             success: function() {
               return _this.append();
             }
@@ -120,7 +133,7 @@
     };
 
     Search.prototype.toggleView = function() {
-      this.grid = !this.grid;
+      this.options.grid = !this.options.grid;
       this.$('#grid-btn').toggleClass('active');
       this.$('#list-btn').toggleClass('active');
       return this.render();
@@ -134,18 +147,36 @@
       }, time);
     };
 
-    Search.prototype.unselectAll = function() {
-      return this.$('.result').removeClass('selected') && this.afterSelection();
+    Search.prototype.setSort = function(e) {
+      var id;
+      id = e.currentTarget.id;
+      this.options.sort = e.target.id.match(/sort-(\w+)-btn/)[1];
+      this.$('.sort-btn .icon-ok').remove();
+      this.$(e.currentTarget).append(this.make('i', {
+        "class": 'icon-ok'
+      }));
+      this.$('#sort-btn span#sort-by').html(this.options.sort);
+      return this.search.run(null, {
+        order: this.options.sort
+      });
     };
 
-    Search.prototype.selectAll = function() {
-      return this.$('.result').addClass('selected') && this.afterSelection();
+    Search.prototype.unselectAll = function(trigger) {
+      if (trigger == null) trigger = true;
+      this.$('.result').removeClass('selected');
+      if (trigger) return arcs.trigger('arcs:selection');
+    };
+
+    Search.prototype.selectAll = function(trigger) {
+      if (trigger == null) trigger = true;
+      this.$('.result').addClass('selected');
+      if (trigger) return arcs.trigger('arcs:selection');
     };
 
     Search.prototype.toggle = function(e) {
-      if (!(e.ctrlKey || e.shiftKey || e.metaKey)) this.unselectAll();
+      if (!(e.ctrlKey || e.shiftKey || e.metaKey)) this.unselectAll(false);
       $(e.currentTarget).parents('.result').toggleClass('selected');
-      return this.afterSelection();
+      return arcs.trigger('arcs:selection');
     };
 
     Search.prototype.maybeUnselectAll = function(e) {
@@ -161,15 +192,12 @@
     Search.prototype.afterSelection = function() {
       var _this = this;
       return _.defer(function() {
-        var selected, unselected;
+        var selected;
         selected = $('.result.selected').map(function() {
-          return $(this).attr('data-id');
-        });
-        unselected = $('.result').not('.selected').map(function() {
-          return $(this).attr('data-id');
-        });
-        _this.search.results.select(selected.get());
-        _this.search.results.unselect(unselected.get());
+          return $(this).data('id');
+        }).get();
+        _this.search.results.unselectAll();
+        if (selected.length) _this.search.results.select(selected);
         if (_this.search.results.anySelected()) {
           return $('.btn.needs-resource').removeClass('disabled');
         } else {
@@ -180,8 +208,8 @@
 
     Search.prototype.append = function() {
       var rest, results;
-      if (!(this.search.results.length > this.RESULTS_PER_PAGE)) return;
-      rest = this.search.results.rest(this.search.results.length - this.RESULTS_PER_PAGE);
+      if (!(this.search.results.length > this.options.numResults)) return;
+      rest = this.search.results.rest(this.search.results.length - this.options.numResults);
       results = new arcs.collections.ResultSet(rest);
       return this._render({
         results: results.toJSON()
@@ -198,7 +226,7 @@
       var $results, content, template;
       if (append == null) append = false;
       $results = $('#search-results');
-      template = this.grid ? 'search/grid' : 'search/list';
+      template = this.options.grid ? 'search/grid' : 'search/list';
       content = arcs.tmpl(template, results);
       if (append) {
         $results.append(content);

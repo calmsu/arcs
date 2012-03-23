@@ -37,6 +37,7 @@
                 </button>
                 <ul class="dropdown-menu">
                     <li><a id="rethumb-btn">Re-thumbnail</a></li>
+                    <li><a id="split-btn">Split PDF</a></li>
                 </ul>
             </div>
         <?php else: // placeholder ?>
@@ -57,9 +58,9 @@
                 <span class="caret"></span>
             </button>
             <ul class="dropdown-menu">
-                <li><a id="sort-relevance-btn">relevance</a></li>
-                <li><a id="sort-modified-btn">modified <i class="icon-ok"></i></a></li>
-                <li><a id="sort-name-btn">name</a></li>
+                <li><a class="sort-btn" id="sort-title-btn">title&nbsp;</a></li>
+                <li><a class="sort-btn" id="sort-modified-btn">modified&nbsp;<i class="icon-ok"></i></a></li>
+                <li><a class="sort-btn" id="sort-created-btn">created&nbsp;</a></li>
             </ul>
         </div>
         <div id="open-buttons" class="btn-group actions-right">
