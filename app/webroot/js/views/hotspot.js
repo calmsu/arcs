@@ -53,7 +53,6 @@
           save: function(vals) {
             vals.resource = $('.result.selected img').attr('data-id');
             _this.saveHotspot(vals);
-            arcs.log(vals);
             return _this.img.imgAreaSelect({
               hide: true
             });
@@ -65,9 +64,9 @@
           }
         }
       });
-      modal.el.find('.result img').live('click', function() {
+      modal.el.find('.img-wrapper img').live('click', function() {
         $('.result').removeClass('selected');
-        return $(this).parent().addClass('selected');
+        return $(this).parents('.result').addClass('selected');
       });
       modal.el.find('input#url').keyup(function() {
         var val;

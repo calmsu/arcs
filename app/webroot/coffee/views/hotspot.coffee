@@ -48,14 +48,13 @@ class arcs.views.Hotspot extends Backbone.View
         save: (vals) =>
           vals.resource = $('.result.selected img').attr('data-id')
           @saveHotspot vals
-          arcs.log vals
           @img.imgAreaSelect hide:true
         cancel: => 
           @img.imgAreaSelect hide:true
 
-    modal.el.find('.result img').live 'click', ->
+    modal.el.find('.img-wrapper img').live 'click', ->
       $('.result').removeClass 'selected'
-      $(@).parent().addClass 'selected'
+      $(@).parents('.result').addClass 'selected'
 
     # Remove http:// from the input. (It's assumed.)
     modal.el.find('input#url').keyup ->
