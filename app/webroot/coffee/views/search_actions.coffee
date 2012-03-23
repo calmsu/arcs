@@ -10,8 +10,13 @@ class arcs.views.SearchActions extends Backbone.View
       filter: 'img'
       options:
         'Open'    : 'openSelected'
+        'Info'    : 'editSelected'
+        'Flag'    : 'flagSelected'
         'Preview' : 'previewSelected'
         'Download': 'downloadSelected'
+      onShow: (e) ->
+        $(e.currentTarget).parents('.result').addClass 'selected'
+        arcs.trigger 'arcs:selection'
       context: @
 
     # <ctrl>-o to open selected
