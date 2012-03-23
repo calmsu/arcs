@@ -5,7 +5,7 @@
         <li class="nav-header"><?php echo $k ?></li>
         <?php else: ?>
         <li class="<?php echo ($v == $active ? "active" : '') ?>">
-            <?php echo $this->Html->link($k, '/docs/' . $v) ?>
+            <?php echo $this->Html->link($k, '/help/' . $v) ?>
         </li>
         <?php endif ?>
     <?php endforeach ?>
