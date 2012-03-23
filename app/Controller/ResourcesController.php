@@ -50,7 +50,9 @@ class ResourcesController extends AppController {
             $mime  = $data['file']['type'];
 
             # Create the resource file.
-            $sha = $this->Resource->createFile($tmp, $fname);
+            $sha = $this->Resource->createFile($tmp, array(
+                'filename' => $fname
+            ));
 
             # If creating the file went wrong, something is probably wrong with
             # the configuration. Redirect to the status page.

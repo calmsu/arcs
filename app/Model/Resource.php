@@ -50,22 +50,35 @@ class Resource extends AppModel {
      * Given a file path, it will calculate a SHA1 checksum of it, then build a
      * path for the file from the hexdigest and put it there. 
      *
-     * @param src    path to a readable file.
-     * @param fname  provide the desired filename, if different than 
-     *               src path basename.
-     * @param move   if false, copy the file rather than move it. Will
-     *               move by default.
-     * @return       a SHA1 hexdigest that can be used to get the 
-     *               resource's path.
+     * @param string $src      Path to a readable file.
+     * @param array  $options  Array of options, specified below:
+     *
+     *      filename: Provide the desired filename, if different than src path 
+     *                basename.
+     *      move:     If false, copy the file rather than move it. Will move by 
+     *                default.
+     *      thumb:    Make a thumbnail.
+     *      preview:  Make a preview (if it seems prudent). When False a preview
+     *                will not be made.
+     *
+     * @return string  a SHA1 hexdigest that can be used to get the resource's 
+     *                 path.
      */
-    public function createFile($src, $fname=null, $move=true, $thumb=false) {
+    public function createFile($src, $options=array()) {
+        $defaults = array(
+            'filename' => null,
+            'move' => true,
+            'thumb' => false,
+            'preview' => true
+        );
+        $options = array_merge($defaults, $options);
 
         # If we can't read the src path, return false.
         if (!is_readable($src)) return false;
 
         # Get the SHA, destination path, and filename.
         $sha = $this->_getSHA($src);
-        $fname = is_null($fname) ? basename($src) : $fname;
+        $fname = is_null($options['filename']) ? basename($src) : $options['filename'];
         $dst = $this->path($sha);
 
         # Try to make the new directory if it's not already there.
@@ -76,7 +89,7 @@ class Resource extends AppModel {
         # If the file doesn't already exist (it may be a duplicate):
         if (!is_file($dst . DS . $sha)) {
             # Try to move if move and writable.
-            if ($move && is_writable($src)) {
+            if ($options['move'] && is_writable($src)) {
                 $success = rename($src, $dst . DS . $sha);
             # Otherwise try to copy. (Maybe it's read-only)
             } else {
@@ -85,7 +98,7 @@ class Resource extends AppModel {
             # Return false on failure.
             if (!$success) return false;
             # Thumbnail
-            if ($thumb) $this->makeThumbnail($sha);
+            if ($options['thumb']) $this->makeThumbnail($sha);
             else $this->_setDefaultThumb($sha);
         }
 
@@ -95,7 +108,8 @@ class Resource extends AppModel {
             if (!link($dst . DS . $sha, $dst . DS . $fname)) return false;
         
         # Make a preview image, if we need one.
-        if ($this->_needsPreview($sha)) $this->makePreview($sha);
+        if ($this->_needsPreview($sha) && $options['preview']) 
+            $this->makePreview($sha);
 
         # Return the hexdigest.
         return $sha;
@@ -164,10 +178,17 @@ class Resource extends AppModel {
         $zip->open($tmp_file);
         $zip->addEmptyDir($zipname);
         foreach ($files as $name => $sha) {
-            $zip->addFile($this->path($sha, $name), $zipname . DS . $name);
+            try {
+                $zip->addFile($this->path($sha, $name), $zipname . DS . $name);
+            } catch (Exception $e) {
+                continue;
+            }
         }
         $zip->close();
-        return $this->createFile($tmp_file, $zipname . '.zip');
+        return $this->createFile($tmp_file, array(
+            'filename' => $zipname . '.zip',
+            'preview' => false
+        ));
     }
 
     /* PRIVATE METHODS */

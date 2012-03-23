@@ -8,9 +8,6 @@
  */
 class Task extends AppModel {
     public $name = 'Task';
-    public $whitelist = array(
-        'resource_id', 'job', 'data', 'status', 'progress'
-    );
 
     /**
      * Queues a task by creating a Task given a resource
