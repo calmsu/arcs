@@ -5,6 +5,7 @@
       <%= title %>
     </a>&nbsp;
     <% if (mime_type == 'application/pdf') print('(PDF)'); %>
+    <% if (count > 1) { %>
     <span class="pull-right">
       <% if (page > 1) { %>
         <span id="prev-btn">&larr;</span>
@@ -13,5 +14,6 @@
       <span id="next-btn" 
         class="<%= page < count ? '' : 'invisible' %>">&rarr;</span>
     </span>
+    <% } %>
   </div>
 </div>
