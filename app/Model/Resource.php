@@ -1,7 +1,7 @@
 <?php
 
-include_once(APPLIBS . 'relic' . DS . 'library' . DS . 'Relic' . DS . 'Mime.php');
-include_once(APPLIBS . 'relic' . DS . 'library' . DS . 'Relic' . DS . 'Image.php');
+include_once(LIB . 'relic' . DS . 'library' . DS . 'Mime.php');
+include_once(LIB . 'relic' . DS . 'library' . DS . 'Image.php');
 
 class Resource extends AppModel {
     public $name = 'Resource';

@@ -1,6 +1,6 @@
 <?php 
 # Require our Search class.
-require_once(APPLIBS . DS . 'Search.php');
+require_once(LIB . 'arcs' . DS . 'Search.php');
 
 /**
  * Resources Controller
@@ -281,7 +281,7 @@ class ResourcesController extends AppController {
                 $config = $dbo->config;
 
                 # Instantiate our Search object with the db config and facets.
-                $search = new Search($config, $this->request->data);
+                $search = new \Arcs\Search($config, $this->request->data);
 
                 # If not logged in, only public resources may be viewed.
                 if (!$this->Auth->loggedIn()) $search->public = true;

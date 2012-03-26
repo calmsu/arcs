@@ -1,7 +1,7 @@
 <?php 
 
-include_once(APPLIBS . 'relic' . DS . 'library' . DS . 'Relic' . DS . 'Image.php');
-include_once(APPLIBS . 'relic' . DS . 'library' . DS . 'Relic' . DS . 'PDF.php');
+include_once(LIB . 'relic' . DS . 'library' . DS . 'Image.php');
+include_once(LIB . 'relic' . DS . 'library' . DS . 'PDF.php');
 
 class WorkerShell extends AppShell {
 
