@@ -32,8 +32,9 @@ class PagesController extends AppController {
             'writable' => is_writable($uploads_path),
             'executable' => is_executable($uploads_path)
         ));
-        $this->set('executables', array(
-            'ghostscript' => is_executable(Configure::read('executables.ghostscript'))
+        $this->set('dependencies', array(
+            'Ghostscript' => is_executable(Configure::read('executables.ghostscript')),
+            'Imagemagick' => class_exists('Imagick')
         ));
     }
 
