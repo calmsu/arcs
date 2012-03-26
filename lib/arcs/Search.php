@@ -1,6 +1,11 @@
 <?php
 
 /**
+ * @namespace
+ */
+namespace Arcs;
+
+/**
  * Search
  *
  * Instances of the Search class build SQL for faceted search queries, given 
