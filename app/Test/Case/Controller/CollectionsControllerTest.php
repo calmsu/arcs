@@ -36,7 +36,7 @@ class CollectionsControllerTestCase extends CakeTestCase {
  *
  * @var array
  */
-	public $fixtures = array('app.collection', 'app.membership', 'app.resource', 'app.user', 'app.tag', 'app.comment', 'app.bookmark', 'app.hotspot');
+	public $fixtures = array('app.collection', 'app.membership', 'app.resource', 'app.user', 'app.keyword', 'app.comment', 'app.bookmark', 'app.hotspot');
 
 /**
  * setUp method

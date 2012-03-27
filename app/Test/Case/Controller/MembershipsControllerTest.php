@@ -36,7 +36,7 @@ class MembershipsControllerTestCase extends CakeTestCase {
  *
  * @var array
  */
-	public $fixtures = array('app.membership', 'app.resource', 'app.user', 'app.tag', 'app.comment', 'app.bookmark', 'app.collection', 'app.hotspot');
+	public $fixtures = array('app.membership', 'app.resource', 'app.user', 'app.keyword', 'app.comment', 'app.bookmark', 'app.collection', 'app.hotspot');
 
 /**
  * setUp method

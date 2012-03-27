@@ -11,6 +11,16 @@
       Upload.__super__.constructor.apply(this, arguments);
     }
 
+    Upload.prototype.UPLOAD_ERR_OK = 0;
+
+    Upload.prototype.UPLOAD_ERR_INI_SIZE = 1;
+
+    Upload.prototype.UPLOAD_ERR_FORM_SIZE = 2;
+
+    Upload.prototype.UPLOAD_ERR_PARTIAL = 3;
+
+    Upload.prototype.UPLOAD_ERR_NO_FILE = 4;
+
     Upload.prototype.loading = false;
 
     Upload.prototype.initialize = function() {
@@ -98,11 +108,13 @@
             });
             model.set('progress', 100);
             model.set('sha', response.sha);
+            model.set('error', response.error);
           }
           _this.pending -= 1;
           if (!_this.pending) {
             _this.$el.find('#upload-btn').removeClass('disabled');
           }
+          _this.checkForErrors();
           return _this.render();
         }
       });
@@ -131,6 +143,34 @@
           return location.href = arcs.baseURL + 'search/';
         }
       });
+    };
+
+    Upload.prototype.checkForErrors = function() {
+      var error, msg, upload, _i, _len, _ref, _results;
+      _ref = this.uploads.models;
+      _results = [];
+      for (_i = 0, _len = _ref.length; _i < _len; _i++) {
+        upload = _ref[_i];
+        error = upload.get('error');
+        if (error === this.UPLOAD_ERR_OK) continue;
+        if (error === this.UPLOAD_ERR_INI_SIZE || error === this.UPLOAD_ERR_FORM_SIZE) {
+          msg = ("The file '" + (upload.get('name')) + "' was too large. If ") + "possible, split the file into pieces.";
+        } else if (error === this.UPLOAD_ERR_PARTIAL) {
+          msg = ("The file '" + (upload.get('name')) + "' was only partially ") + "uploaded. Please refresh the page and try again.";
+        } else {
+          msg = "Something went wrong. Please refresh the page and " + "try again. If the problem persists, contact the system " + "administrator.";
+        }
+        msg += " For more information, see our " + ("<a href='" + (arcs.baseURL + 'docs/uploading') + "'>Uploading ") + "documentation.</a>";
+        arcs.notify(msg, 'error', false);
+        arcs.log(upload, error);
+        _results.push(this.disable());
+      }
+      return _results;
+    };
+
+    Upload.prototype.disable = function() {
+      this.$el.addClass('disabled');
+      return this.$el.find('a, button').addClass('disabled');
     };
 
     Upload.prototype.render = function() {

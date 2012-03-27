@@ -47,12 +47,9 @@ class AppController extends Controller {
      */
     public function jsonResponse($code=200, $data=null, 
                                  $render='/Elements/ajax') {
-        if (is_null($data)) {
-            $data = array();
-        }
         $this->response->statusCode($code);
         $this->RequestHandler->respondAs('json');
-        $this->set('response', $data);
+        $this->set('response', (array)$data);
         $this->render($render);
     }
 }

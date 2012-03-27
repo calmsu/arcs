@@ -1,21 +1,66 @@
 # modal.coffee
 # ------------
-# The Modal view creates modal dialogs, given a set of options. 
-# It handles binding button clicks and gathering input values.
-# 
-# options:
-#   draggable:  make the modal draggable. 
-#   dragHandle: selector to use as the draggable handle
-#   backdrop:   use an overlay
+# The Modal view creates a modal dialog. It uses the 'ui/modal' template 
+# and renders the template according to the provided (or default options). 
+#
+# Buttons and inputs are defined as objects, rather than using markup.
+# This means fewer templates, and allows us to automate binding to click
+# events and gathering input values. Buttons accept a callback function.
+#
+# The options (when using the default template) are described below.
+#
+# options:     
+#   draggable:  Make the modal draggable. 
+#   dragHandle: Selector to use as the draggable handle
+#   backdrop:   Use an overlay
 #   keyboard:   <esc> will close the modal
-#   show:       show the modal on init
-#   class:      attach an extra class to the .modal div
-#   title:      modal's header text
-#   subtitle:   text displayed in first line of the modal body
-#   inputs:     inputs to add to the modal. This is given as an object 
-#               containing option objects. For example:
+#   show:       Show the modal on init
+#   class:      Attach an extra class to the .modal div
+#   title:      Modal's header text
+#   subtitle:   Text displayed in first line of the modal body
+#   template:   Use a special template. We'll provide the options object
+#               to the template interpolator.
+#   inputs:     Inputs to add to the modal. These are given as an object 
+#               of options objects. For example:
+#
+#                 email:
+#                   type: 'text'
+#                   required: true
+#                   value: 'john.doe@example.com'
+#                   complete: arcs.complete.email
+#
+#               If you're happy with the defaults, you can also do:
+#
+#                 title: true
+#
+#               By default, we'll create a label element with the 
+#               capitalized property string. If you don't want a label,
+#               use `label: false`. If you want a different label, use
+#               `label: 'Some other label'`.
+#
+#   buttons:    Buttons to add to the modal. As with inputs, these are
+#               given as options objects. For example:
+#
+#                 save:
+#                   callback: someCallback
+#                   context: this
+#                   validate: true
+#                   class: 'btn success'
+#                   close: false
+#
+#               Or simply:
+#
+#                 cancel: ->
+#
+#               Callbacks are called with a values object that contains
+#               the value of each input. The property names will be
+#               the same as defined in `inputs`. We'll close the dialog
+#               after the callback is fired, unless `close: false` is
+#               given or `validate: true` was given and validation failed.
+#                   
 class arcs.views.Modal extends Backbone.View
 
+  # defaults
   options:
     draggable: false
     dragHandle: null
@@ -25,6 +70,7 @@ class arcs.views.Modal extends Backbone.View
     class: ''
     title: 'No Title'
     subtitle: null
+    template: 'ui/modal'
     inputs: {}
     buttons: {}
 
@@ -34,20 +80,21 @@ class arcs.views.Modal extends Backbone.View
       $('body').append arcs.tmpl 'ui/modal_wrapper'
     @el = @$el = $('#modal')
 
-    @$el.addClass @options.class
+    # Add any classes to the modal el.
+    @$el.addClass(@options.class) if @options.class
 
     # Render the template into the wrapper, make it use Underscore's template
     # function.
-    @$el.html arcs.tmpl 'ui/modal', @options
+    @$el.html arcs.tmpl @options.template, @options
 
     # Do some extra setting up.
-    _.each @options.inputs, (opts, k) -> 
-      $sel = @$("#modal-#{k}-input")
-      if opts.complete or opts.multicomplete
+    for name, options of @options.inputs
+      $sel = @$("#modal-#{name}-input")
+      if options.complete or options.multicomplete
         arcs.utils.autocomplete 
           sel: $sel
-          multiple: !!opts.multicomplete
-          source: opts.multicomplete ? opts.complete
+          multiple: !!options.multicomplete
+          source: options.multicomplete ? options.complete
 
     # Draggable?
     @$el.draggable(handle: @options.dragHandle) if @options.draggable
@@ -61,34 +108,56 @@ class arcs.views.Modal extends Backbone.View
     @_bindButtons()
   
   # Hide the dialog
-  hide: -> @$el.modal 'hide'
+  hide: -> 
+    @$el.modal 'hide'
    
   # Show the dialog
-  show: -> @$el.modal 'show'
+  show: -> 
+    @$el.modal 'show'
+
+  # Returns true if each input validates (according to the configured
+  # validation). Otherwise, it returns false and displays the error.
+  validate: ->
+    @$('#validation-error').hide()
+    @$('.error').removeClass('error')
+    values = @_getValues()
+    required = []
+    for name, options of @options.inputs
+      if options.required? and options.required
+        unless values[name].replace(/\s/g, '').length
+          required.push name
+
+    return true unless required.length
+
+    for name in required
+      @$("#modal-#{name}-input").addClass('error')
+      @$("label[for='modal-#{name}']").addClass('error')
+    @$('#validation-error').show().html 'Looks like you missed a few required fields.'
+    false
 
   # Gather the values from each input.
   _getValues: ->
     values = {}
-    for key in _.keys(@options.inputs)
-      values[key] = @$("#modal-#{key}-input").val()
+    for name of @options.inputs
+      values[name] = @$("#modal-#{name}-input").val()
     values
 
   # Bind to the 'click' event on each button.
   _bindButtons: ->
     # Iterate through the buttons and bind them.
-    for key in _.keys(@options.buttons)
-      # Use one to avoid double triggers:
-      @$("button#modal-#{key}-button").one 'click', (e) =>
-        key = e.target.id.match(/modal-(\w+)-button/)[1]
-        button = @options.buttons[key]
-        # Button value is a function: call it.
-        if _.isFunction button
-          button @_getValues()
+    for name of @options.buttons
+      @$("button#modal-#{name}-button").click (e) =>
+        name = e.target.id.match(/modal-(\w+)-button/)[1]
+        options = @options.buttons[name]
+        # Button options is actually a function.
+        if _.isFunction options
+          cb = options
         # Object?
         else
-          [callback, context] = [button.callback, button.context ? window]
+          [callback, context] = [options.callback ? (->), options.context ? window]
           # Bind the callback to an object and call it.
-          _.bind(callback, context) @_getValues()
+          cb = _.bind(callback, context)
+        valid = if options.validate then @validate() else true
+        cb(@_getValues()) if valid
         # Hide the dialog, unless told not to.
-        unless button.close? or button.close
-          @hide()
+        @hide() unless (options.close? and options.close) or !valid

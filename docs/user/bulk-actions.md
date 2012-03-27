@@ -9,8 +9,8 @@ Opening Results
 ---------------
 stub
 
-Tagging
--------
+Keywording
+----------
 stub
 
 Creating a new Collection

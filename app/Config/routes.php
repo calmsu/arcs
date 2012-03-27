@@ -54,7 +54,7 @@
 
     # Upload
     Router::connect('/upload',
-        array('controller' => 'resources', 'action' => 'add')
+        array('controller' => 'uploads', 'action' => 'batch')
     );
 
     # Resource, collection, and user singular aliases
@@ -82,20 +82,6 @@
         array('controller' => 'pages', 'action' => 'status')
     );
 
-    # Resource hasMany routes
-    Router::connect('/resources/:id/comments',
-        array('controller' => 'resources', 'action' => 'comments'),
-        array('id' => '[\d]+')
-    );
-    Router::connect('/resources/:id/tags',
-        array('controller' => 'resources', 'action' => 'tags'),
-        array('id' => '[\d]+')
-    );
-    Router::connect('/resources/:id/hotspots',
-        array('controller' => 'resources', 'action' => 'hotspots'),
-        array('id' => '[\d]+')
-    );
-
     # Pages routes
     Router::connect('/pages/*', 
         array('controller' => 'pages', 'action' => 'display')
@@ -109,15 +95,23 @@
         array('controller' => 'docs', 'action' => 'display')
     );
 
+    Router::resourceMap(array(
+        array('action' => 'index', 'method' => 'GET', 'id' => false),
+        array('action' => 'view', 'method' => 'GET', 'id' => true),
+        array('action' => 'add', 'method' => 'POST', 'id' => false),
+        array('action' => 'edit', 'method' => 'PUT', 'id' => true),
+        array('action' => 'delete', 'method' => 'DELETE', 'id' => true),
+        array('action' => 'update', 'method' => 'POST', 'id' => true)
+    ));
     # Map resources for the ajax-only controllers
     Router::mapResources(array(
+        'resources',
         'comments',
-        'tags',
+        'keywords',
         'hotspots',
-        'bookmarks'
+        'bookmarks',
+        'flags'
     ));
-
-    # Parse extensions (not super useful for us)
     Router::parseExtensions();
 
 	CakePlugin::routes();

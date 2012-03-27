@@ -5,6 +5,7 @@ class Membership extends AppModel {
     public $belongsTo = array(
         'Resource', 'Collection'
     );
+    public $whitelist = array('resource_id', 'collection_id');
 
     /**
      * Convenience method for connecting a resource to a collection
@@ -14,11 +15,9 @@ class Membership extends AppModel {
      * @param cid    collection id
      */
     public function pair($rid, $cid) {
-        return $this->save(array(
-            'Membership' => array(
-                'resource_id' => $this->Resource->id,
-                'collection_id' => $collection_id
-            )
+        return $this->add(array(
+            'resource_id' => $rid,
+            'collection_id' => $cid
         ));
     }
 }

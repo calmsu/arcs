@@ -19,26 +19,29 @@
       "class": '',
       title: 'No Title',
       subtitle: null,
+      template: 'ui/modal',
       inputs: {},
       buttons: {}
     };
 
     Modal.prototype.initialize = function() {
+      var $sel, name, options, _ref, _ref2;
       if (!$('#modal').length) $('body').append(arcs.tmpl('ui/modal_wrapper'));
       this.el = this.$el = $('#modal');
-      this.$el.addClass(this.options["class"]);
-      this.$el.html(arcs.tmpl('ui/modal', this.options));
-      _.each(this.options.inputs, function(opts, k) {
-        var $sel, _ref;
-        $sel = this.$("#modal-" + k + "-input");
-        if (opts.complete || opts.multicomplete) {
-          return arcs.utils.autocomplete({
+      if (this.options["class"]) this.$el.addClass(this.options["class"]);
+      this.$el.html(arcs.tmpl(this.options.template, this.options));
+      _ref = this.options.inputs;
+      for (name in _ref) {
+        options = _ref[name];
+        $sel = this.$("#modal-" + name + "-input");
+        if (options.complete || options.multicomplete) {
+          arcs.utils.autocomplete({
             sel: $sel,
-            multiple: !!opts.multicomplete,
-            source: (_ref = opts.multicomplete) != null ? _ref : opts.complete
+            multiple: !!options.multicomplete,
+            source: (_ref2 = options.multicomplete) != null ? _ref2 : options.complete
           });
         }
-      });
+      }
       if (this.options.draggable) {
         this.$el.draggable({
           handle: this.options.dragHandle
@@ -60,35 +63,58 @@
       return this.$el.modal('show');
     };
 
+    Modal.prototype.validate = function() {
+      var name, options, required, values, _i, _len, _ref;
+      this.$('#validation-error').hide();
+      this.$('.error').removeClass('error');
+      values = this._getValues();
+      required = [];
+      _ref = this.options.inputs;
+      for (name in _ref) {
+        options = _ref[name];
+        if ((options.required != null) && options.required) {
+          if (!values[name].replace(/\s/g, '').length) required.push(name);
+        }
+      }
+      if (!required.length) return true;
+      for (_i = 0, _len = required.length; _i < _len; _i++) {
+        name = required[_i];
+        this.$("#modal-" + name + "-input").addClass('error');
+        this.$("label[for='modal-" + name + "']").addClass('error');
+      }
+      this.$('#validation-error').show().html('Looks like you missed a few required fields.');
+      return false;
+    };
+
     Modal.prototype._getValues = function() {
-      var key, values, _i, _len, _ref;
+      var name, values;
       values = {};
-      _ref = _.keys(this.options.inputs);
-      for (_i = 0, _len = _ref.length; _i < _len; _i++) {
-        key = _ref[_i];
-        values[key] = this.$("#modal-" + key + "-input").val();
+      for (name in this.options.inputs) {
+        values[name] = this.$("#modal-" + name + "-input").val();
       }
       return values;
     };
 
     Modal.prototype._bindButtons = function() {
-      var key, _i, _len, _ref, _results,
+      var name, _results,
         _this = this;
-      _ref = _.keys(this.options.buttons);
       _results = [];
-      for (_i = 0, _len = _ref.length; _i < _len; _i++) {
-        key = _ref[_i];
-        _results.push(this.$("button#modal-" + key + "-button").one('click', function(e) {
-          var button, callback, context, _ref2, _ref3;
-          key = e.target.id.match(/modal-(\w+)-button/)[1];
-          button = _this.options.buttons[key];
-          if (_.isFunction(button)) {
-            button(_this._getValues());
+      for (name in this.options.buttons) {
+        _results.push(this.$("button#modal-" + name + "-button").click(function(e) {
+          var callback, cb, context, options, valid, _ref, _ref2, _ref3;
+          name = e.target.id.match(/modal-(\w+)-button/)[1];
+          options = _this.options.buttons[name];
+          if (_.isFunction(options)) {
+            cb = options;
           } else {
-            _ref3 = [button.callback, (_ref2 = button.context) != null ? _ref2 : window], callback = _ref3[0], context = _ref3[1];
-            _.bind(callback, context)(_this._getValues());
+            _ref3 = [(_ref = options.callback) != null ? _ref : (function() {}), (_ref2 = options.context) != null ? _ref2 : window], callback = _ref3[0], context = _ref3[1];
+            cb = _.bind(callback, context);
           }
-          if (!((button.close != null) || button.close)) return _this.hide();
+          valid = options.validate ? _this.validate() : true;
+          if (valid) cb(_this._getValues());
+          if (!(((options.close != null) && options.close) || !valid)) {
+            return _this.hide();
+          }
         }));
       }
       return _results;

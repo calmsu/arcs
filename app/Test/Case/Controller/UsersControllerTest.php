@@ -36,7 +36,7 @@ class UsersControllerTestCase extends CakeTestCase {
  *
  * @var array
  */
-	public $fixtures = array('app.user', 'app.resource', 'app.membership', 'app.collection', 'app.comment', 'app.tag', 'app.hotspot', 'app.bookmark');
+	public $fixtures = array('app.user', 'app.resource', 'app.membership', 'app.collection', 'app.comment', 'app.keyword', 'app.hotspot', 'app.bookmark');
 
 /**
  * setUp method

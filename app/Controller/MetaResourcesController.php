@@ -34,6 +34,8 @@ class MetaResourcesController extends AppController {
         $model = $this->modelClass;
         if ($this->request->data) {
             $data = array($model => $this->request->data);
+            # Temporarily whitelist the user_id field.
+            $this->$model->permit('user_id');
             $data[$model]['user_id'] = $this->Auth->user('id');
             if ($this->$model->save($data)) {
                 return $this->jsonResponse(201);
@@ -66,7 +68,7 @@ class MetaResourcesController extends AppController {
         $model = $this->modelClass;
         if ($this->$model->delete($id)) {
             return $this->jsonResponse(204);
-        } 
+        }
         return $this->jsonResponse(500);
     }
 }

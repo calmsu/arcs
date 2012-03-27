@@ -4,8 +4,8 @@
     user: function() {
       return this._get('users/complete');
     },
-    tag: function() {
-      return this._get('tags/complete');
+    keyword: function() {
+      return this._get('keywords/complete');
     },
     title: function() {
       return this._get('resources/complete/title');

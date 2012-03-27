@@ -3,6 +3,13 @@
 # Upload view
 class arcs.views.Upload extends Backbone.View
 
+  # PHP $_FILES errors
+  UPLOAD_ERR_OK       : 0
+  UPLOAD_ERR_INI_SIZE : 1
+  UPLOAD_ERR_FORM_SIZE: 2
+  UPLOAD_ERR_PARTIAL  : 3
+  UPLOAD_ERR_NO_FILE  : 4
+
   loading: false
 
   initialize: ->
@@ -68,9 +75,11 @@ class arcs.views.Upload extends Backbone.View
             r.name == f.name
           model.set 'progress', 100
           model.set 'sha', response.sha
+          model.set 'error', response.error
         @pending -= 1
         if not @pending
           @$el.find('#upload-btn').removeClass('disabled')
+        @checkForErrors()
         @render()
 
   upload: ->
@@ -91,6 +100,42 @@ class arcs.views.Upload extends Backbone.View
       contentType: 'application/json'
       success: (data) =>
         location.href = arcs.baseURL + 'search/'
+
+  checkForErrors: ->
+    for upload in @uploads.models
+      error = upload.get 'error'
+
+      # No error, ok. Move on.
+      continue if error == @UPLOAD_ERR_OK
+
+      # Is the error file size related?
+      if error == @UPLOAD_ERR_INI_SIZE or error == @UPLOAD_ERR_FORM_SIZE
+        msg = "The file '#{upload.get 'name'}' was too large. If " +
+          "possible, split the file into pieces."
+      # Was file only partially uploaded?
+      else if error == @UPLOAD_ERR_PARTIAL
+        msg = "The file '#{upload.get 'name'}' was only partially " +
+          "uploaded. Please refresh the page and try again."
+      # Something else? (This category holds the server-side errors)
+      else
+        msg = "Something went wrong. Please refresh the page and " +
+          "try again. If the problem persists, contact the system " +
+          "administrator."
+
+      # Tack on a help link and notify the user.
+      msg += " For more information, see our " +
+        "<a href='#{arcs.baseURL + 'docs/uploading'}'>Uploading " +
+        "documentation.</a>"
+      arcs.notify msg, 'error', false
+
+      arcs.log upload, error
+
+      # Disable the uploader.
+      @disable()
+
+  disable: ->
+    @$el.addClass('disabled');
+    @$el.find('a, button').addClass('disabled');
 
   render: ->
     for upload in @uploads.models

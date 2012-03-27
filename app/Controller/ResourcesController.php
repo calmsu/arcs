@@ -18,15 +18,15 @@ class ResourcesController extends AppController {
 
     public function beforeFilter() {
         # The App Controller will set some common view variables (namely a 
-        # user array), so the parent's beforeFilter is run in this and most 
+        # user array), so the parent's beforeFilter is run in this and most
         # other controllers.
         parent::beforeFilter();
 
         # Read-only actions, such as viewing resources and associated comments
         # are allowed by default.
         $this->Auth->allow(
-            'index', 'view', 'search', 'comments', 
-            'hotspots', 'tags', 'complete'
+            'index', 'view', 'search', 'comments',
+            'hotspots', 'keywords', 'complete'
         );
     }
 
@@ -61,6 +61,10 @@ class ResourcesController extends AppController {
                 return $this->redirect('/status');
             }
 
+            # Temporarily whitelist a few fields.
+            $this->Resource->permit(
+                'sha', 'file_name', 'file_size', 'user_id'
+            );
             # Save a DB record.
             $this->Resource->add(array(
                 'sha' => $sha,
@@ -78,18 +82,18 @@ class ResourcesController extends AppController {
             if ($collection_id)
                 $this->Resource->Membership->pair($id, $collection_id);
 
-            # Save any tags.
-            if ($data['tags']) {
-                $tags = $this->Resource->Tag->fromString($data['tags']);
+            # Save any keywords.
+            if ($data['keywords']) {
+                $keywords = $this->Resource->Keyword->fromString($data['keywords']);
                 $records = array();
-                foreach ($tags as $t) {
+                foreach ($keywords as $k) {
                     $records[] = array(
                         'resource_id' => $id,
                         'user_id' => $this->Auth->user('id'),
-                        'tag' => $t
+                        'keyword' => $k
                     );
                 }
-                $this->Resource->Tag->saveMany($records);
+                $this->Resource->Keyword->saveMany($records);
             }
 
             # Make a task to get a thumbnail made, don't have time now.
@@ -121,6 +125,7 @@ class ResourcesController extends AppController {
         $resource = $this->Resource->findById($id);
         if ($resource['Resource']['mime_type'] == 'application/pdf') {
             # Create a new collection for the split.
+            $this->Collection->permit('user_id');
             $this->Collection->save(array(
                 'Collection' => array(
                     'title' => $resource['Resource']['title'],
@@ -243,6 +248,8 @@ class ResourcesController extends AppController {
         if ($this->request->is('ajax')) {
             if ($this->Auth->loggedIn() && $this->Resource->delete($id)) {
                 return $this->jsonResponse(200);
+            } else {
+                return $this->jsonResponse(401);
             }
         }
     }
@@ -295,6 +302,52 @@ class ResourcesController extends AppController {
         } 
     }
 
+    public function download($id) {
+        $resource = $this->Resource->findById($id);
+        if (!$resource) return $this->redirect('/404');
+        $this->layout = false;
+        Configure::write('debug', 0);
+        $sha = $resource['Resource']['sha'];
+        $this->set('fname', $resource['Resource']['file_name']);
+        $this->set('fsize', $resource['Resource']['file_size']);
+        $this->set('path', $this->Resource->path($sha, $sha));
+        $this->render('/Elements/download');
+    }
+
+    public function zipped() {
+        if (!$this->request->is('ajax')) return $this->redirect('/404');
+        if (!($this->request->is('post') && $this->request->data))
+            return $this->jsonResponse(400);
+        $ids = $this->request->data['resources'];
+        $resources = $this->Resource->find('all', array(
+            'conditions' => array(
+                'Resource.id' => $ids
+            )
+        ));
+        $files = array();
+        foreach ($resources as $r) {
+            $files[$r['Resource']['file_name']] = $r['Resource']['sha'];
+        }
+        $title = str_replace(' ', '-', $resources[0]['Resource']['title']);
+        $name = $title . '-and-' . 
+            (count($files) - 1) . '-' .
+            (count($files) > 2 ? 'others' : 'other');
+        $sha = $this->Resource->makeZipfile($files, $name);
+        $this->jsonResponse(200, array(
+            'url' => $this->Resource->url($sha, $name . '.zip')
+        ));
+    }
+
+    public function rethumb($id) {
+        if (!$this->request->is('ajax')) $this->redirect('/404');
+        if (!$this->Auth->user('id')) return $this->jsonResponse(401);
+        $resource = $this->Resource->findById($id);
+        if (!$resource) return $this->jsonResponse(404);
+        $this->loadModel('Task');
+        $this->Task->queue('thumb', $resource['Resource']['id']);
+        return $this->jsonResponse(202);
+    }
+
     /**
      * Return associated comments.
      *
@@ -309,13 +362,13 @@ class ResourcesController extends AppController {
     }
 
     /**
-     * Return associated tags.
+     * Return associated keywords.
      *
      * @param id    resource id
      */
-    public function tags($id) {
+    public function keywords($id) {
         if ($this->request->is('ajax')) {
-            $this->jsonResponse(200, $this->Resource->Tag->find('all',
+            $this->jsonResponse(200, $this->Resource->Keyword->find('all',
                 array('conditions' => array('Resource.id' => $id))
             ));
         }

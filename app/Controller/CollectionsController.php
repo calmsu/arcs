@@ -31,13 +31,13 @@ class CollectionsController extends AppController {
         if ($this->request->is('post') && $this->data) {
             # Save the collection.
             $data = array('Collection' => $this->data);
+            $this->Collection->permit('user_id');
             $data['Collection']['user_id'] = $this->Auth->user('id');
             $this->Collection->save($data);
 
             # The 'Members' key may be given as a list of resource 
             # id's that will be saved as Memberships.
             if ($this->data['members']) {
-                $this->loadModel('Membership');
                 $members = array();
                 foreach ($this->data['members'] as $member) {
                     array_push($members, array(
@@ -45,7 +45,7 @@ class CollectionsController extends AppController {
                         'resource_id' => $member
                     ));
                 }
-                $this->Membership->saveMany($members);
+                $this->Collection->Membership->saveMany($members);
             }
             if ($this->request->is('ajax')) {
                 $this->jsonResponse(201, array('id' => $this->Collection->id));
@@ -53,21 +53,6 @@ class CollectionsController extends AppController {
                 $this->redirect('/collection/' . $this->Collection->id);
             }
         }
-    }
-
-    /**
-     * Add a resource to a collection.
-     *
-     * @param id            collection id
-     * @param resource_id   resource id
-     */
-    public function addMember($id, $resource_id) {
-        $this->loadModel('Membership');
-        $this->Membership->save(array(
-            'Membership' => array(
-                'collection_id' => $id,
-                'resource_id' => $resource_id
-        )));
     }
 
     /**

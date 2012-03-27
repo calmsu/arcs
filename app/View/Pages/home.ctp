@@ -115,29 +115,71 @@
 
 </div><!-- page fluid-container -->
 
-<footer id="credits">
-	<?php 
-		echo $this->Html->image( 'neh-logo.png',
-			array(	'alt'=> 'NEH Logo', 
-					'id' => 'neh_logo', 
-					'class' => 'logo', 
-					'title' => 'Any views, findings, conclusions, or recommendations expressed in this website do not necessarily represent those of the National Endowment for the Humanities', 
-					'url' => 'http://www.neh.gov/'
-				)); 
-		echo $this->Html->image( 'msu-wordmark.png',
-			array(	'alt'=> 'MSU Wordmark', 
-					'id' => 'msu_wordmark', 
-					'class' => 'logo', 
-					'title' => 'Any views, findings, conclusions, or recommendations expressed in this website do not necessarily represent those of Michigan State University', 
-					'url' => 'http://www.msu.edu/'
-				)); 
-	?>
-		<p><?php echo $this->Html->link('College of Arts and Letters', 'http://cal.msu.edu', array('class' => 'footer-links','target' => '_blank', 'title' => 'Any views, findings, conclusions, or recommendations expressed in this website do not necessarily represent those of the College of Arts and Letters'));?></p>
+<footer id="credits">	
+	<div class="row">
+		<div class="span11"?>
+			<div id="quick-links">
+				<h3>Quick Links</h3>
+					<ul class="inline">
+						<li><?php echo $this->Html->link('Home', '/pages/home', array('class' => 'label label-footer')); ?></li>
+						<li><?php echo $this->Html->link('About', '/pages/about', array('class' => 'label label-footer')); ?></li>
+						<li><?php echo $this->Html->link('Help', '/pages/help', array('class' => 'label label-footer')); ?></li>
+					</ul>
+			</div>
+			<div id="sponsors">
+				<h3>Our Sponsors</h3>
+				<?php 
+					echo $this->Html->image( 'neh-logo.png',
+						array(	'alt'=> 'NEH Logo', 
+								'id' => 'neh_logo', 
+								'class' => 'logo', 
+								'title' => 'Any views, findings, conclusions, or recommendations expressed in this website do not necessarily represent those of the National Endowment for the Humanities', 
+								'url' => 'http://www.neh.gov/'
+							)); 
+					echo $this->Html->image( 'msu-wordmark.png',
+						array(	'alt'=> 'MSU Wordmark', 
+								'id' => 'msu_wordmark', 
+								'class' => 'logo', 
+								'title' => 'Any views, findings, conclusions, or recommendations expressed in this website do not necessarily represent those of Michigan State University', 
+								'url' => 'http://www.msu.edu/'
+							)); 
+				?>
+				
+				<?php 
+					echo $this->Html->image( 'cal-white-masthead.png',
+						array(	'alt'=> 'CE Logo', 
+								'id' => 'ce_logo', 
+								'class' => 'logo', 
+								'title' => 'Any views, findings, conclusions, or recommendations expressed in this website do not necessarily represent those of the College of Arts and Letters', 
+								'url' => 'http://cal.msu.edu'
+						)); 
+				?>
+				
+				<?php 
+					echo $this->Html->image( 'ce-logo.png',
+						array(	'alt'=> 'CE Logo', 
+								'id' => 'ce_logo', 
+								'class' => 'logo', 
+								'title' => 'Any views, findings, conclusions, or recommendations expressed in this website do not necessarily represent those of the Creativity Exploratory', 
+								'url' => 'http://ce.cal.msu.edu'
+						)); 
+				?>
+					
+				<p class="disclaimer">Any views, findings, conclusions, or recommendations expressed in this website do not necessarily represent those of the National Endowment for the Humanities, Michigan State University, the College of Arts and Letters, or the Creativity Exploratory.</p>
 		
-		<p><?php echo $this->Html->link('CE @ CAL', 'http://ce.cal.msu.edu', array('class' => 'footer-links', 'target' => '_blank', 'title' => 'Any views, findings, conclusions, or recommendations expressed in this website do not necessarily represent those of the Creativity Exploratory'));?></p>
+			</div><!-- #sponsors -->
+		</div><!-- .span11 -->
+		<div id="about-arcs-footer" class="span3">
+			<h3>About This Site</h3>
+			<p>ARCS is&hellip;Pellentesque habitant morbi tristique senectus et netus et malesuada fames ac turpis egestas. Vestibulum tortor quam, feugiat vitae, ultricies eget, tempor sit amet, ante. Donec eu libero sit amet quam egestas semper. Aenean ultricies mi vitae est. Mauris placerat eleifend leo. <?php echo $this->Html->link('read more...', '');?></p>
+		</div><!-- #about-arcs-footer -->
 	
-	<p class="disclaimer">Any views, findings, conclusions, or recommendations expressed in this website do not necessarily represent those of the National Endowment for the Humanities, Michigan State University, the College of Arts and Letters, or the Creativity Exploratory.</p>
-
+	
+		<div id="copyright-and-credits" class="span12">
+			<p>A product of <a href="http://ce.cal.msu.edu/" title="Creativity Exploratory at College of Arts & Letters">CE@CAL</a></p>
+			<p>&copy;<?php echo date("Y"); ?> Creativity Exploratory, MSU</p>
+		</div><!-- #copyright-and=credits -->
+	</div><!-- .row -->
 </footer>
 
 

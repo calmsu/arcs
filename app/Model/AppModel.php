@@ -2,6 +2,19 @@
 class AppModel extends Model {
 
     /**
+     * Temporarily permit a field, by adding it to the whitelist.
+     *
+     * @param  field  one or more fields as arguments.
+     * @return void
+     */
+    public function permit($field) {
+        $fields = func_get_args();
+        foreach ($fields as $f) {
+            $this->whitelist[] = $f;
+        }
+    }
+
+    /**
      * Convenience method for generating autocompletion arrays.
      *
      * @param field       e.g. Resource.title
@@ -24,9 +37,7 @@ class AppModel extends Model {
      * off to save().
      */
     public function add($data) {
-        return $this->save(array(
-            $this->name => $data
-        ));
+        return $this->save(array($this->name => $data));
     }
 
     /*

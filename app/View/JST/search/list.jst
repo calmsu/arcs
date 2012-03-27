@@ -1,16 +1,18 @@
 <table>
 <% _.each(results, function(r, i) { %>
-<tr class="result list">
+<tr class="result list" data-id="<% r.id %>">
     <td class="thumb-wrapper">
       <div>
         <img src="<%= r.thumb %>" data-id="<%= r.id %>" />
-        <div class="overlay">
+        <span class="overlay">
           <% if (r.comments.length) { %>
             <%= r.comments.length %> <i class="icon-comment"></i>
           <% } if (r.hotspots.length) { %>
             <%= r.hotspots.length %> <i class="icon-map-marker"></i>
+          <% } if (r.flags.length) { %>
+            <%= r.flags.length %> <i class="icon-flag"></i>
           <% } %> &nbsp;
-        </div>
+        </span>
       </div>
     </td>
     <td class="keys">
@@ -28,14 +30,14 @@
     <td class="keys">
       <div><em>access:</em></div>
       <div><em>created:</em></div>
-      <div><em>tags:</em></div>
+      <div><em>keywords:</em></div>
     </td>
     <td class="values">
       <div><strong><%= r.public ? 'public' : 'private' %></strong></div>
       <div><%= r.created %></div>
       <div>
-      <% _.each(r.tags, function(t) { %>
-        <span class="tag-link"><%= t %></span>
+      <% _.each(r.keywords, function(k) { %>
+        <span class="keyword-link"><%= k %></span>
       <% }) %> &nbsp;
       </div>
     </td>

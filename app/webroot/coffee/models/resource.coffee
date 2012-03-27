@@ -7,20 +7,21 @@ class arcs.models.Resource extends Backbone.Model
     mime_type: "unknown"
     modified: null
     created: null
+    preview: false
     public: false
+    selected: false
 
+  url: -> arcs.baseURL + 'resources/' + @id
   urlRoot: arcs.baseURL + 'resources'
 
   # List of attributes that the server will accept updates to.
-  modifiable: [
+  MODIFIABLE: [
     'title',
     'identifier'
     'copyright',
     'creator',
     'location',
     'subject'
-  ]
-    ###
     'coverage',
     'date',
     'format',
@@ -29,11 +30,11 @@ class arcs.models.Resource extends Backbone.Model
     'description',
     'medium'
   ]
-  ###
 
-  # List of attributes that can be batch-edited.
-  batchModifiable: ->
-    _.without(@modifiable, 'title', 'identifier')
+  SINGULAR: [
+    'title',
+    'identifier'
+  ]
 
   parse: (r) ->
     # Flatten an HABTM object.
@@ -43,12 +44,15 @@ class arcs.models.Resource extends Backbone.Model
       if r.User?
         r.user = r.User
         delete r.User
-      if r.Tag?
-        r.tags = (t.tag for t in r.Tag)
-        delete r.Tag
+      if r.Keyword?
+        r.keywords = (k.keyword for k in r.Keyword)
+        delete r.Keyword
       if r.Comment?
         r.comments = r.Comment
         delete r.Comment
+      if r.Flag?
+        r.flags = r.Flag
+        delete r.Flag
       if r.Membership?
         r.memberships = m.collection_id for m in r.Membership
         delete r.Membership

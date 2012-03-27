@@ -71,8 +71,8 @@
       user: function() {
         return arcs.utils.complete.user();
       },
-      tag: function() {
-        return arcs.utils.complete.tag();
+      keyword: function() {
+        return arcs.utils.complete.keyword();
       },
       collection: function() {
         return arcs.utils.complete.collection();

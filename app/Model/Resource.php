@@ -1,7 +1,7 @@
 <?php
 
-require_once(APPLIBS . 'Mime.php');
-require_once(APPLIBS . 'ImageUtility.php');
+include_once(APPLIBS . 'relic' . DS . 'library' . DS . 'Relic' . DS . 'Mime.php');
+include_once(APPLIBS . 'relic' . DS . 'library' . DS . 'Relic' . DS . 'Image.php');
 
 class Resource extends AppModel {
     public $name = 'Resource';
@@ -9,8 +9,18 @@ class Resource extends AppModel {
     public $hasMany = array(
         'Membership',
         'Comment',
-        'Tag',
-        'Hotspot'
+        'Keyword',
+        'Hotspot',
+        'Flag'
+    );
+    public $whitelist = array(
+        'public',
+        'exclusive',
+        'mime_type',
+        'title',
+        'context',
+        'type',
+        'first_req'
     );
 
     /**
@@ -20,11 +30,14 @@ class Resource extends AppModel {
     public function afterFind($results, $primary) {
         # Add the thumbnail and resource urls to the results array.
         # We're using our resultsMap method, passing in $this and using it
-        # internally as $c.
-        $results = $this->resultsMap($results, function($r, $c) {
+        # internally as $ctx, as a way of accessing our methods within the 
+        # callback.
+        $results = $this->resultsMap($results, function($r, $ctx) {
             if (isset($r['sha']) && isset($r['file_name'])) {
-                $r['url'] = $c->url($r['sha'], $r['file_name']);
-                $r['thumb'] = $c->url($r['sha'], 'thumb.png');
+                $r['url'] = $ctx->url($r['sha'], $r['file_name']);
+                $r['thumb'] = $ctx->url($r['sha'], 'thumb.png');
+                if (is_file($ctx->path($r['sha'], 'preview.png')))
+                    $r['preview'] = $ctx->url($r['sha'], 'preview.png');
             }
             return $r;
         }, $this);
@@ -45,7 +58,7 @@ class Resource extends AppModel {
      * @return       a SHA1 hexdigest that can be used to get the 
      *               resource's path.
      */
-    public function createFile($src, $fname=null, $move=true) {
+    public function createFile($src, $fname=null, $move=true, $thumb=false) {
 
         # If we can't read the src path, return false.
         if (!is_readable($src)) return false;
@@ -71,14 +84,18 @@ class Resource extends AppModel {
             }
             # Return false on failure.
             if (!$success) return false;
-            # Copy over a default thumbnail.
-            $this->_setDefaultThumb($sha);
+            # Thumbnail
+            if ($thumb) $this->makeThumbnail($sha);
+            else $this->_setDefaultThumb($sha);
         }
 
         # Create a hard link to the file, if the file doesn't already exist.
         if (!is_file($dst . DS . $fname))
             # Return false if we can't make the link.
             if (!link($dst . DS . $sha, $dst . DS . $fname)) return false;
+        
+        # Make a preview image, if we need one.
+        if ($this->_needsPreview($sha)) $this->makePreview($sha);
 
         # Return the hexdigest.
         return $sha;
@@ -123,9 +140,34 @@ class Resource extends AppModel {
     }
 
     public function makeThumbnail($sha) {
-        $src = $this->path($sha, $sha);
-        $dst = $this->path($sha, 'thumb.png');
-        return ImageUtility::thumbnail($src, $dst);
+        return \Relic\Image::thumbnail(
+            $this->path($sha, $sha),
+            $this->path($sha, 'thumb.png')
+        );
+    }
+
+    public function makePreview($sha) {
+        return \Relic\Image::preview(
+            $this->path($sha, $sha),
+            $this->path($sha, 'preview.png')
+        );
+    }
+
+    /**
+     *
+     * @param files
+     */
+    public function makeZipfile($files, $zipname) {
+        if (!class_exists('ZipArchive')) return false;
+        $tmp_file = tempnam(sys_get_temp_dir(), 'ARCS');
+        $zip = new ZipArchive();
+        $zip->open($tmp_file);
+        $zip->addEmptyDir($zipname);
+        foreach ($files as $name => $sha) {
+            $zip->addFile($this->path($sha, $name), $zipname . DS . $name);
+        }
+        $zip->close();
+        return $this->createFile($tmp_file, $zipname . '.zip');
     }
 
     /* PRIVATE METHODS */
@@ -162,6 +204,16 @@ class Resource extends AppModel {
         return sha1_file($path);
     }
 
+    private function _needsPreview($sha) {
+        $path = $this->path($sha, $sha);
+        # Anything greater than a megabyte.
+        if (filesize($path) > 1000000) return true;
+        $mime = \Relic\Mime::mime($path);
+        # PDFs and TIFFs need previews, too.
+        if (in_array($mime, array('application/pdf', 'image/tiff'))) return true;
+        return false;
+    }
+
     /**
      * Puts a default thumbnail within the path, given a MIME type.
      *
@@ -171,10 +223,16 @@ class Resource extends AppModel {
      * @param sha
      */
     private function _setDefaultThumb($sha) {
-        $type = Mime::getExt($this->path($sha, $sha));
-        $thumb = $type ? $type . '.png' : 'generic.png';
+        $types = \Relic\Mime::extensions($this->path($sha, $sha));
+        $image = 'generic';
+        foreach($types as $type) {
+            if (is_file(IMAGES . 'default_thumbs' . DS . $type . '.png')) {
+                $image = $type;
+                break;
+            }
+        }
         copy(
-            IMAGES . 'default_thumbs' . DS . $thumb, 
+            IMAGES . 'default_thumbs' . DS . $image . '.png', 
             $this->path($sha, 'thumb.png')
         );
     }

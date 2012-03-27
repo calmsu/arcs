@@ -38,8 +38,8 @@ Facet         | Description
 `modified`    | Matches the date on which the resource was last 
               | changed. 
               |
-`tag`         | Matches resources with a tag. For example: 
-              | `tag: east-field`
+`keyword`     | Matches resources with a keyword. For example: 
+              | `keyword: east-field`
               |
 `title`       | Matches the title of the resource. For example:
               | `title: Bones 1989`

@@ -1,7 +1,6 @@
 (function() {
   var __hasProp = Object.prototype.hasOwnProperty,
-    __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor; child.__super__ = parent.prototype; return child; },
-    __slice = Array.prototype.slice;
+    __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor; child.__super__ = parent.prototype; return child; };
 
   arcs.views.Search = (function(_super) {
 
@@ -11,12 +10,17 @@
       Search.__super__.constructor.apply(this, arguments);
     }
 
+    Search.prototype.RESULTS_PER_PAGE = 30;
+
     /* Initialize and define events
     */
 
     Search.prototype.initialize = function() {
-      this.setupSelect();
-      this.setupSearch();
+      this.setupSelect() && this.setupSearch() && this.setupScroll();
+      this.actions = new arcs.views.SearchActions({
+        el: this.$el,
+        collection: this.search.results
+      });
       this.router = new arcs.routers.Search({
         search: this.search
       });
@@ -25,117 +29,69 @@
         root: arcs.baseURL + 'search/'
       });
       if (!this.router.searched) this.search.run();
+      this.search.results.on('remove', this.render, this);
       if (this.grid == null) this.grid = true;
-      arcs.utils.keys.add('a', true, this._selectAll, this);
-      return arcs.utils.keys.add('o', true, this.openSelected, this);
+      return arcs.keys.add('a', true, this.selectAll, this);
     };
 
     Search.prototype.events = {
-      'click img': '_select',
-      'click .result': '_maybeUnselectAll',
-      'click #search-results': '_maybeUnselectAll',
-      'dblclick img': 'openResult',
-      'click #open-btn': 'openSelected',
-      'click #open-colview-btn': 'collectionFromSelected',
-      'click #collection-btn': 'collectionModal',
-      'click #attribute-btn': 'attributeModal',
-      'click #bookmark-btn': 'bookmarkSelected',
-      'click #tag-btn': 'tagModal',
+      'click img': 'toggle',
+      'click .result': 'maybeUnselectAll',
+      'click #search-results': 'maybeUnselectAll',
       'click #grid-btn': 'toggleView',
       'click #list-btn': 'toggleView',
       'click #top-btn': 'scrollTop'
-    };
-
-    /* Methods that return result DOM els or alter their states
-    */
-
-    Search.prototype._selected = function() {
-      return this.$('.result.selected');
-    };
-
-    Search.prototype._all = function() {
-      return this.$('.result');
-    };
-
-    Search.prototype._any = function() {
-      return !!this._selected().length;
-    };
-
-    Search.prototype._nsel = function() {
-      return this._selected().length;
-    };
-
-    Search.prototype._selectAll = function() {
-      return this._all().addClass('selected');
-    };
-
-    Search.prototype._toggleAll = function() {
-      return this._all().toggleClass('selected');
-    };
-
-    Search.prototype._unselectAll = function() {
-      return this._all().removeClass('selected');
-    };
-
-    Search.prototype._anySelected = function() {
-      if (!this._any()) {
-        arcs.notify('Select at least one result', 'error');
-        return false;
-      }
-      return true;
-    };
-
-    Search.prototype._select = function(e) {
-      if (!(e.ctrlKey || e.shiftKey || e.metaKey)) this._unselectAll();
-      return $(e.currentTarget).parent('.result').toggleClass('selected');
-    };
-
-    Search.prototype._maybeUnselectAll = function(e) {
-      if (!(e instanceof jQuery.Event)) return this._unselectAll();
-      if (e.metaKey || e.ctrlKey || e.shiftKey) return false;
-      if ($(e.target).attr('src')) return false;
-      return this._unselectAll();
     };
 
     /* More involved setups run by the initialize method
     */
 
     Search.prototype.setupSelect = function() {
+      var _this = this;
       return this.$el.find('#search-results').selectable({
         distance: 20,
-        filter: 'img',
+        filter: 'div.img-wrapper img',
         selecting: function(e, ui) {
-          return $(ui.selecting).parent().addClass('selected');
+          $(ui.selecting).parents('.result').addClass('selected');
+          return _this.afterSelection();
         },
         selected: function(e, ui) {
-          return $(ui.selected).parent().addClass('selected');
+          $(ui.selected).parents('.result').addClass('selected');
+          return _this.afterSelection();
         },
         unselecting: function(e, ui) {
-          return $(ui.unselecting).parent().removeClass('selected');
+          $(ui.unselecting).parents('.result').removeClass('selected');
+          return _this.afterSelection();
         },
         unselected: function(e, ui) {
-          return $(ui.unselected).parent().removeClass('selected');
+          $(ui.unselected).parents('.result').removeClass('selected');
+          return _this.afterSelection();
         }
       });
     };
 
     Search.prototype.setupSearch = function() {
-      var $actions, $results, $window, pos,
-        _this = this;
+      var _this = this;
       this.search = new arcs.utils.Search({
         container: $('#search-wrapper'),
         run: false,
         loader: true,
         success: function() {
-          _this.router.navigate(_this.search.query);
+          _this.router.navigate(encodeURIComponent(_this.search.query));
+          _this.searchPage = 1;
           return _this.render();
         }
       });
-      this.searchPage = 1;
+      return this.searchPage = 1;
+    };
+
+    Search.prototype.setupScroll = function() {
+      var $actions, $results, $window, pos,
+        _this = this;
       $actions = this.$('#search-actions');
       $results = this.$('#search-results');
       $window = $(window);
-      pos = $actions.offset().top;
+      pos = $actions.offset().top - 10;
       $window.scroll(function() {
         if ($window.scrollTop() > pos) {
           $actions.addClass('toolbar-fixed').width($results.width() + 23);
@@ -145,6 +101,7 @@
           _this.$('#top-btn').hide();
         }
         if ($window.scrollTop() === $(document).height() - $window.height()) {
+          if (_this.search.results.length % _this.RESULTS_PER_PAGE !== 0) return;
           _this.searchPage += 1;
           return _this.search.run(null, {
             add: true,
@@ -162,222 +119,69 @@
       });
     };
 
-    /* Actions that take one or more search results
-    */
-
-    Search.prototype.openResult = function(e) {
-      var $el;
-      if (e instanceof jQuery.Event) {
-        $el = $(e.currentTarget).parent();
-        e.preventDefault();
-      } else {
-        $el = $(e);
-      }
-      return window.open(arcs.baseURL + 'resource/' + this._getModel($el).id);
-    };
-
-    Search.prototype.tagResult = function($result, tagStr) {
-      var tag;
-      tag = new arcs.models.Tag({
-        resource_id: this._getModel($result).id,
-        tag: tagStr
-      });
-      return tag.save({
-        error: function() {
-          return arcs.notify('Not authorized', 'error');
-        }
-      });
-    };
-
-    Search.prototype.bookmarkResult = function($result, noteStr) {
-      var bkmk;
-      if (noteStr == null) noteStr = null;
-      bkmk = new arcs.models.Bookmark({
-        resource_id: this._getModel($result).id,
-        description: noteStr
-      });
-      return bkmk.save({
-        error: function() {
-          return arcs.notify('Not authorized', 'error');
-        }
-      });
-    };
-
-    Search.prototype.collectionFromSelected = function(vals) {
-      var collection, ids, _ref, _ref2,
-        _this = this;
-      if (!this._anySelected()) return;
-      collection = new arcs.models.Collection({
-        title: (_ref = vals.title) != null ? _ref : "Temporary Collection",
-        description: (_ref2 = vals.description) != null ? _ref2 : "Results from search '" + this.search.query + "'",
-        public: false,
-        temporary: true,
-        members: ids
-      });
-      ids = _.map(this._selected().get(), function($el) {
-        return _this._getModel($el).id;
-      });
-      return collection.save({
-        members: ids
-      }, {
-        success: function(model) {
-          return window.open(arcs.baseURL + 'collection/' + model.id);
-        },
-        error: function() {
-          return arcs.notify('An error occurred.', 'error');
-        }
-      });
-    };
-
-    Search.prototype.tagModal = function() {
-      var _ref;
-      if (!this._anySelected()) return;
-      return new arcs.views.Modal({
-        title: 'Tag Selected',
-        subtitle: ("" + (this._nsel()) + " resource" + ((0 < (_ref = this._nsel()) && _ref > 1) ? 's' : '')) + " will be tagged.",
-        inputs: {
-          tag: {
-            label: false,
-            complete: arcs.utils.complete.tag,
-            focused: true
-          }
-        },
-        backdrop: true,
-        buttons: {
-          save: {
-            "class": 'btn success',
-            callback: this.tagSelected,
-            context: this
-          },
-          cancel: function() {}
-        }
-      });
-    };
-
-    Search.prototype.attributeModal = function() {
-      if (!this._anySelected()) return;
-      if (this._nsel() > 1) return this.multiAttributeModal();
-      return new arcs.views.Modal({
-        title: 'Edit Attributes',
-        subtitle: '',
-        buttons: {
-          save: {
-            "class": 'btn success',
-            callback: function() {}
-          },
-          cancel: function() {}
-        }
-      });
-    };
-
-    Search.prototype.multiAttributeModal = function() {
-      var input, inputs, models, r, _i, _len, _ref;
-      models = (function() {
-        var _i, _len, _ref, _results;
-        _ref = this._selected().get();
-        _results = [];
-        for (_i = 0, _len = _ref.length; _i < _len; _i++) {
-          r = _ref[_i];
-          _results.push(this._getModel(r));
-        }
-        return _results;
-      }).call(this);
-      inputs = {};
-      _ref = models[0].batchModifiable();
-      for (_i = 0, _len = _ref.length; _i < _len; _i++) {
-        input = _ref[_i];
-        inputs[input] = true;
-      }
-      return new arcs.views.Modal({
-        title: 'Edit Attributes (Multiple)',
-        subtitle: "The values of checked fields will be applied to all " + "of the selected results.",
-        inputs: inputs,
-        buttons: {
-          save: {
-            "class": 'btn success',
-            callback: function() {}
-          },
-          cancel: function() {}
-        }
-      });
-    };
-
-    Search.prototype.collectionModal = function() {
-      var _ref;
-      if (!this._anySelected()) return;
-      return new arcs.views.Modal({
-        title: 'Create a Collection',
-        subtitle: ("A collection with " + (this._nsel()) + " ") + ("resource" + ((0 < (_ref = this._nsel()) && _ref > 1) ? 's' : '') + " will be created."),
-        inputs: {
-          title: {
-            focused: true
-          },
-          description: {
-            type: 'textarea'
-          }
-        },
-        buttons: {
-          save: {
-            "class": 'btn success',
-            callback: this.collectionFromSelected,
-            context: this
-          },
-          cancel: function() {}
-        }
-      });
-    };
-
-    Search.prototype.bookmarkSelected = function() {
-      return this._doForSelected(this.bookmarkResult, ['bookmark', 'bookmarked']);
-    };
-
-    Search.prototype.openSelected = function() {
-      return this._doForSelected(this.openResult, ['open', 'opened']);
-    };
-
-    Search.prototype.tagSelected = function(val) {
-      var tag;
-      tag = _.isString(val) ? val : val.tag;
-      return this._doForSelected(this.tagResult, tag, ['tag', 'tagged']);
-    };
-
-    Search.prototype._getModel = function($result) {
-      var id;
-      id = $($result).find('img').attr('data-id');
-      return this.search.results.get(id);
-    };
-
-    Search.prototype._doForSelected = function() {
-      var cbk, cbkArgs, n, name, _i, _ref, _ref2,
-        _this = this;
-      cbk = arguments[0], cbkArgs = 3 <= arguments.length ? __slice.call(arguments, 1, _i = arguments.length - 1) : (_i = 1, []), name = arguments[_i++];
-      if (!this._anySelected()) return;
-      this._selected().each(function(i, el) {
-        return cbk.call.apply(cbk, [_this, el].concat(__slice.call(cbkArgs)));
-      });
-      n = this._selected().length;
-      return arcs.notify(("" + (this._nsel()) + " resource" + ((0 < (_ref = this._nsel()) && _ref > 1) ? 's' : void 0) + " ") + ("" + ((0 < (_ref2 = this._nsel()) && _ref2 > 1) ? "were" : "was") + " " + name[1]), 'success');
-    };
-
     Search.prototype.toggleView = function() {
       this.grid = !this.grid;
-      $('#grid-btn').toggleClass('active');
-      $('#list-btn').toggleClass('active');
+      this.$('#grid-btn').toggleClass('active');
+      this.$('#list-btn').toggleClass('active');
       return this.render();
     };
 
     Search.prototype.scrollTop = function() {
+      var time;
+      time = ($(window).scrollTop() / $(document).height()) * 1000;
       return $('html, body').animate({
         scrollTop: 0
-      }, 1000);
+      }, time);
+    };
+
+    Search.prototype.unselectAll = function() {
+      return this.$('.result').removeClass('selected') && this.afterSelection();
+    };
+
+    Search.prototype.selectAll = function() {
+      return this.$('.result').addClass('selected') && this.afterSelection();
+    };
+
+    Search.prototype.toggle = function(e) {
+      if (!(e.ctrlKey || e.shiftKey || e.metaKey)) this.unselectAll();
+      $(e.currentTarget).parents('.result').toggleClass('selected');
+      return this.afterSelection();
+    };
+
+    Search.prototype.maybeUnselectAll = function(e) {
+      if (!(e instanceof jQuery.Event)) return this.unselectAll();
+      if (e.metaKey || e.ctrlKey || e.shiftKey) return false;
+      if ($(e.target).attr('src')) return false;
+      return this.unselectAll();
     };
 
     /* Render the search results
     */
 
+    Search.prototype.afterSelection = function() {
+      var _this = this;
+      return _.defer(function() {
+        var selected, unselected;
+        selected = $('.result.selected').map(function() {
+          return $(this).attr('data-id');
+        });
+        unselected = $('.result').not('.selected').map(function() {
+          return $(this).attr('data-id');
+        });
+        _this.search.results.select(selected.get());
+        _this.search.results.unselect(unselected.get());
+        if (_this.search.results.anySelected()) {
+          return $('.btn.needs-resource').removeClass('disabled');
+        } else {
+          return $('.btn.needs-resource').addClass('disabled');
+        }
+      });
+    };
+
     Search.prototype.append = function() {
       var rest, results;
-      rest = this.search.results.rest(this._all().length);
+      if (!(this.search.results.length > this.RESULTS_PER_PAGE)) return;
+      rest = this.search.results.rest(this.search.results.length - this.RESULTS_PER_PAGE);
       results = new arcs.collections.ResultSet(rest);
       return this._render({
         results: results.toJSON()
@@ -401,7 +205,7 @@
       } else {
         $results.html(content);
       }
-      if (!this._all().length) {
+      if (!this.search.results.length) {
         return $results.html(this.make('div', {
           id: 'no-results'
         }, 'No Results'));

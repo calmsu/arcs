@@ -52,13 +52,13 @@ class Search {
      *              remain unchanged.
      */
     public $MAPPINGS = array(
-        'tag' => array(
-            'model' => 'Tag',
-            'field' => 'tag',
+        'keyword' => array(
+            'model' => 'Keyword',
+            'field' => 'keyword',
             'joins' => array(
-                'tags' => array(
+                'keywords' => array(
                     'Resource' => 'id', 
-                    'Tag' => 'resource_id'
+                    'Keyword' => 'resource_id'
                 )
             )
         ),
@@ -189,7 +189,7 @@ class Search {
      *                                   'value' => 'Nick Reynolds'
      *                               ),
      *                               1 => array(
-     *                                   'category' => 'tag',
+     *                                   'category' => 'keyword',
      *                                   'value' => 'East-Field'
      *                               )
      *                           )
@@ -200,7 +200,7 @@ class Search {
      *                         The above can also be given in string format, 
      *                         using JSON:
      *
-     *                           { "user": "Nick Reynolds", "tag": "East-Field" }
+     *                         { "user": "Nick Reynolds", "keyword": "East-Field" }
      *
      *                         A query string without any facets will default 
      *                         to the special 'all' facet.
@@ -301,10 +301,10 @@ class Search {
      */
     public function results($limit=null, $offset=null) {
         if (!is_null($limit)) {
-            $this->limit = $limit;
+            $this->LIMIT = $limit;
         }
         if (!is_null($offset)) {
-            $this->offset = $offset;
+            $this->OFFSET = $offset;
         }
         $sql = $this->_buildStatement();
         $rows = $this->_execute($sql, $this->values);

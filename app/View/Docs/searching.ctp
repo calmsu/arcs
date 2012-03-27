@@ -111,12 +111,12 @@ query that will find everything that John uploaded yesterday.</p>
 <td></td>
 </tr>
 <tr>
-<td><code>tag</code></td>
-<td>Matches resources with a tag. For example:</td>
+<td><code>keyword</code></td>
+<td>Matches resources with a keyword. For example:</td>
 </tr>
 <tr>
 <td></td>
-<td><code>tag: east-field</code></td>
+<td><code>keyword: east-field</code></td>
 </tr>
 <tr>
 <td></td>
