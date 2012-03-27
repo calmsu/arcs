@@ -11,10 +11,10 @@ class arcs.views.Discussion extends Backbone.View
   initialize: ->
     @collection = new arcs.collections.Discussion
 
-    arcs.on 'arcs:indexchange', @update, @
-    @collection.on 'add remove', @render, @
+    arcs.on 'arcs:indexChange', => @collection.fetch
+    @collection.on 'add remove reset', @render, @
 
-    @update()
+    @collection.fetch()
 
   saveComment: ->
     $textarea = @$el.find('textarea#content')
@@ -28,13 +28,7 @@ class arcs.views.Discussion extends Backbone.View
       created: 'just now'
     @collection.add(comment)
 
-  update: ->
-    @collection.fetch
-      success: =>
-        @render()
-
   render: ->
-    $discussion = $('#comment-wrapper')
-    $discussion.html arcs.tmpl 'resource/discussion', 
+    $('#comment-wrapper').html arcs.tmpl 'resource/discussion', 
       comments: @collection.toJSON()
     @

@@ -2,7 +2,7 @@
 # ---------------
 # View for the thumbnail carousel.
 #
-# The view is responsible for watching our global 'indexchange' event and
+# The view is responsible for watching our global 'indexChange' event and
 # sliding the carousel and activating thumbnails as necessary. 
 #
 # By default the Carousel view doesn't render all the thumbnails it is given,
@@ -14,9 +14,9 @@ class arcs.views.Carousel extends Backbone.View
     nthumbs: 30 
 
   initialize: ->
-    # Bind to the indexchange event.
-    arcs.on 'arcs:indexchange', @slideTo, @
-    arcs.on 'arcs:indexchange', @setSelected, @
+    # Bind to the indexChange event.
+    arcs.on 'arcs:indexChange', @slideTo, @
+    arcs.on 'arcs:indexChange', @setSelected, @
 
     @render()
 
@@ -24,7 +24,7 @@ class arcs.views.Carousel extends Backbone.View
     @$el.elastislide
       imageW: 100
       onClick: ($item) ->
-        arcs.trigger 'arcs:indexchange', $item.index(), noSlide: true
+        arcs.trigger 'arcs:indexChange', $item.index(), noSlide: true
       onSlide: (first, last) =>
         unless _.isNaN(last)
           if last > @options.nthumbs - 10
@@ -36,7 +36,7 @@ class arcs.views.Carousel extends Backbone.View
     'click li': 'onClick'
 
   onClick: (e) ->
-    arcs.trigger 'arcs:indexchange', $(e.target).parent().index(), noSlide: true
+    arcs.trigger 'arcs:indexChange', $(e.target).parent().index(), noSlide: true
 
   slideTo: (index, options={}) ->
     if @$('li').length < index

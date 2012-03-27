@@ -50,7 +50,9 @@ class ResourcesController extends AppController {
             $mime  = $data['file']['type'];
 
             # Create the resource file.
-            $sha = $this->Resource->createFile($tmp, $fname);
+            $sha = $this->Resource->createFile($tmp, array(
+                'filename' => $fname
+            ));
 
             # If creating the file went wrong, something is probably wrong with
             # the configuration. Redirect to the status page.
@@ -102,7 +104,7 @@ class ResourcesController extends AppController {
 
             # Set a flash message, redirect to the resource view.
             $this->Session->setFlash('Resource created.', 'flash_success');
-            #$this->redirect(array('action' => 'view', $id));
+            $this->redirect(array('action' => 'view', $id));
         } else {
             $config = Configure::read('resources.types');
             $types = is_array($config) ? $config : array();
@@ -265,6 +267,12 @@ class ResourcesController extends AppController {
             $params = $this->request->query;
             $limit = isset($params['n']) ? $params['n'] : 30;
             $offset = isset($params['offset']) ? $params['offset'] : 0;
+            $order = 'modified';
+            if (isset($params['order'])) {
+                $orderables = array('modified', 'created', 'title');
+                if (in_array($params['order'], $orderables)) 
+                    $order = $params['order'];
+            }
 
             if ($this->request->data) {
 
@@ -285,7 +293,8 @@ class ResourcesController extends AppController {
                 $this->jsonResponse(200, $this->Resource->find('all', array(
                     'conditions' => array(
                         'Resource.id' => $ids
-                    )
+                    ),
+                    'order' => "Resource.$order DESC"
                 )));
 
             } else {
@@ -296,7 +305,7 @@ class ResourcesController extends AppController {
                     'conditions' => $conditions,
                     'limit' => $limit,
                     'offset' => $offset,
-                    'order' => array('Resource.modified DESC')
+                    'order' => "Resource.$order DESC"
                 )));
             }
         } 

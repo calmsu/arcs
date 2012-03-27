@@ -5,9 +5,9 @@
  * @package      ARCS
  * @copyright    Copyright 2012, Michigan State University Board of Trustees
  */
-class DocsController extends AppController {
+class HelpController extends AppController {
 
-	public $name = 'Docs';
+	public $name = 'Help';
 
 	public $uses = array();
 

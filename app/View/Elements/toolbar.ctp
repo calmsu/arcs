@@ -36,7 +36,7 @@
     </div>
     <?php endif ?>
     <a class="btn info toolbar-btn" style="margin-right:10px;"
-        href="<?php echo $this->Html->url('/docs')?>">
+        href="<?php echo $this->Html->url('/help')?>">
         <i class="icon-white icon-file"></i> Help
     </a>
 </div><!-- #toolbar -->

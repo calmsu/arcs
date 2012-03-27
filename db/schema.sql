@@ -13,6 +13,7 @@ CREATE TABLE IF NOT EXISTS resources (
     file_size INT(11),
     mime_type VARCHAR(100),
     title TEXT,
+    type VARCHAR(200),
     context CHAR(36) DEFAULT NULL,
     first_req BOOL DEFAULT TRUE,
     created DATETIME DEFAULT NULL,

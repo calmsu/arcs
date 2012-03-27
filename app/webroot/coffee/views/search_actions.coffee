@@ -10,8 +10,13 @@ class arcs.views.SearchActions extends Backbone.View
       filter: 'img'
       options:
         'Open'    : 'openSelected'
+        'Info'    : 'editSelected'
+        'Flag'    : 'flagSelected'
         'Preview' : 'previewSelected'
         'Download': 'downloadSelected'
+      onShow: (e) ->
+        $(e.currentTarget).parents('.result').addClass 'selected'
+        arcs.trigger 'arcs:selection'
       context: @
 
     # <ctrl>-o to open selected
@@ -227,7 +232,7 @@ class arcs.views.SearchActions extends Backbone.View
     return unless @results.anySelected()
     # The method doubles as a toggle. If a preview is already open, we'll close
     # it and return.
-    if @preview?
+    if @preview? and $('#modal').is(':visible')
       # Kill the old preview, otherwise the zombie events will come back to 
       # bite us. Preview.remove() is set up to undelegate events.
       @preview.remove()

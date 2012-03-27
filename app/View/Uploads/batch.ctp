@@ -8,7 +8,7 @@
     &nbsp;
     <span>
         Need some help? See our 
-        <?php echo $this->Html->link('Uploading', '/docs/uploading') ?> documentation.
+        <?php echo $this->Html->link('Uploading', '/help/uploading') ?> documentation.
     </span>
 </div>
 

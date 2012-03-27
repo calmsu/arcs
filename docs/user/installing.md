@@ -4,66 +4,68 @@ Installing ARCS
 
 Requires
 --------
-[PHP5](php.net)   
-Imagick PHP PECL extension    
-[Ghostscript](http://www.ghostscript.com/download/)    
-[MySQL](mysql.com)    
+[PHP 5.3+](http://php.net)    
+[ImageMagick](http://imagemagick.org)
+and the [Imagick](http://php.net/manual/en/book.imagick.php) PECL extension  
+[Ghostscript](http://www.ghostscript.com)   
+[MySQL](http://mysql.com)  
 
 Development Install
 -------------------
 Ubuntu-11.10/Nginx/MySQL
 
-### Get the deps ###
+### Get the dependencies ###
 
-    [sudo] apt-get install mysql-server
-    [sudo] apt-get install nginx
-    [sudo] apt-get install php5 php5-cgi spawn-fcgi
-    [sudo] apt-get install php5-imagick
-    [sudo] apt-get install ghostscript
-    [sudo] apt-get install git
-     
+We can get nearly everything we need using Debian's aptitude package
+manager.
+
+    $ sudo apt-get install mysql-server nginx php5-dev php-pear php5-cgi
+        spawn-fcgi imagemagick libmagickwand-dev ghostscript git
+
+The Imagick PECL extension needs to be installed with `pecl`.
+
+    $ sudo pecl install imagick
+   
 ### Setting things up ###
 
-Clone the repo:
-
-    cd /var/www/
-    git clone https://github.com/calmsu/arcs.git
-
-Create the db and a www user:
-
-    mysqladmin -u root -p create arcs
-    mysql -u root -p arcs < db/user.sql
-    mysql -u root -p arcs < db/schema.sql
-
-**NOTE:** If you'd like to use a different database or database user, just
-update the db configuration in `app/Config/database.php`.
+Clone the git repository into `/var/www/arcs`.    
+     
+    $ cd /var/www/
+    $ git clone --recursive https://github.com/calmsu/arcs.git
+     
+Create a database. Make sure you have a database user with appropriate
+permissions (i.e. `SELECT`, `INSERT`, `UPDATE`, `DELETE`, but *not* `DROP`, on 
+the arcs database).    
     
-Copy over the Nginx config:
+    $ mysqladmin -u root -p create arcs
+    $ mysql -u root -p arcs < db/schema.sql
+    
+**NOTE:** Be sure to verify the database configuration in `Config/database.php`.
+You may be able to use ARCS with another database (such as SQL Server or 
+Postgre) by altering the schema.
 
-    cp conf/nginx.conf /var/etc/nginx/conf.d/arcs.conf
-    cp conf/arcs /var/etc/nginx/sites-available/arcs
-    # Be sure the client_max_body_size is large enough for uploads.
-    /etc/init.d/nginx reload
-
+Set up Nginx. ARCS comes with a template nginx configuration. You may use
+this and replace values as necessary.
+     
+    $ cp conf/nginx/nginx.conf /var/etc/nginx/conf.d/arcs.conf
+    $ cp conf/nginx/arcs /var/etc/nginx/sites-available/arcs
+    $ /etc/init.d/nginx reload
+     
 **NOTE:** You'll want to be sure Nginx's `client_max_body_size` directive and
 PHP's `post_max_size` and `upload_max_size` directives are large enough for the
-resources that will be uploaded. `post_max_size` should be slightly larger
-than `upload_max_size`. (The relevant PHP directives should be in 
+files that will be uploaded. `post_max_size` should be slightly larger than 
+`upload_max_size`. (The relevant PHP directives should be in 
 `/etc/php5/cgi/php.ini`.)
 
-Change ownership of `app/tmp/`:
+Change ownership of `app/tmp/`.
+   
+    $ chown -R www-data app/tmp
 
-    [sudo] chown -R www-data app/tmp
-
-Create an uploads directory:
-
-    mkdir app/webroot/uploads
-    [sudo] chown www-data uploads
-
-Configure arcs (set uploads path and url):
-
-    [editor] app/Config/arcs.ini
-
-Create an admin user:
-
-    # bin/create-user --role=admin [username]
+Create an uploads directory.   
+      
+    $ mkdir app/webroot/uploads
+    $ chown www-data uploads
+  
+Configure ARCS (set uploads path and url).
+     
+    $ vi app/Config/arcs.ini

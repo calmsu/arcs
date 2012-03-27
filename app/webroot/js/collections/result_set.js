@@ -56,6 +56,12 @@
       });
     };
 
+    ResultSet.prototype.unselectAll = function() {
+      return this.each(function(result) {
+        return result.set('selected', false);
+      });
+    };
+
     ResultSet.prototype._eachSetSelected = function(result, func) {
       var id, model, _i, _len, _results;
       if (!_.isArray(result)) result = [result];

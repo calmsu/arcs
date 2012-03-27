@@ -19,7 +19,8 @@
         'Example option': function() {},
         'Another option': function() {}
       },
-      context: window
+      context: window,
+      onShow: function() {}
     };
 
     ContextMenu.prototype.initialize = function() {
@@ -32,13 +33,13 @@
     };
 
     ContextMenu.prototype.show = function(e) {
-      $(e.currentTarget).click();
       this.menu.css({
         position: 'absolute',
         top: e.pageY + 'px',
         left: e.pageX + 'px'
       });
       this.menu.show();
+      this.options.onShow(e);
       e.preventDefault();
       return false;
     };

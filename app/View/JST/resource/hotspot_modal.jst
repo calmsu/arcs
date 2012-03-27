@@ -1,39 +1,20 @@
-<div class="modal-header">
-    <h3>New Annotation</h3>
-</div>
-<div class="modal-body">
-    <h4>Type</h4>
-    <select id="type">
-        <option value="photo">Photo</option>
-        <option value="sketch">Sketch</option>
-        <option value="report">Report</option>
-    </select>
-    <h4>Title</h4>
-    <input type="text" id="title" />
-    <h4>Caption</h4>
-    <textarea id="caption"></textarea>
-    <div class="tabbable">
-        <ul class="nav tabs">
-            <li class="active">
-                <a href="#resource-link" data-toggle="tab">Resource</a>
-            </li>
-            <li><a href="#url-link" data-toggle="tab">URL</a></li>
-        </ul>
-        <div class="tab-content">
-            <div id="resource-link" class="tab-pane active">
-                <div id="hotspot-search"></div>
-                <div id="hotspot-search-results"></div>
-            </div>
-            <div id="url-link" class="tab-pane">
-                <div class="input-prepend">
-                    <span class="add-on">http://</span>
-                    <input id="url" type="text" />
-                </div>
-            </div>
-        </div>
+<div id="hotspot-modal-tabs" class="tabbable">
+  <ul class="nav tabs">
+    <li class="active">
+      <a href="#resource-link" data-toggle="tab">Resource</a>
+    </li>
+    <li><a href="#url-link" data-toggle="tab">URL</a></li>
+  </ul>
+  <div class="tab-content">
+    <div id="resource-link" class="tab-pane active">
+      <div id="hotspot-search"></div>
+      <div id="hotspot-search-results"></div>
     </div>
-</div>
-<div class="modal-footer">
-    <button id="save" class="btn success">Save</button>
-    <button id="cancel" class="btn">Cancel</button>
+    <div id="url-link" class="tab-pane">
+      <div class="input-prepend">
+        <span class="add-on">http://</span>
+        <input id="url" type="text" />
+      </div>
+    </div>
+  </div>
 </div>

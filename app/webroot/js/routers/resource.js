@@ -16,13 +16,13 @@
     };
 
     Resource.prototype.noIndex = function(id) {
-      arcs.trigger('arcs:indexchange', 0);
+      arcs.trigger('arcs:indexChange', 0);
       return this.initial = true;
     };
 
     Resource.prototype.indexChange = function(id, index) {
       if (_.isNumeric(index)) index -= 1;
-      arcs.trigger('arcs:indexchange', index, {
+      arcs.trigger('arcs:indexChange', index, {
         noNavigate: true
       });
       return this.initial = true;

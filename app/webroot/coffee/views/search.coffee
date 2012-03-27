@@ -3,12 +3,18 @@
 # Search View. Select and perform bulk actions on search results.
 class arcs.views.Search extends Backbone.View
 
-  RESULTS_PER_PAGE: 30 
+  options:
+    sort: 'modified'
+    grid: true
+    url: arcs.baseURL + 'search/'
+    numResults: 30
 
   ### Initialize and define events ###
 
   initialize: ->
-    @setupSelect() and @setupSearch() and @setupScroll()
+    @setupSelect() and @setupSearch()
+
+    @sort = 'modified'
 
     # Init our sub-view for actions.
     @actions = new arcs.views.SearchActions
@@ -22,15 +28,14 @@ class arcs.views.Search extends Backbone.View
     # Start Backbone.history
     Backbone.history.start
       pushState: true
-      root: arcs.baseURL + 'search/'
+      root: @options.url
     
     # Search unless the Router already delegated it.
     @search.run() unless @router.searched
 
+    # Set up some event bindings.
     @search.results.on 'remove', @render, @
-
-    # Grid view unless init-ed with false
-    @grid ?= true
+    arcs.on 'arcs:selection', @afterSelection, @
 
     # <ctrl>-a to select all
     arcs.keys.add 'a', true, @selectAll, @
@@ -42,6 +47,7 @@ class arcs.views.Search extends Backbone.View
     'click #grid-btn'        : 'toggleView'
     'click #list-btn'        : 'toggleView'
     'click #top-btn'         : 'scrollTop'
+    'click .sort-btn'        : 'setSort'
 
   ### More involved setups run by the initialize method ###
 
@@ -68,8 +74,11 @@ class arcs.views.Search extends Backbone.View
 
   # Make an instance of our Search utility and setup endless scrolling.
   setupSearch: ->
+    @searchPage = 1
+    @scrollReady = false
     @search = new arcs.utils.Search 
       container: $('#search-wrapper')
+      order: @options.sort
       run: false
       loader: true
       # This callback will be fired each time a search is done.
@@ -78,8 +87,11 @@ class arcs.views.Search extends Backbone.View
         @searchPage = 1
         # Render the our results.
         @render()
-    @searchPage = 1
+        # Setup the endless scroll unless it's already been done.
+        @setupScroll() and @scrollReady = true unless @scrollReady
 
+  # Setup the endless scroll. This is called after we've received our first set
+  # of results. 
   setupScroll: ->
     $actions = @$('#search-actions')
     $results = @$('#search-results')
@@ -99,11 +111,12 @@ class arcs.views.Search extends Backbone.View
       if $window.scrollTop() == $(document).height() - $window.height()
         # When the modulus is non-zero, it means the last search returned
         # fewer results than allowed, and we don't need to search again.
-        return unless @search.results.length % @RESULTS_PER_PAGE == 0
+        return unless @search.results.length % @options.numResults == 0
         @searchPage += 1
         @search.run null,
           add: true
           page: @searchPage
+          order: @options.sort
           success: =>
             @append()
 
@@ -114,7 +127,7 @@ class arcs.views.Search extends Backbone.View
 
   # Toggle between list and grid view.
   toggleView: ->
-    @grid = !@grid
+    @options.grid = !@options.grid
     @$('#grid-btn').toggleClass 'active'
     @$('#list-btn').toggleClass 'active'
     @render()
@@ -125,20 +138,31 @@ class arcs.views.Search extends Backbone.View
     time = ($(window).scrollTop() / $(document).height()) * 1000
     $('html, body').animate {scrollTop: 0}, time
 
-  unselectAll: -> 
-    @$('.result').removeClass('selected') and @afterSelection()
+  setSort: (e) ->
+    id = e.currentTarget.id
+    @options.sort = e.target.id.match(/sort-(\w+)-btn/)[1]
+    @$('.sort-btn .icon-ok').remove()
+    @$(e.currentTarget).append @make 'i', class: 'icon-ok'
+    @$('#sort-btn span#sort-by').html @options.sort
+    @search.run null,
+      order: @options.sort
 
-  selectAll: -> 
-    @$('.result').addClass('selected') and @afterSelection()
+  unselectAll: (trigger=true) -> 
+    @$('.result').removeClass('selected')
+    arcs.trigger 'arcs:selection' if trigger
+
+  selectAll: (trigger=true) -> 
+    @$('.result').addClass('selected')
+    arcs.trigger 'arcs:selection' if trigger
   
   # Select a result and unselect everything else, unless a modifier key
   # is pressed.n
   toggle: (e) ->
     # If <ctrl> <shift> or <meta> is pressed allow multi-select
     if not (e.ctrlKey or e.shiftKey or e.metaKey)
-      @unselectAll()
+      @unselectAll false
     $(e.currentTarget).parents('.result').toggleClass('selected')
-    @afterSelection()
+    arcs.trigger 'arcs:selection'
 
   # Unselect all results unless a modifier key is held down, or
   # the target isn't right.
@@ -158,12 +182,9 @@ class arcs.views.Search extends Backbone.View
   # clear.
   afterSelection: ->
     _.defer =>
-      selected = $('.result.selected').map ->
-        $(@).attr('data-id')
-      unselected = $('.result').not('.selected').map ->
-        $(@).attr('data-id')
-      @search.results.select selected.get()
-      @search.results.unselect unselected.get()
+      selected = $('.result.selected').map( -> $(@).data('id')).get()
+      @search.results.unselectAll()
+      @search.results.select selected if selected.length
       if @search.results.anySelected()
         $('.btn.needs-resource').removeClass 'disabled'
       else
@@ -174,9 +195,9 @@ class arcs.views.Search extends Backbone.View
   # We do this instead of a full render to stop the scrollbar from 
   # jumping in certain browsers.
   append: ->
-    return unless @search.results.length > @RESULTS_PER_PAGE
+    return unless @search.results.length > @options.numResults
     # Get new results after the ones already displayed.
-    rest = @search.results.rest @search.results.length - @RESULTS_PER_PAGE
+    rest = @search.results.rest @search.results.length - @options.numResults
     results = new arcs.collections.ResultSet rest
     @_render results: results.toJSON(), true
 
@@ -188,7 +209,7 @@ class arcs.views.Search extends Backbone.View
   # If there are no results, adds a 'No Results' message.
   _render: (results, append=false) ->
     $results = $('#search-results')
-    template = if @grid then 'search/grid' else 'search/list'
+    template = if @options.grid then 'search/grid' else 'search/list'
     content = arcs.tmpl template, results
     if append
       $results.append content

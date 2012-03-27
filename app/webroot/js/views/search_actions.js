@@ -17,8 +17,14 @@
         filter: 'img',
         options: {
           'Open': 'openSelected',
+          'Info': 'editSelected',
+          'Flag': 'flagSelected',
           'Preview': 'previewSelected',
           'Download': 'downloadSelected'
+        },
+        onShow: function(e) {
+          $(e.currentTarget).parents('.result').addClass('selected');
+          return arcs.trigger('arcs:selection');
         },
         context: this
       });
@@ -306,7 +312,7 @@
 
     SearchActions.prototype.previewSelected = function() {
       if (!this.results.anySelected()) return;
-      if (this.preview != null) {
+      if ((this.preview != null) && $('#modal').is(':visible')) {
         this.preview.remove();
         return this.preview = null;
       }

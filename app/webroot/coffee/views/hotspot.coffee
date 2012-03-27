@@ -6,21 +6,21 @@ class arcs.views.Hotspot extends Backbone.View
     # Create a throttled render function that will be triggered
     # on window resizes.
     @reRender = _.throttle @render, 50
-    arcs.bind 'arcs:resourceresize', @reRender, @
+    arcs.bind 'arcs:resourceResize', @reRender, @
 
     # Bind the setup to the resourceLoaded event,
     # which is triggered directly after the resource
     # is rendered (and after resourceChange).
-    arcs.bind 'arcs:resourceloaded', @setup, @
+    arcs.bind 'arcs:resourceLoaded', @setup, @
 
-    @collection.bind 'add remove', @render, @
+    @collection.bind 'add remove reset', @render, @
 
   # Cache the image selector, call @startImgAreaSelect
   setup: ->
     @img = @$el.find('img')
     if @img?
       @startImgAreaSelect()
-      @update()
+      @collection.fetch()
 
   # Fire up a new ImgAreaSelect instance.
   startImgAreaSelect: (coords=null) ->
@@ -36,29 +36,36 @@ class arcs.views.Hotspot extends Backbone.View
 
   # Open a modal dialog to save the selection.
   openModal: ->
-    modal = new arcs.utils.Modal
-      template: 'resource/hotspot_modal'
+    modal = new arcs.views.Modal
+      title: 'Annotation Sidebar'
       backdrop: false
       class: 'hotspot-modal'
-      # The modal helper will retrieve these values for us.
-      inputs: ['caption', 'title', 'type', 'url']
+      inputs:
+        type:
+          type: 'select'
+          options: 
+            'Photo' : 'photo'
+            'Sketch': 'sketch' 
+        title: true
+        caption:
+          type: 'textarea'
       buttons:
-        # Save the Hotspot and hide the selection when the
-        # save button is clicked.
-        save: (vals) =>
-          vals.resource = $('.result.selected img').attr('data-id')
-          @saveHotspot vals
-          arcs.log vals
-          @img.imgAreaSelect hide:true
+        save: 
+          class: 'btn success'
+          callback: (vals) =>
+            vals.resource = $('.result.selected img').data('id')
+            @saveHotspot vals
+            @img.imgAreaSelect hide:true
         cancel: => 
           @img.imgAreaSelect hide:true
 
-    modal.el.find('.result img').live 'click', ->
+    modal.$('.modal-body').append arcs.tmpl 'resource/hotspot_modal'
+    modal.$('.img-wrapper img').live 'click', ->
       $('.result').removeClass 'selected'
-      $(@).parent().addClass 'selected'
+      $(@).parents('.result').addClass 'selected'
 
     # Remove http:// from the input. (It's assumed.)
-    modal.el.find('input#url').keyup ->
+    modal.$('input#url').keyup ->
       val = $(@).val()
       if val.substring(0, 7) == 'http://' 
         $(@).val(val.substring(7))
@@ -109,12 +116,6 @@ class arcs.views.Hotspot extends Backbone.View
     cds.y2 *= @img.height()
     cds
 
-  # Fetch the collection and render it.
-  update: ->
-    @collection.fetch
-      success: => 
-        @render()
-
   # Render the hotspots over the image and the corresponding annotation
   # details in the sidebar.
   render: ->
@@ -124,9 +125,9 @@ class arcs.views.Hotspot extends Backbone.View
     $annotations.html ''
 
     # Calculate the CSS given the scaled down coordinates.
-    hotspots = []
+    json = hotspots: []
     for m in @collection.models
-      data = @_scaleUp(m.toJSON())
+      data = @_scaleUp m.toJSON()
       data.left = data.x1
       data.width = data.x2 - data.x1
       data.top = data.y1
@@ -134,9 +135,9 @@ class arcs.views.Hotspot extends Backbone.View
       # Resolve the link.
       if data.link? and data.link.substring(0, 7) == 'arcs://'
         data.link = arcs.baseURL + 'resource/' + data.link.substring(7)
-      hotspots.push data
+      json.hotspots.push data
 
     # Render the templates.
-    $hotspots.html arcs.tmpl 'resource/hotspots', hotspots: hotspots
-    $annotations.html arcs.tmpl 'resource/annotations', hotspots: hotspots
+    $hotspots.html arcs.tmpl 'resource/hotspots', json
+    $annotations.html arcs.tmpl 'resource/annotations', json
     @

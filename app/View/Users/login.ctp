@@ -1,5 +1,5 @@
 <div id="login-header">
-    <?php echo $this->Html->image('arcs-icon-big'); ?>
+    <img src="<?php echo $this->Html->url('/img/arcs-icon-big.png') ?>" />
     <h1>Login to ARCS</h1>
 </div>
 <div id="login">
@@ -26,7 +26,7 @@
 </div>
 <div id="login-footer">
     <?php echo $this->Html->link('About', '/about'); ?> &nbsp;|&nbsp;
-    <?php echo $this->Html->link('Help', '/docs/'); ?> &nbsp;|&nbsp;
+    <?php echo $this->Html->link('Help', '/help/'); ?> &nbsp;|&nbsp;
     <?php echo $this->Html->link('Public Access', '/search/'); ?> 
     <span style="color:#666">&copy; 2012 MSU</span>
 </div>

@@ -88,11 +88,11 @@
     );
 
     # Docs routes
-    Router::connect('/docs',
-        array('controller' => 'docs', 'action' => 'display', 'index')
+    Router::connect('/help',
+        array('controller' => 'help', 'action' => 'display', 'index')
     );
-    Router::connect('/docs/*', 
-        array('controller' => 'docs', 'action' => 'display')
+    Router::connect('/help/*', 
+        array('controller' => 'help', 'action' => 'display')
     );
 
     Router::resourceMap(array(

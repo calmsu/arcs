@@ -21,15 +21,21 @@ class UploadsController extends AppController {
             $tmp = is_array($f['tmp_name']) ? $f['tmp_name'][0] : $f['tmp_name'];
             $name = is_array($f['name']) ? $f['name'][0] : $f['name'];
             $error = is_array($f['error']) ? $f['error'][0] : $f['error'];
-            $sha = $this->Resource->createFile($tmp, $name, true, true);
+            $sha = $this->Resource->createFile($tmp, array(
+                'filename' => $name, 
+                'thumb' => true
+            ));
             $files[] = array(
                 'name' => $name,
                 'error' => $error,
                 'sha' => $sha,
-                'thumb' => $this->Resource->url($sha, 'thumb.png')
+                'thumb' => $this->Resource->url($sha, 'thumb.png'),
+                'preview' => is_file($this->Resource->path($sha, 'preview.png')) ?
+                    $this->Resource->url($sha, 'preview.png') : 
+                    $this->Resource->url($sha, $name)
             );
         }
-        $this->jsonResponse(200, $files);
+        $this->jsonResponse(201, $files);
     }
 
     public function standard() {

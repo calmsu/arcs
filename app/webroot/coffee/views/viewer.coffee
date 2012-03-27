@@ -3,12 +3,12 @@
 class arcs.views.Viewer extends Backbone.View
 
   initialize: ->
-    # Set the resource on the `indexchange` event.
+    # Set the resource on the `arcs:indexChange` event.
     # This may be triggered by the router or the Carousel view.
-    arcs.on 'arcs:indexchange', @set, @
-    # Spy on the indexchange event--for debugging only.
-    arcs.on 'arcs:indexchange', ->
-      arcs.log 'arcs:indexchange', arguments
+    arcs.on 'arcs:indexChange', @set, @
+    # Spy on the indexChange event--for debugging only.
+    arcs.on 'arcs:indexChange', ->
+      arcs.log 'arcs:indexChange', arguments
 
     # Add our hotkeys
     arcs.keys.add 'left', false, @prev, @
@@ -35,7 +35,7 @@ class arcs.views.Viewer extends Backbone.View
       root: arcs.baseURL + 
         if @collection.length then 'collection/' else 'resource/'
 
-    $(window).resize => arcs.trigger 'arcs:resourceresize'
+    $(window).resize => arcs.trigger 'arcs:resourceResize'
 
     # Special logic for a resource's first request post-upload.
     if @model.get 'first_req'
@@ -54,8 +54,8 @@ class arcs.views.Viewer extends Backbone.View
   #  identifier - resource id or index within the collection
   #
   #  options -
-  #    trigger    - if true, trigger an indexchange event.
-  #    noSet      - used internally when triggering the indexchange event
+  #    trigger    - if true, trigger an indexChange event.
+  #    noSet      - used internally when triggering the indexChange event
   #                 to no-op when also bound to that event.
   #    noRender   - don't call the render method.
   #    noNavigate - don't call router.navigate()
@@ -79,8 +79,8 @@ class arcs.views.Viewer extends Backbone.View
     # Replace the instance's model and index properties.
     [@model, arcs.resource, @index] = [model, model, index]
 
-    # Trigger indexchange if the trigger opt was set.
-    arcs.trigger('arcs:indexchange', index, noSet: true) if options.trigger
+    # Trigger indexChange if the trigger opt was set.
+    arcs.trigger('arcs:indexChange', index, noSet: true) if options.trigger
     @render() unless options.noRender
     # Update the location
     route = "#{arcs.collectionData?.id ? @model.id}/#{@index + 1}"
@@ -144,7 +144,7 @@ class arcs.views.Viewer extends Backbone.View
     @$('#resource').html arcs.tmpl template, @model.toJSON()
 
     # Trigger the resourceloaded event.
-    arcs.trigger 'arcs:resourceloaded'
+    arcs.trigger 'arcs:resourceLoaded'
 
     # Render the resource (and collection) info tables.
     @$('#resource-details').html arcs.tmpl 'resource/table', 

@@ -8,6 +8,7 @@ class arcs.views.ContextMenu extends Backbone.View
       'Example option': ->
       'Another option': ->
     context: window
+    onShow: ->
 
   initialize: ->
     $('.context-menu').remove()
@@ -16,12 +17,13 @@ class arcs.views.ContextMenu extends Backbone.View
     @addEvents()
 
   show: (e) ->
-    $(e.currentTarget).click()
     @menu.css
       position: 'absolute'
       top: e.pageY + 'px'
       left: e.pageX + 'px'
     @menu.show()
+
+    @options.onShow e
 
     e.preventDefault()
     return false

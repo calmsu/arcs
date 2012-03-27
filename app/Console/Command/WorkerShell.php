@@ -39,6 +39,13 @@ class WorkerShell extends AppShell {
         }
     }
 
+    public function redo($id=null) {
+        $id = is_null($id) ? $this->args[0] : $id;
+        $this->Task->read(null, $id);
+        $this->Task->set('status', 1);
+        $this->Task->save();
+    }
+
     /**
      * Makes a thumbnail for a given resource.
      *
@@ -49,6 +56,20 @@ class WorkerShell extends AppShell {
         $resource = $this->Resource->findById($id);
         if (!$resource) return false;
         return $this->Resource->makeThumbnail($resource['Resource']['sha']);
+    }
+
+    public function zip($ids=null) {
+        $ids = is_null($ids) ? $this->args : $ids;
+        $resources = $this->Resource->find('all', array(
+            'conditions' => array(
+                'Resource.id' => $ids
+            )
+        ));
+        $files = array();
+        foreach ($resources as $r) {
+            $files[$r['Resource']['file_name']] = $r['Resource']['sha'];
+        }
+        $this->out($this->Resource->makeZipfile($files));
     }
 
     /**
@@ -81,7 +102,10 @@ class WorkerShell extends AppShell {
             $basename = str_ireplace('.pdf', '', $resource['file_name']);
             $fname = $basename . "-p$page.jpeg";
             # Create the resource file.
-            $sha = $this->Resource->createFile($tmp_file, $fname, true, true);
+            $sha = $this->Resource->createFile($tmp_file, array(
+                'filename' => $fname, 
+                'thumb' => true
+            );
 
             $this->Resource->permit('sha', 'file_size', 'file_name', 'user_id');
             # Save the resource.
