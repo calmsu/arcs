@@ -105,7 +105,7 @@ class WorkerShell extends AppShell {
             $sha = $this->Resource->createFile($tmp_file, array(
                 'filename' => $fname, 
                 'thumb' => true
-            );
+            ));
 
             $this->Resource->permit('sha', 'file_size', 'file_name', 'user_id');
             # Save the resource.

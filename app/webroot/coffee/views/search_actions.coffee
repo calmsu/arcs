@@ -158,7 +158,8 @@ class arcs.views.SearchActions extends Backbone.View
     result = @results.selected()[0]
     inputs = {}
     metadata = result.get 'metadata'
-    for field in result.MODIFIABLE
+    fields = result.MODIFIABLE.sort()
+    for field in fields
       inputs[field] = value: metadata[field] ? ''
 
     new arcs.views.Modal
@@ -183,7 +184,7 @@ class arcs.views.SearchActions extends Backbone.View
     inputs = {}
     results = @results.selected()
     _original = {}
-    batchFields = _.difference results[0].MODIFIABLE, results[0].SINGULAR
+    batchFields = _.difference(results[0].MODIFIABLE, results[0].SINGULAR).sort()
     for field in batchFields
       values = _.map results, (r) ->
         r.get('metadata')[field]
@@ -275,6 +276,8 @@ class arcs.views.SearchActions extends Backbone.View
       $('body').append iframe
       iframe.src = arcs.baseURL + 'resources/download/' + result.id
 
+  
+  # Request a download link for a zipfile of selected resources.
   zippedDownloadSelected: ->
     unless @results.numSelected() > 1
       return arcs.notify 'To download resources zipped, select at least 2.',

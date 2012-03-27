@@ -205,18 +205,18 @@
     };
 
     SearchActions.prototype.editSelected = function() {
-      var field, inputs, metadata, result, _i, _len, _ref, _ref2,
+      var field, fields, inputs, metadata, result, _i, _len, _ref,
         _this = this;
       if (!this.results.anySelected()) return;
       if (this.results.numSelected() > 1) return this.batchEditSelected();
       result = this.results.selected()[0];
       inputs = {};
       metadata = result.get('metadata');
-      _ref = result.MODIFIABLE;
-      for (_i = 0, _len = _ref.length; _i < _len; _i++) {
-        field = _ref[_i];
+      fields = result.MODIFIABLE.sort();
+      for (_i = 0, _len = fields.length; _i < _len; _i++) {
+        field = fields[_i];
         inputs[field] = {
-          value: (_ref2 = metadata[field]) != null ? _ref2 : ''
+          value: (_ref = metadata[field]) != null ? _ref : ''
         };
       }
       return new arcs.views.Modal({
@@ -243,7 +243,7 @@
       inputs = {};
       results = this.results.selected();
       _original = {};
-      batchFields = _.difference(results[0].MODIFIABLE, results[0].SINGULAR);
+      batchFields = _.difference(results[0].MODIFIABLE, results[0].SINGULAR).sort();
       for (_i = 0, _len = batchFields.length; _i < _len; _i++) {
         field = batchFields[_i];
         values = _.map(results, function(r) {
