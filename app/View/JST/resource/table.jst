@@ -25,7 +25,7 @@
   <td><a href="<%= url %>"><%= file_name %></a></td>
 </tr>
 <% _.each(metadata, function(v, k) { %>
-<% if (metadata) { %>
+<% if (v) { %>
 <tr>
   <td><%= k.charAt(0).toUpperCase() + k.substr(1) %></td>
   <td><%= v %></td>
