@@ -11,13 +11,15 @@ class arcs.models.Resource extends Backbone.Model
     public: false
     selected: false
 
+  constructor: (attributes) ->
+    super @parse attributes
+
   url: -> arcs.baseURL + 'resources/' + @id
   urlRoot: arcs.baseURL + 'resources'
 
   # List of attributes that the server will accept updates to.
   MODIFIABLE: [
-    'title',
-    'identifier'
+    'identifier',
     'copyright',
     'creator',
     'location',
@@ -32,7 +34,6 @@ class arcs.models.Resource extends Backbone.Model
   ]
 
   SINGULAR: [
-    'title',
     'identifier'
   ]
 
@@ -59,6 +60,10 @@ class arcs.models.Resource extends Backbone.Model
       if r.Hotspot?
         r.hotspots = r.Hotspot
         delete r.Hotspot
+      if r.Metadatum?
+        r.metadata = {}
+        r.metadata[m.attribute] = m.value for m in r.Metadatum
+        delete r.Metadatum
       delete r.Resource
 
     # If modified == created, it wasn't modified.

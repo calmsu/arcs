@@ -1,26 +1,34 @@
 <tr>
-    <td>Title</td>
-    <td><%= title %></td>
+  <td>Title</td>
+  <td><%= title %></td>
 </tr>
 <tr>
-    <td>Public</td>
-    <td><%= public ? "Yes" : "No" %></td>
+  <td>Public</td>
+  <td><%= public ? "Yes" : "No" %></td>
 </tr>
 <tr>
-    <td>Type</td>
-    <td><%= type %></td>
+  <td>Type</td>
+  <td><%= type %></td>
 </tr>
 <tr>
-    <td>Created</td>
-    <td><%= created %></td>
+  <td>Created</td>
+  <td><%= created %></td>
 </tr>
 <% if (modified) { %>
 <tr>
-    <td>Modified</td>
-    <td><%= modified %></td>
+  <td>Modified</td>
+  <td><%= modified %></td>
 </tr>
 <% } %>
 <tr>
-    <td>Download Link</td>
-    <td><a href="<%= url %>"><%= file_name %></a></td>
+  <td>Download Link</td>
+  <td><a href="<%= url %>"><%= file_name %></a></td>
 </tr>
+<% _.each(metadata, function(v, k) { %>
+<% if (metadata) { %>
+<tr>
+  <td><%= k.charAt(0).toUpperCase() + k.substr(1) %></td>
+  <td><%= v %></td>
+</tr>
+<% } %>
+<% }) %>

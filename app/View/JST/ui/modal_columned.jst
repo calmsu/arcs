@@ -6,8 +6,8 @@
 <div class="modal-body">
 <% if (subtitle) { %>
   <%= subtitle %>
-<% } %>
   <br><br>
+<% } %>
 <% var left = true %>
 <% _.each(inputs, function(i, name) { %>
   <% if (left) { %>
@@ -40,7 +40,8 @@
       name="modal-<%= name %>" placeholder="<%= i.placeholder %>" />
   <% } %>
   <% if (!_.isUndefined(i.checkbox)) { %>
-    <input class="checkbox inline" type="checkbox" <%= (i.checkbox) ? 'checked' : '' %> />
+    <input class="checkbox inline" id="modal-<%= name %>-checkbox" 
+      type="checkbox" <%= (i.checkbox) ? 'checked' : '' %> />
   <% } %>
   </span>
 

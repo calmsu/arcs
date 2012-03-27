@@ -12,7 +12,7 @@
 <% _.each(inputs, function(i, name) { %>
   <% if (_.isUndefined(i.label) || i.label !== false) { %>
     <label for="modal-<%= name %>">
-      <%= _.isUndefined(i.label) ? name.substr(0, 1).toUpperCase() + name.substr(1) : i.label %> 
+      <%= _.isUndefined(i.label) ? name.charAt(0).toUpperCase() + name.substr(1) : i.label %> 
     </label>
   <% } %>
   <% if (i.type === 'select') { %>
