@@ -71,9 +71,17 @@ class CollectionsController extends AppController {
     public function view($id=null) {
         $collection = $this->Collection->findById($id);
         $this->set('title_for_layout', $collection['Collection']['title']);
+        $this->loadModel('Resource');
+        $rids = $this->Collection->Membership->find('list', array(
+            'fields' => 'Membership.resource_id',
+            'conditions' => array(
+                'collection_id' => $id
+        )));
+        $this->set('resources', $this->Resource->find('all', array(
+            'conditions' => array(
+                'Resource.id' => $rids
+        ))));
         $this->set('collection', $collection['Collection']);
-        $this->set('resources', $this->Collection->getResources($id, false));
-        $this->set('_serialize', array('collection', 'resources'));
     }
 
     public function resources($id=null) {

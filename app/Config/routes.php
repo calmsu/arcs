@@ -110,7 +110,8 @@
         'keywords',
         'hotspots',
         'bookmarks',
-        'flags'
+        'flags',
+        'metadata'
     ));
     Router::parseExtensions();
 

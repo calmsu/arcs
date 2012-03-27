@@ -156,7 +156,7 @@ class ResourcesController extends AppController {
     }
 
     /**
-     * Update the resource. Ajax only.
+     * Update the resource.
      *
      * @param id    resource id
      */
@@ -217,7 +217,7 @@ class ResourcesController extends AppController {
             ));
 
             $this->set('memberships', $memberships);
-            $this->set('resource', $resource['Resource']);
+            $this->set('resource', $resource);
 
             # On the first request of a particular resource (usually directly 
             # after upload), we might prompt the user for additional 
@@ -355,6 +355,16 @@ class ResourcesController extends AppController {
         $this->loadModel('Task');
         $this->Task->queue('thumb', $resource['Resource']['id']);
         return $this->jsonResponse(202);
+    }
+
+    public function edit_info($id) {
+        if (!($this->request->is('ajax') && $this->request->is('POST')))
+            return $this->redirect('/404');
+        if (!$this->Resource->findById($id))
+            return $this->jsonResponse(404);
+        foreach ($this->request->data as $k => $v)
+            $this->Resource->Metadatum->store($id, $k, $v);
+        return $this->jsonResponse(200);
     }
 
     /**

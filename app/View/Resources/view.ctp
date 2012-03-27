@@ -23,7 +23,7 @@
                 <?php foreach($memberships as $m): ?>
                     <?php echo $this->Html->link(
                         $m['Collection']['title'],
-                        '/collection/' . $m['Collection']['id'] . '/' . $resource['id']
+                        '/collection/' . $m['Collection']['id'] . '/' . $resource['Resource']['id']
                     ) ?>
                     <br>
                 <?php endforeach ?>
@@ -52,7 +52,7 @@
 <script>
   arcs.resource = new arcs.models.Resource(<?php echo json_encode($resource) ?>);
   arcs.collection = new arcs.collections.Collection();
-  arcs.view = new arcs.views.Viewer({
+  arcs.viewer = new arcs.views.Viewer({
     model: arcs.resource,
     collection: arcs.collection,
     el: $('#resource-wrapper')

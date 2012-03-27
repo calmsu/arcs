@@ -11,7 +11,8 @@ class Resource extends AppModel {
         'Comment',
         'Keyword',
         'Hotspot',
-        'Flag'
+        'Flag',
+        'Metadatum'
     );
     public $whitelist = array(
         'public',
