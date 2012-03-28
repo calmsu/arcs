@@ -61,6 +61,16 @@
     text-align:right;
 }
 
+.doc p {
+    line-height:22px;
+}
+
+.doc blockquote p {
+    margin-top:25px;
+    margin-bottom:25px;
+    font-size:100%;
+}
+
 .well {
     border-radius:5px;
     border:1px solid #ccc;

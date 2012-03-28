@@ -43,7 +43,7 @@ the arcs database). You can also run the `www-user.sql` script to do this.
     $ mysqladmin -u root -p create arcs
     $ mysql -u root -p arcs < app/Config/Schema/schema.sql
     
-**NOTE:** Be sure to verify the database configuration in 
+> Be sure to verify the database configuration in 
 `app/Config/database.php`. You may be able to use ARCS with another database 
 (such as SQL Server or Postgre) by altering the schema.
 
@@ -56,7 +56,7 @@ this and replace values as necessary.
     $ sudo rm /var/etc/nginx/sites-enabled/default
     $ sudo /etc/init.d/nginx reload
      
-**NOTE:** You'll want to be sure Nginx's `client_max_body_size` directive and
+> You'll want to be sure Nginx's `client_max_body_size` directive and
 PHP's `post_max_size` and `upload_max_size` directives are large enough for the
 files that will be uploaded. `post_max_size` should be slightly larger than 
 `upload_max_size`. (The relevant PHP directives should be in 

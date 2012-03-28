@@ -1,8 +1,8 @@
 <div id="toolbar" class="row">
-	<?php if ($logo): ?>
+	<?php if (!isset($logo) || $logo): ?>
         <a id="logo-wrapper" href="<?php echo $this->Html->url('/') ?>">
             <h1 id="logo">
-                <?php echo is_string($logo) ? $logo : "ARCS" ?>
+                <?php echo isset($logo) && is_string($logo) ? $logo : "ARCS" ?>
             </h1>
         </a>
 	<?php endif ?>
@@ -23,7 +23,7 @@
                 '/logout') ?></li>
         </ul>
     </div>
-    <a class="btn primary toolbar-btn" style="margin-right:10px;"
+    <a class="btn primary toolbar-btn"
         href="<?php echo $this->Html->url('/upload')?>">
         <i class="icon-white icon-upload"></i> Upload
     </a>
@@ -35,8 +35,19 @@
             href="<?php echo $this->Html->url('/signup') ?>">Signup</a>
     </div>
     <?php endif ?>
-    <a class="btn info toolbar-btn" style="margin-right:10px;"
+    <a class="btn info toolbar-btn"
         href="<?php echo $this->Html->url('/help')?>">
         <i class="icon-white icon-file"></i> Help
     </a>
+    <?php if (isset($actions) && $actions): ?>
+    <div class="btn-group toolbar-btn">
+        <button class="btn dropdown-toggle" data-toggle="dropdown">
+            <i class="icon-list-alt"></i> Actions <span class="caret"></span>
+        </button>
+        <ul class="dropdown-menu">
+            <li><a>Delete</a></li>
+            <li><a>Split PDF</a></li>
+        </ul>
+    </div>
+    <?php endif ?>
 </div><!-- #toolbar -->
