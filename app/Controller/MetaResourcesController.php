@@ -13,17 +13,16 @@
  * sure to call the parent beforeFilter first.
  *
  * @package      ARCS
+ * @link         http://github.com/calmsu/arcs
  * @copyright    Copyright 2012, Michigan State University Board of Trustees
+ * @license
  */
 class MetaResourcesController extends AppController {
 
     public function beforeFilter() {
         parent::beforeFilter();
-        if (!$this->request->is('ajax')) {
-            # this controller only accepts ajax requests.
-            $this->response->statusCode(404);
-            $this->redirect('/404');
-        }
+        # This controller only accepts ajax requests.
+        if (!$this->request->is('ajax')) return $this->redirect('/404');
         $this->Auth->allow('view');
     }
 
@@ -32,43 +31,35 @@ class MetaResourcesController extends AppController {
      */
     public function add() {
         $model = $this->modelClass;
-        if ($this->request->data) {
-            $data = array($model => $this->request->data);
-            # Temporarily whitelist the user_id field.
-            $this->$model->permit('user_id');
-            $data[$model]['user_id'] = $this->Auth->user('id');
-            if ($this->$model->save($data)) {
-                return $this->jsonResponse(201);
-            } 
-        } 
-        # jsonResponse is defined in AppController
-        return $this->jsonResponse(400);
+        if (!$this->request->data) return $this->json(400);
+        # Temporarily whitelist the user_id field.
+        $this->$model->permit('user_id');
+        $this->request->data['user_id'] = $this->Auth->user('id');
+        if (!$this->$model->add($this->request->data)) return $this->json(500);
+        $this->json(201);
     }
 
     /**
      * View a meta-resource
      *
-     * @param id
+     * @param string $id
      */
     public function view($id) {
         $model = $this->modelClass;
         $result = $this->$model->findById($id);
-        if (!$result) {
-            return $this->jsonResponse(404);
-        }
-        return $this->jsonResponse(200, $result);
+        if (!$result) return $this->json(404);
+        $this->json(200, $result);
     }
 
     /**
      * Delete a meta-resource
      *
-     * @param id
+     * @param string $id
      */
     public function delete($id) {
         $model = $this->modelClass;
-        if ($this->$model->delete($id)) {
-            return $this->jsonResponse(204);
-        }
-        return $this->jsonResponse(500);
+        if (!$this->$model->exists($id)) return $this->json(404);
+        if (!$this->$model->delete($id)) return $this->json(500);
+        $this->json(204);
     }
 }

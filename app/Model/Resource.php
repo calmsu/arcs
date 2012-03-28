@@ -192,6 +192,12 @@ class Resource extends AppModel {
         ));
     }
 
+    public function firstRequest($id) {
+        $this->read(null, $id);
+        $this->set('first_req', false);
+        $this->save();
+    }
+
     /* PRIVATE METHODS */
 
     /**

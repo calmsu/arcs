@@ -11,11 +11,6 @@ class UsersController extends AppController {
     public function beforeFilter() {
         parent::beforeFilter();
         $this->Auth->allow('add', 'login');
-        
-        $this->set('toolbar', array(
-            'logo' => true,
-            'buttons' => array()
-        ));
     }
 
     /**
@@ -62,7 +57,7 @@ class UsersController extends AppController {
      * Display the login form or authenticate a POSTed form.
      */
     public function login() {
-        $this->set('show_toolbar', false);
+        $this->set('toolbar', false);
         $redirect = $this->Session->read('redirect');
         if ($redirect) {
             $this->Session->write('Auth.redirect', $redirect);
@@ -103,12 +98,10 @@ class UsersController extends AppController {
      * autocompletion purposes. Responds only to ajax requests.
      */
     public function complete() {
-        if ($this->request->is('ajax')) {
-            $this->jsonResponse(200, $this->User->find('list', array(
+        if ($this->requestIs('ajax', 'get'))
+            return $this->json(200, $this->User->find('list', array(
                 'fields' => array('User.name')
             )));
-        } else {
-            $this->redirect('/404');
-        }
+        $this->redirect('/404');
     }
 }

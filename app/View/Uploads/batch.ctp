@@ -1,16 +1,4 @@
-<div id="upload-nav" class="well">
-    <span class="btn-group" style="bottom:5px;">
-        <a class="btn active" href="<?php echo $this->Html->url(
-            array('controller' => 'uploads', 'action' => 'batch')) ?>">Batch</a>
-        <a class="btn" href="<?php echo $this->Html->url(
-            array('controller' => 'resources', 'action' => 'add')) ?>">Standard</a>
-    </span>
-    &nbsp;
-    <span>
-        Need some help? See our 
-        <?php echo $this->Html->link('Uploading', '/help/uploading') ?> documentation.
-    </span>
-</div>
+<?php echo $this->element('uploads_nav', array('active' => 'batch')) ?>
 
 <div id="batch-upload">
     <div class="accordion" id="uploads-container">

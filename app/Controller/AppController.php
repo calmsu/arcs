@@ -23,30 +23,42 @@ class AppController extends Controller {
             'id' => $this->Auth->user('id'),
             'name' => $this->Auth->user('name'),
             'email' => $this->Auth->user('email'),
+            'role' => intVal($this->Auth->user('role')),
             'username' => $this->Auth->user('username')
         ));
         $this->set('toolbar', array(
             'logo' => true,
             'buttons' => array()
         ));
-        $this->set('show_toolbar', true);
-        $this->set('dev', Configure::read('debug'));
         $this->RequestHandler->addInputType('json', array('json_decode', true));
     }
 
     /**
-     * JSON helper for the API-centric controllers.
+     * Convenience method for multiple Request->is($type) checks.
+     *
+     * @param  string $args   One or more request types to check.
+     * @return bool           True if *all* checks pass.
+     */
+    public function requestIs($args) {
+        $checks = func_get_args();
+        foreach($checks as $check)
+            if (!$this->request->is($check)) return false;
+        return true;
+    }
+
+    /**
+     * Convenience method for wrapping up JSON response logic.
      *
      * Sets the response content header to 'application/json', sets the given
      * HTTP status code (or 200, if not given), and delivers the (possibly 
      * empty) payload.
      *
-     * @param code       HTTP status code to set, 200 (OK) by default.
-     * @param data       Payload to deliver, empty array by default.
-     * @param render     Render path to use, '/Elements/ajax' by default.
+     * @param  int $code        HTTP status code to set, 200 (OK) by default.
+     * @param  mixed $data      Payload to deliver, is coerced to an array.
+     * @param  string $render   Render path to use, '/Elements/ajax' by default.
+     * @return void
      */
-    public function jsonResponse($code=200, $data=null, 
-                                 $render='/Elements/ajax') {
+    public function json($code=200, $data=null, $render='/Elements/ajax') {
         $this->response->statusCode($code);
         $this->RequestHandler->respondAs('json');
         $this->set('response', (array)$data);

@@ -35,10 +35,64 @@ class UploadsController extends AppController {
                     $this->Resource->url($sha, $name)
             );
         }
-        $this->jsonResponse(201, $files);
+        $this->json(201, $files);
     }
 
-    public function standard() {
+    public function basic() {
+        if ($this->request->is('post') && $this->data) {
+            # Read the file data from the request. Normally, we'd just save
+            # $this->data, but some table fields need to be calculated first.
+           
+            # Convenience variable for the Resource key of the data prop array.
+            $data = $this->data['Resource'];
+            $fname = $data['file']['name'];
+            $tmp   = $data['file']['tmp_name'];
+            $mime  = $data['file']['type'];
+
+            # Create the resource file.
+            $sha = $this->Resource->createFile($tmp, array(
+                'filename' => $fname,
+                'thumb' => true,
+                'preview' => true
+            ));
+
+            # If creating the file went wrong, something is probably wrong with
+            # the configuration. Redirect to the status page.
+            if (!$sha) {
+                $this->Session->setFlash('You were redirected to this page 
+                    because we were unable to save your resource. Please 
+                    verify your configuration.', 'flash_error');
+                return $this->redirect('/status');
+            }
+
+            # Temporarily whitelist a few fields.
+            $this->Resource->permit('sha', 'file_name', 'file_size', 'user_id');
+            # Save a DB record.
+            $this->Resource->add(array(
+                'sha' => $sha,
+                'title' => $data['title'],
+                'type' => $data['type'],
+                'public' => $data['public'],
+                'file_name' => $fname,
+                'file_size' => $data['file']['size'],
+                'mime_type' => $mime,
+                'user_id' => $this->Auth->user('id')
+            ));
+
+            # Save any keywords.
+            if ($data['keywords'])
+                $this->Resource->Keyword->saveFromString($data['keywords'], array(
+                    'resource_id' => $this->Resource->id,
+                    'user_id' => $this->Auth->user('id')
+                ));
+
+            # Set a flash message, redirect to the resource view.
+            $this->Session->setFlash('Resource created.', 'flash_success');
+            $this->redirect(array(
+                'controller' => 'resources', 
+                'action' => 'view', $this->Resource->id
+            ));
+        }
     }
 
     public function batch() {
@@ -60,7 +114,7 @@ class UploadsController extends AppController {
                 $this->Resource->create();
                 $this->Task->create();
             }
-            return $this->jsonResponse(201);
+            return $this->json(201);
         }
     }
 }

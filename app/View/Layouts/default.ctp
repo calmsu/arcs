@@ -1,4 +1,3 @@
-<?php #ARCS DEFAULT LAYOUT ?>
 <!doctype html>
 <html>
     <head>
@@ -10,7 +9,8 @@
         <!-- ios devices go full screen! -->
         <meta name="apple-mobile-web-app-capable" content="yes" />
         <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
-        <script>window.CAKE_DEBUG = <?php echo $dev ?>;</script>
+        <script>window.CAKE_DEBUG = <?php echo Configure::read('debug') ?>;</script>
+        <script>window.CAKE_USER = <?php echo json_encode($user) ?>;</script>
         <?php 
         echo $this->Assets->stylesheets();
         echo $this->Assets->scripts();
@@ -18,7 +18,7 @@
     </head>
     <body>
         <div class="page fluid-container">
-            <?php if ($show_toolbar): ?>
+            <?php if (@$toolbar): ?>
                 <?php echo $this->element('toolbar', $toolbar) ?>
             <?php endif ?>
             <?php echo $this->Session->flash() ?>
