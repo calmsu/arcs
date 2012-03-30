@@ -1,7 +1,7 @@
 <?php 
 
-include_once(APPLIBS . 'relic' . DS . 'library' . DS . 'Relic' . DS . 'Image.php');
-include_once(APPLIBS . 'relic' . DS . 'library' . DS . 'Relic' . DS . 'PDF.php');
+include_once(LIB . 'relic' . DS . 'library' . DS . 'Image.php');
+include_once(LIB . 'relic' . DS . 'library' . DS . 'PDF.php');
 
 class WorkerShell extends AppShell {
 
@@ -105,7 +105,7 @@ class WorkerShell extends AppShell {
             $sha = $this->Resource->createFile($tmp_file, array(
                 'filename' => $fname, 
                 'thumb' => true
-            );
+            ));
 
             $this->Resource->permit('sha', 'file_size', 'file_name', 'user_id');
             # Save the resource.

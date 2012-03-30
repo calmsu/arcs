@@ -52,7 +52,7 @@
         keyboard: this.options.keyboard,
         show: this.options.show
       });
-      return this._bindButtons();
+      return this.bindButtons();
     };
 
     Modal.prototype.hide = function() {
@@ -67,7 +67,7 @@
       var name, options, required, values, _i, _len, _ref;
       this.$('#validation-error').hide();
       this.$('.error').removeClass('error');
-      values = this._getValues();
+      values = this.getValues();
       required = [];
       _ref = this.options.inputs;
       for (name in _ref) {
@@ -86,7 +86,7 @@
       return false;
     };
 
-    Modal.prototype._getValues = function() {
+    Modal.prototype.getValues = function() {
       var name, values;
       values = {};
       for (name in this.options.inputs) {
@@ -95,14 +95,14 @@
       return values;
     };
 
-    Modal.prototype._bindButtons = function() {
+    Modal.prototype.bindButtons = function() {
       var name, _results,
         _this = this;
       _results = [];
       for (name in this.options.buttons) {
         _results.push(this.$("button#modal-" + name + "-button").click(function(e) {
           var callback, cb, context, options, valid, _ref, _ref2, _ref3;
-          name = e.target.id.match(/modal-(\w+)-button/)[1];
+          name = e.target.id.match(/modal-([\w-]+)-button/)[1];
           options = _this.options.buttons[name];
           if (_.isFunction(options)) {
             cb = options;
@@ -111,7 +111,7 @@
             cb = _.bind(callback, context);
           }
           valid = options.validate ? _this.validate() : true;
-          if (valid) cb(_this._getValues());
+          if (valid) cb(_this.getValues());
           if (!(((options.close != null) && options.close) || !valid)) {
             return _this.hide();
           }

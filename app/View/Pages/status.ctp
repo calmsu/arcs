@@ -66,15 +66,15 @@ For information on installing dependencies, see the
 <?php echo $this->Html->link('Installation Guide', '/help/installing') ?>.
 <br><br>
 
-<?php if ($executables['ghostscript']): ?>
+<?php foreach($dependencies as $name => $status): ?>
+<?php if ($status): ?>
 <div class="alert alert-success">
-    Ghostscript is executable.
+    <?php echo $name ?> is available.
 </div>
 <?php else: ?>
 <div class="alert alert-error">
-    <p>Ghostscript is <strong>NOT</strong> executable.</p>
-    <p>To fix this, verify that Ghostscript is installed, and that the
-    path given in <code>app/Config/arcs.ini</code> is correct.</p>
+    <?php echo $name ?> is <strong>NOT</strong> available.
 </div>
 <?php endif ?>
+<?php endforeach ?>
 </div>

@@ -46,6 +46,7 @@ class arcs.views.SearchActions extends Backbone.View
 
   # Creates a new Keyword
   keywordResult: (result, string) -> 
+    result.set 'keywords', result.get('keywords').concat(string)
     keyword = new arcs.models.Keyword
       resource_id: result.id
       keyword: string
@@ -58,6 +59,16 @@ class arcs.views.SearchActions extends Backbone.View
       reason: reason
       explanation: explanation
     flag.save()
+
+  # POSTs edited metadata to the server.
+  editResult: (result, metadata) ->
+    result.set 'metadata', _.extend result.get('metadata'), metadata
+    $.ajax
+      url: arcs.baseURL + 'resources/edit_info/' + result.id
+      type: 'POST'
+      contentType: 'application/json'
+      dataType: 'json'
+      data: JSON.stringify metadata
 
   # Create a new Bookmark, given a result element and optionally a note 
   # string.
@@ -146,40 +157,50 @@ class arcs.views.SearchActions extends Backbone.View
     return @batchEditSelected() if @results.numSelected() > 1
     result = @results.selected()[0]
     inputs = {}
-    for field in result.MODIFIABLE
-      inputs[field] = value: result.get(field) ? ''
+    metadata = result.get 'metadata'
+    fields = result.MODIFIABLE.sort()
+    for field in fields
+      inputs[field] = value: metadata[field] ? ''
 
     new arcs.views.Modal
-      title: 'Edit Attributes'
+      title: 'Edit Info'
       subtitle: ''
       template: 'ui/modal_columned'
       inputs: inputs
       buttons:
         save: 
           class: 'btn success'
-          callback: ->
+          callback: (values) =>
+            return if _.isEqual metadata, values
+            @editResult(result, values)
         cancel: ->
 
   # Edit the selected results in bulk. The workflow is based on the behavior of
-  # the iTunes batch editor. Values that are unique among all fields are
+  # the iTunes batch editor. Values that are common among all fields are
   # pre-filled and pre-checked. All checked fields (and only checked fields)
   # are updated on save, even if blank.
   batchEditSelected: ->
+    # First we need to build the inputs and find any shared values.
     inputs = {}
     results = @results.selected()
-    batchFields = _.difference results[0].MODIFIABLE, results[0].SINGULAR
+    _original = {}
+    batchFields = _.difference(results[0].MODIFIABLE, results[0].SINGULAR).sort()
     for field in batchFields
-      values = (r.get(field) for r in results)
+      values = _.map results, (r) ->
+        r.get('metadata')[field]
       [checked, value] = [false, '']
-      if _.unique(values).length == 1 and values[0] != undefined
+      if _.unique(values).length == 1 and values[0]
         checked = true
         value = values[0]
       inputs[field] =
         checkbox: checked
         value: value ? ''
+      _original[field] = value ? ''
 
-    new arcs.views.Modal
-      title: 'Edit Attributes (Multiple)'
+    # Make a new modal, using the columned template. Pass in our generated
+    # inputs.
+    new arcs.views.BatchEditModal
+      title: 'Edit Info (Multiple)'
       subtitle: "The values of checked fields will be applied to all " +
         "of the selected results, even when blank."
       template: 'ui/modal_columned'
@@ -187,7 +208,13 @@ class arcs.views.SearchActions extends Backbone.View
       buttons:
         save: 
           class: 'btn success'
-          callback: ->
+          callback: (metadata) =>
+            changed = false
+            for k, v of metadata
+              changed = true if _original[k] != v
+            return unless changed
+            for r in @results.selected()
+              @editResult r, metadata
         cancel: ->
 
   # Create a named collection from the selected results.
@@ -232,7 +259,7 @@ class arcs.views.SearchActions extends Backbone.View
     return unless @results.anySelected()
     # The method doubles as a toggle. If a preview is already open, we'll close
     # it and return.
-    if @preview? and $('#modal').is(':visible')
+    if @preview? and $('#modal').is ':visible'
       # Kill the old preview, otherwise the zombie events will come back to 
       # bite us. Preview.remove() is set up to undelegate events.
       @preview.remove()
@@ -246,9 +273,11 @@ class arcs.views.SearchActions extends Backbone.View
       iframe = @make 'iframe',
         style: 'display:none'
         id: "downloader-for-#{result.id}"
-      $('body').append(iframe)
+      $('body').append iframe
       iframe.src = arcs.baseURL + 'resources/download/' + result.id
 
+  
+  # Request a download link for a zipfile of selected resources.
   zippedDownloadSelected: ->
     unless @results.numSelected() > 1
       return arcs.notify 'To download resources zipped, select at least 2.',

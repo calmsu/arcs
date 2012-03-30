@@ -1,6 +1,11 @@
 <?php
 
 /**
+ * @namespace
+ */
+namespace Arcs;
+
+/**
  * Search
  *
  * Instances of the Search class build SQL for faceted search queries, given 
@@ -227,7 +232,7 @@ class Search {
         $pass   = $config['password'];
 
         # Get a db connection using PDO
-        $this->connection = new PDO("$driver:$host;dbname:$db", $login, $pass);
+        $this->connection = new \PDO("$driver:$host;dbname:$db", $login, $pass);
 
         # If given a facets array:
         if (is_array($query)) {
@@ -470,7 +475,7 @@ class Search {
      */
     public function _execute($sql, $values) {
         $query = $this->connection->prepare($sql, array(
-            PDO::ATTR_CURSOR => PDO::CURSOR_FWDONLY
+            \PDO::ATTR_CURSOR => \PDO::CURSOR_FWDONLY
         ));
         $query->execute($values);
         return $query->fetchAll();

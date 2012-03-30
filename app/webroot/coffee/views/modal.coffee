@@ -105,7 +105,7 @@ class arcs.views.Modal extends Backbone.View
       keyboard: @options.keyboard
       show: @options.show
 
-    @_bindButtons()
+    @bindButtons()
   
   # Hide the dialog
   hide: -> 
@@ -120,7 +120,7 @@ class arcs.views.Modal extends Backbone.View
   validate: ->
     @$('#validation-error').hide()
     @$('.error').removeClass('error')
-    values = @_getValues()
+    values = @getValues()
     required = []
     for name, options of @options.inputs
       if options.required? and options.required
@@ -136,18 +136,18 @@ class arcs.views.Modal extends Backbone.View
     false
 
   # Gather the values from each input.
-  _getValues: ->
+  getValues: ->
     values = {}
     for name of @options.inputs
       values[name] = @$("#modal-#{name}-input").val()
     values
 
   # Bind to the 'click' event on each button.
-  _bindButtons: ->
+  bindButtons: ->
     # Iterate through the buttons and bind them.
     for name of @options.buttons
       @$("button#modal-#{name}-button").click (e) =>
-        name = e.target.id.match(/modal-(\w+)-button/)[1]
+        name = e.target.id.match(/modal-([\w-]+)-button/)[1]
         options = @options.buttons[name]
         # Button options is actually a function.
         if _.isFunction options
@@ -158,6 +158,6 @@ class arcs.views.Modal extends Backbone.View
           # Bind the callback to an object and call it.
           cb = _.bind(callback, context)
         valid = if options.validate then @validate() else true
-        cb(@_getValues()) if valid
+        cb(@getValues()) if valid
         # Hide the dialog, unless told not to.
         @hide() unless (options.close? and options.close) or !valid

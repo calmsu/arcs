@@ -6,10 +6,6 @@
 
     __extends(Resource, _super);
 
-    function Resource() {
-      Resource.__super__.constructor.apply(this, arguments);
-    }
-
     Resource.prototype.defaults = {
       id: null,
       mime_type: "unknown",
@@ -20,18 +16,22 @@
       selected: false
     };
 
+    function Resource(attributes) {
+      Resource.__super__.constructor.call(this, this.parse(attributes));
+    }
+
     Resource.prototype.url = function() {
       return arcs.baseURL + 'resources/' + this.id;
     };
 
     Resource.prototype.urlRoot = arcs.baseURL + 'resources';
 
-    Resource.prototype.MODIFIABLE = ['title', 'identifier', 'copyright', 'creator', 'location', 'subject', 'coverage', 'date', 'format', 'date-modified', 'language', 'description', 'medium'];
+    Resource.prototype.MODIFIABLE = ['identifier', 'copyright', 'creator', 'location', 'subject', 'coverage', 'date', 'format', 'date-modified', 'language', 'description', 'medium'];
 
-    Resource.prototype.SINGULAR = ['title', 'identifier'];
+    Resource.prototype.SINGULAR = ['identifier'];
 
     Resource.prototype.parse = function(r) {
-      var k, m, v, _i, _len, _ref, _ref2;
+      var k, m, v, _i, _j, _len, _len2, _ref, _ref2, _ref3;
       if (r.Resource != null) {
         _ref = r.Resource;
         for (k in _ref) {
@@ -74,6 +74,15 @@
         if (r.Hotspot != null) {
           r.hotspots = r.Hotspot;
           delete r.Hotspot;
+        }
+        if (r.Metadatum != null) {
+          r.metadata = {};
+          _ref3 = r.Metadatum;
+          for (_j = 0, _len2 = _ref3.length; _j < _len2; _j++) {
+            m = _ref3[_j];
+            r.metadata[m.attribute] = m.value;
+          }
+          delete r.Metadatum;
         }
         delete r.Resource;
       }

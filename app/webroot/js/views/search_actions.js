@@ -54,6 +54,7 @@
 
     SearchActions.prototype.keywordResult = function(result, string) {
       var keyword;
+      result.set('keywords', result.get('keywords').concat(string));
       keyword = new arcs.models.Keyword({
         resource_id: result.id,
         keyword: string
@@ -69,6 +70,17 @@
         explanation: explanation
       });
       return flag.save();
+    };
+
+    SearchActions.prototype.editResult = function(result, metadata) {
+      result.set('metadata', _.extend(result.get('metadata'), metadata));
+      return $.ajax({
+        url: arcs.baseURL + 'resources/edit_info/' + result.id,
+        type: 'POST',
+        contentType: 'application/json',
+        dataType: 'json',
+        data: JSON.stringify(metadata)
+      });
     };
 
     SearchActions.prototype.bookmarkResult = function(result, note) {
@@ -193,27 +205,32 @@
     };
 
     SearchActions.prototype.editSelected = function() {
-      var field, inputs, result, _i, _len, _ref, _ref2;
+      var field, fields, inputs, metadata, result, _i, _len, _ref,
+        _this = this;
       if (!this.results.anySelected()) return;
       if (this.results.numSelected() > 1) return this.batchEditSelected();
       result = this.results.selected()[0];
       inputs = {};
-      _ref = result.MODIFIABLE;
-      for (_i = 0, _len = _ref.length; _i < _len; _i++) {
-        field = _ref[_i];
+      metadata = result.get('metadata');
+      fields = result.MODIFIABLE.sort();
+      for (_i = 0, _len = fields.length; _i < _len; _i++) {
+        field = fields[_i];
         inputs[field] = {
-          value: (_ref2 = result.get(field)) != null ? _ref2 : ''
+          value: (_ref = metadata[field]) != null ? _ref : ''
         };
       }
       return new arcs.views.Modal({
-        title: 'Edit Attributes',
+        title: 'Edit Info',
         subtitle: '',
         template: 'ui/modal_columned',
         inputs: inputs,
         buttons: {
           save: {
             "class": 'btn success',
-            callback: function() {}
+            callback: function(values) {
+              if (_.isEqual(metadata, values)) return;
+              return _this.editResult(result, values);
+            }
           },
           cancel: function() {}
         }
@@ -221,23 +238,19 @@
     };
 
     SearchActions.prototype.batchEditSelected = function() {
-      var batchFields, checked, field, inputs, r, results, value, values, _i, _len, _ref;
+      var batchFields, checked, field, inputs, results, value, values, _i, _len, _original, _ref,
+        _this = this;
       inputs = {};
       results = this.results.selected();
-      batchFields = _.difference(results[0].MODIFIABLE, results[0].SINGULAR);
+      _original = {};
+      batchFields = _.difference(results[0].MODIFIABLE, results[0].SINGULAR).sort();
       for (_i = 0, _len = batchFields.length; _i < _len; _i++) {
         field = batchFields[_i];
-        values = (function() {
-          var _j, _len2, _results;
-          _results = [];
-          for (_j = 0, _len2 = results.length; _j < _len2; _j++) {
-            r = results[_j];
-            _results.push(r.get(field));
-          }
-          return _results;
-        })();
+        values = _.map(results, function(r) {
+          return r.get('metadata')[field];
+        });
         _ref = [false, ''], checked = _ref[0], value = _ref[1];
-        if (_.unique(values).length === 1 && values[0] !== void 0) {
+        if (_.unique(values).length === 1 && values[0]) {
           checked = true;
           value = values[0];
         }
@@ -245,16 +258,32 @@
           checkbox: checked,
           value: value != null ? value : ''
         };
+        _original[field] = value != null ? value : '';
       }
-      return new arcs.views.Modal({
-        title: 'Edit Attributes (Multiple)',
+      return new arcs.views.BatchEditModal({
+        title: 'Edit Info (Multiple)',
         subtitle: "The values of checked fields will be applied to all " + "of the selected results, even when blank.",
         template: 'ui/modal_columned',
         inputs: inputs,
         buttons: {
           save: {
             "class": 'btn success',
-            callback: function() {}
+            callback: function(metadata) {
+              var changed, k, r, v, _j, _len2, _ref2, _results;
+              changed = false;
+              for (k in metadata) {
+                v = metadata[k];
+                if (_original[k] !== v) changed = true;
+              }
+              if (!changed) return;
+              _ref2 = _this.results.selected();
+              _results = [];
+              for (_j = 0, _len2 = _ref2.length; _j < _len2; _j++) {
+                r = _ref2[_j];
+                _results.push(_this.editResult(r, metadata));
+              }
+              return _results;
+            }
           },
           cancel: function() {}
         }

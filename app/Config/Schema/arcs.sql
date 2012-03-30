@@ -24,7 +24,7 @@ CREATE TABLE IF NOT EXISTS resources (
 CREATE TABLE IF NOT EXISTS metadata (
     id CHAR(36) PRIMARY KEY,
     resource_id CHAR(36),
-    property VARCHAR(50),
+    attribute VARCHAR(50),
     value TEXT,
     created DATETIME DEFAULT NULL,
     modified DATETIME DEFAULT NULL,
