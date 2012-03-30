@@ -5,52 +5,12 @@
     		<div id="arcs-search-wrapper">
 	    		<input name="main-search" id="main-search" class="span8 unselectable" value="" placeholder="" autofocus="">
 	    		<a class="btn icon large unselectable" data-original-title=""><span class="search"></span>Search</a>
-    		</div><!-- search-wrapper -->
-	    
-			<div class="panel-wrapper">
-	    		<a href="#" id="filter-panel-toggle" class="unselectable">Filter</a>
-		    	<div class="panel-content">
-		    		<label for="all-the-things">All of ARCS</label>
-				   	<input type="radio" name="all-the-things" id="all-the-things" value="all">
-				   
-					<label for="only-this-thing">All of ARCS</label>
-					<input type="radio" name="only-this-thing" id="only-this-thing" value="this-thing">
-				   
-					<hr>
-				   
-				   	<label for="datepicker">Date</label>
-				   	<input type="date" value="" name="datepicker" id="datepicker">
-		    	</div><!-- .filter-panel-container -->
-		    </div><!-- .filter-panel-wrapper -->			
-	    	
-		    
+    		</div><!-- search-wrapper -->    
 	    </form><!-- main search -->
     </section><!-- #logo-search-filter -->
     
     <details class="arcs-front-page unselectable" open="open">
     	<summary class="large">Notebooks</summary>
-        <div>
-        </div><!-- details-content -->
-    </details><!-- arcs front page -->
-    
-    <details class="arcs-front-page unselectable">
-    	<summary class="large">Photographs</summary>
-        <div>
-        </div><!-- details-content -->
-    </details><!-- arcs front page -->
-    
-    <details class="arcs-front-page unselectable">
-    	<summary class="large">Artifacts</summary>
-        <div>
-        </div><!-- details-content -->
-    </details><!-- arcs front page -->
-    
-    <details class="arcs-front-page unselectable">
-    	<summary class="large">Maps</summary>
-    </details><!-- arcs front page -->
-    
-    <details class="arcs-front-page unselectable">
-    	<summary class="large">Discussion</summary>
         <div>
         	<ul class="resource-thumbs">                  
                 <li>
@@ -94,66 +54,88 @@
 			</ul>
         </div><!-- details-content -->
     </details><!-- arcs front page -->
+    
+    <details class="arcs-front-page unselectable">
+    	<summary class="large">Photographs</summary>
+        <div>
+        </div><!-- details-content -->
+    </details><!-- arcs front page -->
+    
+    <details class="arcs-front-page unselectable">
+    	<summary class="large">Artifacts</summary>
+        <div>
+        </div><!-- details-content -->
+    </details><!-- arcs front page -->
+    
+    <details class="arcs-front-page unselectable">
+    	<summary class="large">Maps</summary>
+    </details><!-- arcs front page -->
+    
+    <details class="arcs-front-page unselectable">
+    	<summary class="large">Discussion</summary>
+        <div>
+        </div><!-- details-content -->
+    </details><!-- arcs front page -->
 
 </div><!-- page fluid-container -->
 
-<footer id="credits">	
+<footer id="credits" class="container">	
 	<div class="row">
-		<div class="span11"?>
-			<div id="quick-links">
-				<h3>Quick Links</h3>
-					<ul class="inline">
-						<li><?php echo $this->Html->link('Home', '/pages/home', array('class' => 'label label-footer')); ?></li>
-						<li><?php echo $this->Html->link('About', '/pages/about', array('class' => 'label label-footer')); ?></li>
-						<li><?php echo $this->Html->link('Help', '/pages/help', array('class' => 'label label-footer')); ?></li>
-					</ul>
-			</div>
-			<div id="sponsors">
-				<h3>Our Sponsors</h3>
-				<?php 
-					echo $this->Html->image( 'neh-logo.png',
-						array(	'alt'=> 'NEH Logo', 
-								'id' => 'neh_logo', 
-								'class' => 'logo', 
-								'title' => 'Any views, findings, conclusions, or recommendations expressed in this website do not necessarily represent those of the National Endowment for the Humanities', 
-								'url' => 'http://www.neh.gov/'
-							)); 
-					echo $this->Html->image( 'msu-wordmark.png',
-						array(	'alt'=> 'MSU Wordmark', 
-								'id' => 'msu_wordmark', 
-								'class' => 'logo', 
-								'title' => 'Any views, findings, conclusions, or recommendations expressed in this website do not necessarily represent those of Michigan State University', 
-								'url' => 'http://www.msu.edu/'
-							)); 
-				?>
-				
-				<?php 
-					echo $this->Html->image( 'cal-white-masthead.png',
-						array(	'alt'=> 'CE Logo', 
-								'id' => 'ce_logo', 
-								'class' => 'logo', 
-								'title' => 'Any views, findings, conclusions, or recommendations expressed in this website do not necessarily represent those of the College of Arts and Letters', 
-								'url' => 'http://cal.msu.edu'
+
+		<div id="quick-links" class="span2">
+			<!-- <h3>Quick Links</h3> -->
+				<ul class="inline">
+					<li><?php echo $this->Html->link('Home', '/pages/home', array('class' => 'label-footer')); ?></li>
+					<li><?php echo $this->Html->link('About', '/pages/about', array('class' => 'label-footer')); ?></li>
+					<li><?php echo $this->Html->link('Help', '/pages/help', array('class' => 'label-footer')); ?></li>
+				</ul>
+		</div>
+		<div id="sponsors" class="span7">
+			<!-- <h3>Our Sponsors</h3> -->
+			<?php 
+				echo $this->Html->image( 'neh-logo.png',
+					array(	'alt'=> 'NEH Logo', 
+							'id' => 'neh_logo', 
+							'class' => 'logo', 
+							'title' => 'Any views, findings, conclusions, or recommendations expressed in this website do not necessarily represent those of the National Endowment for the Humanities', 
+							'url' => 'http://www.neh.gov/'
 						)); 
-				?>
-				
-				<?php 
-					echo $this->Html->image( 'ce-logo.png',
-						array(	'alt'=> 'CE Logo', 
-								'id' => 'ce_logo', 
-								'class' => 'logo', 
-								'title' => 'Any views, findings, conclusions, or recommendations expressed in this website do not necessarily represent those of the Creativity Exploratory', 
-								'url' => 'http://ce.cal.msu.edu'
+				echo $this->Html->image( 'msu-wordmark.png',
+					array(	'alt'=> 'MSU Wordmark', 
+							'id' => 'msu_wordmark', 
+							'class' => 'logo', 
+							'title' => 'Any views, findings, conclusions, or recommendations expressed in this website do not necessarily represent those of Michigan State University', 
+							'url' => 'http://www.msu.edu/'
 						)); 
-				?>
-					
-				<p class="disclaimer">Any views, findings, conclusions, or recommendations expressed in this website do not necessarily represent those of the National Endowment for the Humanities, Michigan State University, the College of Arts and Letters, or the Creativity Exploratory.</p>
-		
-			</div><!-- #sponsors -->
-		</div><!-- .span11 -->
-		<div id="about-arcs-footer" class="span3">
-			<h3>About This Site</h3>
-			<p>ARCS is&hellip;Pellentesque habitant morbi tristique senectus et netus et malesuada fames ac turpis egestas. Vestibulum tortor quam, feugiat vitae, ultricies eget, tempor sit amet, ante. Donec eu libero sit amet quam egestas semper. Aenean ultricies mi vitae est. Mauris placerat eleifend leo. <?php echo $this->Html->link('read more...', '');?></p>
+			?>
+			
+			<?php 
+				echo $this->Html->image( 'cal-white-masthead.png',
+					array(	'alt'=> 'CAL Logo', 
+							'id' => 'cal_logo', 
+							'class' => 'logo', 
+							'title' => 'Any views, findings, conclusions, or recommendations expressed in this website do not necessarily represent those of the College of Arts and Letters', 
+							'url' => 'http://cal.msu.edu'
+					)); 
+			?>
+			
+			<?php 
+				echo $this->Html->image( 'ce-logo.png',
+					array(	'alt'=> 'CE Logo', 
+							'id' => 'ce_logo', 
+							'class' => 'logo', 
+							'title' => 'Any views, findings, conclusions, or recommendations expressed in this website do not necessarily represent those of the Creativity Exploratory', 
+							'url' => 'http://ce.cal.msu.edu'
+					)); 
+			?>
+				
+			<p class="disclaimer">Any views, findings, conclusions, or recommendations expressed in this website do not necessarily represent those of the National Endowment for the Humanities, Michigan State University, the College of Arts and Letters, or the Creativity Exploratory.</p>
+	
+		</div><!-- #sponsors -->
+
+		<div id="about-arcs-footer" class="span2">
+			<!-- <h3>About This Site</h3> -->
+			<p>ARCS is&hellip;Pellentesque habitant morbi tristique senectus et netus et malesuada fames ac turpis egestas. Vestibulum tortor quam, feugiat vitae, ultricies eget, tempor sit amet, ante.<?php echo $this->Html->link('read more...', '');?></p>
 		</div><!-- #about-arcs-footer -->
 	
 	

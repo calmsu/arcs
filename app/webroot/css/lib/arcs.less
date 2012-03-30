@@ -427,7 +427,17 @@ details.arcs-front-page {
     ul.resource-thumbs{
       display:block;
       
-      li { display: inline-block; }
+      li { 
+      	display: inline-block; 
+      	
+      	a{
+      		
+      		img{
+      			height: 100px;
+      			width: 120px;
+      		}//img
+      	}//a
+      }//li
     }//resource thumbs
           
     summary{
@@ -1593,7 +1603,8 @@ footer#credits{
 		li{
 			display: inline;
 		}//li
-	}//li
+		
+	}//ul
 	
 	.row{
 		margin-left: 0;
@@ -1620,10 +1631,16 @@ footer#credits{
 		line-height: @baseLineHeight - 5px;
 	}
 	
-	.logo{
-		max-height: 30px;
-	}//.logo
 	
+	#neh_logo{
+		width: 150px;
+	}//#neh_logo
+	
+	#msu_wordmark,
+	#cal_logo,
+	#ce_logo{
+		max-height: 30px;
+	}//msu_wordmark
 	
 	#copyright-and-credits{
 		width: 100%;
@@ -1636,8 +1653,37 @@ footer#credits{
 		}
 	}//#copyright-and-credits
 	
+	#quick-links{
+		ul{
+			
+			li{
+				border-right: solid thin @grayLight;
+				a{
+					padding: 2px 5px;
+					color: @grayLight;
+					
+					&:hover{
+						color: @grayLighter;
+					}//:hover
+					
+				}//a
+				
+				&:last-child{
+					border: none;
+				}//last-child	
+				
+			}//li
+			
+		}//li
+	}//#quick-links	
+	
 }//#credits
 
-.label-footer             { background-color: @gray; border: solid thin @gray; }
-.label-footer:hover       { background-color: darken(@gray, 10%); border: solid thin @gray; }
+.label-footer{ 
+	
+	&:last-child{
+		border-right:none;
+	}//last-child
+}
+.label-footer:hover       { text-decoration: underline; color: @grayLight; }
 
