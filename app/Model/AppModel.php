@@ -1,6 +1,23 @@
 <?php
 class AppModel extends Model {
 
+    public $flatten = false;
+
+    public function afterFind($results, $primary) {
+        if ($this->flatten) {
+            if (isset($results[$this->name]))
+                return $results[$this->name];
+            if (isset($results[0][$this->name])) {
+                $flattened = array();
+                foreach($results as $r) {
+                    $flattened[] = $r[$this->name];
+                }
+                return $flattened;
+            }
+        }
+        return $results;
+    }
+
     /**
      * Temporarily permit a field, by adding it to the whitelist.
      *
