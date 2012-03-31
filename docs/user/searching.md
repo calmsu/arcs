@@ -1,5 +1,5 @@
-Searching the ARCS catalog
-==========================
+Searching ARCS
+==============
 We've tried to make it easy to find resources in ARCS, even when you
 know very little about them. 
 

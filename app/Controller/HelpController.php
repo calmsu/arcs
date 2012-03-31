@@ -24,7 +24,7 @@ class HelpController extends AppController {
             'Collections' => 'about-collections',
             'Uploading Resources' => 'uploading',
             'Your Account' => 'account',
-            'Searching the Catalog' => 'searching',
+            'Searching' => 'searching',
             'Bulk Actions' => 'bulk-actions',
             'Developer' => null,
             'Installing ARCS' => 'installing',

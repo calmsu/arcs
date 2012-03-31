@@ -1,4 +1,4 @@
-<h1>Searching the ARCS catalog</h1>
+<h1>Searching ARCS</h1>
 <p>We've tried to make it easy to find resources in ARCS, even when you
 know very little about them. </p>
 <p>Say you know that John Doe uploaded an image, and you know that he 
