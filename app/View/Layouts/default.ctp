@@ -17,13 +17,20 @@
         ?>
     </head>
     <body>
-        <div class="page fluid-container">
-            <?php if (@$toolbar): ?>
-                <?php echo $this->element('toolbar', $toolbar) ?>
+        <div class="wrap">
+            <div class="page fluid-container">
+            <?php 
+                if (@$toolbar) 
+                    echo $this->element('toolbar', $toolbar);
+                echo $this->Session->flash();
+                echo $this->Session->flash('auth');
+                echo $this->fetch('content'); 
+            ?>
+            </div>
+            <?php if ($footer): ?> 
+                <div class="push"></div>
             <?php endif ?>
-            <?php echo $this->Session->flash() ?>
-            <?php echo $this->Session->flash('auth') ?>
-            <?php echo $this->fetch('content'); ?>
         </div>
+        <?php if ($footer) echo $this->element('footer') ?>
     </body>
 </html>

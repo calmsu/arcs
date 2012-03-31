@@ -18,21 +18,25 @@
         ?>
     </head>
     <body>
-        <div class="page doc-page fluid-container">
-            <?php echo $this->element('toolbar', $toolbar) ?>
-            <?php echo $this->Session->flash() ?>
-            <?php echo $this->Session->flash('auth') ?>
-            <div class="row">
-                <div class="span3">
-                <?php echo $this->element('doc_sidebar', array(
-                    'docs' => $docs,
-                    'active' => $active
-                )) ?>
-                </div>
-                <div class="span9 doc">
-                <?php echo $this->fetch('content'); ?>
+        <div class="wrap">
+            <div class="page doc-page fluid-container">
+                <?php echo $this->element('toolbar', $toolbar) ?>
+                <?php echo $this->Session->flash() ?>
+                <?php echo $this->Session->flash('auth') ?>
+                <div class="row">
+                    <div class="span3">
+                    <?php echo $this->element('doc_sidebar', array(
+                        'docs' => $docs,
+                        'active' => $active
+                    )) ?>
+                    </div>
+                    <div class="span9 doc">
+                    <?php echo $this->fetch('content'); ?>
+                    </div>
                 </div>
             </div>
+            <div class="push"></div>
         </div>
+        <?php if ($footer) echo $this->element('footer') ?>
     </body>
 </html>
