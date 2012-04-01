@@ -8,6 +8,8 @@
  */
 class Task extends AppModel {
     public $name = 'Task';
+    public $flatten = true;
+    public $recursive = -1;
 
     /**
      * Queues a task by creating a Task given a resource
@@ -18,14 +20,13 @@ class Task extends AppModel {
      * @param data
      */
     public function queue($job, $id, $data=null) {
-        return $this->save(array(
-            'Task' => array(
-                'resource_id' => $id,
-                'job' => $job,
-                'data' => $data,
-                'status' => 1,
-                'progress' => 0
-        )));
+        return $this->add(array(
+            'resource_id' => $id,
+            'job' => $job,
+            'data' => $data,
+            'status' => 1,
+            'progress' => 0
+        ));
     }
 
     /**
@@ -39,14 +40,13 @@ class Task extends AppModel {
         $task = $this->find('first', array(
             'conditions' => array(
                 'Task.status' => 1,
-                'Task.in_progress' => false
+                'Task.active' => false
             ),
             'order' => array(
                 'Task.created' => 'ASC'
             )
         ));
-        if (!$task) return false;
-        return $task['Task'];
+        return $task ? $task : false;
     }
 
     /**
@@ -56,20 +56,24 @@ class Task extends AppModel {
      */
     public function start($id) {
         $this->read(null, $id);
-        $this->set('in_progress', true);
+        $this->set('active', true);
         return $this->save();
     }
 
     /**
      * Marks a task non-active and sets the return status.
      *
-     * @param id
-     * @param status
+     * @param string $id
+     * @param int $status
+     * @param string $error
      */
-    public function done($id, $status=0) {
+    public function done($id, $status=0, $error=null) {
         $this->read(null, $id);
-        $this->set('status', $status);
-        $this->set('in_progress', false);
+        $this->set(array(
+            'status' => $status,
+            'active' => false,
+            'error' => $error
+        ));
         return $this->save();
     }
 }
