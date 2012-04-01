@@ -1,6 +1,6 @@
 # loader.coffee
 # -------------
-arcs.utils.loader = 
+arcs.loader = arcs.utils.loader = 
   show: ->
     unless $('#arcs-loader').length
       $('body').append arcs.tmpl 'ui/loader'

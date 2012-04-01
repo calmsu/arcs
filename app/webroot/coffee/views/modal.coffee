@@ -123,7 +123,7 @@ class arcs.views.Modal extends Backbone.View
     values = @getValues()
     required = []
     for name, options of @options.inputs
-      if options.required? and options.required
+      if options.required
         unless values[name].replace(/\s/g, '').length
           required.push name
 
@@ -132,7 +132,7 @@ class arcs.views.Modal extends Backbone.View
     for name in required
       @$("#modal-#{name}-input").addClass('error')
       @$("label[for='modal-#{name}']").addClass('error')
-    @$('#validation-error').show().html 'Looks like you missed a few required fields.'
+    @$('#validation-error').show().html 'Looks like you missed a required field.'
     false
 
   # Gather the values from each input.

@@ -4,7 +4,7 @@ class arcs.collections.ResultSet extends Backbone.Collection
   model: arcs.models.Resource
 
   url: -> 
-    arcs.baseURL + 'search'
+    arcs.baseURL + 'resources/search'
 
   # Returns selected results
   selected: ->

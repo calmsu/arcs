@@ -13,7 +13,7 @@
     ResultSet.prototype.model = arcs.models.Resource;
 
     ResultSet.prototype.url = function() {
-      return arcs.baseURL + 'search';
+      return arcs.baseURL + 'resources/search';
     };
 
     ResultSet.prototype.selected = function() {

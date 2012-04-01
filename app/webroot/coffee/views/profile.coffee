@@ -1,4 +1,4 @@
-class arcs.views.User extends Backbone.View
+class arcs.views.Profile extends Backbone.View
 
   events:
     'click #edit-btn': 'editAccount'
@@ -17,18 +17,14 @@ class arcs.views.User extends Backbone.View
           value: @model.get 'email'
         password:
           type: 'password'
-          label: 'Old Password'
-        new_password:
-          type: 'password'
-          label: 'New Password'
-        new_password_confirm:
-          type: 'password'
-          label: 'Confirm New Password'
-
       buttons:
         save:
           validate: true
           class: 'btn success'
-          callback: ->
-            arcs.notify 'saved', 'success'
+          callback: (vals) =>
+            if vals.password == ''
+              delete vals.password
+            arcs.loader.show()
+            @model.save vals,
+              success: arcs.loader.hide
         cancel: ->

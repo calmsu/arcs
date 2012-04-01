@@ -31,7 +31,7 @@
     <div class="btn-group toolbar-btn">
         <a class="btn" 
             href="<?php echo $this->Html->url('/login') ?>">Login</a>
-        <a class="btn success" 
+        <a class="btn primary" 
             href="<?php echo $this->Html->url('/signup') ?>">Signup</a>
     </div>
     <?php endif ?>
@@ -39,6 +39,12 @@
         href="<?php echo $this->Html->url('/help')?>">
         <i class="icon-white icon-file"></i> Help
     </a>
+    <?php if ($user['role'] === 0): ?>
+    <a class="btn danger toolbar-btn"
+        href="<?php echo $this->Html->url('/admin')?>">
+        <i class="icon-white icon-lock"></i> Admin
+    </a>
+    <?php endif ?>
     <?php if (isset($actions) && $actions): ?>
     <div class="btn-group toolbar-btn">
         <button class="btn dropdown-toggle" data-toggle="dropdown">

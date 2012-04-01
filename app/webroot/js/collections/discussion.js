@@ -17,21 +17,13 @@
     };
 
     Discussion.prototype.parse = function(response) {
-      var r, _i, _len;
-      response = (function() {
-        var _i, _len, _results;
-        _results = [];
-        for (_i = 0, _len = response.length; _i < _len; _i++) {
-          r = response[_i];
-          _results.push(_.extend(r.User, r.Comment));
-        }
-        return _results;
-      })();
+      var r, _i, _len, _results;
+      _results = [];
       for (_i = 0, _len = response.length; _i < _len; _i++) {
         r = response[_i];
-        r.created = relativeDate(new Date(r.created));
+        _results.push(_.extend(r.User, r.Comment));
       }
-      return response;
+      return _results;
     };
 
     return Discussion;

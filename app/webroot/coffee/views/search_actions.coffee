@@ -64,7 +64,7 @@ class arcs.views.SearchActions extends Backbone.View
   editResult: (result, metadata) ->
     result.set 'metadata', _.extend result.get('metadata'), metadata
     $.ajax
-      url: arcs.baseURL + 'resources/edit_info/' + result.id
+      url: arcs.baseURL + 'resources/metadata/' + result.id
       type: 'POST'
       contentType: 'application/json'
       dataType: 'json'
@@ -110,19 +110,22 @@ class arcs.views.SearchActions extends Backbone.View
           label: false
           complete: arcs.utils.complete.keyword
           focused: true
+          required: true
       buttons: 
         save:
           class: 'btn success'
+          validate: true
           callback: (vals) =>
             for result in @results.selected()
               @keywordResult result, vals.keyword
             @_notify 'keyworded'
         cancel: ->
 
+  
   rethumbSelected: ->
     return unless @results.anySelected()
     for result in @results.selected()
-      $.get arcs.baseURL + 'resources/rethumb/' + result.id
+      $.post arcs.baseURL + 'resources/rethumb/' + result.id
 
   # Opens a modal and prompts the user for information about flagging.
   flagSelected: ->

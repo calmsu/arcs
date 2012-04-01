@@ -1,6 +1,6 @@
 (function() {
 
-  arcs.utils.loader = {
+  arcs.loader = arcs.utils.loader = {
     show: function() {
       if (!$('#arcs-loader').length) $('body').append(arcs.tmpl('ui/loader'));
       return $('#arcs-loader').show();

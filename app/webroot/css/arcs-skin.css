@@ -4259,6 +4259,12 @@ body {
   padding-left: 10px;
   padding-right: 10px;
 }
+h2,
+h3 {
+  text-shadow: 0 1px 1px #ffffff;
+  color: #555;
+  font-weight: normal;
+}
 input[type=text],
 input[type=password],
 textarea {
@@ -5658,7 +5664,7 @@ div#search-results-wrapper .toolbar-fixed {
   cursor: pointer;
   text-shadow: 0 1px 1px #444444;
 }
-#upload-nav {
+.well-nav {
   border: 1px solid #cdcdcd;
   background-color: #ddd;
 }
@@ -5742,6 +5748,11 @@ footer#credits #copyright-and-credits p {
 }
 .footer span.disclaimer {
   font-size: 80%;
+}
+.admin-log {
+  max-height: 300px;
+  background: #fff;
+  overflow: auto;
 }
 .hidden {
   display: none;
