@@ -4604,6 +4604,10 @@ details.arcs-front-page[open] ul.resource-thumbs {
 details.arcs-front-page[open] ul.resource-thumbs li {
   display: inline-block;
 }
+details.arcs-front-page[open] ul.resource-thumbs li a img {
+  height: 100px;
+  width: 120px;
+}
 details.arcs-front-page[open] summary {
   width: 96%;
   display: block;
@@ -5668,52 +5672,6 @@ div#search-results-wrapper .toolbar-fixed {
   border: 1px solid #cdcdcd;
   background-color: #ddd;
 }
-/* add some style to the credits on the footer */
-footer#credits {
-  color: #999999;
-  margin-top: 25px;
-  background-color: #2b2b2b;
-  min-height: 170px;
-  padding: 10px 0;
-}
-footer#credits ul {
-  list-style: none;
-  margin: 0;
-}
-footer#credits ul li {
-  display: inline;
-}
-footer#credits .row {
-  margin-left: 0;
-}
-footer#credits h3 {
-  color: #999999;
-  font-size: 14px;
-}
-footer#credits #about-arcs-footer p {
-  font-size: 11px;
-  line-height: 15px;
-}
-footer#credits a.credit-links {
-  display: block;
-}
-footer#credits .disclaimer {
-  font-size: 9px;
-  line-height: 13px;
-}
-footer#credits .logo {
-  max-height: 30px;
-}
-footer#credits #copyright-and-credits {
-  width: 100%;
-}
-footer#credits #copyright-and-credits p {
-  text-align: center;
-  width: 100%;
-  line-height: 16px;
-  margin-bottom: 0;
-  font-size: 10px;
-}
 .label-footer {
   background-color: #555555;
   border: solid thin #555555;
@@ -5748,6 +5706,76 @@ footer#credits #copyright-and-credits p {
 }
 .footer span.disclaimer {
   font-size: 80%;
+}
+footer#credits {
+  color: #999999;
+  margin-top: 25px;
+  background-color: #2b2b2b;
+  min-height: 170px;
+  padding: 10px 0;
+}
+footer#credits ul {
+  list-style: none;
+  margin: 0;
+}
+footer#credits ul li {
+  display: inline;
+}
+footer#credits .row {
+  margin-left: 0;
+}
+footer#credits h3 {
+  color: #999999;
+  font-size: 14px;
+}
+footer#credits #about-arcs-footer p {
+  font-size: 11px;
+  line-height: 15px;
+}
+footer#credits a.credit-links {
+  display: block;
+}
+footer#credits .disclaimer {
+  font-size: 9px;
+  line-height: 13px;
+}
+footer#credits #neh_logo {
+  width: 150px;
+}
+footer#credits #msu_wordmark,
+footer#credits #cal_logo,
+footer#credits #ce_logo {
+  max-height: 30px;
+}
+footer#credits #copyright-and-credits {
+  width: 100%;
+}
+footer#credits #copyright-and-credits p {
+  text-align: center;
+  width: 100%;
+  line-height: 16px;
+  margin-bottom: 0;
+  font-size: 10px;
+}
+footer#credits #quick-links ul li {
+  border-right: solid thin #999999;
+}
+footer#credits #quick-links ul li a {
+  padding: 2px 5px;
+  color: #999999;
+}
+footer#credits #quick-links ul li a:hover {
+  color: #eeeeee;
+}
+footer#credits #quick-links ul li:last-child {
+  border: none;
+}
+.label-footer:last-child {
+  border-right: none;
+}
+.label-footer:hover {
+  text-decoration: underline;
+  color: #999999;
 }
 .admin-log {
   max-height: 300px;
