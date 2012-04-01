@@ -130,7 +130,7 @@ class arcs.utils.Search
 
     # Calculate the url parameters
     offset = (options.page - 1) * options.n
-    params = "?n=#{options.n}&offset=#{offset}&order=#{options.order}"
+    params = "?related&n=#{options.n}&offset=#{offset}&order=#{options.order}"
 
     arcs.utils.loader.show() if @options.loader
 

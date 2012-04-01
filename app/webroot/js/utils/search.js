@@ -108,7 +108,7 @@
         return delete f.app;
       });
       offset = (options.page - 1) * options.n;
-      params = "?n=" + options.n + "&offset=" + offset + "&order=" + options.order;
+      params = "?related&n=" + options.n + "&offset=" + offset + "&order=" + options.order;
       if (this.options.loader) arcs.utils.loader.show();
       this.results.fetch({
         add: options.add,
