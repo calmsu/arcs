@@ -230,9 +230,9 @@ class ResourcesController extends AppController {
         if (!$resource) return $this->redirect('/404');
         $this->layout = false;
         Configure::write('debug', 0);
-        $sha = $resource['Resource']['sha'];
-        $this->set('fname', $resource['Resource']['file_name']);
-        $this->set('fsize', $resource['Resource']['file_size']);
+        $sha = $resource['sha'];
+        $this->set('fname', $resource['file_name']);
+        $this->set('fsize', $resource['file_size']);
         $this->set('path', $this->Resource->path($sha, $sha));
         $this->render('/Elements/download');
     }
@@ -252,9 +252,9 @@ class ResourcesController extends AppController {
         ));
         $files = array();
         foreach ($resources as $r) {
-            $files[$r['Resource']['file_name']] = $r['Resource']['sha'];
+            $files[$r['file_name']] = $r['sha'];
         }
-        $title = str_replace(' ', '-', $resources[0]['Resource']['title']);
+        $title = str_replace(' ', '-', $resources[0]['title']);
         $name = $title . '-and-' . 
             (count($files) - 1) . '-' .
             (count($files) > 2 ? 'others' : 'other');
@@ -277,7 +277,7 @@ class ResourcesController extends AppController {
         $resource = $this->Resource->findById($id);
         if (!$resource) return $this->json(404);
         $this->loadModel('Task');
-        $this->Task->queue('thumb', $resource['Resource']['id']);
+        $this->Task->queue('thumb', $resource['id']);
         $this->json(202);
     }
 

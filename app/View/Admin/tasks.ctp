@@ -1,6 +1,7 @@
 <?php echo $this->element('admin_nav', array('active' => 'tasks')) ?>
 <div id="admin-tasks">
-    <div id="tasks"></div>
+    <input id="filter-input" name="filter" placeholder="Filter tasks..."/>
+    <div id="tasks" style="max-height:80%; overflow:auto;"></div>
 </div>
 <script type="text/javascript">
   arcs.adminView = new arcs.views.admin.Tasks({

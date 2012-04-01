@@ -11,11 +11,15 @@
   <tr>
     <td><%= t.job %></td>
     <td>
-      <% if (t.status == 0) print('done') %>
-      <% if (t.status == 1) print('pending') %>
-      <% if (t.status == 2) print('error') %>
+      <% if (t.status == 0) { %>
+      <span class="label label-success">done</span>
+      <% } if (t.status == 1) { %>
+      <span class="label label-info">pending</span>
+      <% } if (t.status == 2) { %>
+      <span class="label label-important">error</span>
+      <% } %>
     </td>
-    <td><%= t.in_progress ? 'yes' : 'no' %></td>
+    <td><%= t.active ? 'yes' : 'no' %></td>
     <td><a href="<%= arcs.baseURL + 'resource/' + t.resource_id %>">Resource</a></td>
     <td><%= relativeDate(new Date(t.created)) %></td>
     <td>

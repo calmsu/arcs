@@ -10,6 +10,9 @@ class Task extends AppModel {
     public $name = 'Task';
     public $flatten = true;
     public $recursive = -1;
+    public $whitelist = array(
+        'resource_id', 'job', 'data', 'status', 'progress', 'error'
+    );
 
     /**
      * Queues a task by creating a Task given a resource

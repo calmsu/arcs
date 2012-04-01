@@ -4288,7 +4288,8 @@ div#toolbar {
 
   border: 1px solid #888;
   margin-bottom: 10px;
-  margin-left: 0px;
+  margin-left: -10px;
+  margin-right: -10px;
   height: 40px;
   padding: 3px;
   padding-bottom: 1px;
@@ -4306,6 +4307,7 @@ div#toolbar h1#logo {
   color: #444;
   background: no-repeat top left url('img/arcs-icon.png');
   background-position: 10px 0px;
+  margin-top: 2px;
   margin-right: 10px;
   float: left;
 }
@@ -5686,7 +5688,7 @@ div#search-results-wrapper .toolbar-fixed {
   color: #bbb;
   padding: 20px;
   padding-bottom: 8px;
-  margin-top: -112px;
+  margin-top: -113px;
   text-shadow: 0 1px 1px #222222;
   border-top: 1px solid #555;
   outline: 1px solid #222;
@@ -5781,6 +5783,102 @@ footer#credits #quick-links ul li:last-child {
   max-height: 300px;
   background: #fff;
   overflow: auto;
+}
+.cake-sql-log {
+  width: 100%;
+  margin-bottom: 18px;
+  border: 1px solid #ddd;
+  border-collapse: separate;
+  -webkit-border-radius: 4px;
+  -moz-border-radius: 4px;
+  border-radius: 4px;
+  -webkit-border-radius: 4px;
+  -moz-border-radius: 4px;
+  border-radius: 4px;
+  position: fixed;
+  display: none;
+  bottom: 0px;
+  background: #fff;
+}
+.cake-sql-log th,
+.cake-sql-log td {
+  padding: 8px;
+  line-height: 18px;
+  text-align: left;
+  border-top: 1px solid #ddd;
+}
+.cake-sql-log th {
+  font-weight: bold;
+  vertical-align: bottom;
+}
+.cake-sql-log td {
+  vertical-align: top;
+}
+.cake-sql-log thead:first-child tr th,
+.cake-sql-log thead:first-child tr td {
+  border-top: 0;
+}
+.cake-sql-log tbody + tbody {
+  border-top: 2px solid #ddd;
+}
+.cake-sql-log tbody tr:nth-child(odd) td,
+.cake-sql-log tbody tr:nth-child(odd) th {
+  background-color: #f9f9f9;
+}
+.cake-sql-log th + th,
+.cake-sql-log td + td,
+.cake-sql-log th + td,
+.cake-sql-log td + th {
+  border-left: 1px solid #ddd;
+}
+.cake-sql-log thead:first-child tr:first-child th,
+.cake-sql-log tbody:first-child tr:first-child th,
+.cake-sql-log tbody:first-child tr:first-child td {
+  border-top: 0;
+}
+.cake-sql-log thead:first-child tr:first-child th:first-child,
+.cake-sql-log tbody:first-child tr:first-child td:first-child {
+  -webkit-border-radius: 4px 0 0 0;
+  -moz-border-radius: 4px 0 0 0;
+  border-radius: 4px 0 0 0;
+  -webkit-border-radius: 4px 0 0 0;
+  -moz-border-radius: 4px 0 0 0;
+  border-radius: 4px 0 0 0;
+}
+.cake-sql-log thead:first-child tr:first-child th:last-child,
+.cake-sql-log tbody:first-child tr:first-child td:last-child {
+  -webkit-border-radius: 0 4px 0 0;
+  -moz-border-radius: 0 4px 0 0;
+  border-radius: 0 4px 0 0;
+  -webkit-border-radius: 0 4px 0 0;
+  -moz-border-radius: 0 4px 0 0;
+  border-radius: 0 4px 0 0;
+}
+.cake-sql-log thead:last-child tr:last-child th:first-child,
+.cake-sql-log tbody:last-child tr:last-child td:first-child {
+  -webkit-border-radius: 0 0 0 4px;
+  -moz-border-radius: 0 0 0 4px;
+  border-radius: 0 0 0 4px;
+  -webkit-border-radius: 0 0 0 4px;
+  -moz-border-radius: 0 0 0 4px;
+  border-radius: 0 0 0 4px;
+}
+.cake-sql-log thead:last-child tr:last-child th:last-child,
+.cake-sql-log tbody:last-child tr:last-child td:last-child {
+  -webkit-border-radius: 0 0 4px 0;
+  -moz-border-radius: 0 0 4px 0;
+  border-radius: 0 0 4px 0;
+  -webkit-border-radius: 0 0 4px 0;
+  -moz-border-radius: 0 0 4px 0;
+  border-radius: 0 0 4px 0;
+}
+.sql-log-toggle {
+  position: fixed;
+  bottom: 0px;
+  right: 0px;
+  background: #ccc;
+  cursor: pointer;
+  padding: 5px;
 }
 .hidden {
   display: none;
