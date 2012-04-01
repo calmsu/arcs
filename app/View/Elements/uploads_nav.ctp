@@ -1,4 +1,4 @@
-<div id="upload-nav" class="well">
+<div id="upload-nav" class="well well-nav">
     <span class="btn-group" style="bottom:5px;">
         <a class="btn <?php echo $active == 'batch' ? 'active' : '' ?>" 
             href="<?php echo $this->Html->url(
