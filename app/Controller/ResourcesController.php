@@ -5,7 +5,7 @@ require_once(LIB . 'arcs' . DS . 'Search.php');
 /**
  * Resources Controller
  *
- * Logic for retrieving and presenting resources, largely via ajax.
+ * Logic for retrieving and presenting resources.
  * 
  * @package      ARCS
  * @link         http://github.com/calmsu/arcs
@@ -25,9 +25,14 @@ class ResourcesController extends AppController {
         # Read-only actions, such as viewing resources and associated comments
         # are allowed by default.
         $this->Auth->allow(
-            'index', 'view', 'search', 'comments',
-            'hotspots', 'keywords', 'complete'
+            'index', 'view', 'search', 'comments', 'hotspots', 
+            'keywords', 'complete', 'zipped', 'download'
         );
+
+        if (!isset($this->request->query['related'])) {
+            $this->Resource->recursive = -1;
+            $this->Resource->flatten = true;
+        }
     }
 
     /**
@@ -35,12 +40,12 @@ class ResourcesController extends AppController {
      *
      * This is not currently implemented. The Uploads controller handles file
      * uploading (and subsequent resource creation). This action will likely
-     * handle ajax requests.
+     * handle API requests.
      */
     public function add() {
         # TODO
-        if ($this->requestIs('ajax', 'post')) return $this->json(501);
-        $this->redirect('/404');
+        if (!$this->request->is('post')) return $this->json(405);
+        $this->json(501);
     }
 
     /**
@@ -49,45 +54,37 @@ class ResourcesController extends AppController {
      * 
      * @param string $id    resource id
      */
-    public function split_pdf($id) {
+    public function split_pdf($id=null) {
+        if (!$this->request->is('post')) return $this->json(405);
+        if (!$id) return $this->json(400);
         $resource = $this->Resource->findById($id);
-        if ($resource['Resource']['mime_type'] == 'application/pdf') {
-            # Create a new collection for the split.
-            $this->Collection->permit('user_id');
-            $this->Collection->save(array(
-                'Collection' => array(
-                    'title' => $resource['Resource']['title'],
-                    'description' => 'PDF split of ' . $resource['Resource']['title'],
-                    'public' => $resource['Resource']['public'],
-                    'user_id' => $this->Auth->user('id'),
-                    'pdf' => $id
-            )));
+        if (!$resource) return $this->json(404);
+        if (!$resource['Resource']['mime_type'] == 'application/pdf') 
+            return $this->json(400);
 
-            # Make a new task to split the PDF.
-            $this->Task->queue('split_pdf', $id, $this->Collection->id);
+        # Create a new collection for the split.
+        $this->Collection->permit('user_id');
+        $this->Collection->add(array(
+            'title' => $resource['Resource']['title'],
+            'description' => 'PDF split of ' . $resource['Resource']['title'],
+            'public' => $resource['Resource']['public'],
+            'user_id' => $this->Auth->user('id'),
+            'pdf' => $id
+        ));
 
-            # If request is ajax, return a response here.
-            if ($this->request->is('ajax')) {
-                # Return 202 (meaning accepted, but not yet done).
-                return $this->json(202);
-            }
-            # Set a flash message otherwise.
-            $this->Session->setFlash('Resource has been queued for splitting.',
-                'flash_success');
-        } else {
-            if ($this->request->is('ajax')) return $this->json(400);
-            $this->Session->setFlash('Can only split a PDF file.', 'flash_error');
-        }
-        $this->redirect(array('action' => 'view', $id));
+        # Make a new task to split the PDF.
+        $this->Task->queue('split_pdf', $id, $this->Collection->id);
+        $this->json(202);
     }
 
     /**
-     * Update the resource.
+     * Edit the resource.
      *
      * @param string $id    resource id
      */
-    public function update($id) {
-        if (!$this->request->is('ajax')) return $this->redirect('/404');
+    public function edit($id=null) {
+        if (!($this->request->is('post') || $this->request->is('put'))) 
+            return $this->json(410);
         $resource = $this->Resource->findById($id);
         if (!$resource) return $this->json(404);
         if ($this->Resource->add($this->request->data)) return $this->json(200);
@@ -95,25 +92,20 @@ class ResourcesController extends AppController {
     }
 
     /**
-     * Display the resource, as either HTML or JSON.
+     * The Resource viewer.
      *
      * @param string $id            resource id
      * @param bool   $ignore_ctx    if true, the action will not redirect to the
      *                              collection view when the resource has a 
-     *                              non-null context attribute. This is 
-     *                              irrelevant for ajax requests; we'll never 
-     *                              redirect those.
+     *                              non-null context attribute. 
      */
-    public function view($id, $ignore_ctx=false) {
+    public function viewer($id, $ignore_ctx=false) {
+        $this->Resource->recursive = 1;
+        $this->Resource->flatten = false;
+
         $resource = $this->Resource->findById($id);
         $public = $resource['Resource']['public'];
         $allowed = $public || $this->Auth->loggedIn();
-
-        if ($this->requestIs('ajax', 'get')) {
-            if (!$resource) return $this->json(404);
-            if (!$allowed) return $this->json(403);
-            return $this->json(200, $resource['Resource']);
-        }
 
         if (!$resource) return $this->redirect('/404');
         if (!$allowed) {
@@ -135,6 +127,7 @@ class ResourcesController extends AppController {
 
         $this->set('resource', $resource);
         $this->set('toolbar', array('actions' => true));
+        $this->set('footer', false);
 
         # On the first request of a particular resource (usually directly 
         # after upload), we might prompt the user for additional 
@@ -145,24 +138,42 @@ class ResourcesController extends AppController {
     }
 
     /**
-     * Delete the resource, if authorized. Ajax only.
+     * Return resource info.
+     *
+     * @param string $id    resource id
+     */
+    public function view($id=null) {
+        # Bad method...
+        if (!$this->request->is('get')) return $this->json(405);
+        # No id...
+        if (!$id) return $this->json(400);
+        $resource = $this->Resource->findById($id);
+        # No resource...
+        if (!$resource) return $this->json(404);
+        $public = $resource['Resource']['public'];
+        $allowed = $public || $this->Auth->loggedIn();
+        # Not allowed...
+        if (!$allowed) return $this->json(403);
+        # Ok.
+        $this->json(200, $resource);
+    }
+
+    /**
+     * Delete the resource, if authorized.
      *
      * @param string $id    resource id
      */
     public function delete($id=null) {
-        if (!$this->request->is('ajax')) return $this->redirect('/404');
+        if (!$this->request->is('delete')) return $this->json(405);
         if (!$this->Auth->loggedIn()) return $this->json(401);
         if (!$this->Resource->delete($id)) return $this->json(500);
-        $this->json(200);
+        $this->json(204);
     }
 
     /**
-     * Search resources. Results are only returned when requested via ajax.
+     * Search resources.
      */
     public function search() {
-        if (!$this->request->is('ajax'))
-            return $this->set('title_for_layout', 'Search');
-
         $public = !$this->Auth->loggedIn();
         # Get the request parameters.
         $params = $this->request->query;
@@ -198,7 +209,7 @@ class ResourcesController extends AppController {
                 'order' => "Resource.$order DESC"
             )));
         }
-        # No facets provided. Give them back some random ones.
+        # No facets provided. Give them back some recent resources.
         $this->json(200, $this->Resource->find('all', array(
             'conditions' => $public ? array('Resource.public' => 1) : null,
             'limit' => $limit,
@@ -231,7 +242,6 @@ class ResourcesController extends AppController {
      * object containing a url to the zipfile.
      */
     public function zipped() {
-        if (!$this->request->is('ajax')) return $this->redirect('/404');
         if (!($this->request->is('post') && $this->request->data))
             return $this->json(400);
         $ids = $this->request->data['resources'];
@@ -262,7 +272,6 @@ class ResourcesController extends AppController {
      * @param string $id   resource id
      */
     public function rethumb($id) {
-        if (!$this->request->is('ajax')) return $this->redirect('/404');
         if (!$this->request->is('post')) return $this->json(400);
         if (!$this->Auth->user('id')) return $this->json(401);
         $resource = $this->Resource->findById($id);
@@ -273,17 +282,23 @@ class ResourcesController extends AppController {
     }
 
     /**
-     * Creates (or replaces) Metadata for the given resource, given an
-     * ajax POST with a JSON object or properties.
+     * Get or set (depending on HTTP method) metadata for the given resource.
      *
      * @param string $id   resource id
      */
-    public function edit_info($id) {
-        if (!$this->requestIs('ajax', 'post')) return $this->redirect('/404');
-        if (!$this->Resource->findById($id)) return $this->json(404);
-        foreach ($this->request->data as $k => $v)
-            $this->Resource->Metadatum->store($id, $k, $v);
-        $this->json(200);
+    public function metadata($id) {
+        if (!$this->Resource->exists($id)) return $this->json(404);
+        if ($this->request->is('post') && $this->request->data) {
+            foreach ($this->request->data as $k => $v)
+                $this->Resource->Metadatum->store($id, $k, $v);
+            return $this->json(200);
+        }
+        if ($this->request->is('get'))
+            return $this->json(200, $this->Resource->Metadatum->find('all', array(
+                'conditions' => array(
+                    'Metadatum.resource_id' => $id
+            ))));
+        $this->json(400);
     }
 
     /**
@@ -291,8 +306,8 @@ class ResourcesController extends AppController {
      *
      * @param string $id    resource id
      */
-    public function comments($id) {
-        if (!$this->requestIs('ajax', 'get')) return $this->json(400);
+    public function comments($id=null) {
+        if (!$this->request->is('get') || !$id) return $this->json(400);
         $this->json(200, $this->Resource->Comment->find('all',
             array('conditions' => array('Resource.id' => $id))
         ));
@@ -303,8 +318,8 @@ class ResourcesController extends AppController {
      *
      * @param string $id    resource id
      */
-    public function keywords($id) {
-        if (!$this->requestIs('ajax', 'get')) return $this->json(400);
+    public function keywords($id=null) {
+        if (!$this->request->is('get') || !$id) return $this->json(400);
         $this->json(200, $this->Resource->Keyword->find('all',
             array('conditions' => array('Resource.id' => $id))
         ));
@@ -315,8 +330,8 @@ class ResourcesController extends AppController {
      *
      * @param string $id    resource id
      */
-    public function hotspots($id) {
-        if (!$this->requestIs('ajax', 'get')) return $this->json(400);
+    public function hotspots($id=null) {
+        if (!$this->request->is('get') || !$id) return $this->json(400);
         $this->json(200, $this->Resource->Hotspot->find('all',
             array('conditions' => array('Resource.id' => $id))
         ));
@@ -327,8 +342,8 @@ class ResourcesController extends AppController {
      *
      * @param string $field   Resource field to complete.
      */
-    public function complete($field) {
-        if (!$this->requestIs('ajax', 'get')) return $this->json(400);
+    public function complete($field=null) {
+        if (!$this->request->is('get') || !$id) return $this->json(400);
         switch ($field) {
             case 'title':
                 $values = $this->Resource->complete('Resource.title');

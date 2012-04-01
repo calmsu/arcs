@@ -23,7 +23,7 @@
 
     # Home page
     Router::redirect('/', 
-        array('controller' => 'resources', 'action' => 'search')
+        array('controller' => 'pages', 'action' => 'search')
     );
 
     # Error pages
@@ -41,7 +41,7 @@
 
     # Signup
     Router::connect('/signup', 
-        array('controller' => 'users', 'action' => 'add')
+        array('controller' => 'users', 'action' => 'signup')
     );
 
     # Login/logout
@@ -59,18 +59,18 @@
 
     # Resource, collection, and user singular aliases
     Router::connect('/resource/*', 
-        array('controller' => 'resources', 'action' => 'view')
+        array('controller' => 'resources', 'action' => 'viewer')
     );
     Router::connect('/collection/*', 
-        array('controller' => 'collections', 'action' => 'view')
+        array('controller' => 'collections', 'action' => 'viewer')
     );
     Router::connect('/user/*', 
-        array('controller' => 'users', 'action' => 'view')
+        array('controller' => 'users', 'action' => 'profile')
     );
 
     # Search
     Router::connect('/search/**', 
-        array('controller' => 'resources', 'action' => 'search')
+        array('controller' => 'pages', 'action' => 'search')
     );
 
     # Search must have a trailing slash, for the client-side code's
@@ -78,8 +78,8 @@
     Router::redirect('/search', '/search/');
 
     # Configuration status
-    Router::connect('/status',
-        array('controller' => 'pages', 'action' => 'status')
+    Router::redirect('/admin',
+        array('controller' => 'admin', 'action' => 'status')
     );
 
     # Pages routes
@@ -95,14 +95,6 @@
         array('controller' => 'help', 'action' => 'display')
     );
 
-    Router::resourceMap(array(
-        array('action' => 'index', 'method' => 'GET', 'id' => false),
-        array('action' => 'view', 'method' => 'GET', 'id' => true),
-        array('action' => 'add', 'method' => 'POST', 'id' => false),
-        array('action' => 'edit', 'method' => 'PUT', 'id' => true),
-        array('action' => 'delete', 'method' => 'DELETE', 'id' => true),
-        array('action' => 'update', 'method' => 'POST', 'id' => true)
-    ));
     # Map resources for the ajax-only controllers
     Router::mapResources(array(
         'resources',
@@ -110,6 +102,7 @@
         'keywords',
         'hotspots',
         'bookmarks',
+        'users',
         'flags',
         'metadata'
     ));

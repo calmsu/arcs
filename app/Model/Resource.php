@@ -29,6 +29,7 @@ class Resource extends AppModel {
      * Note that we don't store those, so we must dynamically generate them.
      */
     public function afterFind($results, $primary) {
+        $results = parent::afterFind($results, $primary);
         # Add the thumbnail and resource urls to the results array.
         # We're using our resultsMap method, passing in $this and using it
         # internally as $ctx, as a way of accessing our methods within the 
@@ -48,8 +49,9 @@ class Resource extends AppModel {
     /**
      * Creates the file-level components of a Resource.
      *
-     * Given a file path, it will calculate a SHA1 checksum of it, then build a
-     * path for the file from the hexdigest and put it there. 
+     * Given a file path, it will calculate a SHA1 checksum of the file at the
+     * path. The file is then moved (or copied) to the uploads directory and
+     * stored content-addressably (using the hexdigest of our checksum).
      *
      * @param string $src      Path to a readable file.
      * @param array  $options  Array of options, specified below:

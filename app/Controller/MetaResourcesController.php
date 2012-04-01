@@ -2,15 +2,9 @@
 /**
  * MetaResources controller.
  *
- * This controller will only respond to ajax requests. 
- *
- * The MetaResource controller is extended in ARCS to provide the common 
- * functionality needed by the meta-resources (e.g. Comments, Tags, Hotspots).
- *
- * By default, the Auth component is configured to block unauthenticated 
- * requests to the add and delete actions. The view action is, however, allowed.
- * This behavior may be overriden by a sub-class in the beforeFilter, just be 
- * sure to call the parent beforeFilter first.
+ * The MetaResource controller is extended in ARCS and used as a template for
+ * RESTful actions. It doesn't use views--all data is sent and received as
+ * JSON.
  *
  * @package      ARCS
  * @link         http://github.com/calmsu/arcs
@@ -21,9 +15,12 @@ class MetaResourcesController extends AppController {
 
     public function beforeFilter() {
         parent::beforeFilter();
-        # This controller only accepts ajax requests.
-        if (!$this->request->is('ajax')) return $this->redirect('/404');
         $this->Auth->allow('view');
+        $model = $this->modelClass;
+        if (!isset($this->request->query['related'])) {
+            $this->$model->recursive = -1;
+            $this->$model->flatten = true;
+        }
     }
 
     /**
@@ -37,6 +34,20 @@ class MetaResourcesController extends AppController {
         $this->request->data['user_id'] = $this->Auth->user('id');
         if (!$this->$model->add($this->request->data)) return $this->json(500);
         $this->json(201);
+    }
+
+    /**
+     * Edit a meta-resource
+     */
+    public function edit($id) {
+        $model = $this->modelClass;
+        $this->Model->read(null, $id);
+        if (!$this->$model->exists()) return $this->json(404);
+        if (!$this->request->data) return $this->json(400);
+        if (!($this->request->is('put') || $this->request->is('post'))) 
+            return $this->json(405);
+        if (!$this->$model->add($this->request->data)) return $this->json(500);
+        $this->json(200);
     }
 
     /**

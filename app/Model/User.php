@@ -10,11 +10,15 @@ class User extends AppModel {
         'Hotspot',
         'Collection'
     );
+    public $whitelist = array(
+        'name', 'email', 'username', 'password'
+    );
 
     /**
      * Don't give out the user's hashed password to non-primary finds. 
      */
     function afterFind($results, $primary) {
+        $results = parent::afterFind($results, $primary);
         if (!$primary) {
             $results = $this->resultsMap($results, function($r) {
                 $r['password'] = '****';
@@ -79,8 +83,10 @@ class User extends AppModel {
      * Hash the password before saving it.
      */
     function beforeSave() {
-        $this->data['User']['password'] = AuthComponent::password(
-            $this->data['User']['password']
-        );
+        if (isset($this->data['User']['password'])) {
+            $this->data['User']['password'] = AuthComponent::password(
+                $this->data['User']['password']
+            );
+        }
     }
 }

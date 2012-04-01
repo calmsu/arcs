@@ -13,29 +13,12 @@ class PagesController extends AppController {
 
     public function beforeFilter() {
         parent::beforeFilter();
-        $this->Auth->allow('display');
+        $this->Auth->allow('display', 'search');
     }
 
-    /**
-     * Displays information about the system configuration.
-     */
-    public function status() {
-        if ($this->Auth->user('role') > 0) {
-            $this->setFlash('You must be an admin user to view the status page.');
-            $this->redirect('/');
-        }
-        $uploads_path = Configure::read('paths.uploads');
-        $this->set('uploads', array(
-            'url' => Configure::read('urls.uploads'),
-            'path' => $uploads_path,
-            'exists' => is_dir($uploads_path),
-            'writable' => is_writable($uploads_path),
-            'executable' => is_executable($uploads_path)
-        ));
-        $this->set('dependencies', array(
-            'Ghostscript' => is_executable(Configure::read('executables.ghostscript')),
-            'Imagemagick' => class_exists('Imagick')
-        ));
+    public function search() {
+        $this->set('footer', false);
+        return $this->set('title_for_layout', 'Search');
     }
 
     /**

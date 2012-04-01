@@ -1,8 +1,36 @@
 <?php
 class AppModel extends Model {
 
+    /**
+     * When `flatten` is true, we'll flatten results to their bare model
+     * fields. So instead of this:
+     *
+     *   array(
+     *      'Post' => array(
+     *          'id' => 1,
+     *          'title' => 'Some title'
+     *      )
+     *   )
+     *
+     * ...you get this:
+     *
+     *   array(
+     *      'id' => 1,
+     *      'title' => 'Some title'
+     *   )
+     *
+     * This should be used in conjunction with the `recursive` property.
+     */
     public $flatten = false;
 
+    /**
+     * Flatten results. When the `afterFind` method is defined in extending
+     * models, be sure to include:
+     *
+     *  $results = parent::afterFind($results, $primary);
+     *
+     * ...if you want to keep the flatten functionality.
+     */
     public function afterFind($results, $primary) {
         if ($this->flatten) {
             if (isset($results[$this->name]))
@@ -19,7 +47,7 @@ class AppModel extends Model {
     }
 
     /**
-     * Temporarily permit a field, by adding it to the whitelist.
+     * Temporarily permit a field for saving, by adding it to the whitelist.
      *
      * @param  field  one or more fields as arguments.
      * @return void
@@ -38,8 +66,7 @@ class AppModel extends Model {
      * @param conditions  an array of conditions that will be passed along
      *                    to the find method.
      */
-    public function complete($field, $conditions=null) {
-        $conditions = is_array($conditions) ? $conditions : array();
+    public function complete($field, $conditions=array()) {
         $values = $this->find('list', array(
             'fields' => array($field),
             'conditions' => $conditions,
@@ -49,9 +76,15 @@ class AppModel extends Model {
     }
 
     /*
-     * Convenience method for saving a model from a simple array of
-     * fields. It wraps the given array in another array and sends it
-     * off to save().
+     * Convenience method for saving a model without needing to wrap it
+     * in an outer HABTM array, as in:
+     *
+     *   Model::save(array('Model' => array('title' => 'Some Title')))
+     *
+     * Instead, just do:
+     *
+     *   Model::add(array('title' => 'Some Title'))
+     *
      */
     public function add($data) {
         return $this->save(array($this->name => $data));

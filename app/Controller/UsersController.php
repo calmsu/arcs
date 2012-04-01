@@ -10,7 +10,9 @@ class UsersController extends AppController {
 
     public function beforeFilter() {
         parent::beforeFilter();
-        $this->Auth->allow('add', 'login');
+        $this->Auth->allow('signup', 'login', 'reset_password');
+        $this->User->flatten = true;
+        $this->User->recursive = -1;
     }
 
     /**
@@ -28,10 +30,17 @@ class UsersController extends AppController {
         ))));
     }
 
-    /**
-     * Add a new user.
-     */
     public function add() {
+        if (!($this->request->is('post') && $this->request->data))
+            return $this->json(400);
+        if (!$this->User->add($this->request->data)) return $this->json(400);
+        $this->json(201, $this->User->findById($this->User->id));
+    }
+
+    /**
+     * User signup.
+     */
+    public function signup() {
         if ($this->Auth->loggedIn()) {
             $this->Session->setFlash("You can't signup while logged in.", 
                                      'flash_error');
@@ -54,10 +63,46 @@ class UsersController extends AppController {
     }
 
     /**
+     * Edit a user.
+     *
+     * @param string $id   user id
+     */
+    public function edit($id=null) {
+        if (!($this->request->is('put') || $this->request->is('post'))) 
+            return $this->json(405);
+        if (!$this->request->data || !$id) return $this->json(400);
+        $user = $this->User->read(null, $id);
+        if (!$user) return $this->json(404);
+        # Must be editing own account, or an admin.
+        if (!($this->User->id == $this->Auth->user('id') || $this->Auth->user('role') == 0))
+            return $this->json(403);
+        # Only admins can change user roles.
+        if ($this->Auth->user('role') == 0)
+            $this->User->permit('role');
+        if (!$this->User->add($this->request->data)) return $this->json(500);
+        # Update the Auth Session var, if necessary.
+        if ($id == $this->Auth->user('id'))
+            $this->Session->write('Auth.User', $this->User->findById($id));
+        $this->json(200, $this->User->findById($id));
+    }
+
+    public function delete($id=null) {
+        if (!$this->request->is('delete')) return $this->json(405);
+        if (!$this->Auth->user('role') == 0) return $this->json(403);
+        if (!$this->User->findById($id)) return $this->json(404);
+        if (!$this->User->delete($id)) return $this->json(500);
+        $this->json(204);
+    }
+
+    /**
      * Display the login form or authenticate a POSTed form.
+     *
+     * @param string $id   user id
      */
     public function login() {
         $this->set('toolbar', false);
+        $this->set('footer', false);
+        $this->User->flatten = false;
         $redirect = $this->Session->read('redirect');
         if ($redirect) {
             $this->Session->write('Auth.redirect', $redirect);
@@ -81,11 +126,19 @@ class UsersController extends AppController {
     }
 
     /**
-     * Display information about a user.
-     *
-     * @param ref  username or id of an existing user
+     * Reset the user's password.
      */
-    public function view($ref) {
+    public function reset_password() {
+    }
+
+    /**
+     * Display the user's profile.
+     *
+     * @param string $ref  username or id of an existing user
+     */
+    public function profile($ref) {
+        $this->User->flatten = false;
+        $this->User->recursive = 1;
         $user = $this->User->findByRef($ref);
         if (!$user) {
             $this->redirect('404');

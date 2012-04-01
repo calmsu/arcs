@@ -5,7 +5,6 @@
  * @package      ARCS
  * @copyright    Copyright 2012, Michigan State University Board of Trustees
  */
-App::uses('Xml', 'Utility');
 class AppController extends Controller {
     public $helpers = array('Html', 'Form', 'Session', 'Assets');
 
@@ -24,7 +23,7 @@ class AppController extends Controller {
             'id' => $this->Auth->user('id'),
             'name' => $this->Auth->user('name'),
             'email' => $this->Auth->user('email'),
-            'role' => intVal($this->Auth->user('role')),
+            'role' => $this->Auth->loggedIn() ? intVal($this->Auth->user('role')) : 3,
             'username' => $this->Auth->user('username')
         ));
         $this->set('toolbar', array(
