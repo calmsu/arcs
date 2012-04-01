@@ -7,7 +7,7 @@ class arcs.views.Profile extends Backbone.View
     new arcs.views.Modal
       title: 'Edit Your Account'
       subtitle: "If you'd like your password to stay the same, leave the " +
-        "password fields blank."
+        "password field blank."
       inputs:
         name:
           value: @model.get 'name'
