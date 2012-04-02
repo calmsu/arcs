@@ -29,34 +29,34 @@
   html{
   	max-width: 940px;
   	min-width: 360px;
-  }
+  }//html
   
   .fluid-container{
   	padding-left: 0px !important;
   	min-width: 360px;
   	max-width: 940px;
   	width: 100%;
-  }
+  }//.fluid-container
   
   // Unfix the navbar
   .navbar-fixed {
     position: absolute;
-  }
+  }//.navbar-fixed
   
   div#information table tbody tr td {
     padding: 2px 4px;
     line-height: @baseFontSize + 1;
-  }
+  }//#information
   
   .navbar-fixed .nav {
     float: none;
-  }
+  }//.navbar-fixed
 
   // Remove width from containers
   .container {
     width: auto;
     padding: 0 20px;
-  }
+  }//.container
 
   // Make all columns even
   .row > [class*="span"] {
@@ -64,11 +64,11 @@
     display: block;
     width: auto;
     margin: 0;
-  }
+  }//.row
 
   .tab-content {
   	padding: 5px;
-  }
+  }//tab-content
   
   #resource-wrapper {
     height: 430px;
@@ -78,7 +78,7 @@
       max-height:430px;
       max-width: 430px;
       .unselectable();
-	}
+	}//resource img
 	
 	.tab-wrapper {
       width:280px;
@@ -88,12 +88,12 @@
       
       .tabs > li > a {
         padding: 4px; 
-      }
+      }//tabs
       .tab-pane.active{
         height: 395px;
         overflow: auto;
-      }
-	}
+      }//tab-pane
+	}///tab-wrapper
 
 	.es-carousel-wrapper{
       height: 95px !important;
@@ -104,9 +104,29 @@
       width: 100%;
       overflow: hidden;
       border-image: initial;
-	}
-  }
-}
+	}//carousel-wrapper
+  }//#resource-wrapper
+  
+	#credits{
+		.row{
+			div{
+				padding: 10px 0;
+				border-bottom: solid thin @grayLight;
+				margin-bottom: 10px;
+			
+				&.quick-links{
+					padding-top: 0;
+				}//.quick-links
+				
+				&:last-child{
+					border-bottom: none;
+				}//last-child
+				
+			}//div
+		}//.row
+	}//#credits	
+  
+}//@media 360px-940px
 
 
 // PORTRAIT TABLET TO DEFAULT DESKTOP
@@ -132,6 +152,7 @@
   .container {
     width: @siteWidth;
   }
+  
 
   // Default columns
   .span1     { .columns(1); }
@@ -160,13 +181,47 @@
   .offset10  { .offset(10); }
   .offset11  { .offset(11); }
   .offset12  { .offset(12); }
+  
+	#credits{
+		.row{
+			div{
+				padding: 10px 0;
+				border-bottom: solid thin @grayLight;
+				margin-bottom: 10px;
+			
+				&.quick-links{
+					padding-top: 0;
+				}//.quick-links
+				
+				&:last-child{
+					border-bottom: none;
+				}//last-child
+				
+				img{
+					display: block;
+					
+					&#neh_logo{
+						width: 200px;
+					}//#neh-logo
+					
+					&#msu_wordmark{
+						height: 55px;
+					}//msu_wordmark
+					
+				}//img
+				
+			}//div
+		}//.row
+	}//#credits	
 
-}
+
+}//portrait-tablet
 
 // LANDSCAPE TABLET
 // ----------------
 
 @media (min-width: 940px) and (max-width: 1024px) and (max-height: 768px){
+    
   #resource-wrapper {
     height: 532px;
     min-width: 946px;
@@ -188,8 +243,7 @@
 // LARGE DESKTOP & UP
 // ------------------
 
-@media (min-width: 1210px) and (min-height: 850px){
-
+@media (min-width: 1210px) and (min-height: 850px){	
   // Reset grid variables
   @gridColumns:       12;
   @gridColumnWidth:   70px;
@@ -210,6 +264,8 @@
   [class*="span"] {
     margin-left: @gridGutterWidth;
   }
+  
+  
 
   // Default columns
   .span1     { .columns(1); }
@@ -248,14 +304,14 @@
       min-height:700px;
       max-width: 800px;
       .unselectable();
-    }
+    }//#resource img
     
     .tab-wrapper {
       width:340px;
       height:530px;
-    }
-  }
-}
+    }//tab-wrapper
+  }//#resource-wrapper
+}//large desktop and up
 
 @media (min-width: 1360px) and (min-height: 950px) {
 

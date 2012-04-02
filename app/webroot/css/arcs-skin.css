@@ -5970,6 +5970,17 @@ footer#credits #quick-links ul li:last-child {
     overflow: hidden;
     border-image: initial;
   }
+  #credits .row div {
+    padding: 10px 0;
+    border-bottom: solid thin #999999;
+    margin-bottom: 10px;
+  }
+  #credits .row div.quick-links {
+    padding-top: 0;
+  }
+  #credits .row div:last-child {
+    border-bottom: none;
+  }
 }
 @media (min-width: 768px) and (max-width: 940px) {
   .container {
@@ -6046,6 +6057,26 @@ footer#credits #quick-links ul li:last-child {
   }
   .offset12 {
     margin-left: 788px;
+  }
+  #credits .row div {
+    padding: 10px 0;
+    border-bottom: solid thin #999999;
+    margin-bottom: 10px;
+  }
+  #credits .row div.quick-links {
+    padding-top: 0;
+  }
+  #credits .row div:last-child {
+    border-bottom: none;
+  }
+  #credits .row div img {
+    display: block;
+  }
+  #credits .row div img#neh_logo {
+    width: 200px;
+  }
+  #credits .row div img#msu_wordmark {
+    height: 55px;
   }
 }
 @media (min-width: 940px) and (max-width: 1024px) and (max-height: 768px) {
