@@ -32,6 +32,6 @@
             <?php endif ?>
         </div>
         <?php if ($footer) echo $this->element('footer') ?>
-        <?php if ($user['role'] == 0 && Configure::read('debug')) echo $this->element('sql') ?> 
+        <?php if ($user['role'] == 0 && Configure::read('debug') == 2) echo $this->element('sql') ?> 
     </body>
 </html>
