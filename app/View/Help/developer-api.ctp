@@ -56,7 +56,7 @@ authenticate your request. </p>
 </blockquote>
 <h3>Status Codes</h3>
 <p>Each response is accompanied by an HTTP status code that indicates the result
-of the requested action. You can read about these in detail in <a href="http://www.w3.org/Protocols/rfc2616/rfc2616-sec9.html#sec9">RFC 2616</a>.
+of the requested action. You can read about these in detail in <a href="http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10">RFC 2616</a>.
 The ones we've used frequently are also explained below:</p>
 <table>
 <thead>
@@ -209,6 +209,25 @@ The ones we've used frequently are also explained below:</p>
 <pre><code>POST /resources/search
 </code></pre>
 <p><strong>Input</strong></p>
+<table>
+<thead>
+<tr>
+<th>Key</th>
+<th>Value</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>category</code></td>
+<td>Facet category. See the Searching <a href="searching">documentation</a>.</td>
+</tr>
+<tr>
+<td><code>value</code></td>
+<td>The value you are testing for.</td>
+</tr>
+</tbody>
+</table>
+<p>Provide an array of facet objects. For example:</p>
 <pre><code>[
   {
     "category": "user",
@@ -258,7 +277,33 @@ The ones we've used frequently are also explained below:</p>
 <p><strong>Response</strong>  <br />
 <code>204 Deleted</code></p>
 <hr />
-<h2>Collections</h2>
+<h2>Metadata</h2>
+<h3>Getting metadata for a resource</h3>
+<pre><code>GET /resources/metadata/:id
+</code></pre>
+<p><strong>Response</strong><br />
+<code>200 Ok</code></p>
+<pre><code>{
+  "language": "Hebrew",
+  "description": "An artifact",
+  "location": "Egypt",
+  "creator": "Nick Reynolds"
+}
+</code></pre>
+<hr />
+<h3>Setting metadata for a resource</h3>
+<pre><code>POST /resources/metadata/:id
+</code></pre>
+<p><strong>Input</strong></p>
+<pre><code>{
+  "copyright": "2012, Michigan State University",
+  "language": "English"
+  "location": "East Lansing, MI"
+}
+</code></pre>
+<p><strong>Response</strong><br />
+<code>201 Created</code></p>
+<hr />
 <h2>Comments</h2>
 <h3>Getting a comment by id</h3>
 <pre><code>GET /comments/:id
@@ -278,6 +323,25 @@ The ones we've used frequently are also explained below:</p>
 <pre><code>POST /comments
 </code></pre>
 <p><strong>Input</strong></p>
+<table>
+<thead>
+<tr>
+<th>Key</th>
+<th>Value</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>resource_id</code></td>
+<td>The id of the resource being commented on.</td>
+</tr>
+<tr>
+<td><code>content</code></td>
+<td>Comment, as a string.</td>
+</tr>
+</tbody>
+</table>
+<p>For example:</p>
 <pre><code>{
   "resource_id": "4f136ac5-b264-485f-952e-343c54c5f7e9",
   "content": "This a sample comment."
@@ -301,13 +365,44 @@ The ones we've used frequently are also explained below:</p>
 <pre><code>STUB
 </code></pre>
 <hr />
+<h3>Getting keywords for a resource</h3>
+<pre><code>GET /resource/keywords/:id
+</code></pre>
+<p><strong>Response</strong>
+<code>200 Ok</code></p>
+<pre><code>STUB
+</code></pre>
+<hr />
 <h3>Creating a new keyword</h3>
 <pre><code>POST /keywords
 </code></pre>
 <p><strong>Input</strong></p>
+<table>
+<thead>
+<tr>
+<th>Key</th>
+<th>Value</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>resource_id</code></td>
+<td>The id of the resource that the keyword will belong</td>
+</tr>
+<tr>
+<td></td>
+<td>to.</td>
+</tr>
+<tr>
+<td><code>keyword</code></td>
+<td>Keyword string.</td>
+</tr>
+</tbody>
+</table>
+<p>For example:</p>
 <pre><code>{
-  "keyword": "East-Field",
-  "resource_id": "4f136ac5-b264-485f-952e-343c54c5f7e9"
+  "resource_id": "4f136ac5-b264-485f-952e-343c54c5f7e9",
+  "keyword": "East-Field"
 }
 </code></pre>
 <p><strong>Response</strong>   <br />
@@ -317,6 +412,21 @@ The ones we've used frequently are also explained below:</p>
 <pre><code>POST|PUT /keywords/:id
 </code></pre>
 <p><strong>Input</strong></p>
+<table>
+<thead>
+<tr>
+<th>Key</th>
+<th>Value</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>keyword</code></td>
+<td>Keyword string.</td>
+</tr>
+</tbody>
+</table>
+<p>For example:</p>
 <pre><code>{
   "keyword": "West-Field"
 }

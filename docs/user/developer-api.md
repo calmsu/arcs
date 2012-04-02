@@ -69,7 +69,7 @@ You can do this by sending a `POST` to the login action, as shown below:
 ### Status Codes
 
 Each response is accompanied by an HTTP status code that indicates the result
-of the requested action. You can read about these in detail in [RFC 2616][2].
+of the requested action. You can read about these in detail in [RFC 2616][3].
 The ones we've used frequently are also explained below:
 
 Status Code        | Explanation
@@ -172,6 +172,13 @@ Key      | Value
 
 **Input**
 
+Key        | Value
+-----------|----------------------------------------------------
+`category` | Facet category. See the Searching [documentation](searching).
+`value`    | The value you are testing for.
+
+Provide an array of facet objects. For example:
+
     [
       {
         "category": "user",
@@ -224,8 +231,39 @@ Key      | Value
 `204 Deleted`
 ---
  
-Collections
------------
+Metadata
+--------
+
+### Getting metadata for a resource
+
+    GET /resources/metadata/:id
+
+**Response**  
+`200 Ok`
+
+    {
+      "language": "Hebrew",
+      "description": "An artifact",
+      "location": "Egypt",
+      "creator": "Nick Reynolds"
+    }
+---
+
+### Setting metadata for a resource
+
+    POST /resources/metadata/:id
+
+**Input**
+
+    {
+      "copyright": "2012, Michigan State University",
+      "language": "English"
+      "location": "East Lansing, MI"
+    }
+
+**Response**  
+`201 Created`
+---
  
 Comments
 --------
@@ -251,6 +289,13 @@ Comments
     POST /comments
 
 **Input**
+
+Key           | Value
+--------------|----------------------------------------------------
+`resource_id` | The id of the resource being commented on.
+`content`     | Comment, as a string.
+
+For example:
     
     {
       "resource_id": "4f136ac5-b264-485f-952e-343c54c5f7e9",
@@ -282,15 +327,34 @@ Keywords
     STUB
 ---
 
+### Getting keywords for a resource
+
+    GET /resource/keywords/:id
+
+**Response**
+`200 Ok`
+
+    STUB
+
+---
+
 ### Creating a new keyword
 
     POST /keywords
 
 **Input**
+
+Key           | Value
+--------------|----------------------------------------------------
+`resource_id` | The id of the resource that the keyword will belong 
+              | to.
+`keyword`     | Keyword string.
     
+For example:
+
     {
-      "keyword": "East-Field",
-      "resource_id": "4f136ac5-b264-485f-952e-343c54c5f7e9"
+      "resource_id": "4f136ac5-b264-485f-952e-343c54c5f7e9",
+      "keyword": "East-Field"
     }
 
 **Response**     
@@ -303,6 +367,12 @@ Keywords
 
 **Input**
     
+Key       | Value
+----------|-----------------
+`keyword` | Keyword string.
+
+For example:
+
     {
       "keyword": "West-Field"
     }
