@@ -44,6 +44,7 @@ class arcs.views.admin.Users extends Backbone.View
           class: 'btn success'
           callback: (vals) =>
             arcs.loader.show()
+            user.unset 'password'
             user.save vals,
               success: arcs.loader.hide
         cancel: ->
@@ -56,12 +57,12 @@ class arcs.views.admin.Users extends Backbone.View
         name:
           focused: true
         username: true 
-        role:
-          type: 'select'
-          options: @USER_ROLES
         email: true
         password: 
           type: 'password'
+        role:
+          type: 'select'
+          options: @USER_ROLES
       buttons:
         save:
           class: 'btn success'
@@ -83,7 +84,8 @@ class arcs.views.admin.Users extends Backbone.View
       inputs:
         email: 
           focused: true
-        message: true
+        message: 
+          type: 'textarea'
       buttons:
         send:
           class: 'btn success'

@@ -69,6 +69,7 @@
             "class": 'btn success',
             callback: function(vals) {
               arcs.loader.show();
+              user.unset('password');
               return user.save(vals, {
                 success: arcs.loader.hide
               });
@@ -89,13 +90,13 @@
             focused: true
           },
           username: true,
-          role: {
-            type: 'select',
-            options: this.USER_ROLES
-          },
           email: true,
           password: {
             type: 'password'
+          },
+          role: {
+            type: 'select',
+            options: this.USER_ROLES
           }
         },
         buttons: {
@@ -127,7 +128,9 @@
           email: {
             focused: true
           },
-          message: true
+          message: {
+            type: 'textarea'
+          }
         },
         buttons: {
           send: {

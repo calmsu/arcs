@@ -6,8 +6,8 @@
 
 <div id="status-info">
 <h3>Core</h3>
-<div class="alert alert-<?php echo ($core['debug'] == 0 ? 'info' : 'error') ?>">
-    Debug is set to <code><?php echo $core['debug'] ?></code>
+<div class="alert alert-<?php echo ($core['debug'] == 0 ? 'success' : 'warning') ?>">
+    Debug is set to <code><?php echo $core['debug'] ?></code>.
 </div>
 <?php if ($core['database']): ?>
 <div class="alert alert-success">

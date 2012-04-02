@@ -11,16 +11,16 @@ class Task extends AppModel {
     public $flatten = true;
     public $recursive = -1;
     public $whitelist = array(
-        'resource_id', 'job', 'data', 'status', 'progress', 'error'
+        'resource_id', 'job', 'data', 'status', 'active', 'progress', 'error'
     );
 
     /**
      * Queues a task by creating a Task given a resource
      * id and a job name.
      *
-     * @param job
-     * @param id
-     * @param data
+     * @param string $job
+     * @param string $id
+     * @param string $data
      */
     public function queue($job, $id, $data=null) {
         return $this->add(array(
@@ -36,8 +36,8 @@ class Task extends AppModel {
      * Pops a task from the the queue. This amounts to finding
      * the oldest, uncompleted, non-active task in the table.
      *
-     * @return    array containing task properties, or false if 
-     *            no existing tasks meet these criteria.
+     * @return mixed  array of task properties, or false if no 
+     *                existing tasks meet these criteria.
      */
     public function pop() {
         $task = $this->find('first', array(
@@ -55,7 +55,7 @@ class Task extends AppModel {
     /**
      * Marks a task active so that other workers do not try to take it.
      *
-     * @param id
+     * @param string $id
      */
     public function start($id) {
         $this->read(null, $id);

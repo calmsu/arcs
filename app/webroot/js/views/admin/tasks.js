@@ -20,12 +20,47 @@
     };
 
     Tasks.prototype.initialize = function() {
-      this.collection.on('add remove change sync', this.render, this);
-      return this.filterTasks();
+      this.collection.on('add remove change reset sync', this.render, this);
+      this.collection.url = arcs.baseURL + 'tasks';
+      this.filterTasks();
+      this.lastUpdated = new Date();
+      this.autoUpdate = false;
+      setInterval(_.bind(this.render, this), 5000);
+      return setInterval(_.bind(this.update, this), 15000);
     };
 
     Tasks.prototype.events = {
-      'keyup #filter-input': 'filterTasks'
+      'keyup #filter-input': 'filterTasks',
+      'change #auto-update': 'setUpdate',
+      'click #rerun-btn': 'rerunTask',
+      'click #delete-btn': 'deleteTask'
+    };
+
+    Tasks.prototype.rerunTask = function(e) {
+      var task,
+        _this = this;
+      task = this.collection.get($(e.currentTarget).data('id'));
+      return arcs.confirm("Are you sure you want to re-run this task?", "Task <b>" + task.id + "</b> will be queued.", function() {
+        task.set('status', '1');
+        return task.save({
+          success: function() {
+            return arcs.notify("Task successfully queued.");
+          }
+        });
+      });
+    };
+
+    Tasks.prototype.deleteTask = function(e) {
+      var task,
+        _this = this;
+      task = this.collection.get($(e.currentTarget).data('id'));
+      return arcs.confirm("Are you sure you want to delete this task?", "Task <b>" + task.id + "</b> will be deleted.", function() {
+        return task.destroy({
+          success: function() {
+            return arcs.notify("Task successfully deleted.");
+          }
+        });
+      });
     };
 
     Tasks.prototype.filterTasks = function() {
@@ -34,6 +69,16 @@
       if (this.TASK_STATUSES[val] != null) val = this.TASK_STATUSES[val];
       this.filter = new RegExp(val, 'i');
       return this.render();
+    };
+
+    Tasks.prototype.setUpdate = function() {
+      return this.autoUpdate = !this.autoUpdate;
+    };
+
+    Tasks.prototype.update = function() {
+      if (!this.autoUpdate) return;
+      this.collection.fetch();
+      return this.lastUpdated = new Date();
     };
 
     Tasks.prototype.render = function() {
@@ -53,6 +98,7 @@
           return _results;
         })()
       }));
+      this.$('#time').html(relativeDate(this.lastUpdated));
       return this;
     };
 

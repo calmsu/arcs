@@ -16,16 +16,17 @@
       <% } if (t.status == 1) { %>
       <span class="label label-info">pending</span>
       <% } if (t.status == 2) { %>
-      <span class="label label-important">error</span>
+      <span class="label label-important" rel="popover" data-original-title="Error"
+        data-content="<%= t.error %>">error</span>
       <% } %>
     </td>
     <td><%= t.active ? 'yes' : 'no' %></td>
     <td><a href="<%= arcs.baseURL + 'resource/' + t.resource_id %>">Resource</a></td>
     <td><%= relativeDate(new Date(t.created)) %></td>
     <td>
-      <button id="redo-btn" class="btn small"
+      <button id="rerun-btn" class="btn small"
         data-id="<%= t.id %>">Redo</button>
-      <button id="redo-btn" class="btn danger small"
+      <button id="delete-btn" class="btn danger small"
         data-id="<%= t.id %>">Delete</button>
     </td>
   </tr>

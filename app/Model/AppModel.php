@@ -60,6 +60,19 @@ class AppModel extends Model {
     }
 
     /**
+     * Complement to `permit`. Temporarily forbid a field for saving.
+     *
+     * @param  field  one or more fields as arguments.
+     * @return void
+     */
+    public function forbid($field) {
+        $fields = func_get_args();
+        foreach ($fields as $f) {
+            unset($this->whitelist[$f]);
+        }
+    }
+
+    /**
      * Convenience method for generating autocompletion arrays.
      *
      * @param field       e.g. Resource.title
@@ -67,11 +80,14 @@ class AppModel extends Model {
      *                    to the find method.
      */
     public function complete($field, $conditions=array()) {
+        $_flatten = $this->flatten;
+        $this->flatten = false;
         $values = $this->find('list', array(
             'fields' => array($field),
             'conditions' => $conditions,
             'limit' => 100
         ));
+        $this->flatten = $_flatten;
         return array_unique(array_values($values));
     }
 
