@@ -62,7 +62,6 @@ arcs.utils.complete =
     ]
     _.uniq _.union dates, aliases
 
-# Make sure arcs.utils.complete methods are called with that context.
 _.bindAll(arcs.utils.complete)
 
 

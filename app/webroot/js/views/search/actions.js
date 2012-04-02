@@ -44,7 +44,8 @@
       'click #keyword-btn': 'keywordSelected',
       'click #download-btn': 'downloadSelected',
       'click #zipped-btn': 'zippedDownloadSelected',
-      'click #rethumb-btn': 'rethumbSelected'
+      'click #rethumb-btn': 'rethumbSelected',
+      'click #split-btn': 'splitSelected'
     };
 
     SearchActions.prototype.openResult = function(result) {
@@ -161,7 +162,23 @@
       _results = [];
       for (_i = 0, _len = _ref.length; _i < _len; _i++) {
         result = _ref[_i];
-        _results.push($.post(arcs.baseURL + 'resources/rethumb/' + result.id));
+        _results.push($.post(arcs.baseURL + 'resources/rethumb/' + result.id, function() {
+          return arcs.notify('Resource successfully queued for split.');
+        }));
+      }
+      return _results;
+    };
+
+    SearchActions.prototype.splitSelected = function() {
+      var result, _i, _len, _ref, _results;
+      if (!this.results.anySelected()) return;
+      _ref = this.results.selected();
+      _results = [];
+      for (_i = 0, _len = _ref.length; _i < _len; _i++) {
+        result = _ref[_i];
+        _results.push($.post(arcs.baseURL + 'resources/split_pdf/' + result.id, function() {
+          return arcs.notify('Resource successfully queued for split.');
+        }));
       }
       return _results;
     };

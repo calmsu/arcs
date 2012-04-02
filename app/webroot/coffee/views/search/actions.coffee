@@ -36,6 +36,7 @@ class arcs.views.SearchActions extends Backbone.View
     'click #download-btn'    : 'downloadSelected'
     'click #zipped-btn'      : 'zippedDownloadSelected'
     'click #rethumb-btn'     : 'rethumbSelected'
+    'click #split-btn'       : 'splitSelected'
 
   # Open the resource view for a result.
   openResult: (result) ->
@@ -125,7 +126,14 @@ class arcs.views.SearchActions extends Backbone.View
   rethumbSelected: ->
     return unless @results.anySelected()
     for result in @results.selected()
-      $.post arcs.baseURL + 'resources/rethumb/' + result.id
+      $.post arcs.baseURL + 'resources/rethumb/' + result.id, ->
+        arcs.notify 'Resource successfully queued for split.'
+
+  splitSelected: ->
+    return unless @results.anySelected()
+    for result in @results.selected()
+      $.post arcs.baseURL + 'resources/split_pdf/' + result.id, ->
+        arcs.notify 'Resource successfully queued for split.'
 
   # Opens a modal and prompts the user for information about flagging.
   flagSelected: ->
