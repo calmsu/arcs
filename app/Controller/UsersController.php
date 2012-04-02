@@ -33,6 +33,8 @@ class UsersController extends AppController {
     public function add() {
         if (!($this->request->is('post') && $this->request->data))
             return $this->json(400);
+        if ($this->Auth->user('role') == 0)
+            $this->User->permit('role');
         if (!$this->User->add($this->request->data)) return $this->json(400);
         $this->json(201, $this->User->findById($this->User->id));
     }
@@ -77,8 +79,10 @@ class UsersController extends AppController {
         if (!($this->User->id == $this->Auth->user('id') || $this->Auth->user('role') == 0))
             return $this->json(403);
         # Only admins can change user roles.
-        if ($this->Auth->user('role') == 0)
+        if ($this->Auth->user('role') == 0) {
             $this->User->permit('role');
+            $this->User->forbid('password');
+        }
         if (!$this->User->add($this->request->data)) return $this->json(500);
         # Update the Auth Session var, if necessary.
         if ($id == $this->Auth->user('id'))
@@ -151,10 +155,7 @@ class UsersController extends AppController {
      * autocompletion purposes. Responds only to ajax requests.
      */
     public function complete() {
-        if ($this->requestIs('ajax', 'get'))
-            return $this->json(200, $this->User->find('list', array(
-                'fields' => array('User.name')
-            )));
-        $this->redirect('/404');
+        if (!$this->request->is('get')) return $this->json(405);
+        return $this->json(200, $this->User->complete('User.name'));
     }
 }

@@ -88,6 +88,7 @@ class WorkerShell extends AppShell {
     public function split_pdf($id, $collection_id) {
         # Find the PDF resource.
         $resource = $this->Resource->findById($id);
+        $resource = $resource['Resource'];
 
         # Get and set its path.
         $path = $this->Resource->path($resource['sha'], $resource['file_name']);

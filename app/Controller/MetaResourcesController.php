@@ -33,7 +33,7 @@ class MetaResourcesController extends AppController {
         $this->$model->permit('user_id');
         $this->request->data['user_id'] = $this->Auth->user('id');
         if (!$this->$model->add($this->request->data)) return $this->json(500);
-        $this->json(201);
+        $this->json(201, $this->$model->findById($this->$model->id));
     }
 
     /**
@@ -41,7 +41,7 @@ class MetaResourcesController extends AppController {
      */
     public function edit($id) {
         $model = $this->modelClass;
-        $this->Model->read(null, $id);
+        $this->$model->read(null, $id);
         if (!$this->$model->exists()) return $this->json(404);
         if (!$this->request->data) return $this->json(400);
         if (!($this->request->is('put') || $this->request->is('post'))) 
@@ -69,7 +69,7 @@ class MetaResourcesController extends AppController {
      */
     public function delete($id) {
         $model = $this->modelClass;
-        if (!$this->$model->exists($id)) return $this->json(404);
+        if (!$this->$model->findById($id)) return $this->json(404);
         if (!$this->$model->delete($id)) return $this->json(500);
         $this->json(204);
     }

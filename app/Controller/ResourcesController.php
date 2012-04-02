@@ -59,15 +59,14 @@ class ResourcesController extends AppController {
         if (!$id) return $this->json(400);
         $resource = $this->Resource->findById($id);
         if (!$resource) return $this->json(404);
-        if (!$resource['Resource']['mime_type'] == 'application/pdf') 
-            return $this->json(400);
+        if (!$resource['mime_type'] == 'application/pdf') return $this->json(400);
 
         # Create a new collection for the split.
         $this->Collection->permit('user_id');
         $this->Collection->add(array(
-            'title' => $resource['Resource']['title'],
-            'description' => 'PDF split of ' . $resource['Resource']['title'],
-            'public' => $resource['Resource']['public'],
+            'title' => $resource['title'],
+            'description' => 'PDF split of ' . $resource['title'],
+            'public' => $resource['public'],
             'user_id' => $this->Auth->user('id'),
             'pdf' => $id
         ));
@@ -134,7 +133,8 @@ class ResourcesController extends AppController {
         # actions/information. Here we're turning that off for future 
         # requests. (Note that the first_req will still be true within the 
         # $resource var.)
-        if ($resource['Resource']['first_req']) $this->Resource->firstRequest();
+        if ($resource['Resource']['first_req']) 
+            $this->Resource->firstRequest($resource['Resource']['id']);
     }
 
     /**
@@ -343,7 +343,7 @@ class ResourcesController extends AppController {
      * @param string $field   Resource field to complete.
      */
     public function complete($field=null) {
-        if (!$this->request->is('get') || !$id) return $this->json(400);
+        if (!$this->request->is('get') || !$field) return $this->json(400);
         switch ($field) {
             case 'title':
                 $values = $this->Resource->complete('Resource.title');
