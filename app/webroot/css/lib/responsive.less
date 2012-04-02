@@ -27,16 +27,15 @@
 
 @media (min-width: 360px) and (max-width: 940px) {
   html{
-  	max-width: 940px;
-  	min-width: 360px;
-  }//html
+
+    max-width: 940px;
+    min-width: 360px;
+  }
   
   .fluid-container{
-  	padding-left: 0px !important;
-  	min-width: 360px;
-  	max-width: 940px;
-  	width: 100%;
-  }//.fluid-container
+    min-width: 360px;
+    max-width: 940px;
+  }
   
   // Unfix the navbar
   .navbar-fixed {
@@ -67,24 +66,19 @@
   }//.row
 
   .tab-content {
-  	padding: 5px;
-  }//tab-content
+    padding: 5px;
+  }
   
   #resource-wrapper {
     height: 430px;
-    width: 100%;
 
-	#resource img {
-      max-height:430px;
-      max-width: 430px;
-      .unselectable();
-	}//resource img
-	
-	.tab-wrapper {
+    #resource img {
+      height:432px;
+    }
+    
+    .tab-wrapper {
       width:280px;
       min-height:30px;
-      margin-right: 0 !important;
-      margin-bottom: 0;
       
       .tabs > li > a {
         padding: 4px; 
@@ -95,9 +89,8 @@
       }//tab-pane
 	}///tab-wrapper
 
-	.es-carousel-wrapper{
+    .es-carousel-wrapper{
       height: 95px !important;
-      margin: 5px 0 0 !important;
       padding: 2px 0;
       min-width: 360px;
       max-width: 940px;
@@ -127,7 +120,6 @@
 	}//#credits	
   
 }//@media 360px-940px
-
 
 // PORTRAIT TABLET TO DEFAULT DESKTOP
 // ----------------------------------
@@ -202,10 +194,13 @@
 					
 					&#neh_logo{
 						width: 200px;
+						height: auto;
 					}//#neh-logo
 					
 					&#msu_wordmark{
 						height: 55px;
+						max-height: none;
+						width: auto;
 					}//msu_wordmark
 					
 				}//img
@@ -223,18 +218,14 @@
 @media (min-width: 940px) and (max-width: 1024px) and (max-height: 768px){
     
   #resource-wrapper {
-    height: 532px;
-    min-width: 946px;
+    height:530px;
 
     #resource img {
-      max-height:532px;
-      max-width: 625px;
-      .unselectable();
+      height:532px;
     }
     
-    .tab-wrapper {
-      width:280px;
-      height:410px;
+    .tab-wrapper, .tab-pane, .tab-content {
+      height:515px !important;
     }
   }
 }
@@ -297,8 +288,6 @@
   
   #resource-wrapper {
     height: 700px;
-    min-width: 946px;
-    margin-left:-20px;
 
     #resource img {
       min-height:700px;
@@ -366,27 +355,18 @@
   
   
   #resource-wrapper {
-    height: 800px;
-    min-width: 946px;
-    margin-left: 0;
+    height: 850px;
 
     #resource {
       img {
-        min-height:800px;
-        max-width: 900px;
+        height:852px;
+        width:auto;
         .unselectable();
       }
     }
     
-    .tab-wrapper {
-      width:400px;
-      height:810px;
-      min-height: 0;
-    }
-      
-    .tab-pane.active{
-      height: 800px;
-      overflow: auto;
+    .tab-wrapper, .tab-pane, .tab-content {
+      height:835px !important;
     }
   }
 }//BIG DESKTOP

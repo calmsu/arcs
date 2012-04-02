@@ -1,6 +1,6 @@
 <tr>
   <td>Title</td>
-  <td><%= title %></td>
+  <td><%- title %></td>
 </tr>
 <tr>
   <td>Public</td>
@@ -8,7 +8,7 @@
 </tr>
 <tr>
   <td>Type</td>
-  <td><%= type %></td>
+  <td><%- type %></td>
 </tr>
 <tr>
   <td>Created</td>
@@ -27,8 +27,8 @@
 <% _.each(metadata, function(v, k) { %>
 <% if (v) { %>
 <tr>
-  <td><%= k.charAt(0).toUpperCase() + k.substr(1) %></td>
-  <td><%= v %></td>
+  <td><%- k.charAt(0).toUpperCase() + k.substr(1) %></td>
+  <td><%- v %></td>
 </tr>
 <% } %>
 <% }) %>

@@ -3,13 +3,17 @@
   <div class="img-wrapper">
     <img src="<%= r.thumb %>" data-id="<%= r.id %>" />
   </div>
+  <% if (r.title) { %>
   <div>
     <strong>
-      <%= r.title.length > 30 ? r.title.substring(0, 30) + '...' : r.title %>
+      <%- r.title.length > 30 ? r.title.substring(0, 30) + '...' : r.title %>
     </strong>
   </div>
+  <% } %>
   <div>
-    <%= r.user.name %>
+    <a class="subtle" href="<%= arcs.baseURL + 'user/' + r.user.username %>">
+      <%= r.user.name %>
+    </a>
   </div>
   <div>
     <% if (r.comments.length) { %>

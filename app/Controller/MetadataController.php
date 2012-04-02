@@ -11,20 +11,20 @@ class MetadataController extends AppController {
     }
 
     public function add() {
-        if (!$this->request->is('post')) return $this->jsonResponse(400);
+        if (!$this->request->is('post')) return $this->json(400);
 
         if ($this->Metadatum->add($this->request->data)) 
-            return $this->jsonResponse(201);
+            return $this->json(201);
         else 
-            return $this->jsonResponse(400);
+            return $this->json(400);
     }
 
     public function edit($id) {
         if (!($this->request->is('post') || $this->request->is('put')))
-            return $this->jsonResponse(400);
+            return $this->json(400);
         if ($this->Metadatum->add($this->request->data))
-            return $this->jsonResponse(200);
+            return $this->json(200);
         else
-            return $this->jsonResponse(400);
+            return $this->json(400);
     }
 }

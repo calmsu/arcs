@@ -8,68 +8,75 @@
  */
 class Task extends AppModel {
     public $name = 'Task';
+    public $flatten = true;
+    public $recursive = -1;
+    public $whitelist = array(
+        'resource_id', 'job', 'data', 'status', 'active', 'progress', 'error'
+    );
 
     /**
      * Queues a task by creating a Task given a resource
      * id and a job name.
      *
-     * @param job
-     * @param id
-     * @param data
+     * @param string $job
+     * @param string $id
+     * @param string $data
      */
     public function queue($job, $id, $data=null) {
-        return $this->save(array(
-            'Task' => array(
-                'resource_id' => $id,
-                'job' => $job,
-                'data' => $data,
-                'status' => 1,
-                'progress' => 0
-        )));
+        return $this->add(array(
+            'resource_id' => $id,
+            'job' => $job,
+            'data' => $data,
+            'status' => 1,
+            'progress' => 0
+        ));
     }
 
     /**
      * Pops a task from the the queue. This amounts to finding
      * the oldest, uncompleted, non-active task in the table.
      *
-     * @return    array containing task properties, or false if 
-     *            no existing tasks meet these criteria.
+     * @return mixed  array of task properties, or false if no 
+     *                existing tasks meet these criteria.
      */
     public function pop() {
         $task = $this->find('first', array(
             'conditions' => array(
                 'Task.status' => 1,
-                'Task.in_progress' => false
+                'Task.active' => false
             ),
             'order' => array(
                 'Task.created' => 'ASC'
             )
         ));
-        if (!$task) return false;
-        return $task['Task'];
+        return $task ? $task : false;
     }
 
     /**
      * Marks a task active so that other workers do not try to take it.
      *
-     * @param id
+     * @param string $id
      */
     public function start($id) {
         $this->read(null, $id);
-        $this->set('in_progress', true);
+        $this->set('active', true);
         return $this->save();
     }
 
     /**
      * Marks a task non-active and sets the return status.
      *
-     * @param id
-     * @param status
+     * @param string $id
+     * @param int $status
+     * @param string $error
      */
-    public function done($id, $status=0) {
+    public function done($id, $status=0, $error=null) {
         $this->read(null, $id);
-        $this->set('status', $status);
-        $this->set('in_progress', false);
+        $this->set(array(
+            'status' => $status,
+            'active' => false,
+            'error' => $error
+        ));
         return $this->save();
     }
 }

@@ -10,6 +10,8 @@
       User.__super__.constructor.apply(this, arguments);
     }
 
+    User.prototype.urlRoot = arcs.baseURL + 'users';
+
     return User;
 
   })(Backbone.Model);

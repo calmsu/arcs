@@ -1,3 +1,4 @@
+@import url(http://fonts.googleapis.com/css?family=Pontano+Sans);
 /*!
  * Bootstrap @VERSION
  *
@@ -4247,13 +4248,26 @@ a.thumbnail:hover {
 .hidden {
   display: none;
 }
+a.subtle {
+  color: #444;
+}
 /* HTML, BODY */
-html {
-  margin-left: 10px;
-  margin-right: 10px;
+html,
+body {
+  height: 100%;
 }
 body {
   background-color: #efefef;
+}
+.page {
+  padding-left: 10px;
+  padding-right: 10px;
+}
+h2,
+h3 {
+  text-shadow: 0 1px 1px #ffffff;
+  color: #555;
+  font-weight: normal;
 }
 input[type=text],
 input[type=password],
@@ -4277,8 +4291,9 @@ div#toolbar {
   /* IE */
 
   border: 1px solid #888;
-  margin-right: -20px;
   margin-bottom: 10px;
+  margin-left: -10px;
+  margin-right: -10px;
   height: 40px;
   padding: 3px;
   padding-bottom: 1px;
@@ -4289,13 +4304,14 @@ div#toolbar a#logo-wrapper:hover {
 div#toolbar h1#logo {
   display: inline;
   font-size: 18.2px;
-  font-weight: 500;
+  font-weight: normal;
   text-shadow: 0 1px 1px #fff;
   padding-left: 45px;
   padding-bottom: 5px;
   color: #444;
   background: no-repeat top left url('img/arcs-icon.png');
   background-position: 10px 0px;
+  margin-top: 2px;
   margin-right: 10px;
   float: left;
 }
@@ -4303,6 +4319,10 @@ div#toolbar .toolbar-btn {
   float: right;
   position: relative;
   top: 5px;
+  margin-right: 10px;
+  border-radius: 5px;
+  -webkit-border-radius: 5px;
+  -moz-border-radius: 5px;
 }
 section#logo-search-filter {
   margin-bottom: 30px;
@@ -4397,37 +4417,6 @@ section#logo-search-filter div.panel-wrapper-open div.panel-content {
 }
 details.arcs-front-page {
   margin: 15px 0 0;
-}
-.modal-body form select {
-  font-size: 11px;
-  height: 20px;
-}
-.modal-body form .wrapper {
-  margin: 5px 0;
-  display: block;
-}
-.modal-body form .wrapper input {
-  margin: 0 10px 0 0;
-  display: inline;
-}
-.modal-body form .wrapper label {
-  display: inline;
-}
-.modal-body form .wrapper.location label {
-  width: 65px;
-  text-align: right;
-  display: inline-block;
-}
-.modal-body form input,
-.modal-body form label,
-.modal-body form text-area {
-  margin: 5px 0;
-  display: block;
-}
-.modal-body form [name="photo-object-item-number"],
-.modal-body form [name="sketch-object-item-number"] {
-  display: none;
-  visibility: hidden;
 }
 .large .search {
   background: no-repeat top left url('img/search-big.png');
@@ -4788,13 +4777,13 @@ ul.resource-thumbs li:hover a {
 }
 #resource-wrapper {
   height: 530px;
+  margin-left: 0px;
 }
 #resource-wrapper #resource img {
+  height: 532px;
   float: left;
   width: auto;
-  background: #eee;
-  max-height: 532px;
-  max-width: 625px;
+  background: url(img/linen-texture.jpg);
   -moz-user-select: -moz-none;
   -khtml-user-select: none;
   -webkit-user-select: none;
@@ -4829,141 +4818,12 @@ ul.resource-thumbs li:hover a {
 #resource-wrapper .tab-wrapper {
   width: 280px;
   min-height: 530px;
-  margin-right: 10px !important;
   text-align: left;
   float: right;
+  margin-right: -10px;
   overflow: hidden;
   padding-right: 0;
   padding-bottom: 15px;
-}
-section#upload-form {
-  margin-bottom: 30px;
-  clear: both;
-  min-height: 50px;
-  margin-left: auto;
-  margin-right: auto;
-}
-section#upload-form h1#logo {
-  display: block;
-  font-size: 39px;
-  text-shadow: 2px 3px 3px #ffffff;
-  padding: 10px 0 0 43px;
-  background: no-repeat top left url('img/arcs-icon-big.png');
-  background-position: 0 10px;
-  margin-right: 10px;
-  margin-bottom: 20px;
-  float: left;
-}
-section#upload-form form[name="upload-pt1"],
-section#upload-form form[name="upload-pt2"] {
-  display: block;
-  margin-top: 20px;
-}
-section#upload-form form[name="upload-pt1"] fieldset legend,
-section#upload-form form[name="upload-pt2"] fieldset legend {
-  margin-bottom: 20px;
-  clear: both;
-}
-section#upload-form form[name="upload-pt1"] fieldset img,
-section#upload-form form[name="upload-pt2"] fieldset img {
-  margin-top: 10px;
-}
-section#upload-form form[name="upload-pt1"] fieldset div.properties-contain,
-section#upload-form form[name="upload-pt2"] fieldset div.properties-contain {
-  margin-top: 10px;
-  margin-left: 260px;
-  margin-left: 260px;
-  width: 700px;
-  width: 700px;
-}
-section#upload-form form[name="upload-pt1"] input.btn,
-section#upload-form form[name="upload-pt2"] input.btn {
-  float: none;
-  text-align: left;
-  width: auto;
-}
-section#upload-form form[name="upload-pt1"] input[name="new-or-add"],
-section#upload-form form[name="upload-pt2"] input[name="new-or-add"] {
-  display: inline;
-  float: none;
-}
-section#upload-form form[name="upload-pt1"] div.label-input-wrapper,
-section#upload-form form[name="upload-pt2"] div.label-input-wrapper {
-  display: block;
-}
-section#upload-form form[name="upload-pt1"] div.label-input-wrapper label,
-section#upload-form form[name="upload-pt2"] div.label-input-wrapper label {
-  text-align: right;
-  width: 90px;
-  margin-bottom: 20px;
-  display: inline-block;
-  font-weight: bold;
-}
-section#upload-form form[name="upload-pt1"] div.label-input-wrapper label:after,
-section#upload-form form[name="upload-pt2"] div.label-input-wrapper label:after {
-  content: ":";
-}
-section#upload-form form[name="upload-pt1"] div.label-input-wrapper input,
-section#upload-form form[name="upload-pt2"] div.label-input-wrapper input,
-section#upload-form form[name="upload-pt1"] div.label-input-wrapper text-area,
-section#upload-form form[name="upload-pt2"] div.label-input-wrapper text-area,
-section#upload-form form[name="upload-pt1"] div.label-input-wrapper select,
-section#upload-form form[name="upload-pt2"] div.label-input-wrapper select {
-  display: inline-block;
-  min-width: 300px;
-  margin-top: 10px;
-}
-section#upload-form form[name="upload-pt1"] div.label-input-wrapper div.radio-group,
-section#upload-form form[name="upload-pt2"] div.label-input-wrapper div.radio-group {
-  display: inline-block;
-  margin-bottom: 10px;
-}
-section#upload-form form[name="upload-pt1"] div.label-input-wrapper div.radio-group label,
-section#upload-form form[name="upload-pt2"] div.label-input-wrapper div.radio-group label {
-  display: inline-block;
-  text-align: left;
-  width: 100px;
-}
-section#upload-form form[name="upload-pt1"] div.label-input-wrapper div.radio-group label:after,
-section#upload-form form[name="upload-pt2"] div.label-input-wrapper div.radio-group label:after {
-  content: "";
-}
-section#upload-form form[name="upload-pt1"] div.label-input-wrapper div.radio-group input[type="radio"],
-section#upload-form form[name="upload-pt2"] div.label-input-wrapper div.radio-group input[type="radio"] {
-  display: inline-block;
-}
-section#upload-form form[name="upload-pt1"] .privacy-contain,
-section#upload-form form[name="upload-pt2"] .privacy-contain {
-  margin-top: 10px;
-  margin-left: 260px;
-  margin-left: 260px;
-  width: 700px;
-  width: 700px;
-}
-section#upload-form form[name="upload-pt1"] .privacy-contain .label-input-wrapper input,
-section#upload-form form[name="upload-pt2"] .privacy-contain .label-input-wrapper input {
-  margin-top: 0;
-}
-section#upload-form form[name="upload-pt1"] .privacy-contain .label-input-wrapper .radio-group label,
-section#upload-form form[name="upload-pt2"] .privacy-contain .label-input-wrapper .radio-group label {
-  display: inline;
-  min-width: 100px;
-  margin-right: 10px;
-  font-weight: normal;
-}
-section#upload-form form[name="upload-pt1"] .privacy-contain .label-input-wrapper .radio-group input[type="radio"],
-section#upload-form form[name="upload-pt2"] .privacy-contain .label-input-wrapper .radio-group input[type="radio"] {
-  display: inline;
-  margin: 0 0 10px 0 !important;
-}
-section#upload-form form[name="upload-pt1"] select[multiple].extra-stuff,
-section#upload-form form[name="upload-pt2"] select[multiple].extra-stuff {
-  display: block;
-  margin: 0 0 0 110px;
-}
-section#upload-form select#resource-type,
-section#upload-form select#choose-notebook {
-  display: block;
 }
 .btn {
   border: 1px solid #999;
@@ -5082,9 +4942,7 @@ section#upload-form select#choose-notebook {
   border-radius: 5px !important;
   height: 95px !important;
   margin-bottom: 0px !important;
-  margin-top: 10px;
-  margin-left: -20px;
-  margin-right: 0px;
+  margin-top: 8px;
   min-width: 780px;
 }
 .es-carousel-wrapper .es-carousel {
@@ -5221,9 +5079,14 @@ div#search-wrapper {
   -webkit-border-radius: 3px;
   -moz-border-radius: 3px;
 }
-.page {
-  margin: 0px !important;
+.wrap {
+  min-height: 100%;
+  height: auto !important;
   height: 100%;
+  margin: 0 auto -100px;
+}
+.push {
+  clear: both;
 }
 .comment-header {
   width: 95%;
@@ -5389,9 +5252,6 @@ textarea#content {
   margin-top: 0px;
   margin-bottom: 10px;
 }
-#login h3 {
-  font-weight: normal;
-}
 #login input[type=text],
 #login input[type=password] {
   width: 290px;
@@ -5410,10 +5270,11 @@ textarea#content {
   left: 20px;
 }
 #login-header h1 {
+  font-family: 'Pontano Sans', sans-serif;
   display: inline;
   position: relative;
   bottom: 10px;
-  font-weight: 300;
+  font-weight: 100;
   text-shadow: 0 1px 1px #ffffff;
 }
 #login-footer {
@@ -5440,16 +5301,6 @@ div ::-webkit-scrollbar-thumb {
   border-radius: 3px;
   background: #bbb;
   border: 1px solid #888;
-}
-.footer {
-  border-radius: 3px;
-  -webkit-border-radius: 3px;
-  -moz-border-radius: 3px;
-  height: 100px;
-  background-color: #e5e5e5;
-  border: 1px solid #ddd;
-  margin-bottom: 5px;
-  margin-top: 100px;
 }
 .modal-backdrop {
   opacity: 0.5;
@@ -5687,8 +5538,6 @@ div#search-results-wrapper {
   padding: 20px;
   padding-top: 10px;
   margin-top: 30px;
-  margin-left: -20px;
-  margin-right: -20px;
 }
 div#search-results-wrapper div#search-results {
   margin-top: 18px;
@@ -5777,8 +5626,14 @@ div#search-results-wrapper .toolbar-fixed {
   color: #B94A48;
   margin-bottom: 10px;
 }
+.preview {
+  background: url(img/linen-texture.jpg);
+}
 .preview .preview-image {
-  margin-bottom: -5px;
+  display: block;
+  max-height: 70%;
+  margin-left: auto;
+  margin-right: auto;
 }
 .preview .preview-footer {
   background: -webkit-gradient(linear, left top, left bottom, from(#cccccc), to(#bbbbbb));
@@ -5822,7 +5677,7 @@ div#search-results-wrapper .toolbar-fixed {
   cursor: pointer;
   text-shadow: 0 1px 1px #444444;
 }
-#upload-nav {
+.well-nav {
   border: 1px solid #cdcdcd;
   background-color: #ddd;
 }
@@ -5830,9 +5685,20 @@ div#search-results-wrapper .toolbar-fixed {
 footer#credits {
   color: #999999;
   margin-top: 25px;
-  background-color: #2b2b2b;
+  background-color: #555555;
   min-height: 170px;
-  padding: 10px 0;
+  padding: 10px 0 8px;
+  margin-top: -90px;
+  text-shadow: 0 1px 1px #222222;
+  border-top: 1px solid #555;
+  outline: 1px solid #222;
+}
+footer#credits img {
+  display: inline;
+  clear: none;
+}
+footer#credits a {
+  color: #999999;
 }
 footer#credits ul {
   list-style: none;
@@ -5843,20 +5709,22 @@ footer#credits ul li {
 }
 footer#credits .row {
   margin-left: 0;
+  margin-bottom: 10px;
 }
 footer#credits h3 {
   color: #999999;
   font-size: 14px;
 }
 footer#credits #about-arcs-footer p {
-  font-size: 11px;
+  color: #eeeeee;
+  font-size: 13px;
   line-height: 15px;
 }
 footer#credits a.credit-links {
   display: block;
 }
 footer#credits .disclaimer {
-  font-size: 9px;
+  font-size: 11px;
   line-height: 13px;
 }
 footer#credits #neh_logo {
@@ -5877,15 +5745,15 @@ footer#credits #copyright-and-credits p {
   margin-bottom: 0;
   font-size: 10px;
 }
+footer#credits #quick-links a {
+  padding: 2px 5px;
+  color: #eeeeee !important;
+}
+footer#credits #quick-links a:hover {
+  color: #eeeeee;
+}
 footer#credits #quick-links ul li {
   border-right: solid thin #999999;
-}
-footer#credits #quick-links ul li a {
-  padding: 2px 5px;
-  color: #999999;
-}
-footer#credits #quick-links ul li a:hover {
-  color: #eeeeee;
 }
 footer#credits #quick-links ul li:last-child {
   border: none;
@@ -5897,6 +5765,11 @@ footer#credits #quick-links ul li:last-child {
   text-decoration: underline;
   color: #999999;
 }
+.admin-log {
+  max-height: 300px;
+  background: #fff;
+  overflow: auto;
+}
 .hidden {
   display: none;
   visibility: hidden;
@@ -5907,10 +5780,8 @@ footer#credits #quick-links ul li:last-child {
     min-width: 360px;
   }
   .fluid-container {
-    padding-left: 0px !important;
     min-width: 360px;
     max-width: 940px;
-    width: 100%;
   }
   .navbar-fixed {
     position: absolute;
@@ -5937,21 +5808,13 @@ footer#credits #quick-links ul li:last-child {
   }
   #resource-wrapper {
     height: 430px;
-    width: 100%;
   }
   #resource-wrapper #resource img {
-    max-height: 430px;
-    max-width: 430px;
-    -moz-user-select: -moz-none;
-    -khtml-user-select: none;
-    -webkit-user-select: none;
-    user-select: none;
+    height: 432px;
   }
   #resource-wrapper .tab-wrapper {
     width: 280px;
     min-height: 30px;
-    margin-right: 0 !important;
-    margin-bottom: 0;
   }
   #resource-wrapper .tab-wrapper .tabs > li > a {
     padding: 4px;
@@ -5962,7 +5825,6 @@ footer#credits #quick-links ul li:last-child {
   }
   #resource-wrapper .es-carousel-wrapper {
     height: 95px !important;
-    margin: 5px 0 0 !important;
     padding: 2px 0;
     min-width: 360px;
     max-width: 940px;
@@ -6074,27 +5936,25 @@ footer#credits #quick-links ul li:last-child {
   }
   #credits .row div img#neh_logo {
     width: 200px;
+    height: auto;
   }
   #credits .row div img#msu_wordmark {
     height: 55px;
+    max-height: none;
+    width: auto;
   }
 }
 @media (min-width: 940px) and (max-width: 1024px) and (max-height: 768px) {
   #resource-wrapper {
-    height: 532px;
-    min-width: 946px;
+    height: 530px;
   }
   #resource-wrapper #resource img {
-    max-height: 532px;
-    max-width: 625px;
-    -moz-user-select: -moz-none;
-    -khtml-user-select: none;
-    -webkit-user-select: none;
-    user-select: none;
+    height: 532px;
   }
-  #resource-wrapper .tab-wrapper {
-    width: 280px;
-    height: 410px;
+  #resource-wrapper .tab-wrapper,
+  #resource-wrapper .tab-pane,
+  #resource-wrapper .tab-content {
+    height: 515px !important;
   }
 }
 @media (min-width: 1210px) and (min-height: 850px) {
@@ -6178,8 +6038,6 @@ footer#credits #quick-links ul li:last-child {
   }
   #resource-wrapper {
     height: 700px;
-    min-width: 946px;
-    margin-left: -20px;
   }
   #resource-wrapper #resource img {
     min-height: 700px;
@@ -6274,25 +6132,19 @@ footer#credits #quick-links ul li:last-child {
     margin-left: 1230px;
   }
   #resource-wrapper {
-    height: 800px;
-    min-width: 946px;
-    margin-left: 0;
+    height: 850px;
   }
   #resource-wrapper #resource img {
-    min-height: 800px;
-    max-width: 900px;
+    height: 852px;
+    width: auto;
     -moz-user-select: -moz-none;
     -khtml-user-select: none;
     -webkit-user-select: none;
     user-select: none;
   }
-  #resource-wrapper .tab-wrapper {
-    width: 400px;
-    height: 810px;
-    min-height: 0;
-  }
-  #resource-wrapper .tab-pane.active {
-    height: 800px;
-    overflow: auto;
+  #resource-wrapper .tab-wrapper,
+  #resource-wrapper .tab-pane,
+  #resource-wrapper .tab-content {
+    height: 835px !important;
   }
 }

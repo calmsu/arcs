@@ -31,9 +31,11 @@ the arcs database). You can also run the <code>www-user.sql</code> script to do 
 <pre><code>$ mysqladmin -u root -p create arcs
 $ mysql -u root -p arcs &lt; app/Config/Schema/schema.sql
 </code></pre>
-<p><strong>NOTE:</strong> Be sure to verify the database configuration in 
+<blockquote>
+<p>Be sure to verify the database configuration in 
 <code>app/Config/database.php</code>. You may be able to use ARCS with another database 
 (such as SQL Server or Postgre) by altering the schema.</p>
+</blockquote>
 <p>Set up Nginx. ARCS comes with a template nginx configuration. You may use
 this and replace values as necessary.</p>
 <pre><code>$ sudo cp conf/nginx/nginx.conf /var/etc/nginx/conf.d/arcs.conf
@@ -42,11 +44,13 @@ $ sudo ln -s /var/etc/nginx/sites-available/arcs /var/etc/nginx/sites-enabled/ar
 $ sudo rm /var/etc/nginx/sites-enabled/default
 $ sudo /etc/init.d/nginx reload
 </code></pre>
-<p><strong>NOTE:</strong> You'll want to be sure Nginx's <code>client_max_body_size</code> directive and
+<blockquote>
+<p>You'll want to be sure Nginx's <code>client_max_body_size</code> directive and
 PHP's <code>post_max_size</code> and <code>upload_max_size</code> directives are large enough for the
 files that will be uploaded. <code>post_max_size</code> should be slightly larger than 
 <code>upload_max_size</code>. (The relevant PHP directives should be in 
 <code>/etc/php5/cgi/php.ini</code>.)</p>
+</blockquote>
 <p>Change ownership of <code>app/tmp/</code>.</p>
 <pre><code>$ sudo chown -R www-data app/tmp
 </code></pre>

@@ -47,7 +47,7 @@
 </div>
 
 <script type="text/javascript">
-  arcs.userView = new arcs.views.User({
+  arcs.profileView = new arcs.views.Profile({
     el: $('#user-profile'),
     model: new arcs.models.User(<?php echo json_encode($user) ?>)
   });

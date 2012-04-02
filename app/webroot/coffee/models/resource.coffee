@@ -4,6 +4,11 @@
 class arcs.models.Resource extends Backbone.Model
   defaults:
     id: null
+    title: ''
+    keywords: []
+    hotspots: []
+    comments: []
+    metadata: {}
     mime_type: "unknown"
     modified: null
     created: null

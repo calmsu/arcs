@@ -18,7 +18,7 @@
       var _this = this;
       this.collection = new arcs.collections.Discussion;
       arcs.on('arcs:indexChange', function() {
-        return _this.collection.fetch;
+        return _this.collection.fetch();
       });
       this.collection.on('add remove reset', this.render, this);
       return this.collection.fetch();

@@ -187,6 +187,8 @@ class arcs.views.Search extends Backbone.View
       @search.results.select selected if selected.length
       if @search.results.anySelected()
         $('.btn.needs-resource').removeClass 'disabled'
+        # Blur the search input(s), so that hotkeys work as expected.
+        $('#search input').blur()
       else
         $('.btn.needs-resource').addClass 'disabled'
 

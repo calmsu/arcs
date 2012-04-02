@@ -1,23 +1,33 @@
+<?php echo $this->element('admin_nav', array('active' => 'status')) ?>
 <style>
     #status-info code { color:black }
     #status-info h1, h3 { margin-left:0px; font-weight:normal; }
 </style>
 
 <div id="status-info">
-<h1>Configuration Status</h1>
-<br>
+<h3>Core</h3>
+<div class="alert alert-<?php echo ($core['debug'] == 0 ? 'success' : 'warning') ?>">
+    Debug is set to <code><?php echo $core['debug'] ?></code>.
+</div>
+<?php if ($core['database']): ?>
+<div class="alert alert-success">
+    Database connected.
+</div>
+<?php else: ?>
+<div class="alert alert-error">
+    The database could <strong>NOT</strong> be connected to.</p>
+</div>
+<?php endif ?>
 
 <h3>Uploads</h3>
-<br>
-
 <?php if ($uploads['exists']): ?>
 <div class="alert alert-success">
-    Your uploads directory, <code><?php echo $uploads['path'] ?></code>, 
+    The uploads directory, <code><?php echo $uploads['path'] ?></code>, 
     exists.
 </div>
 <?php else: ?>
 <div class="alert alert-error">
-    <p>Your uploads directory, <code><?php echo $uploads['path'] ?></code>, does
+    <p>The uploads directory, <code><?php echo $uploads['path'] ?></code>, does
     <strong>NOT</strong> exist.</p>
     <p>To fix this, create the directory, or replace the setting in your 
     <code>app/Config/arcs.ini</code> file with one that does exist.</p>
@@ -26,12 +36,12 @@
 
 <?php if ($uploads['writable']): ?>
 <div class="alert alert-success">
-    Your uploads directory, <code><?php echo $uploads['path'] ?></code>, is 
+    The uploads directory, <code><?php echo $uploads['path'] ?></code>, is 
     writable.
 </div>
 <?php else: ?>
 <div class="alert alert-error">
-    <p>Your uploads directory, <code><?php echo $uploads['path'] ?></code>, is 
+    <p>The uploads directory, <code><?php echo $uploads['path'] ?></code>, is 
     <strong>NOT</strong> writable.</p>
     <p>To fix this, verify the directory configured in 
     <code>app/Config/arcs.ini</code> is the correct one, and change the 
@@ -42,12 +52,12 @@
 
 <?php if ($uploads['executable']): ?>
 <div class="alert alert-success">
-    Your uploads directory, <code><?php echo $uploads['path'] ?></code>, is 
+    The uploads directory, <code><?php echo $uploads['path'] ?></code>, is 
     executable.
 </div>
 <?php else: ?>
 <div class="alert alert-error">
-    <p>Your uploads directory, <code><?php echo $uploads['path'] ?></code>, is 
+    <p>The uploads directory, <code><?php echo $uploads['path'] ?></code>, is 
     <strong>NOT</strong> executable.</p>
     <p>To fix this, verify the directory configured in 
     <code>app/Config/arcs.ini</code> is the correct one, and change the 
@@ -57,7 +67,7 @@
 <?php endif ?>
 
 <div class="alert alert-info">
-    Your uploads base url is <code><?php echo $uploads['url'] ?></code>. 
+    The uploads base url is <code><?php echo $uploads['url'] ?></code>. 
     If resources are not displaying, this url may be incorrect.
 </div>
 

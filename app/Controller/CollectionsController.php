@@ -48,7 +48,7 @@ class CollectionsController extends AppController {
                 $this->Collection->Membership->saveMany($members);
             }
             if ($this->request->is('ajax')) {
-                $this->jsonResponse(201, array('id' => $this->Collection->id));
+                $this->json(201, array('id' => $this->Collection->id));
             } else {
                 $this->redirect('/collection/' . $this->Collection->id);
             }
@@ -68,9 +68,10 @@ class CollectionsController extends AppController {
      *
      * @param id
      */
-    public function view($id=null) {
+    public function viewer($id=null) {
         $collection = $this->Collection->findById($id);
         $this->set('title_for_layout', $collection['Collection']['title']);
+        $this->set('footer', false);
         $this->loadModel('Resource');
         $rids = $this->Collection->Membership->find('list', array(
             'fields' => 'Membership.resource_id',
@@ -82,6 +83,10 @@ class CollectionsController extends AppController {
                 'Resource.id' => $rids
         ))));
         $this->set('collection', $collection['Collection']);
+        $this->set('toolbar', array(
+            'actions' => true,
+            'logo' => true
+        ));
     }
 
     public function resources($id=null) {
@@ -99,7 +104,7 @@ class CollectionsController extends AppController {
 
     public function complete() {
         if ($this->request->is('ajax')) {
-            return $this->jsonResponse(200, $this->Collection->complete(
+            return $this->json(200, $this->Collection->complete(
                 'Collection.title', array(
                     'Collection.title !=' => 'Temporary Collection'
                 )

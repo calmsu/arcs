@@ -15,6 +15,6 @@ class KeywordsController extends MetaResourcesController {
      * Complete keywords.
      */
     public function complete() {
-        $this->jsonResponse(200, $this->Keyword->complete('Keyword.keyword'));
+        $this->json(200, $this->Keyword->complete('Keyword.keyword'));
     }
 }

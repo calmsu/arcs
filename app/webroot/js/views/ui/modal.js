@@ -72,7 +72,7 @@
       _ref = this.options.inputs;
       for (name in _ref) {
         options = _ref[name];
-        if ((options.required != null) && options.required) {
+        if (options.required) {
           if (!values[name].replace(/\s/g, '').length) required.push(name);
         }
       }
@@ -82,7 +82,7 @@
         this.$("#modal-" + name + "-input").addClass('error');
         this.$("label[for='modal-" + name + "']").addClass('error');
       }
-      this.$('#validation-error').show().html('Looks like you missed a few required fields.');
+      this.$('#validation-error').show().html('Looks like you missed a required field.');
       return false;
     };
 

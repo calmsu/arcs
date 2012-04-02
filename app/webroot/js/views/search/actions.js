@@ -44,7 +44,8 @@
       'click #keyword-btn': 'keywordSelected',
       'click #download-btn': 'downloadSelected',
       'click #zipped-btn': 'zippedDownloadSelected',
-      'click #rethumb-btn': 'rethumbSelected'
+      'click #rethumb-btn': 'rethumbSelected',
+      'click #split-btn': 'splitSelected'
     };
 
     SearchActions.prototype.openResult = function(result) {
@@ -75,7 +76,7 @@
     SearchActions.prototype.editResult = function(result, metadata) {
       result.set('metadata', _.extend(result.get('metadata'), metadata));
       return $.ajax({
-        url: arcs.baseURL + 'resources/edit_info/' + result.id,
+        url: arcs.baseURL + 'resources/metadata/' + result.id,
         type: 'POST',
         contentType: 'application/json',
         dataType: 'json',
@@ -131,12 +132,14 @@
           keyword: {
             label: false,
             complete: arcs.utils.complete.keyword,
-            focused: true
+            focused: true,
+            required: true
           }
         },
         buttons: {
           save: {
             "class": 'btn success',
+            validate: true,
             callback: function(vals) {
               var result, _i, _len, _ref;
               _ref = _this.results.selected();
@@ -159,7 +162,23 @@
       _results = [];
       for (_i = 0, _len = _ref.length; _i < _len; _i++) {
         result = _ref[_i];
-        _results.push($.get(arcs.baseURL + 'resources/rethumb/' + result.id));
+        _results.push($.post(arcs.baseURL + 'resources/rethumb/' + result.id, function() {
+          return arcs.notify('Resource successfully queued for split.');
+        }));
+      }
+      return _results;
+    };
+
+    SearchActions.prototype.splitSelected = function() {
+      var result, _i, _len, _ref, _results;
+      if (!this.results.anySelected()) return;
+      _ref = this.results.selected();
+      _results = [];
+      for (_i = 0, _len = _ref.length; _i < _len; _i++) {
+        result = _ref[_i];
+        _results.push($.post(arcs.baseURL + 'resources/split_pdf/' + result.id, function() {
+          return arcs.notify('Resource successfully queued for split.');
+        }));
       }
       return _results;
     };

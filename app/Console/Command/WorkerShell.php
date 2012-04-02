@@ -26,16 +26,20 @@ class WorkerShell extends AppShell {
             # Delegate the job to a method.
             switch ($task['job']) {
                 case "thumb":
-                    $success = $this->thumb($task['resource_id']);
+                    $result = $this->thumb($task['resource_id']);
                     break;
                 case "split_pdf":
-                    $success = $this->split_pdf($task['resource_id'], $task['data']);
+                    $result = $this->split_pdf($task['resource_id'], $task['data']);
                     break;
             }
 
             # Mark it done.
-            $this->Task->done($task['id'], $success ? 0 : 2);
-            $success ? $this->out('Done.') : $this->out('Failed.');
+            $this->Task->done(
+                $task['id'], 
+                $result === true ? 0 : 2, 
+                $result === true ? null : $result
+            );
+            $result === true ? $this->out('Done.') : $this->out('Failed.');
         }
     }
 
@@ -83,8 +87,8 @@ class WorkerShell extends AppShell {
      */
     public function split_pdf($id, $collection_id) {
         # Find the PDF resource.
-        $result = $this->Resource->findById($id);
-        $resource = $result['Resource'];
+        $resource = $this->Resource->findById($id);
+        $resource = $resource['Resource'];
 
         # Get and set its path.
         $path = $this->Resource->path($resource['sha'], $resource['file_name']);

@@ -199,7 +199,8 @@
         _this.search.results.unselectAll();
         if (selected.length) _this.search.results.select(selected);
         if (_this.search.results.anySelected()) {
-          return $('.btn.needs-resource').removeClass('disabled');
+          $('.btn.needs-resource').removeClass('disabled');
+          return $('#search input').blur();
         } else {
           return $('.btn.needs-resource').addClass('disabled');
         }

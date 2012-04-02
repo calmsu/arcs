@@ -2,7 +2,52 @@
 class AppModel extends Model {
 
     /**
-     * Temporarily permit a field, by adding it to the whitelist.
+     * When `flatten` is true, we'll flatten results to their bare model
+     * fields. So instead of this:
+     *
+     *   array(
+     *      'Post' => array(
+     *          'id' => 1,
+     *          'title' => 'Some title'
+     *      )
+     *   )
+     *
+     * ...you get this:
+     *
+     *   array(
+     *      'id' => 1,
+     *      'title' => 'Some title'
+     *   )
+     *
+     * This should be used in conjunction with the `recursive` property.
+     */
+    public $flatten = false;
+
+    /**
+     * Flatten results. When the `afterFind` method is defined in extending
+     * models, be sure to include:
+     *
+     *  $results = parent::afterFind($results, $primary);
+     *
+     * ...if you want to keep the flatten functionality.
+     */
+    public function afterFind($results, $primary) {
+        if ($this->flatten) {
+            if (isset($results[$this->name]))
+                return $results[$this->name];
+            if (isset($results[0][$this->name])) {
+                $flattened = array();
+                foreach($results as $r) {
+                    $flattened[] = $r[$this->name];
+                }
+                return $flattened;
+            }
+        }
+        return $results;
+    }
+
+    /**
+     * Temporarily permit a field for saving, by adding it to the whitelist.
      *
      * @param  field  one or more fields as arguments.
      * @return void
@@ -15,26 +60,47 @@ class AppModel extends Model {
     }
 
     /**
+     * Complement to `permit`. Temporarily forbid a field for saving.
+     *
+     * @param  field  one or more fields as arguments.
+     * @return void
+     */
+    public function forbid($field) {
+        $fields = func_get_args();
+        foreach ($fields as $f) {
+            unset($this->whitelist[$f]);
+        }
+    }
+
+    /**
      * Convenience method for generating autocompletion arrays.
      *
      * @param field       e.g. Resource.title
      * @param conditions  an array of conditions that will be passed along
      *                    to the find method.
      */
-    public function complete($field, $conditions=null) {
-        $conditions = is_array($conditions) ? $conditions : array();
+    public function complete($field, $conditions=array()) {
+        $_flatten = $this->flatten;
+        $this->flatten = false;
         $values = $this->find('list', array(
             'fields' => array($field),
             'conditions' => $conditions,
             'limit' => 100
         ));
+        $this->flatten = $_flatten;
         return array_unique(array_values($values));
     }
 
     /*
-     * Convenience method for saving a model from a simple array of
-     * fields. It wraps the given array in another array and sends it
-     * off to save().
+     * Convenience method for saving a model without needing to wrap it
+     * in an outer HABTM array, as in:
+     *
+     *   Model::save(array('Model' => array('title' => 'Some Title')))
+     *
+     * Instead, just do:
+     *
+     *   Model::add(array('title' => 'Some Title'))
+     *
      */
     public function add($data) {
         return $this->save(array($this->name => $data));

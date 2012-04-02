@@ -76,9 +76,7 @@
         <div>
         </div><!-- details-content -->
     </details><!-- arcs front page -->
-
-<?php echo $this->element('footer') ?>
-
+<div class="push"></div>
 </div><!-- page fluid-container -->
-
+<?php #echo $this->element('footer') ?>
 <?php echo $this->Html->script('toggle-panels.js'); ?>

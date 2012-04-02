@@ -3,8 +3,8 @@
     <div class="comment-header">
         <span class="name"><%= c.name %></span>
         commented 
-        <span class="time"><%= c.created %></span>
+        <span class="time"><%= relativeDate(new Date(c.created)) %></span>
     </div>
-    <div class="comment"><%= c.content %></div>
+    <div class="comment"><%- c.content %></div>
 </div>
 <% }) %>

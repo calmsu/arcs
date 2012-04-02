@@ -89,7 +89,8 @@ CREATE TABLE IF NOT EXISTS tasks (
     data TEXT,
     job VARCHAR(40),
     status INT(1),
-    in_progress BOOL DEFAULT FALSE,
+    active BOOL DEFAULT FALSE,
+    error TEXT,
     created DATETIME DEFAULT NULL,
     modified DATETIME DEFAULT NULL
 );
