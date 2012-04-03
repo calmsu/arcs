@@ -9,7 +9,7 @@
   border-radius: @radius;
   -webkit-border-radius: @radius;
   -moz-border-radius: @radius;
-}
+} 
 
 .no-rounded {
   border-radius: 0px !important;
@@ -587,23 +587,71 @@ ul.resource-thumbs{
 }//#user-actions
 
 #resource-wrapper {
-  height: 530px;
+  height: 630px;
   margin-left:0px;
+  
+  #resource-well{
+  
+	min-height: 20px;
+	margin-bottom: 20px;
+	background-color: @gray;
+	border: 1px solid #eee;
+	border: 1px solid rgba(0,0,0,.05);
+	.border-radius(4px);
+	.box-shadow(inset 4px rgba(0,0,0,.55));
 
-  #resource img {
-    height:532px;
-    float:left;
-    width:auto;
-    background:url(img/linen-texture.jpg);
-    // border:1px solid #aaa;
-    .unselectable();
-  }
+  	width: 75%;
+  	height: 100%;
+  	float: left;
+  	display: block;
+  	position: relative;
+  	
+  	#wrapping{
+  		display: block;
+		max-height:100%;
+	    width: 90%;
+	    margin-left: auto;
+	    margin-right: auto;
+	    left:0;
+	    
+		#resource {
+			display: block;
+			margin-left: auto;
+			margin-right: auto;
+			
+		  img {
+		  	max-height: 100%;
+		    .unselectable();
+		  }//img
+		  
+		}//#resource
+		
+		
+		#hotspots-wrapper {
+		  position:relative;
+		  left:0;
+		
+		  .hotspot {
+		    display:block;
+		    position:absolute;
+		    background-color:#222;
+		    .opacity(20);
+		    &:hover {
+		      .opacity(30);
+		    }
+		  }//.hotspot
+		}//#hotspots-wrapper
+
+		
+	}//#wrapping
+  }//#resource-well
   
   #prev-button, 
   #next-button {
     height:100%;
     width:18px;
     border:1px solid #888;
+    z-index: 10000;
     
     &:hover{ cursor:pointer; }
     &.disabled { opacity:0.5; }
@@ -614,14 +662,15 @@ ul.resource-thumbs{
     background: #bbb url(../img/nav.png) no-repeat left center;
     border-bottom-left-radius:5px;
     border-top-left-radius:5px;
-  }
+  }//#prev-button
   
   #next-button {
-    float:left;
+    float:right;
     background: #bbb url(../img/nav.png) no-repeat right center;
     border-bottom-right-radius:5px;
     border-top-right-radius:5px;
-  }
+  }//#next-button
+
 
   .tab-wrapper {
     width:280px;
@@ -637,21 +686,6 @@ ul.resource-thumbs{
 
 .btn{
   border:1px solid #999;
-}
-
-#hotspots-wrapper {
-  position:relative;
-  left:18px;
-
-  .hotspot {
-    display:block;
-    position:absolute;
-    background-color:#222;
-    .opacity(20);
-    &:hover {
-      .opacity(30);
-    }
-  }
 }
 
 .annotation:hover {
