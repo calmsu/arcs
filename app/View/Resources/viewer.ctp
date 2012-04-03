@@ -1,8 +1,10 @@
 <style>#resource img {border:1px solid #888;}</style> 
 
 <div id="resource-wrapper" class="row">
-    <div id="resource"></div>
-    <div id="hotspots-wrapper"></div>
+    <div id="wrapping">
+	    <div id="resource"></div>
+	    <div id="hotspots-wrapper"></div>
+    </div>
     <div class="tab-wrapper" id="arcs-tab-wrapper" style="top:-550px">
         <ul class="nav tabs">
             <li class="active" id="primary">
