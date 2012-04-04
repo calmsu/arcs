@@ -14,7 +14,8 @@ class AppController extends Controller {
             'authError' => "Sorry, you'll need to login to do that."
         ),
         'Session',
-        'RequestHandler'
+        'RequestHandler',
+        'Access'
     );
 
     public function beforeFilter() {

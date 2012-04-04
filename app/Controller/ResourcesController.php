@@ -14,7 +14,7 @@ require_once(LIB . 'arcs' . DS . 'Search.php');
  */
 class ResourcesController extends AppController {
     public $name = 'Resources';
-    public $uses = array('Resource', 'Task', 'Collection');
+    public $uses = array('Resource', 'Job', 'Collection');
 
     public function beforeFilter() {
         # The App Controller will set some common view variables (namely a 
@@ -72,7 +72,10 @@ class ResourcesController extends AppController {
         ));
 
         # Make a new task to split the PDF.
-        $this->Task->queue('split_pdf', $id, $this->Collection->id);
+        $this->Job->enqueue('split_pdf', array(
+            'resource_id' => $id, 
+            'collection_id' => $this->Collection->id
+        ));
         $this->json(202);
     }
 
@@ -276,8 +279,9 @@ class ResourcesController extends AppController {
         if (!$this->Auth->user('id')) return $this->json(401);
         $resource = $this->Resource->findById($id);
         if (!$resource) return $this->json(404);
-        $this->loadModel('Task');
-        $this->Task->queue('thumb', $resource['id']);
+        $this->Job->enqueue('thumb', array(
+            'resource_id' => $resource['id']
+        ));
         $this->json(202);
     }
 

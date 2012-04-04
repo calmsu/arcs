@@ -33,7 +33,7 @@ class UsersController extends AppController {
     public function add() {
         if (!($this->request->is('post') && $this->request->data))
             return $this->json(400);
-        if ($this->Auth->user('role') == 0)
+        if ($this->Access->isAdmin())
             $this->User->permit('role');
         if (!$this->User->add($this->request->data)) return $this->json(400);
         $this->json(201, $this->User->findById($this->User->id));
@@ -76,13 +76,11 @@ class UsersController extends AppController {
         $user = $this->User->read(null, $id);
         if (!$user) return $this->json(404);
         # Must be editing own account, or an admin.
-        if (!($this->User->id == $this->Auth->user('id') || $this->Auth->user('role') == 0))
+        if (!($this->User->id == $this->Auth->user('id') || $this->Access->isAdmin()))
             return $this->json(403);
         # Only admins can change user roles.
-        if ($this->Auth->user('role') == 0) {
+        if ($this->Access->isAdmin()) 
             $this->User->permit('role');
-            $this->User->forbid('password');
-        }
         if (!$this->User->add($this->request->data)) return $this->json(500);
         # Update the Auth Session var, if necessary.
         if ($id == $this->Auth->user('id'))
@@ -92,7 +90,7 @@ class UsersController extends AppController {
 
     public function delete($id=null) {
         if (!$this->request->is('delete')) return $this->json(405);
-        if (!$this->Auth->user('role') == 0) return $this->json(403);
+        if (!$this->Access->isAdmin()) return $this->json(403);
         if (!$this->User->findById($id)) return $this->json(404);
         if (!$this->User->delete($id)) return $this->json(500);
         $this->json(204);
