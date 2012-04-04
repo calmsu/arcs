@@ -130,6 +130,10 @@ class AppModel extends Model {
             foreach($results as $k => $v) {
                 $results[$k][$this->name] = $func($v[$this->name], $context);
             }
+        } else if (isset($results[0])) {
+            foreach($results as $k => $v) {
+                $results[$k] = $func($v, $context);
+            }
         } else if (isset($results[$this->name])) {
             $results[$this->name] = $func($results[$this->name], $context);
         } else {

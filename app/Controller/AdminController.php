@@ -3,6 +3,9 @@ App::uses('ConnectionManager', 'Model');
 /**
  * Admin controller.
  *
+ * This is largely a read-only group of views. Admin actions are carried out 
+ * through ajax requests to the proper controller actions on the client-side.
+ *
  * @package      ARCS
  * @copyright    Copyright 2012, Michigan State University Board of Trustees
  */
@@ -11,7 +14,7 @@ class AdminController extends AppController {
 
     public function beforeFilter() {
         parent::beforeFilter();
-        if (!$this->Auth->user('role') == 0) {
+        if (!$this->Access->isAdmin()) {
             $this->Session->setFlash('You must be an Admin to access the Admin ' .
                ' console.', 'flash_error');
             $this->redirect('/');
@@ -64,14 +67,12 @@ class AdminController extends AppController {
     }
 
     /**
-     * View and re-run tasks.
+     * View and re-run jobs.
      */
-    public function tasks() {
-        $this->loadModel('Task');
-        $this->Task->recursive = -1;
-        $this->Task->flatten = true;
-        $this->set('tasks', $this->Task->find('all', array(
-            'order' => 'Task.created DESC'
+    public function jobs() {
+        $this->loadModel('Job');
+        $this->set('jobs', $this->Job->find('all', array(
+            'order' => 'Job.created DESC'
         )));
     }
 }

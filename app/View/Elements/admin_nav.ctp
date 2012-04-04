@@ -7,9 +7,9 @@
         <a class="btn <?php echo $active == 'users' ? 'active' : '' ?>" 
             href="<?php echo $this->Html->url(
             array('action' => 'users')) ?>">Users</a>
-        <a class="btn <?php echo $active == 'tasks' ? 'active' : '' ?>" 
+        <a class="btn <?php echo $active == 'jobs' ? 'active' : '' ?>" 
             href="<?php echo $this->Html->url(
-            array('action' => 'tasks')) ?>">Tasks</a>
+            array('action' => 'jobs')) ?>">Jobs</a>
         <a class="btn <?php echo $active == 'logs' ? 'active' : '' ?>" 
             href="<?php echo $this->Html->url(
             array('action' => 'logs')) ?>">Logs</a>

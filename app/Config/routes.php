@@ -104,7 +104,7 @@
         'bookmarks',
         'users',
         'flags',
-        'tasks',
+        'jobs',
         'metadata'
     ));
     Router::parseExtensions();

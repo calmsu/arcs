@@ -2,17 +2,17 @@
   var __hasProp = Object.prototype.hasOwnProperty,
     __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor; child.__super__ = parent.prototype; return child; };
 
-  arcs.collections.TaskList = (function(_super) {
+  arcs.collections.JobList = (function(_super) {
 
-    __extends(TaskList, _super);
+    __extends(JobList, _super);
 
-    function TaskList() {
-      TaskList.__super__.constructor.apply(this, arguments);
+    function JobList() {
+      JobList.__super__.constructor.apply(this, arguments);
     }
 
-    TaskList.prototype.model = arcs.models.Task;
+    JobList.prototype.model = arcs.models.Job;
 
-    return TaskList;
+    return JobList;
 
   })(Backbone.Collection);
 
