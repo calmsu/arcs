@@ -1,4 +1,5 @@
 <div class="search-home search-wrapper"></div>
+
 <details class="arcs-front-page unselectable" open="open">
     <summary class="large">Notebooks</summary>
     <div></div><!-- details-content -->

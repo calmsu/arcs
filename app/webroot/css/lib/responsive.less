@@ -26,35 +26,36 @@
 // --------------------------------------------------
 
 @media (min-width: 360px) and (max-width: 940px) {
+  /*Bootstrap business */
   html{
     max-width: 940px;
-    min-width: 360px;
+    min-width: 460px;
   }
   
   .fluid-container{
-    min-width: 360px;
+    min-width: 460px;
     max-width: 940px;
   }
   
   // Unfix the navbar
   .navbar-fixed {
     position: absolute;
-  }
+  }//.navbar-fixed
   
   div#information table tbody tr td {
     padding: 2px 4px;
     line-height: @baseFontSize + 1;
-  }
+  }//#information
   
   .navbar-fixed .nav {
     float: none;
-  }
+  }//.navbar-fixed
 
   // Remove width from containers
   .container {
     width: auto;
     padding: 0 20px;
-  }
+  }//.container
 
   // Make all columns even
   .row > [class*="span"] {
@@ -62,17 +63,20 @@
     display: block;
     width: auto;
     margin: 0;
-  }
+  }//.row
 
+/* Resource viewer */
   .tab-content {
     padding: 5px;
   }
   
+/*
   #resource-wrapper {
-    height: 430px;
+    //height: 430px;
 
     #resource img {
-      height:432px;
+      max-width: 60% !important;
+      max-height: 100%;
     }
     
     .tab-wrapper {
@@ -81,13 +85,12 @@
       
       .tabs > li > a {
         padding: 4px; 
-      }
+      }//tabs
       .tab-pane.active{
         height: 395px;
         overflow: auto;
-      }
-    }
-
+      }//tab-pane
+	}///tab-wrapper
     .es-carousel-wrapper{
       height: 95px !important;
       padding: 2px 0;
@@ -96,15 +99,98 @@
       width: 100%;
       overflow: hidden;
       border-image: initial;
-    }
-  }
-}
+	}//carousel-wrapper
+  }//#resource-wrapper
+*/
+	#credits{
+		.row{
+			div{
+				padding: 10px 0;
+				border-bottom: solid thin @grayLight;
+				margin-bottom: 10px;
+			
+				&.quick-links{
+					padding-top: 0;
+				}//.quick-links
+				
+				&:last-child{
+					border-bottom: none;
+				}//last-child
+				
+				img{
+					display: block;
+					
+					&#neh_logo{
+						width: 175px;
+						height: auto;
+					}//#neh-logo
+					
+					&#msu_wordmark{
+						height: 55px;
+						max-height: none;
+						width: auto;
+					}//msu_wordmark
+					
+				}//img
+				
+			}//div
+		}//.row
+	}//#credits	
+  
+}//@media 360px-940px
 
+@media (max-width: 760px) and (min-width: 360px){
+	#resource-wrapper {
+	  height: 400px;
+	  margin-left:0px;
+	  
+	  #resource-well{
+	  
+		min-height: 20px;
+		margin-bottom: 20px;
+		background-color: @gray;
+		border: 1px solid #eee;
+		border: 1px solid rgba(0,0,0,.05);
+		.border-radius(4px);
+		.box-shadow(inset 4px rgba(0,0,0,.55));
+	
+	  	width: 54%;
+	  	height: 100%;
+	  	float: left;
+	  	display: block;
+	  	position: relative;
+	  	
+	  	#wrapping{
+	  		width: 85%;
+	  	}//#wrapping
+	  	
+	  }//#resource-well
+	   
+	.tab-wrapper {
+		width:280px;
+		min-height:300px;
+		text-align:left;
+		float:right;
+		margin-right:-10px;
+		overflow:hidden;
+		padding-right: 0;
+		padding-bottom: 15px;
+	}//.tab-wrapper
+	}//#resource-wrapper
+}//@media
 
 // PORTRAIT TABLET TO DEFAULT DESKTOP
 // ----------------------------------
+// THIS STYLE IS ONLY FOR COLUMNS...RESOURCE VIEWS ARE IN OTHER QUERIES
 
 @media (min-width: 768px) and (max-width: 940px) {
+
+	#resource{
+		img{
+			max-width: 90%;
+			max-height: auto;
+		}
+	}//#resource
 
   // Reset grid variables
   @gridColumns:       16;
@@ -124,6 +210,7 @@
   .container {
     width: @siteWidth;
   }
+  
 
   // Default columns
   .span1     { .columns(1); }
@@ -153,12 +240,13 @@
   .offset11  { .offset(11); }
   .offset12  { .offset(12); }
 
-}
+}//portrait-tablet
 
 // LANDSCAPE TABLET
 // ----------------
 
 @media (min-width: 940px) and (max-width: 1024px) and (max-height: 768px){
+/*    
   #resource-wrapper {
     height:530px;
 
@@ -169,79 +257,59 @@
     .tab-wrapper, .tab-pane, .tab-content {
       height:515px !important;
     }
-  }
+  }//#resource-wrapper
+  */
 }
 
+@media (max-width: 1100px) and (min-width: 760px){
+
+	#resource-wrapper {
+	  height: 630px;
+	  margin-left:0px;
+	  
+	  #resource-well{
+	  
+		min-height: 20px;
+		margin-bottom: 20px;
+		background-color: @gray;
+		border: 1px solid #eee;
+		border: 1px solid rgba(0,0,0,.05);
+		.border-radius(4px);
+		.box-shadow(inset 4px rgba(0,0,0,.55));
+	
+	  	width: 60%;
+	  	height: 100%;
+	  	float: left;
+	  	display: block;
+	  	position: relative;
+	  	
+	  }//#resource-well
+	  
+	}//#resource-wrapper
+
+}//media
 
 // LARGE DESKTOP & UP
 // ------------------
 
-@media (min-width: 1210px) and (min-height: 850px){
-
-  // Reset grid variables
-  @gridColumns:       12;
-  @gridColumnWidth:   70px;
-  @gridGutterWidth:   30px;
-  @siteWidth:         1170px;
-
-  // Bring grid mixins to recalculate widths
-  .columns(@columns: 1) {
-    width: (@gridColumnWidth * @columns) + (@gridGutterWidth * (@columns - 1));
-  }
-  .offset(@columns: 1) {
-    margin-left: (@gridColumnWidth * @columns) + (@gridGutterWidth * (@columns - 1)) + (@gridGutterWidth * 2);
-  }
-
-  .container {
-    width: @siteWidth;
-  }
-  [class*="span"] {
-    margin-left: @gridGutterWidth;
-  }
-
-  // Default columns
-  .span1     { .columns(1); }
-  .span2     { .columns(2); }
-  .span3     { .columns(3); }
-  .span4     { .columns(4); }
-  .span5     { .columns(5); }
-  .span6     { .columns(6); }
-  .span7     { .columns(7); }
-  .span8     { .columns(8); }
-  .span9     { .columns(9); }
-  .span10    { .columns(10); }
-  .span11    { .columns(11); }
-  .span12    { .columns(12); }
-
-  // Offset column options
-  .offset1   { .offset(1); }
-  .offset2   { .offset(2); }
-  .offset3   { .offset(3); }
-  .offset4   { .offset(4); }
-  .offset5   { .offset(5); }
-  .offset6   { .offset(6); }
-  .offset7   { .offset(7); }
-  .offset8   { .offset(8); }
-  .offset9   { .offset(9); }
-  .offset10  { .offset(10); }
-  .offset11  { .offset(11); }
-  .offset12  { .offset(12); }
-  
+@media (min-width: 1210px) and (min-height: 850px){	
+ 
+ /* 
   #resource-wrapper {
     height: 700px;
 
     #resource img {
-      height:702px;
-    }
+      min-height:700px;
+      width: auto;
+      .unselectable();
+    }//#resource img
     
-    .tab-wrapper, .tab-pane, .tab-content {
-      height:685px !important;
-    }
-  }
-}
-
-@media (min-width: 1360px) and (min-height: 950px) {
-
+    .tab-wrapper {
+      width:340px;
+      height:530px;
+    }//tab-wrapper
+  }//#resource-wrapper
+  */
   // Reset grid variables
   @gridColumns:       12;
   @gridColumnWidth:   70px;
@@ -262,6 +330,7 @@
   [class*="span"] {
     margin-left: @gridGutterWidth;
   }
+  
 
   // Default columns
   .span1     { .columns(1); }
@@ -291,7 +360,10 @@
   .offset11  { .offset(11); }
   .offset12  { .offset(12); }
   
-  
+}//large desktop and up
+
+@media (min-width: 1360px) and (min-height: 950px) {
+/*
   #resource-wrapper {
     height: 850px;
 
@@ -300,11 +372,63 @@
         height:852px;
         width:auto;
         .unselectable();
-      }
-    }
+      }//img
+    }//#resource
     
     .tab-wrapper, .tab-pane, .tab-content {
       height:835px !important;
-    }
+    }//.tab-wrapper
+  }//#resource-wrapper
+*/
+
+  // Reset grid variables
+  @gridColumns:       12;
+  @gridColumnWidth:   70px;
+  @gridGutterWidth:   30px;
+  @siteWidth:         1170px;
+
+  // Bring grid mixins to recalculate widths
+  .columns(@columns: 1) {
+    width: (@gridColumnWidth * @columns) + (@gridGutterWidth * (@columns - 1));
   }
+  .offset(@columns: 1) {
+    margin-left: (@gridColumnWidth * @columns) + (@gridGutterWidth * (@columns - 1)) + (@gridGutterWidth * 2);
+  }
+
+  .container {
+    width: @siteWidth;
+  }
+  [class*="span"] {
+    margin-left: @gridGutterWidth;
+  }
+
+  // Default columns
+  .span1     { .columns(1); }
+  .span2     { .columns(2); }
+  .span3     { .columns(3); }
+  .span4     { .columns(4); }
+  .span5     { .columns(5); }
+  .span6     { .columns(6); }
+  .span7     { .columns(7); }
+  .span8     { .columns(8); }
+  .span9     { .columns(9); }
+  .span10    { .columns(10); }
+  .span11    { .columns(11); }
+  .span12    { .columns(12); }
+
+  // Offset column options
+  .offset1   { .offset(1); }
+  .offset2   { .offset(2); }
+  .offset3   { .offset(3); }
+  .offset4   { .offset(4); }
+  .offset5   { .offset(5); }
+  .offset6   { .offset(6); }
+  .offset7   { .offset(7); }
+  .offset8   { .offset(8); }
+  .offset9   { .offset(9); }
+  .offset10  { .offset(10); }
+  .offset11  { .offset(11); }
+  .offset12  { .offset(12); }
+  
+  
 }//BIG DESKTOP

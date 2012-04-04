@@ -1,8 +1,12 @@
 <div id="resource-wrapper" class="row">
-    <div id="prev-button"></div>
-    <div id="resource"></div>
-    <div id="hotspots-wrapper" style="left:18px"></div>
-    <div id="next-button"></div>
+	<div id="resource-well">
+		<div id="prev-button"></div>
+		<div id="next-button"></div>
+		<div id="wrapping">
+			<div id="hotspots-wrapper"></div>
+			<div id="resource"></div>
+		</div>
+	</div><!-- #img-container -->
 	
     <div class="tab-wrapper" id="arcs-tab-wrapper" style="top:-550px">
         <ul class="nav tabs">
