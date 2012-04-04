@@ -1,0 +1,10 @@
+<ul class="resource-thumbs">
+<% _.each(resources, function(r, i) { %>
+  <li>
+    <a href="<%= arcs.baseURL + '/resource/' + r.id %>">
+      <img src="<%= r.thumb %>" alt="resource" />
+    </a>
+    <a href="<%= arcs.baseURL + '/resource/' + r.id %>"><%= r.title %></a>
+  </li>
+<% }) %>
+</ul>
