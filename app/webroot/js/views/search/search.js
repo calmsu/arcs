@@ -1,8 +1,11 @@
 (function() {
-  var __hasProp = Object.prototype.hasOwnProperty,
+  var _base,
+    __hasProp = Object.prototype.hasOwnProperty,
     __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor; child.__super__ = parent.prototype; return child; };
 
-  arcs.views.Search = (function(_super) {
+  if ((_base = arcs.views).search == null) _base.search = {};
+
+  arcs.views.search.Search = (function(_super) {
 
     __extends(Search, _super);
 
@@ -22,8 +25,7 @@
 
     Search.prototype.initialize = function() {
       this.setupSelect() && this.setupSearch();
-      this.sort = 'modified';
-      this.actions = new arcs.views.SearchActions({
+      this.actions = new arcs.views.search.Actions({
         el: this.$el,
         collection: this.search.results
       });
@@ -82,7 +84,7 @@
       this.searchPage = 1;
       this.scrollReady = false;
       return this.search = new arcs.utils.Search({
-        container: $('#search-wrapper'),
+        container: $('.search-wrapper'),
         order: this.options.sort,
         run: false,
         loader: true,

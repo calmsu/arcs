@@ -10,7 +10,28 @@
       User.__super__.constructor.apply(this, arguments);
     }
 
+    User.prototype.ROLES = {
+      'Admin': 0,
+      'Sr. Researcher': 1,
+      'Researcher': 2,
+      'Guest': 3
+    };
+
     User.prototype.urlRoot = arcs.baseURL + 'users';
+
+    User.prototype.initialize = function() {};
+
+    User.prototype.is = function(role) {
+      return this.get('role') === this.ROLES[role];
+    };
+
+    User.prototype.isLoggedIn = function() {
+      return this.id != null;
+    };
+
+    User.prototype.isAdmin = function() {
+      return this.get('role') === this.ROLES['Admin'];
+    };
 
     return User;
 

@@ -1,7 +1,8 @@
 # search.coffee
 # -------------
 # Search View. Select and perform bulk actions on search results.
-class arcs.views.Search extends Backbone.View
+arcs.views.search ?= {}
+class arcs.views.search.Search extends Backbone.View
 
   options:
     sort: 'modified'
@@ -14,10 +15,8 @@ class arcs.views.Search extends Backbone.View
   initialize: ->
     @setupSelect() and @setupSearch()
 
-    @sort = 'modified'
-
     # Init our sub-view for actions.
-    @actions = new arcs.views.SearchActions
+    @actions = new arcs.views.search.Actions
       el: @$el
       collection: @search.results
 
@@ -77,7 +76,7 @@ class arcs.views.Search extends Backbone.View
     @searchPage = 1
     @scrollReady = false
     @search = new arcs.utils.Search 
-      container: $('#search-wrapper')
+      container: $('.search-wrapper')
       order: @options.sort
       run: false
       loader: true
@@ -85,7 +84,7 @@ class arcs.views.Search extends Backbone.View
       success: =>
         @router.navigate encodeURIComponent(@search.query)
         @searchPage = 1
-        # Render the our results.
+        # Render the results.
         @render()
         # Setup the endless scroll unless it's already been done.
         @setupScroll() and @scrollReady = true unless @scrollReady
@@ -121,7 +120,6 @@ class arcs.views.Search extends Backbone.View
             @append()
 
     # Fix the toolbar width on resizes. 
-    # TODO: do this in the stylesheet.
     $window.resize ->
       $actions.width($results.width() + 23) if $window.scrollTop() > pos
 
@@ -138,6 +136,8 @@ class arcs.views.Search extends Backbone.View
     time = ($(window).scrollTop() / $(document).height()) * 1000
     $('html, body').animate {scrollTop: 0}, time
 
+  # Set the search sort (a.k.a. order). This triggers a new search
+  # and subsequent render.
   setSort: (e) ->
     id = e.currentTarget.id
     @options.sort = e.target.id.match(/sort-(\w+)-btn/)[1]

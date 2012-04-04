@@ -15,6 +15,7 @@
         echo $this->Assets->stylesheets();
         echo $this->Assets->scripts();
         ?>
+        <script>arcs.user = new arcs.models.User(<?php echo json_encode($user) ?>);</script>
     </head>
     <body>
         <div class="wrap">

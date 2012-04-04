@@ -1,7 +1,15 @@
+# context_menu.coffee
+# -------------------
+# Our little context menu. It's not quite as flexible as the 2000 loc 
+# plugins, but gets the job done.
+#
+# To use it, provide an `options` object of menu items paired to callback
+# functions. If a `context` is set, the callbacks will be called within it.
+# The `onShow` option takes a callback that we'll call when the context menu
+# is shown--it's provided the jQuery.Event object that triggered the show.
 class arcs.views.ContextMenu extends Backbone.View
-
   events:
-    'click *'     : 'hide'
+    'click *': 'hide'
 
   options:
     options:

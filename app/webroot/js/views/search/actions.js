@@ -1,27 +1,24 @@
 (function() {
-  var __hasProp = Object.prototype.hasOwnProperty,
+  var _base,
+    __hasProp = Object.prototype.hasOwnProperty,
     __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor; child.__super__ = parent.prototype; return child; };
 
-  arcs.views.SearchActions = (function(_super) {
+  if ((_base = arcs.views).search == null) _base.search = {};
 
-    __extends(SearchActions, _super);
+  arcs.views.search.Actions = (function(_super) {
 
-    function SearchActions() {
-      SearchActions.__super__.constructor.apply(this, arguments);
+    __extends(Actions, _super);
+
+    function Actions() {
+      Actions.__super__.constructor.apply(this, arguments);
     }
 
-    SearchActions.prototype.initialize = function() {
+    Actions.prototype.initialize = function() {
       this.results = this.collection;
       this.ctxMenu = new arcs.views.ContextMenu({
         el: $(document),
         filter: 'img',
-        options: {
-          'Open': 'openSelected',
-          'Info': 'editSelected',
-          'Flag': 'flagSelected',
-          'Preview': 'previewSelected',
-          'Download': 'downloadSelected'
-        },
+        options: this._getContextOptions(),
         onShow: function(e) {
           $(e.currentTarget).parents('.result').addClass('selected');
           return arcs.trigger('arcs:selection');
@@ -32,7 +29,7 @@
       return arcs.keys.add('space', false, this.previewSelected, this);
     };
 
-    SearchActions.prototype.events = {
+    Actions.prototype.events = {
       'dblclick img': 'openResult',
       'click #open-btn': 'openSelected',
       'click #open-colview-btn': 'collectionFromSelected',
@@ -48,12 +45,12 @@
       'click #split-btn': 'splitSelected'
     };
 
-    SearchActions.prototype.openResult = function(result) {
+    Actions.prototype.openResult = function(result) {
       result = this._modelFromRef(result);
       return window.open(arcs.baseURL + 'resource/' + result.id);
     };
 
-    SearchActions.prototype.keywordResult = function(result, string) {
+    Actions.prototype.keywordResult = function(result, string) {
       var keyword;
       result.set('keywords', result.get('keywords').concat(string));
       keyword = new arcs.models.Keyword({
@@ -63,7 +60,7 @@
       return keyword.save();
     };
 
-    SearchActions.prototype.flagResult = function(result, reason, explanation) {
+    Actions.prototype.flagResult = function(result, reason, explanation) {
       var flag;
       flag = new arcs.models.Flag({
         resource_id: result.id,
@@ -73,7 +70,7 @@
       return flag.save();
     };
 
-    SearchActions.prototype.editResult = function(result, metadata) {
+    Actions.prototype.editResult = function(result, metadata) {
       result.set('metadata', _.extend(result.get('metadata'), metadata));
       return $.ajax({
         url: arcs.baseURL + 'resources/metadata/' + result.id,
@@ -84,7 +81,7 @@
       });
     };
 
-    SearchActions.prototype.bookmarkResult = function(result, note) {
+    Actions.prototype.bookmarkResult = function(result, note) {
       var bkmk;
       bkmk = new arcs.models.Bookmark({
         resource_id: result.id,
@@ -93,14 +90,14 @@
       return bkmk.save();
     };
 
-    SearchActions.prototype.deleteSelected = function() {
+    Actions.prototype.deleteSelected = function() {
       var n,
         _this = this;
       if (!this.results.anySelected()) return;
       n = this.results.numSelected();
       return new arcs.views.Modal({
         title: 'Delete Selected',
-        subtitle: ("" + n + " " + (arcs.pluralize('resource', n)) + " will be ") + "permanently deleted.",
+        subtitle: ("" + n + " " + (arcs.inflector.pluralize('resource', n)) + " will be ") + "permanently deleted.",
         buttons: {
           "delete": {
             "class": 'btn danger',
@@ -119,14 +116,14 @@
       });
     };
 
-    SearchActions.prototype.keywordSelected = function() {
+    Actions.prototype.keywordSelected = function() {
       var n,
         _this = this;
       if (!this.results.anySelected()) return;
       n = this.results.numSelected();
       return new arcs.views.Modal({
         title: 'Keyword Selected',
-        subtitle: ("The keyword will be applied to " + n + " ") + ("" + (arcs.pluralize('resource', n)) + "."),
+        subtitle: ("The keyword will be applied to " + n + " ") + ("" + (arcs.inflector.pluralize('resource', n)) + "."),
         backdrop: true,
         inputs: {
           keyword: {
@@ -155,23 +152,21 @@
       });
     };
 
-    SearchActions.prototype.rethumbSelected = function() {
+    Actions.prototype.rethumbSelected = function() {
       var result, _i, _len, _ref, _results;
-      if (!this.results.anySelected()) return;
       _ref = this.results.selected();
       _results = [];
       for (_i = 0, _len = _ref.length; _i < _len; _i++) {
         result = _ref[_i];
         _results.push($.post(arcs.baseURL + 'resources/rethumb/' + result.id, function() {
-          return arcs.notify('Resource successfully queued for split.');
+          return arcs.notify('Resource successfully queued for re-thumbnail.');
         }));
       }
       return _results;
     };
 
-    SearchActions.prototype.splitSelected = function() {
+    Actions.prototype.splitSelected = function() {
       var result, _i, _len, _ref, _results;
-      if (!this.results.anySelected()) return;
       _ref = this.results.selected();
       _results = [];
       for (_i = 0, _len = _ref.length; _i < _len; _i++) {
@@ -183,14 +178,14 @@
       return _results;
     };
 
-    SearchActions.prototype.flagSelected = function() {
+    Actions.prototype.flagSelected = function() {
       var n,
         _this = this;
       if (!this.results.anySelected()) return;
       n = this.results.numSelected();
       return new arcs.views.Modal({
         title: 'Flag Selected',
-        subtitle: "" + n + " " + (arcs.pluralize('resource', n)) + " will be flagged.",
+        subtitle: "" + n + " " + (arcs.inflector.pluralize('resource', n)) + " will be flagged.",
         inputs: {
           reason: {
             type: 'select',
@@ -223,7 +218,7 @@
       });
     };
 
-    SearchActions.prototype.editSelected = function() {
+    Actions.prototype.editSelected = function() {
       var field, fields, inputs, metadata, result, _i, _len, _ref,
         _this = this;
       if (!this.results.anySelected()) return;
@@ -256,7 +251,7 @@
       });
     };
 
-    SearchActions.prototype.batchEditSelected = function() {
+    Actions.prototype.batchEditSelected = function() {
       var batchFields, checked, field, inputs, results, value, values, _i, _len, _original, _ref,
         _this = this;
       inputs = {};
@@ -309,13 +304,13 @@
       });
     };
 
-    SearchActions.prototype.namedCollectionFromSelected = function() {
+    Actions.prototype.namedCollectionFromSelected = function() {
       var n;
       if (!this.results.anySelected()) return;
       n = this.results.numSelected();
       return new arcs.views.Modal({
         title: 'Create a Collection',
-        subtitle: ("A collection with " + n + " " + (arcs.pluralize('resource', n)) + " ") + "will be created.",
+        subtitle: ("A collection with " + n + " " + (arcs.inflector.pluralize('resource', n)) + " ") + "will be created.",
         inputs: {
           title: {
             focused: true
@@ -335,7 +330,7 @@
       });
     };
 
-    SearchActions.prototype.collectionFromSelected = function(vals) {
+    Actions.prototype.collectionFromSelected = function(vals) {
       var collection, _ref, _ref2,
         _this = this;
       if (!this.results.anySelected()) return;
@@ -358,7 +353,7 @@
       });
     };
 
-    SearchActions.prototype.previewSelected = function() {
+    Actions.prototype.previewSelected = function() {
       if (!this.results.anySelected()) return;
       if ((this.preview != null) && $('#modal').is(':visible')) {
         this.preview.remove();
@@ -369,7 +364,7 @@
       });
     };
 
-    SearchActions.prototype.downloadSelected = function() {
+    Actions.prototype.downloadSelected = function() {
       var iframe, result, _i, _len, _ref, _results;
       _ref = this.results.selected();
       _results = [];
@@ -385,7 +380,7 @@
       return _results;
     };
 
-    SearchActions.prototype.zippedDownloadSelected = function() {
+    Actions.prototype.zippedDownloadSelected = function() {
       var data,
         _this = this;
       if (!(this.results.numSelected() > 1)) {
@@ -414,46 +409,65 @@
       });
     };
 
-    SearchActions.prototype.bookmarkSelected = function() {
+    Actions.prototype.bookmarkSelected = function() {
       var result, _i, _len, _ref;
       _ref = this.results.selected();
       for (_i = 0, _len = _ref.length; _i < _len; _i++) {
         result = _ref[_i];
         this.bookmarkResult(result);
       }
-      return this._notify('bookmarked');
+      if (this.results.anySelected()) return this._notify('bookmarked');
     };
 
-    SearchActions.prototype.openSelected = function() {
+    Actions.prototype.openSelected = function() {
       var result, _i, _len, _ref;
       _ref = this.results.selected();
       for (_i = 0, _len = _ref.length; _i < _len; _i++) {
         result = _ref[_i];
         this.openResult(result);
       }
-      return this._notify('opened');
+      if (this.results.anySelected()) return this._notify('opened');
     };
 
-    SearchActions.prototype._notify = function(verb, n) {
+    Actions.prototype._notify = function(verb, n) {
       var msg;
       if (verb == null) verb = 'affected';
       if (n == null) n = this.results.numSelected();
-      msg = "" + n + " " + (arcs.pluralize('resource', n)) + " " + (arcs.conjugate('was', n)) + " " + verb + ".";
+      msg = ("" + n + " " + (arcs.inflector.pluralize('resource', n)) + " ") + ("" + (arcs.inflector.conjugate('was', n)) + " " + verb + ".");
       return arcs.notify(msg, 'success');
     };
 
-    SearchActions.prototype._modelFromRef = function(ref) {
+    Actions.prototype._modelFromRef = function(ref) {
       var id;
       if (ref instanceof arcs.models.Resource) return ref;
       if (ref instanceof jQuery.Event) {
         ref.preventDefault();
-        ref = $(ref.currentTarget).parent();
+        ref = $(ref.currentTarget).parents('.result');
       }
-      id = $(ref).find('img').attr('data-id');
+      id = $(ref).data('id');
       return this.results.get(id);
     };
 
-    return SearchActions;
+    Actions.prototype._getContextOptions = function() {
+      var admin, public, restricted;
+      public = {
+        'Open': 'openSelected',
+        'Preview': 'previewSelected',
+        'Download': 'downloadSelected'
+      };
+      restricted = {
+        'Info': 'editSelected',
+        'Flag': 'flagSelected'
+      };
+      admin = {
+        'Delete': 'deleteSelected'
+      };
+      if (arcs.user.isAdmin()) return _.extend(public, restricted, admin);
+      if (arcs.user.isLoggedIn()) return _.extend(public, restricted);
+      return public;
+    };
+
+    return Actions;
 
   })(Backbone.View);
 

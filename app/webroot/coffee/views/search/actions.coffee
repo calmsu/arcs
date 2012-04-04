@@ -1,6 +1,7 @@
-# search_actions.coffee
-# ---------------------
-class arcs.views.SearchActions extends Backbone.View
+# actions.coffee
+# --------------
+arcs.views.search ?= {}
+class arcs.views.search.Actions extends Backbone.View
 
   initialize: ->
     @results = @collection
@@ -8,12 +9,7 @@ class arcs.views.SearchActions extends Backbone.View
     @ctxMenu = new arcs.views.ContextMenu
       el: $(document)
       filter: 'img'
-      options:
-        'Open'    : 'openSelected'
-        'Info'    : 'editSelected'
-        'Flag'    : 'flagSelected'
-        'Preview' : 'previewSelected'
-        'Download': 'downloadSelected'
+      options: @_getContextOptions()
       onShow: (e) ->
         $(e.currentTarget).parents('.result').addClass 'selected'
         arcs.trigger 'arcs:selection'
@@ -41,7 +37,7 @@ class arcs.views.SearchActions extends Backbone.View
   # Open the resource view for a result.
   openResult: (result) ->
     # This method can be bound to a click event, so we'll resolve the 
-    # result value first. 
+    # result param first. 
     result = @_modelFromRef(result)
     window.open arcs.baseURL + 'resource/' + result.id
 
@@ -85,7 +81,7 @@ class arcs.views.SearchActions extends Backbone.View
     n = @results.numSelected()
     new arcs.views.Modal
       title: 'Delete Selected'
-      subtitle: "#{n} #{arcs.pluralize('resource', n)} will be " +
+      subtitle: "#{n} #{arcs.inflector.pluralize('resource', n)} will be " +
         "permanently deleted."
       buttons:
         delete:
@@ -104,7 +100,7 @@ class arcs.views.SearchActions extends Backbone.View
     new arcs.views.Modal
       title: 'Keyword Selected'
       subtitle: "The keyword will be applied to #{n} " +
-        "#{arcs.pluralize('resource', n)}."
+        "#{arcs.inflector.pluralize('resource', n)}."
       backdrop: true
       inputs:
         keyword:
@@ -121,16 +117,15 @@ class arcs.views.SearchActions extends Backbone.View
               @keywordResult result, vals.keyword
             @_notify 'keyworded'
         cancel: ->
-
   
+  # Send a request for the resource to be re-thumbnailed.
   rethumbSelected: ->
-    return unless @results.anySelected()
     for result in @results.selected()
       $.post arcs.baseURL + 'resources/rethumb/' + result.id, ->
-        arcs.notify 'Resource successfully queued for split.'
+        arcs.notify 'Resource successfully queued for re-thumbnail.'
 
+  # Send a request for the resource to be split.
   splitSelected: ->
-    return unless @results.anySelected()
     for result in @results.selected()
       $.post arcs.baseURL + 'resources/split_pdf/' + result.id, ->
         arcs.notify 'Resource successfully queued for split.'
@@ -141,7 +136,7 @@ class arcs.views.SearchActions extends Backbone.View
     n = @results.numSelected()
     new arcs.views.Modal
       title: 'Flag Selected'
-      subtitle: "#{n} #{arcs.pluralize('resource', n)} will be flagged."
+      subtitle: "#{n} #{arcs.inflector.pluralize('resource', n)} will be flagged."
       inputs:
         reason:
           type: 'select'
@@ -194,6 +189,7 @@ class arcs.views.SearchActions extends Backbone.View
     # First we need to build the inputs and find any shared values.
     inputs = {}
     results = @results.selected()
+    # We'll maintain an object of the original fields for diffing later.
     _original = {}
     batchFields = _.difference(results[0].MODIFIABLE, results[0].SINGULAR).sort()
     for field in batchFields
@@ -235,7 +231,7 @@ class arcs.views.SearchActions extends Backbone.View
     n = @results.numSelected()
     new arcs.views.Modal
       title: 'Create a Collection'
-      subtitle: "A collection with #{n} #{arcs.pluralize('resource', n)} " +
+      subtitle: "A collection with #{n} #{arcs.inflector.pluralize('resource', n)} " +
         "will be created."
       inputs:
         title: 
@@ -287,7 +283,6 @@ class arcs.views.SearchActions extends Backbone.View
       $('body').append iframe
       iframe.src = arcs.baseURL + 'resources/download/' + result.id
 
-  
   # Request a download link for a zipfile of selected resources.
   zippedDownloadSelected: ->
     unless @results.numSelected() > 1
@@ -310,17 +305,20 @@ class arcs.views.SearchActions extends Backbone.View
   # Call bookmarkResult on all selected results.
   bookmarkSelected: ->
     @bookmarkResult(result) for result in @results.selected()
-    @_notify 'bookmarked'
+    @_notify 'bookmarked' if @results.anySelected()
 
-  # Open all selected results through openResult
+  # Opeggn all selected results through openResult
   openSelected: -> 
     @openResult(result) for result in @results.selected()
-    @_notify 'opened'
+    @_notify 'opened' if @results.anySelected()
 
   # Displays a success notification given a past-tense verb.
+  # We have a lot of "12 resources were tagged"-style notifications. This 
+  # method simplifies those calls to just a verb.
   _notify: (verb='affected', n) ->
     n ?= @results.numSelected()
-    msg = "#{n} #{arcs.pluralize('resource', n)} #{arcs.conjugate('was', n)} #{verb}."
+    msg = "#{n} #{arcs.inflector.pluralize('resource', n)} " +
+      "#{arcs.inflector.conjugate('was', n)} #{verb}."
     arcs.notify msg, 'success'
 
   # Resolves a jQuery Event or a DOM el to a Resource model, if possible.
@@ -329,6 +327,24 @@ class arcs.views.SearchActions extends Backbone.View
       return ref 
     if ref instanceof jQuery.Event
       ref.preventDefault()
-      ref = $(ref.currentTarget).parent()
-    id = $(ref).find('img').attr 'data-id'
+      ref = $(ref.currentTarget).parents '.result'
+    id = $(ref).data 'id'
     @results.get id
+
+  # Return context menu options based on the current user's state.
+  _getContextOptions: ->
+    public =
+      'Open'    : 'openSelected'
+      'Preview' : 'previewSelected'
+      'Download': 'downloadSelected'
+    
+    restricted =
+      'Info' : 'editSelected'
+      'Flag' : 'flagSelected'
+
+    admin =
+      'Delete' : 'deleteSelected'
+
+    return _.extend(public, restricted, admin) if arcs.user.isAdmin()
+    return _.extend(public, restricted) if arcs.user.isLoggedIn()
+    public
