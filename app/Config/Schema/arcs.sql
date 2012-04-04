@@ -82,17 +82,19 @@ CREATE TABLE IF NOT EXISTS collaborators (
     created DATETIME DEFAULT NULL
 );
 
--- tasks
-CREATE TABLE IF NOT EXISTS tasks (
+-- jobs
+CREATE TABLE IF NOT EXISTS jobs (
     id CHAR(36) PRIMARY KEY,
-    resource_id CHAR(36),
     data TEXT,
-    job VARCHAR(40),
-    status INT(1),
-    active BOOL DEFAULT FALSE,
-    error TEXT,
-    created DATETIME DEFAULT NULL,
-    modified DATETIME DEFAULT NULL
+    name VARCHAR(100),
+    status INT,
+    attempts INT NOT NULL DEFAULT 0,
+    locked_at DATETIME DEFAULT NULL,
+    locked_by VARCHAR(255) NULL,
+    failed_at DATETIME NULL,
+    error TEXT NULL,
+    progress INT NOT NULL DEFAULT 0,
+    created DATETIME DEFAULT NULL
 );
 
 -- keywords
