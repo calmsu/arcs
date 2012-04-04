@@ -28,6 +28,8 @@
 }
 
 .gradient(@start: #ddd, @end: #bbb) {
+  // For browsers that don't support gradients:
+  background: @start;
   background: -webkit-gradient(linear, left top, left bottom , from(@start), to(@end)); /* webkit */
   background: -moz-linear-gradient(center bottom, @end, @start); /* mozilla */
   // less requires us to escape proprietary syntax
@@ -122,6 +124,10 @@ input[type=text], input[type=password], textarea {
   &:focus {
     border-color:rgba(82, 168, 236, 0.8);
   }
+}
+
+.alert {
+  margin-top:10px;
 }
 
 // TOOLBAR
@@ -750,11 +756,6 @@ a.annotation, a.keyword {
   margin:5px 20px 0;
 }
 
-div#search-wrapper {
-  width:750px;
-  .centered;
-}
-
 
 .result {
 
@@ -1264,14 +1265,16 @@ span.keyword-link {
 
 /* Search Interface */
 
-#hotspot-search, #search-wrapper {
+#hotspot-search, .search-wrapper {
   input[type=text] {
     box-shadow:none;
   }
 }
 
-div#search-wrapper {
+.search-wrapper {
   margin-top:30px;
+  width:750px;
+  .centered;
 }
 
 div#search-results-wrapper {
@@ -1559,4 +1562,9 @@ footer#credits{
   max-height:300px;
   background:#fff;
   overflow:auto;
+}
+
+.data {
+  font-family: monospace;
+  font-size:90%;
 }

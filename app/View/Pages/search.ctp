@@ -1,4 +1,4 @@
-<div id="search-wrapper"></div>
+<div class="search-wrapper"></div>
 <div id="search-results-wrapper">
     <div id="search-actions" class="search-toolbar">
         <div id="action-buttons" class="btn-group">
@@ -26,10 +26,6 @@
                 data-original-title="Flag the selected results">
                 <i class="icon-flag"></i> Flag
             </button>
-            <button id="delete-btn" class="btn needs-resource no-rounded disabled" rel="tooltip"
-                data-original-title="Delete the selected results">
-                <i class="icon-trash"></i> Delete
-            </button>
             <div id="advanced-buttons" class="btn-group pull-left">
                 <button id="advanced-btn" class="btn needs-resource no-rounded disabled" rel="tooltip" style="border-left:none"
                     data-toggle="dropdown"><i class="icon-cog"></i>
@@ -38,6 +34,9 @@
                 <ul class="dropdown-menu">
                     <li><a id="rethumb-btn">Re-thumbnail</a></li>
                     <li><a id="split-btn">Split PDF</a></li>
+                    <?php if ($user['role'] == 0): ?>
+                    <li><a id="delete-btn">Delete</a></li>
+                    <?php endif ?>
                 </ul>
             </div>
         <?php else: // placeholder ?>
@@ -94,7 +93,7 @@
 </div>
 
 <script type="text/javascript">
-    arcs.searchView = new arcs.views.Search({
+    arcs.searchView = new arcs.views.search.Search({
         el: $('#search-results-wrapper')
     });
 </script>

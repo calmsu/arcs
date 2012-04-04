@@ -25,9 +25,10 @@
     <?php echo $this->Form->end() ?>
 </div>
 <div id="login-footer">
-    <?php echo $this->Html->link('About', '/about'); ?> &nbsp;|&nbsp;
-    <?php echo $this->Html->link('Help', '/help/'); ?> &nbsp;|&nbsp;
-    <?php echo $this->Html->link('Public Access', '/search/'); ?> 
+    <?php echo $this->Html->link('About', '/about'); ?> |
+    <?php echo $this->Html->link('Home', '/'); ?> |
+    <?php echo $this->Html->link('Search', '/search/'); ?> | 
+    <?php echo $this->Html->link('Help', '/help/'); ?>
     <span style="color:#666">&copy; 2012 MSU</span>
 </div>
 

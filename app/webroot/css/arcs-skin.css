@@ -4280,7 +4280,11 @@ input[type=password]:focus,
 textarea:focus {
   border-color: rgba(82, 168, 236, 0.8);
 }
+.alert {
+  margin-top: 10px;
+}
 div#toolbar {
+  background: #cccccc;
   background: -webkit-gradient(linear, left top, left bottom, from(#cccccc), to(#bbbbbb));
   /* webkit */
 
@@ -4979,11 +4983,6 @@ a.keyword {
   line-height: 14px;
   margin: 5px 20px 0;
 }
-div#search-wrapper {
-  width: 750px;
-  margin-left: auto;
-  margin-right: auto;
-}
 .result.grid {
   font-size: 85%;
   line-height: 16px;
@@ -5094,6 +5093,7 @@ div#search-wrapper {
   color: #444;
   padding: 3px 5px 3px 5px;
   border: 1px solid #aaa;
+  background: #dddddd;
   background: -webkit-gradient(linear, left top, left bottom, from(#dddddd), to(#cccccc));
   /* webkit */
 
@@ -5527,11 +5527,14 @@ span.keyword-link {
 }
 /* Search Interface */
 #hotspot-search input[type=text],
-#search-wrapper input[type=text] {
+.search-wrapper input[type=text] {
   box-shadow: none;
 }
-div#search-wrapper {
+.search-wrapper {
   margin-top: 30px;
+  width: 750px;
+  margin-left: auto;
+  margin-right: auto;
 }
 div#search-results-wrapper {
   background-color: #e5e5e5;
@@ -5637,6 +5640,7 @@ div#search-results-wrapper .toolbar-fixed {
   margin-right: auto;
 }
 .preview .preview-footer {
+  background: #cccccc;
   background: -webkit-gradient(linear, left top, left bottom, from(#cccccc), to(#bbbbbb));
   /* webkit */
 
@@ -5791,6 +5795,10 @@ footer#credits #quick-links ul li:last-child {
   max-height: 300px;
   background: #fff;
   overflow: auto;
+}
+.data {
+  font-family: monospace;
+  font-size: 90%;
 }
 .hidden {
   display: none;
