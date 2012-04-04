@@ -17,9 +17,12 @@
 #   show:       Show the modal on init
 #   class:      Attach an extra class to the .modal div
 #   title:      Modal's header text
-#   subtitle:   Text displayed in first line of the modal body
+#   subtitle:   Text displayed at the top of the modal body
+#
 #   template:   Use a special template. We'll provide the options object
-#               to the template interpolator.
+#               to the template interpolator, so custom templates can use
+#               their own custom options.
+#
 #   inputs:     Inputs to add to the modal. These are given as an object 
 #               of options objects. For example:
 #

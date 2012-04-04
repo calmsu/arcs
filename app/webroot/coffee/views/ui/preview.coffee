@@ -1,6 +1,6 @@
 # preview.coffee
 # --------------
-# Basic view for previewing a collection of Resource models.
+# Little view for previewing a collection of Resource models.
 class arcs.views.Preview extends Backbone.View
 
   options:

@@ -10,18 +10,22 @@ class arcs.views.Upload extends Backbone.View
   UPLOAD_ERR_PARTIAL  : 3
   UPLOAD_ERR_NO_FILE  : 4
 
-  loading: false
+  # Track our progress
+  pending : 0
+  progress: 0
+  allDone : false
 
+  # Make a collection, set things up.
   initialize: ->
     @uploads = new arcs.collections.UploadSet
     @setupFileupload()
     @$uploads = @$el.find('#uploads-container')
-    @pending = 0
-    @progress = 0
 
   events:
     'click #upload-btn': 'upload'
 
+  # Fire up jQuery-File-Upload (https://github.com/blueimp/jQuery-File-Upload)
+  # and attach event handlers.
   setupFileupload: ->
     @fileupload = @$el.find('#fileupload')
     @fileupload.fileupload
@@ -54,7 +58,6 @@ class arcs.views.Upload extends Backbone.View
         @pending += 1
 
       progress: (e, data) =>
-        arcs.log 'progress', data.files
         progress = parseInt(data.loaded / data.total * 100, 10)
         for f in data.files
           model = @uploads.find (m) ->
@@ -67,7 +70,6 @@ class arcs.views.Upload extends Backbone.View
         @render()
 
       done: (e, data) =>
-        arcs.log 'done', data
         for f in data.files
           model = @uploads.find (m) ->
             m.get('name') == f.name
@@ -79,33 +81,42 @@ class arcs.views.Upload extends Backbone.View
         @pending -= 1
         if not @pending
           @$el.find('#upload-btn').removeClass('disabled')
-        @checkForErrors()
-        @render()
+          @allDone = true
+        @checkForErrors() and @render()
 
+  # Finalize the upload and redirect to the search.
   upload: ->
     unless @pending == 0
-      return arcs.notify('Downloads are still pending.', 'error')
+      return arcs.notify 'Downloads are still pending.', 'error'
     unless @uploads.length
-      return arcs.notify('Choose a file to upload.', 'error')
+      return arcs.notify 'Choose a file to upload.', 'error'
 
+    # Attach the user inputs to the models.
     @uploads.each (u) =>
       $u = @$uploads.find(".upload[data-id=#{u.cid}]")
       u.set 'title', $u.find('#upload-title').val()
       u.set 'identifier', $u.find('#upload-identifier').val()
 
+    # POST our uploads. 
+    #
+    # The server already has the files, it's given us back their SHA1s. Now 
+    # we're telling it that we want resources connected to those files, using 
+    # the inputs we just collected.
     $.ajax
       url: arcs.baseURL + 'uploads/batch'
       data: JSON.stringify @uploads
       type: 'POST'
       contentType: 'application/json'
-      success: (data) =>
+      success: (data) ->
         location.href = arcs.baseURL + 'search/'
 
+  # Scan the backbone models for errors (each maintains an `error` prop).
+  # If an error is found, shut things down and report it.
   checkForErrors: ->
     for upload in @uploads.models
       error = upload.get 'error'
 
-      # No error, ok. Move on.
+      # No error. Ok, move on.
       continue if error == @UPLOAD_ERR_OK
 
       # Is the error file size related?
@@ -128,16 +139,17 @@ class arcs.views.Upload extends Backbone.View
         "documentation.</a>"
       arcs.notify msg, 'error', false
 
-      arcs.log upload, error
-
       # Disable the uploader.
       @disable()
 
+  # Disable the uploader (visually) in an error scenario.
   disable: ->
     @$el.addClass('disabled');
     @$el.find('a, button').addClass('disabled');
 
   render: ->
+    # Unfortunately we can't just render the whole thing from a template
+    # because the user inputs need to stay untouched.
     for upload in @uploads.models
       $u = @$uploads.find(".upload[data-id=#{upload.cid}]")
       if upload.get('progress') < 100
@@ -145,8 +157,13 @@ class arcs.views.Upload extends Backbone.View
       else
         $u.find('.progress').hide()
         $u.find('span#progress-done').show()
-    if @progress == 100 or @pending == 0
+    # No pending and all requests are 'done'
+    if @allDone
       msg = "<i class='icon-ok'></i> All Done" 
+    # Progress for all is 100%, but we're still waiting on a response.
+    else if @progress == 100 or @pending == 0
+      msg = "<i class='icon-time'></i> Waiting on server..." 
+    # Display # pending.
     else
       msg = "#{@progress.toFixed(2)}% (#{@pending} pending)"
     @$('span#progress-all').html msg

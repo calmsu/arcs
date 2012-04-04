@@ -1,5 +1,6 @@
 # users.coffee
 # ------------
+# Manage user accounts.
 arcs.views.admin ?= {}
 class arcs.views.admin.Users extends Backbone.View
 
@@ -23,7 +24,8 @@ class arcs.views.admin.Users extends Backbone.View
     arcs.confirm "Are you sure you want to delete this user?", 
       "The account for <b>#{user.get('name')}</b> will be deleted.", =>
         arcs.loader.show()
-        user.destroy success: arcs.loader.hide
+        user.destroy 
+          success: arcs.loader.hide
 
   editUser: (e) ->
     user = @collection.get $(e.currentTarget).data('id')

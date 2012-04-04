@@ -8,9 +8,9 @@ formats =
 
 arcs.relativeDate = (date) ->
   date = new Date(date) unless date instanceof Date
-  delta = ((new Date).getTime() - date.getTime()) / 1000
+  delta = ((new Date).getTime() - date.getTime())
   for name, vals of formats
     [threshold, ratio] = vals
     if delta < threshold
       formatted = Math.round(delta/ratio)
-      return "#{formatted} #{arcs.pluralize(name, formatted)} ago"
+      return "#{formatted} #{arcs.inflector.pluralize(name, formatted)} ago"

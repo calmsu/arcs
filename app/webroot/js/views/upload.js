@@ -21,14 +21,16 @@
 
     Upload.prototype.UPLOAD_ERR_NO_FILE = 4;
 
-    Upload.prototype.loading = false;
+    Upload.prototype.pending = 0;
+
+    Upload.prototype.progress = 0;
+
+    Upload.prototype.allDone = false;
 
     Upload.prototype.initialize = function() {
       this.uploads = new arcs.collections.UploadSet;
       this.setupFileupload();
-      this.$uploads = this.$el.find('#uploads-container');
-      this.pending = 0;
-      return this.progress = 0;
+      return this.$uploads = this.$el.find('#uploads-container');
     };
 
     Upload.prototype.events = {
@@ -78,7 +80,6 @@
         },
         progress: function(e, data) {
           var f, model, progress, _i, _len, _ref;
-          arcs.log('progress', data.files);
           progress = parseInt(data.loaded / data.total * 100, 10);
           _ref = data.files;
           for (_i = 0, _len = _ref.length; _i < _len; _i++) {
@@ -96,7 +97,6 @@
         },
         done: function(e, data) {
           var f, model, response, _i, _len, _ref;
-          arcs.log('done', data);
           _ref = data.files;
           for (_i = 0, _len = _ref.length; _i < _len; _i++) {
             f = _ref[_i];
@@ -113,9 +113,9 @@
           _this.pending -= 1;
           if (!_this.pending) {
             _this.$el.find('#upload-btn').removeClass('disabled');
+            _this.allDone = true;
           }
-          _this.checkForErrors();
-          return _this.render();
+          return _this.checkForErrors() && _this.render();
         }
       });
     };
@@ -162,7 +162,6 @@
         }
         msg += " For more information, see our " + ("<a href='" + (arcs.baseURL + 'help/uploading') + "'>Uploading ") + "documentation.</a>";
         arcs.notify(msg, 'error', false);
-        arcs.log(upload, error);
         _results.push(this.disable());
       }
       return _results;
@@ -186,8 +185,10 @@
           $u.find('span#progress-done').show();
         }
       }
-      if (this.progress === 100 || this.pending === 0) {
+      if (this.allDone) {
         msg = "<i class='icon-ok'></i> All Done";
+      } else if (this.progress === 100 || this.pending === 0) {
+        msg = "<i class='icon-time'></i> Waiting on server...";
       } else {
         msg = "" + (this.progress.toFixed(2)) + "% (" + this.pending + " pending)";
       }
