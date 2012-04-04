@@ -1,140 +1,58 @@
 <?php 
 
-include_once(LIB . 'relic' . DS . 'library' . DS . 'Image.php');
-include_once(LIB . 'relic' . DS . 'library' . DS . 'PDF.php');
-
+App::uses('Inflector', 'Core');
 class WorkerShell extends AppShell {
 
-    public $uses = array('Task', 'Resource', 'Membership');
+    public $uses = array('Job');
+
+    public $sleep     = 5;
+    public $logLevel  = 0;
+
+    const CRITICAL = 4;
+    const    ERROR = 3;
+    const     WARN = 2;
+    const     INFO = 1;
+    const    DEBUG = 0;
 
     /**
-     * Checks the queue and delegates tasks.
+     * Checks the queue and delegates jobs.
      *
      * @return void
      */
     public function main() {
+        $this->log('Starting worker.');
         while (true) {
-            # Find a new task...
-            $task = $this->Task->pop();
-            # ...or die if there aren't any.
-            if (!$task) return $this->out('Nothing to do.');
-            
-            # Start the task. (Marks it in-progress.)
-            $this->Task->start($task['id']);
-            $this->out("Task: {$task['id']} ({$task['job']})");
-
-            # Delegate the job to a method.
-            switch ($task['job']) {
-                case "thumb":
-                    $result = $this->thumb($task['resource_id']);
-                    break;
-                case "split_pdf":
-                    $result = $this->split_pdf($task['resource_id'], $task['data']);
-                    break;
+            # Find a new job...
+            $job = $this->Job->pop();
+            # ...or if there aren't any:
+            if (!$job) {
+                $this->log("Failed to find a job.", self::DEBUG);
+                if (!$this->params['server']) return;
+                sleep($this->sleep);
+                continue;
             }
 
-            # Mark it done.
-            $this->Task->done(
-                $task['id'], 
-                $result === true ? 0 : 2, 
-                $result === true ? null : $result
-            );
-            $result === true ? $this->out('Done.') : $this->out('Failed.');
+            $id = $job['id'];
+            $this->log("Starting work on $id ({$job['name']})", self::INFO);
+
+            # Lock the job.
+            if (!$this->Job->lock($id, $this->name)) 
+                return $this->log("Could not acquire a lock on $id", self::ERROR);
+
+            $this->log("Acquired lock on $id ({$job['name']})");
+
+            try {
+                # Dispatch the job.
+                $name = Inflector::camelize($job['name']);
+                $task = $this->Tasks->load($name);
+                $task->execute($job['data']);
+                $this->Job->finish($id);
+                $this->log("Finished work on $id ({$job['name']})", self::INFO);
+            } catch (Exception $e) {
+                $this->Job->finishWithError($id, $e->getMessage());
+                $this->log("Error on $id ({$job['name']})", self::ERROR);
+            }
         }
-    }
-
-    public function redo($id=null) {
-        $id = is_null($id) ? $this->args[0] : $id;
-        $this->Task->read(null, $id);
-        $this->Task->set('status', 1);
-        $this->Task->save();
-    }
-
-    /**
-     * Makes a thumbnail for a given resource.
-     *
-     * @param id
-     */
-    public function thumb($id=null) {
-        $id = is_null($id) ? $this->args[0] : $id;
-        $resource = $this->Resource->findById($id);
-        if (!$resource) return false;
-        return $this->Resource->makeThumbnail($resource['Resource']['sha']);
-    }
-
-    public function zip($ids=null) {
-        $ids = is_null($ids) ? $this->args : $ids;
-        $resources = $this->Resource->find('all', array(
-            'conditions' => array(
-                'Resource.id' => $ids
-            )
-        ));
-        $files = array();
-        foreach ($resources as $r) {
-            $files[$r['Resource']['file_name']] = $r['Resource']['sha'];
-        }
-        $this->out($this->Resource->makeZipfile($files));
-    }
-
-    /**
-     * Converts a single PDF resource into a collection of resources 
-     * (as JPEGs)--one for each page of the PDF.
-     *
-     * @param  id             resource id of the PDF
-     * @param  collection_id  id of the collection to fill. (This method
-     *                        doesn't create one.)
-     * @return void
-     */
-    public function split_pdf($id, $collection_id) {
-        # Find the PDF resource.
-        $resource = $this->Resource->findById($id);
-        $resource = $resource['Resource'];
-
-        # Get and set its path.
-        $path = $this->Resource->path($resource['sha'], $resource['file_name']);
-
-        $pdf = new \Relic\PDF($path);
-
-        # For each page in the PDF:
-        for ($page = 1; $page <= $pdf->npages; $page++) {
-            # Create a tmp file to write to.
-            $tmp_file = tempnam(sys_get_temp_dir(), 'ARCS');
-            # Extract the page.
-            $pdf->extractPage($page, $tmp_file);
-
-            # The name is just the PDF file name plus "-pX.jpeg"
-            $basename = str_ireplace('.pdf', '', $resource['file_name']);
-            $fname = $basename . "-p$page.jpeg";
-            # Create the resource file.
-            $sha = $this->Resource->createFile($tmp_file, array(
-                'filename' => $fname, 
-                'thumb' => true
-            ));
-
-            $this->Resource->permit('sha', 'file_size', 'file_name', 'user_id');
-            # Save the resource.
-            $this->Resource->add(array(
-                'sha' => $sha,
-                'title' => $resource['title'] . "-p$page",
-                'public' => $resource['public'],
-                'context' => $collection_id,
-                'file_name' => $fname,
-                'file_size' => $this->Resource->size($sha, $fname),
-                'mime_type' => 'image/jpeg',
-                'user_id' => $resource['user_id']
-            ));
-
-            # Save the collection membership.
-            $this->Membership->pair($this->Resource->id, $collection_id);
-
-            # Output our progress.
-            $this->out("$page/{$pdf->npages} $sha");
-
-            # Reset the Resource and Membership models for the next round.
-            $this->Resource->create();
-            $this->Membership->create();
-        }
-        return true;
     }
 
     /**
@@ -143,10 +61,29 @@ class WorkerShell extends AppShell {
      * @return void
      */
     public function startup() {
+        $this->name = $this->getName();
         $this->out();
-        $this->out('ARCS Worker');
+        $this->out("ARCS Worker ({$this->name})");
         $this->hr();
-        $this->out(date('r'));
-        $this->hr();
+    }
+
+    public function getName() {
+        return trim(`hostname`) . ':' . getmypid();
+    }
+
+    public function log($msg, $severity=self::CRITICAL) {
+        if ($severity >= $this->logLevel)
+            printf("[%s] %s\n", date('r'), $msg);
+    }
+
+    public function getOptionParser() {
+        $parser = parent::getOptionParser();
+        $parser->addOption('server', array(
+            'short' => 's',
+            'help' => 'Run the worker continuously, checking for new jobs ' .
+                'on the configured interval.',
+            'boolean' => true
+        ));
+        return $parser;
     }
 }
