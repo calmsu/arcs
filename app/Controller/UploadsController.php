@@ -55,15 +55,7 @@ class UploadsController extends AppController {
                 'thumb' => true,
                 'preview' => true
             ));
-
-            # If creating the file went wrong, something is probably wrong with
-            # the configuration. Redirect to the status page.
-            if (!$sha) {
-                $this->Session->setFlash('You were redirected to this page 
-                    because we were unable to save your resource. Please 
-                    verify your configuration.', 'flash_error');
-                return $this->redirect('/status');
-            }
+            if (!$sha) return $this->redirect('/500');
 
             # Temporarily whitelist a few fields.
             $this->Resource->permit('sha', 'file_name', 'file_size', 'user_id');
@@ -90,7 +82,7 @@ class UploadsController extends AppController {
             $this->Session->setFlash('Resource created.', 'flash_success');
             $this->redirect(array(
                 'controller' => 'resources', 
-                'action' => 'view', $this->Resource->id
+                'action' => 'viewer', $this->Resource->id
             ));
         }
     }
