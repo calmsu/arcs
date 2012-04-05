@@ -23,7 +23,7 @@
 
     # Home page
     Router::redirect('/', 
-        array('controller' => 'pages', 'action' => 'search')
+        array('controller' => 'pages', 'action' => 'home')
     );
 
     # Error pages
