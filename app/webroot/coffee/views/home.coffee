@@ -18,6 +18,6 @@ class arcs.views.Home extends Backbone.View
 
   renderDetails: (el) ->
     order = _.shuffle(['title', 'modified']).pop()
-    $.getJSON arcs.baseURL + "/resources/search?n=12&order=#{order}", (data) =>
+    $.getJSON arcs.baseURL + "resources/search?n=12&order=#{order}", (data) =>
       el.children('div').html arcs.tmpl 'home/details', 
         resources: data

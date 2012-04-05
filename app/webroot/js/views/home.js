@@ -34,7 +34,7 @@
       var order,
         _this = this;
       order = _.shuffle(['title', 'modified']).pop();
-      return $.getJSON(arcs.baseURL + ("/resources/search?n=12&order=" + order), function(data) {
+      return $.getJSON(arcs.baseURL + ("resources/search?n=12&order=" + order), function(data) {
         return el.children('div').html(arcs.tmpl('home/details', {
           resources: data
         }));
