@@ -102,82 +102,74 @@
 	}//carousel-wrapper
   }//#resource-wrapper
 */
-	#credits{
-		.row{
-			div{
-				padding: 10px 0;
-				border-bottom: solid thin @grayLight;
-				margin-bottom: 10px;
-			
-				&.quick-links{
-					padding-top: 0;
-				}//.quick-links
-				
-				&:last-child{
-					border-bottom: none;
-				}//last-child
-				
-				img{
-					display: block;
-					
-					&#neh_logo{
-						width: 175px;
-						height: auto;
-					}//#neh-logo
-					
-					&#msu_wordmark{
-						height: 55px;
-						max-height: none;
-						width: auto;
-					}//msu_wordmark
-					
-				}//img
-				
-			}//div
-		}//.row
-	}//#credits	
-  
-}//@media 360px-940px
+  #credits {
+    .row {
+      div {
+        padding: 10px 0;
+        border-bottom: solid thin @grayLight;
+        margin-bottom: 10px;
+    
+        &.quick-links {
+          padding-top: 0;
+        }
+        
+        &:last-child {
+          border-bottom: none;
+        }
+        
+        img {
+          display: block;
+          
+          &#neh_logo {
+            width: 175px;
+            height: auto;
+          }
+          
+          &#msu_wordmark {
+            height: 55px;
+            max-height: none;
+            width: auto;
+          }
+        }
+      }
+    }
+  }
+}
 
 @media (max-width: 760px) and (min-width: 360px){
-	#resource-wrapper {
-	  height: 400px;
-	  margin-left:0px;
-	  
-	  #resource-well{
-	  
-		min-height: 20px;
-		margin-bottom: 20px;
-		background-color: @gray;
-		border: 1px solid #eee;
-		border: 1px solid rgba(0,0,0,.05);
-		.border-radius(4px);
-		.box-shadow(inset 4px rgba(0,0,0,.55));
-	
-	  	width: 54%;
-	  	height: 100%;
-	  	float: left;
-	  	display: block;
-	  	position: relative;
-	  	
-	  	#wrapping{
-	  		width: 85%;
-	  	}//#wrapping
-	  	
-	  }//#resource-well
-	   
-	.tab-wrapper {
-		width:280px;
-		min-height:300px;
-		text-align:left;
-		float:right;
-		margin-right:-10px;
-		overflow:hidden;
-		padding-right: 0;
-		padding-bottom: 15px;
-	}//.tab-wrapper
-	}//#resource-wrapper
-}//@media
+  #resource-wrapper {
+    height: 400px;
+    margin-left:0px;
+
+    #resource-well {
+      min-height: 20px;
+      margin-bottom: 20px;
+      background-color: @gray;
+      border: 1px solid #eee;
+      border: 1px solid rgba(0,0,0,.05);
+      .border-radius(4px);
+      .box-shadow(inset 4px rgba(0,0,0,.55));
+      width: 54%;
+      height: 100%;
+      float: left;
+      display: block;
+      position: relative;
+      #wrapping{
+        width: 85%;
+      }
+    }
+    .tab-wrapper {
+      width:280px;
+      min-height:300px;
+      text-align:left;
+      float:right;
+      margin-right:-10px;
+      overflow:hidden;
+      padding-right: 0;
+      padding-bottom: 15px;
+	}
+  }
+}
 
 // PORTRAIT TABLET TO DEFAULT DESKTOP
 // ----------------------------------
@@ -185,12 +177,12 @@
 
 @media (min-width: 768px) and (max-width: 940px) {
 
-	#resource{
-		img{
-			max-width: 90%;
-			max-height: auto;
-		}
-	}//#resource
+  #resource{
+    img{
+      max-width: 90%;
+      max-height: auto;
+    }
+  }
 
   // Reset grid variables
   @gridColumns:       16;

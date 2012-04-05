@@ -5108,6 +5108,7 @@ a.keyword {
   margin: 0 auto -100px;
 }
 .push {
+  height: 122px;
   clear: both;
 }
 .comment-header {
@@ -5691,6 +5692,33 @@ div#search-results-wrapper .toolbar-fixed {
 .well-nav {
   border: 1px solid #cdcdcd;
   background-color: #ddd;
+}
+.footer {
+  background: url(img/linen-texture.jpg);
+  text-align: center;
+  color: #bbb;
+  padding: 15px;
+  padding-bottom: 8px;
+  margin-top: -113px;
+  text-shadow: 0 1px 1px #222222;
+  border-top: 1px solid #555;
+  outline: 1px solid #222;
+}
+.footer img {
+  height: 35px;
+  margin-left: 15px;
+  margin-right: 15px;
+}
+.footer hr {
+  border-bottom: 1px solid #222;
+  border-top: 1px solid #888;
+  margin: 5px;
+}
+.footer a {
+  color: #bbb;
+}
+.footer span.disclaimer {
+  font-size: 80%;
 }
 footer#credits {
   color: #999999;
