@@ -10,7 +10,7 @@ class CollectionsController extends AppController {
 
     public function beforeFilter() {
         parent::beforeFilter();
-        $this->Auth->allow('view', 'complete');
+        $this->Auth->allow('view', 'viewer', 'complete');
     }
 
     /**

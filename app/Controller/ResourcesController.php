@@ -25,7 +25,7 @@ class ResourcesController extends AppController {
         # Read-only actions, such as viewing resources and associated comments
         # are allowed by default.
         $this->Auth->allow(
-            'index', 'view', 'search', 'comments', 'hotspots', 
+            'index', 'view', 'viewer', 'search', 'comments', 'hotspots', 
             'keywords', 'complete', 'zipped', 'download'
         );
 
