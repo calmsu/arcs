@@ -31,13 +31,24 @@
     };
 
     Home.prototype.renderDetails = function(el) {
-      var order,
-        _this = this;
-      order = _.shuffle(['title', 'modified']).pop();
-      return $.getJSON(arcs.baseURL + ("resources/search?n=12&order=" + order), function(data) {
-        return el.children('div').html(arcs.tmpl('home/details', {
-          resources: data
-        }));
+      var data, type;
+      type = el.data('type');
+      data = [
+        {
+          'category': 'type',
+          'value': type
+        }
+      ];
+      return $.ajax({
+        type: 'POST',
+        url: arcs.baseURL + 'resources/search?n=12',
+        contentType: 'application/json',
+        data: JSON.stringify(data),
+        success: function(data) {
+          return el.children('div').html(arcs.tmpl('home/details', {
+            resources: data
+          }));
+        }
       });
     };
 

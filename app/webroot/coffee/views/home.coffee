@@ -17,7 +17,16 @@ class arcs.views.Home extends Backbone.View
     @renderDetails $(e.currentTarget).parent()
 
   renderDetails: (el) ->
-    order = _.shuffle(['title', 'modified']).pop()
-    $.getJSON arcs.baseURL + "resources/search?n=12&order=#{order}", (data) =>
-      el.children('div').html arcs.tmpl 'home/details', 
-        resources: data
+    type = el.data('type') 
+    data = [
+      'category': 'type'
+      'value': type
+    ]
+    $.ajax
+      type: 'POST'
+      url: arcs.baseURL + 'resources/search?n=12'
+      contentType: 'application/json'
+      data: JSON.stringify data
+      success: (data) ->
+        el.children('div').html arcs.tmpl 'home/details', 
+          resources: data

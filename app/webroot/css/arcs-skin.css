@@ -5008,10 +5008,11 @@ a.keyword {
   margin: 5px 20px 0;
 }
 .result.grid {
+  text-align: center;
   font-size: 85%;
   line-height: 16px;
   float: left;
-  width: 170px;
+  width: 160px;
   max-height: 140px;
   margin: 20px;
 }
