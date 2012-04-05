@@ -129,7 +129,7 @@
           yes: {
             "class": 'btn success',
             callback: function() {
-              return $.get(arcs.baseURL + 'resources/split_pdf/' + _this.model.id);
+              return $.post(arcs.baseURL + 'resources/split_pdf/' + _this.model.id);
             }
           },
           no: function() {}

@@ -129,7 +129,7 @@ class arcs.views.Viewer extends Backbone.View
         yes: 
           class: 'btn success'
           callback: =>
-            $.get arcs.baseURL + 'resources/split_pdf/' + @model.id
+            $.post arcs.baseURL + 'resources/split_pdf/' + @model.id
         no: ->
   
   # Render the resource.
