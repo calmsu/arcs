@@ -6,7 +6,7 @@ class WorkerShell extends AppShell {
     public $uses = array('Job');
 
     public $sleep     = 5;
-    public $logLevel  = 0;
+    public $logLevel  = 1;
 
     const CRITICAL = 4;
     const    ERROR = 3;
@@ -20,14 +20,14 @@ class WorkerShell extends AppShell {
      * @return void
      */
     public function main() {
-        $this->log('Starting worker.');
         while (true) {
             # Find a new job...
             $job = $this->Job->pop();
             # ...or if there aren't any:
             if (!$job) {
                 $this->log("Failed to find a job.", self::DEBUG);
-                if (!$this->params['server']) return;
+                if (!$this->params['server']) 
+                    return $this->log("Shutting down.", self::INFO);
                 sleep($this->sleep);
                 continue;
             }
@@ -62,27 +62,38 @@ class WorkerShell extends AppShell {
      */
     public function startup() {
         $this->name = $this->getName();
-        $this->out();
-        $this->out("ARCS Worker ({$this->name})");
-        $this->hr();
+        if (isset($this->params['debug'])) 
+            $this->logLevel = $this->params['debug'];
+        $this->log('Starting up...', self::INFO);
     }
 
     public function getName() {
-        return trim(`hostname`) . ':' . getmypid();
+        return trim(`hostname`) . ':' . getmypid() .
+            (isset($this->params['label']) ? " ({$this->params['label']})" : '');
     }
 
     public function log($msg, $severity=self::CRITICAL) {
         if ($severity >= $this->logLevel)
-            printf("[%s] %s\n", date('r'), $msg);
+            printf("[%s] [%s] %s\n", date('r'), $this->name, $msg);
     }
 
     public function getOptionParser() {
         $parser = parent::getOptionParser();
-        $parser->addOption('server', array(
-            'short' => 's',
-            'help' => 'Run the worker continuously, checking for new jobs ' .
-                'on the configured interval.',
-            'boolean' => true
+        $parser->addOptions(array(
+            'server' => array(
+                'short' => 's',
+                'help' => 'Run the worker continuously, checking for new jobs ' .
+                    'on the configured interval.',
+                'boolean' => true
+            ),
+            'label' => array(
+                'short' => 'l',
+                'help' => 'A label for the worker that will be used in debug messages.'
+            ),
+            'debug' => array(
+                'short' => 'd',
+                'help' => 'Set the desired log level (0-4).'
+            )
         ));
         return $parser;
     }
