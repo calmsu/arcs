@@ -22,8 +22,8 @@
  */
 
     # Home page
-    Router::redirect('/', 
-        array('controller' => 'pages', 'action' => 'home')
+    Router::connect('/', 
+        array('controller' => 'pages', 'action' => 'display', 'home')
     );
 
     # Error pages
