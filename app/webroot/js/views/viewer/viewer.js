@@ -154,22 +154,22 @@
       mimeInfo = arcs.utils.mime.getInfo(this.model.get('mime_type'));
       switch (mimeInfo.type) {
         case 'image':
-          template = 'resource/image';
+          template = 'viewer/image';
           break;
         case 'document':
-          template = 'resource/document';
+          template = 'viewer/document';
           break;
         case 'video':
-          template = 'resource/video';
+          template = 'viewer/video';
           break;
         default:
-          template = 'resource/unknown';
+          template = 'viewer/unknown';
       }
       this.$('#resource').html(arcs.tmpl(template, this.model.toJSON()));
       arcs.trigger('arcs:resourceLoaded');
-      this.$('#resource-details').html(arcs.tmpl('resource/table', this.model.toJSON()));
+      this.$('#resource-details').html(arcs.tmpl('viewer/table', this.model.toJSON()));
       if (_.has(arcs, 'collectionData')) {
-        this.$('#collection-details').html(arcs.tmpl('resource/collection_table', arcs.collectionData));
+        this.$('#collection-details').html(arcs.tmpl('viewer/collection_table', arcs.collectionData));
       }
       this.checkNav();
       return this;

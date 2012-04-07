@@ -29,6 +29,6 @@ class arcs.views.Discussion extends Backbone.View
     @collection.add(comment)
 
   render: ->
-    $('#comment-wrapper').html arcs.tmpl 'resource/discussion', 
+    $('#comment-wrapper').html arcs.tmpl 'viewer/discussion', 
       comments: @collection.toJSON()
     @

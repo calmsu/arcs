@@ -90,7 +90,7 @@
     };
 
     Carousel.prototype._tmpl = function(data) {
-      return arcs.tmpl('resource/carousel', data);
+      return arcs.tmpl('viewer/carousel', data);
     };
 
     return Carousel;

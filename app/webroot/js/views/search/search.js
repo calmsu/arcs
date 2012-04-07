@@ -59,7 +59,7 @@
       var _this = this;
       return this.$el.find('#search-results').selectable({
         distance: 20,
-        filter: 'div.img-wrapper img',
+        filter: '.img-wrapper img',
         selecting: function(e, ui) {
           $(ui.selecting).parents('.result').addClass('selected');
           return _this.afterSelection();

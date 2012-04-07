@@ -41,7 +41,7 @@
     };
 
     Discussion.prototype.render = function() {
-      $('#comment-wrapper').html(arcs.tmpl('resource/discussion', {
+      $('#comment-wrapper').html(arcs.tmpl('viewer/discussion', {
         comments: this.collection.toJSON()
       }));
       return this;

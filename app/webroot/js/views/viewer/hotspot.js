@@ -79,7 +79,7 @@
           }
         }
       });
-      modal.$('.modal-body').append(arcs.tmpl('resource/hotspot_modal'));
+      modal.$('.modal-body').append(arcs.tmpl('viewer/hotspot_modal'));
       modal.$('.img-wrapper img').live('click', function() {
         $('.result').removeClass('selected');
         return $(this).parents('.result').addClass('selected');
@@ -166,8 +166,8 @@
         }
         json.hotspots.push(data);
       }
-      $hotspots.html(arcs.tmpl('resource/hotspots', json));
-      $annotations.html(arcs.tmpl('resource/annotations', json));
+      $hotspots.html(arcs.tmpl('viewer/hotspots', json));
+      $annotations.html(arcs.tmpl('viewer/annotations', json));
       return this;
     };
 

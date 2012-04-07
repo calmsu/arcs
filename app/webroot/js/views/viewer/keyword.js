@@ -44,7 +44,7 @@
     };
 
     Keyword.prototype.render = function() {
-      this.$('#keywords-wrapper').html(arcs.tmpl('resource/keywords', {
+      this.$('#keywords-wrapper').html(arcs.tmpl('viewer/keywords', {
         keywords: this.collection.toJSON()
       }));
       return this;

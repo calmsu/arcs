@@ -38,6 +38,7 @@ class arcs.views.search.Actions extends Backbone.View
   openResult: (result) ->
     # This method can be bound to a click event, so we'll resolve the 
     # result param first. 
+    arcs.log result
     result = @_modelFromRef(result)
     window.open arcs.baseURL + 'resource/' + result.id
 
@@ -328,6 +329,7 @@ class arcs.views.search.Actions extends Backbone.View
     if ref instanceof jQuery.Event
       ref.preventDefault()
       ref = $(ref.currentTarget).parents '.result'
+      arcs.log ref
     id = $(ref).data 'id'
     @results.get id
 

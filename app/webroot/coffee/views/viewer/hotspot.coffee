@@ -59,7 +59,7 @@ class arcs.views.Hotspot extends Backbone.View
         cancel: => 
           @img.imgAreaSelect hide:true
 
-    modal.$('.modal-body').append arcs.tmpl 'resource/hotspot_modal'
+    modal.$('.modal-body').append arcs.tmpl 'viewer/hotspot_modal'
     modal.$('.img-wrapper img').live 'click', ->
       $('.result').removeClass 'selected'
       $(@).parents('.result').addClass 'selected'
@@ -139,6 +139,6 @@ class arcs.views.Hotspot extends Backbone.View
       json.hotspots.push data
 
     # Render the templates.
-    $hotspots.html arcs.tmpl 'resource/hotspots', json
-    $annotations.html arcs.tmpl 'resource/annotations', json
+    $hotspots.html arcs.tmpl 'viewer/hotspots', json
+    $annotations.html arcs.tmpl 'viewer/annotations', json
     @

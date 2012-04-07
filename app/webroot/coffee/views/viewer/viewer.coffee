@@ -147,20 +147,20 @@ class arcs.views.Viewer extends Backbone.View
     # Render the resource preview
     mimeInfo = arcs.utils.mime.getInfo @model.get 'mime_type'
     switch mimeInfo.type
-      when 'image' then template = 'resource/image'
-      when 'document' then template = 'resource/document'
-      when 'video' then template = 'resource/video'
-      else template = 'resource/unknown'
+      when 'image' then template = 'viewer/image'
+      when 'document' then template = 'viewer/document'
+      when 'video' then template = 'viewer/video'
+      else template = 'viewer/unknown'
     @$('#resource').html arcs.tmpl template, @model.toJSON()
 
     # Trigger the resourceloaded event.
     arcs.trigger 'arcs:resourceLoaded'
 
     # Render the resource (and collection) info tables.
-    @$('#resource-details').html arcs.tmpl 'resource/table', 
+    @$('#resource-details').html arcs.tmpl 'viewer/table', 
       @model.toJSON()
     if _.has(arcs, 'collectionData')
-      @$('#collection-details').html arcs.tmpl 'resource/collection_table', 
+      @$('#collection-details').html arcs.tmpl 'viewer/collection_table', 
         arcs.collectionData
     @checkNav()
     @

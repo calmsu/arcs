@@ -46,6 +46,7 @@
     };
 
     Actions.prototype.openResult = function(result) {
+      arcs.log(result);
       result = this._modelFromRef(result);
       return window.open(arcs.baseURL + 'resource/' + result.id);
     };
@@ -443,6 +444,7 @@
       if (ref instanceof jQuery.Event) {
         ref.preventDefault();
         ref = $(ref.currentTarget).parents('.result');
+        arcs.log(ref);
       }
       id = $(ref).data('id');
       return this.results.get(id);

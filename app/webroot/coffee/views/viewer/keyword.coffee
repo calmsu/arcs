@@ -36,6 +36,6 @@ class arcs.views.Keyword extends Backbone.View
     return false
 
   render: ->
-    @$('#keywords-wrapper').html arcs.tmpl 'resource/keywords', 
+    @$('#keywords-wrapper').html arcs.tmpl 'viewer/keywords', 
       keywords: @collection.toJSON()
     @

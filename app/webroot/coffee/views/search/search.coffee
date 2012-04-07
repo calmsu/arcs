@@ -56,7 +56,7 @@ class arcs.views.search.Search extends Backbone.View
       # Little bit of drag tolerance
       distance: 20
       # Images are the selectables
-      filter: 'div.img-wrapper img'
+      filter: '.img-wrapper img'
       # Make jQuery UI call our selection methods.
       selecting: (e, ui) => 
         $(ui.selecting).parents('.result').addClass('selected')
