@@ -1,4 +1,5 @@
 <?php
+App::uses('Sanitize', 'Utility');
 
 /**
  * Job Model
@@ -66,12 +67,18 @@ class Job extends AppModel {
      * @param string $id
      */
     public function lock($id, $locked_by) {
-        $this->read(null, $id);
-        $this->set(array(
-            'locked_at' => date('Y-m-d H:i:s'),
-            'locked_by' => $locked_by
-        ));
-        return $this->save();
+
+        $locked_by = Sanitize::escape($locked_by);
+        $id = Sanitize::escape($id);
+
+        return $this->query(sprintf("
+            UPDATE jobs 
+            SET locked_at = '%s', locked_by = '%s'
+            WHERE 
+              id = '%s' AND 
+              (locked_at IS NULL OR locked_by = '%s') AND
+              failed_at IS NULL
+            ", date('Y-m-d H:i:s'), $locked_by, $id, $locked_by));
     }
 
     /**

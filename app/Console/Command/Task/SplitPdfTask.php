@@ -49,9 +49,6 @@ class SplitPdfTask extends AppShell {
             # Save the collection membership.
             $this->Membership->pair($this->Resource->id, $collection_id);
 
-            # Output our progress.
-            $this->out("$page/{$pdf->npages} $sha");
-
             # Reset the Resource and Membership models for the next round.
             $this->Resource->create();
             $this->Membership->create();
