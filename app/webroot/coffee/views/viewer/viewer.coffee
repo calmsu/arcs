@@ -36,18 +36,20 @@ class arcs.views.Viewer extends Backbone.View
         if @collection.length then 'collection/' else 'resource/'
 
     $(window).resize => arcs.trigger 'arcs:resourceResize'
+    arcs.on 'arcs:resourceResize', @resize, @
 
-    # Special logic for a resource's first request post-upload.
+    # Special logic for a resource's first request post-upload.  
     if @model.get 'first_req'
       if @model.get('mime_type') == 'application/pdf'
         @splitPrompt()
 
     @index ?= 0
+    @resize()
 
   events:
-    'dblclick img'       : 'open'
-    'click #next-button' : 'next'
-    'click #prev-button' : 'prev'
+    'dblclick img'    : 'open'
+    'click #next-btn' : 'next'
+    'click #prev-btn' : 'prev'
 
   # Set the resource, given an identifier.
   #
@@ -127,10 +129,18 @@ class arcs.views.Viewer extends Backbone.View
         "annotated and commented on--page by page."
       buttons:
         yes: 
-          class: 'btn success'
+          class: 'btn btn-success'
           callback: =>
             $.post arcs.baseURL + 'resources/split_pdf/' + @model.id
         no: ->
+
+  resize: ->
+    well_height = $(window).height() - 186
+    @$('.viewer-well').height well_height
+    @$('.tab-content').height well_height - 54
+    offset = @$('#resource img').css('max-height', well_height).offset()
+    arcs.log offset
+    @$('#hotspots-wrapper').css 'left', offset.left - 56
   
   # Render the resource.
   render: ->

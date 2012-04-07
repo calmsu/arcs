@@ -23,7 +23,7 @@
                 '/logout') ?></li>
         </ul>
     </div>
-    <a class="btn primary toolbar-btn"
+    <a class="btn btn-primary toolbar-btn"
         href="<?php echo $this->Html->url('/upload')?>">
         <i class="icon-white icon-upload"></i> Upload
     </a>
@@ -35,12 +35,12 @@
             href="<?php echo $this->Html->url('/signup') ?>">Signup</a>
     </div>
     <?php endif ?>
-    <a class="btn info toolbar-btn"
+    <a class="btn btn-info toolbar-btn"
         href="<?php echo $this->Html->url('/help')?>">
         <i class="icon-white icon-file"></i> Help
     </a>
     <?php if ($user['role'] === 0): ?>
-    <a class="btn danger toolbar-btn"
+    <a class="btn btn-danger toolbar-btn"
         href="<?php echo $this->Html->url('/admin')?>">
         <i class="icon-white icon-lock"></i> Admin
     </a>
@@ -56,4 +56,4 @@
         </ul>
     </div>
     <?php endif ?>
-</div><!-- #toolbar -->
+</div>

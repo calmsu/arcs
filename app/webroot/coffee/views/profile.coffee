@@ -20,7 +20,7 @@ class arcs.views.Profile extends Backbone.View
       buttons:
         save:
           validate: true
-          class: 'btn success'
+          class: 'btn btn-success'
           callback: (vals) =>
             if vals.password == ''
               delete vals.password

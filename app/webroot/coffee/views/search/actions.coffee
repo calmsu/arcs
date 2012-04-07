@@ -85,7 +85,7 @@ class arcs.views.search.Actions extends Backbone.View
         "permanently deleted."
       buttons:
         delete:
-          class: 'btn danger'
+          class: 'btn btn-danger'
           callback: =>
             for result in @results.selected()
               result.destroy()
@@ -110,7 +110,7 @@ class arcs.views.search.Actions extends Backbone.View
           required: true
       buttons: 
         save:
-          class: 'btn success'
+          class: 'btn btn-success'
           validate: true
           callback: (vals) =>
             for result in @results.selected()
@@ -149,7 +149,7 @@ class arcs.views.search.Actions extends Backbone.View
           type: 'textarea'
       buttons:
         save: 
-          class: 'btn success'
+          class: 'btn btn-success'
           callback: (vals) =>
             for result in @results.selected()
               @flagResult result, vals.reason, vals.explain
@@ -175,7 +175,7 @@ class arcs.views.search.Actions extends Backbone.View
       inputs: inputs
       buttons:
         save: 
-          class: 'btn success'
+          class: 'btn btn-success'
           callback: (values) =>
             return if _.isEqual metadata, values
             @editResult(result, values)
@@ -214,7 +214,7 @@ class arcs.views.search.Actions extends Backbone.View
       inputs: inputs
       buttons:
         save: 
-          class: 'btn success'
+          class: 'btn btn-success'
           callback: (metadata) =>
             changed = false
             for k, v of metadata
@@ -240,7 +240,7 @@ class arcs.views.search.Actions extends Backbone.View
           type: 'textarea'
       buttons:
         save:
-          class: 'btn success'
+          class: 'btn btn-success'
           callback: @collectionFromSelected
           context: @
         cancel: ->

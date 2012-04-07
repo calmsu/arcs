@@ -63,7 +63,7 @@
         },
         buttons: {
           save: {
-            "class": 'btn success',
+            "class": 'btn btn-success',
             callback: function(vals) {
               vals.resource = $('.result.selected img').data('id');
               _this.saveHotspot(vals);
@@ -124,6 +124,7 @@
         y2: scaled.y2
       });
       hotspot.save();
+      arcs.trigger('arcs:resourceResize');
       return this.collection.add(hotspot);
     };
 

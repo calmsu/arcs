@@ -1,19 +1,17 @@
-<style>#resource img {border:1px solid #888;}</style> 
-
-<div id="resource-wrapper" class="row">
-    <div id="wrapping">
-	    <div id="resource"></div>
-	    <div id="hotspots-wrapper"></div>
+<div id="viewer" class="row">
+    <div id="standalone" class="viewer-well">
+        <div id="hotspots-wrapper"></div>
+        <div id="resource"></div>
     </div>
-    <div class="tab-wrapper" id="arcs-tab-wrapper" style="top:-550px">
-        <ul class="nav tabs">
+    <div class="viewer-tabs tabbable">
+        <ul class="nav nav-tabs">
             <li class="active" id="primary">
                 <a data-toggle="tab" href="#information">Info</a>
             </li>
             <li id="secondary">
                 <a data-toggle="tab" href="#discussion">Discussion</a>
             </li>
-        </ul><!-- .tab-heads -->
+        </ul>
         <div class="tab-content">
             <div class="tab-pane active" id="information">
                 <h3>Resource</h3>
@@ -38,17 +36,16 @@
                 <div id="keywords-wrapper"></div>
                 <br>
                 <input id="keyword-btn" class="unfocused" type="text" placeholder="New keyword..." />
-            </div><!-- #information.tab-pane -->
+            </div>
             <div class="tab-pane" id="discussion">
                 <div id="comment-wrapper"></div>
                 <hr>
-                <textarea id="content" name="content"></textarea>
-                <br><br>
+                <p><textarea id="content" name="content"></textarea></p>
                 <input id="comment-btn" type="submit" class="btn" value="Comment" />
-            </div><!-- tab-pane -->
-        </div><!-- sidebar-tab-content -->
-    </div><!-- tab-wrapper -->
-</div><!-- .row -->
+            </div>
+        </div>
+    </div>
+</div>
 
 <!-- Give the resource array to the client-side code -->
 <script>
@@ -57,6 +54,6 @@
   arcs.viewer = new arcs.views.Viewer({
     model: arcs.resource,
     collection: arcs.collection,
-    el: $('#resource-wrapper')
+    el: $('#viewer')
   });
 </script>

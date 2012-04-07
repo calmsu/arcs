@@ -36,7 +36,7 @@
         buttons: {
           save: {
             validate: true,
-            "class": 'btn success',
+            "class": 'btn btn-success',
             callback: function(vals) {
               if (vals.password === '') delete vals.password;
               arcs.loader.show();

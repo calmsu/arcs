@@ -1,22 +1,21 @@
-<div id="resource-wrapper" class="row">
-	<div id="resource-well">
-		<div id="prev-button"></div>
-		<div id="next-button"></div>
+<div id="viewer" class="row">
+	<div class="viewer-well">
+		<div id="prev-btn" class="viewer-nav"></div>
+		<div id="next-btn" class="viewer-nav"></div>
 		<div id="wrapping">
-			<div id="hotspots-wrapper"></div>
-			<div id="resource"></div>
+            <div id="hotspots-wrapper"></div>
+            <div id="resource"></div>
 		</div>
-	</div><!-- #img-container -->
-	
-    <div class="tab-wrapper" id="arcs-tab-wrapper" style="top:-550px">
-        <ul class="nav tabs">
+	</div>
+    <div class="viewer-tabs tabbable">
+        <ul class="nav nav-tabs">
             <li class="active" id="primary">
                 <a data-toggle="tab" href="#information">Info</a>
             </li>
             <li id="secondary">
                 <a data-toggle="tab" href="#discussion">Discussion</a>
             </li>
-        </ul><!-- .tab-heads -->
+        </ul>
         <div class="tab-content">
             <div class="tab-pane active" id="information">
                 <h3>Collection</h3>
@@ -32,19 +31,24 @@
                 <h3>Keywords</h3>
                 <div id="keywords-wrapper"></div>
                 <br>
+                <?php if ($user['role'] < 3): ?>
                 <input id="keyword-btn" class="unfocused" type="text" placeholder="New keyword..." />
+                <?php endif ?>
             </div>
             <div class="tab-pane" id="discussion">
                 <div id="comment-wrapper"></div>
                 <hr>
+                <?php if ($user['role'] < 3): ?>
                 <textarea id="content" name="content"></textarea>
                 <br><br>
                 <input id="comment-btn" type="submit" class="btn" value="Comment" />
+                <?php else: ?>
+                <?php echo $this->Html->link('Login', '/login') ?> to comment.
+                <?php endif ?>
             </div>
         </div>
     </div>
 </div>
-<div style="clear:both"></div>
 <div id="carousel-wrapper" class="es-carousel-wrapper">
     <div id="carousel" class="es-carousel">
         <ul></ul>
@@ -63,6 +67,6 @@
   arcs.viewer = new arcs.views.Viewer({
     model: arcs.resource,
     collection: arcs.collection,
-    el: $('#resource-wrapper')
+    el: $('#viewer')
   });
 </script>

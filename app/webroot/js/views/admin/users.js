@@ -66,7 +66,7 @@
         },
         buttons: {
           save: {
-            "class": 'btn success',
+            "class": 'btn btn-success',
             callback: function(vals) {
               arcs.loader.show();
               user.unset('password');
@@ -101,7 +101,7 @@
         },
         buttons: {
           save: {
-            "class": 'btn success',
+            "class": 'btn btn-success',
             callback: function(vals) {
               var user;
               user = new arcs.models.User(vals);
@@ -134,7 +134,7 @@
         },
         buttons: {
           send: {
-            "class": 'btn success'
+            "class": 'btn btn-success'
           },
           cancel: function() {}
         }

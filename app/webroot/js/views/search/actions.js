@@ -100,7 +100,7 @@
         subtitle: ("" + n + " " + (arcs.inflector.pluralize('resource', n)) + " will be ") + "permanently deleted.",
         buttons: {
           "delete": {
-            "class": 'btn danger',
+            "class": 'btn btn-danger',
             callback: function() {
               var result, _i, _len, _ref;
               _ref = _this.results.selected();
@@ -135,7 +135,7 @@
         },
         buttons: {
           save: {
-            "class": 'btn success',
+            "class": 'btn btn-success',
             validate: true,
             callback: function(vals) {
               var result, _i, _len, _ref;
@@ -202,7 +202,7 @@
         },
         buttons: {
           save: {
-            "class": 'btn success',
+            "class": 'btn btn-success',
             callback: function(vals) {
               var result, _i, _len, _ref;
               _ref = _this.results.selected();
@@ -240,7 +240,7 @@
         inputs: inputs,
         buttons: {
           save: {
-            "class": 'btn success',
+            "class": 'btn btn-success',
             callback: function(values) {
               if (_.isEqual(metadata, values)) return;
               return _this.editResult(result, values);
@@ -281,7 +281,7 @@
         inputs: inputs,
         buttons: {
           save: {
-            "class": 'btn success',
+            "class": 'btn btn-success',
             callback: function(metadata) {
               var changed, k, r, v, _j, _len2, _ref2, _results;
               changed = false;
@@ -321,7 +321,7 @@
         },
         buttons: {
           save: {
-            "class": 'btn success',
+            "class": 'btn btn-success',
             callback: this.collectionFromSelected,
             context: this
           },

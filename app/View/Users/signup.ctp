@@ -12,7 +12,7 @@
     ));
     ?>
     <br>
-    <?php echo $this->Form->submit('Signup', array('class' => 'btn success')) ?>
+    <?php echo $this->Form->submit('Signup', array('class' => 'btn btn-success')) ?>
     <?php echo $this->Form->end() ?>
 </div>
 

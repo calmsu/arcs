@@ -6,7 +6,7 @@
     </div>
     <br>
     <div class="controls">
-        <button id="upload-btn" class="btn success disabled">Upload &amp; Fill in Metadata</button>
+        <button id="upload-btn" class="btn btn-success disabled">Upload &amp; Fill in Metadata</button>
         <div id="fileupload-wrapper" class="btn">
             <span>Add files...</span>
             <input id="fileupload" type="file" name="files[]" multiple>
@@ -16,7 +16,7 @@
 </div>
 
 <script type="text/javascript">
-    arcs.uploadView = new arcs.views.Upload({
-        el: $('#batch-upload')
-    });
+  arcs.uploadView = new arcs.views.Upload({
+    el: $('#batch-upload')
+  });
 </script>

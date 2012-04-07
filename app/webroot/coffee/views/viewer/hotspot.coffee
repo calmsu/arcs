@@ -51,7 +51,7 @@ class arcs.views.Hotspot extends Backbone.View
           type: 'textarea'
       buttons:
         save: 
-          class: 'btn success'
+          class: 'btn btn-success'
           callback: (vals) =>
             vals.resource = $('.result.selected img').data('id')
             @saveHotspot vals
@@ -97,6 +97,7 @@ class arcs.views.Hotspot extends Backbone.View
       y1: scaled.y1
       y2: scaled.y2
     hotspot.save()
+    arcs.trigger 'arcs:resourceResize'
     @collection.add(hotspot)
 
   # We don't store the size the image is displayed at when hotspotted, so 

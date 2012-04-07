@@ -9,7 +9,7 @@
       subtitle: (_ref = msg[1]) != null ? _ref : '',
       buttons: {
         yes: {
-          "class": 'btn danger',
+          "class": 'btn btn-danger',
           callback: onConfirm
         },
         no: function() {}

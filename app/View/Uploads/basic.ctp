@@ -16,7 +16,7 @@
     <?php echo $this->Form->input('file', array('type' => 'file')) ?><br>
     <?php echo $this->Form->input('keywords', array('type' => 'text', 'style' => 'width:400px')) ?><br>
     <div class="arcs-form-actions">
-        <?php echo $this->Form->submit('Upload', array('class' => 'btn success')) ?>
+        <?php echo $this->Form->submit('Upload', array('class' => 'btn btn-success')) ?>
     </div>
     <?php echo $this->Form->end() ?>
 </div>

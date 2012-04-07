@@ -4,6 +4,6 @@ arcs.confirm = (msg..., onConfirm) ->
     subtitle: msg[1] ? ''
     buttons:
       yes: 
-        class: 'btn danger'
+        class: 'btn btn-danger'
         callback: onConfirm
       no: ->

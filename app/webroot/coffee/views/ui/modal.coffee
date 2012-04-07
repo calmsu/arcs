@@ -48,7 +48,7 @@
 #                   callback: someCallback
 #                   context: this
 #                   validate: true
-#                   class: 'btn success'
+#                   class: 'btn btn-success'
 #                   close: false
 #
 #               Or simply:

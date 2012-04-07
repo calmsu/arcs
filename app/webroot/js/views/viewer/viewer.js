@@ -11,7 +11,7 @@
     }
 
     Viewer.prototype.initialize = function() {
-      var _ref, _ref2,
+      var _ref,
         _this = this;
       arcs.on('arcs:indexChange', this.set, this);
       arcs.on('arcs:indexChange', function() {
@@ -44,16 +44,18 @@
       $(window).resize(function() {
         return arcs.trigger('arcs:resourceResize');
       });
+      arcs.on('arcs:resourceResize', this.resize, this);
       if (this.model.get('first_req')) {
         if (this.model.get('mime_type') === 'application/pdf') this.splitPrompt();
       }
-      return (_ref2 = this.index) != null ? _ref2 : this.index = 0;
+      if (this.index == null) this.index = 0;
+      return this.resize();
     };
 
     Viewer.prototype.events = {
       'dblclick img': 'open',
-      'click #next-button': 'next',
-      'click #prev-button': 'prev'
+      'click #next-btn': 'next',
+      'click #prev-btn': 'prev'
     };
 
     Viewer.prototype.set = function(identifier, options) {
@@ -127,7 +129,7 @@
         subtitle: "We noticed you've uploaded a PDF. If you'd like, " + "we can split the PDF into a collection, where it can be " + "annotated and commented on--page by page.",
         buttons: {
           yes: {
-            "class": 'btn success',
+            "class": 'btn btn-success',
             callback: function() {
               return $.post(arcs.baseURL + 'resources/split_pdf/' + _this.model.id);
             }
@@ -135,6 +137,16 @@
           no: function() {}
         }
       });
+    };
+
+    Viewer.prototype.resize = function() {
+      var offset, well_height;
+      well_height = $(window).height() - 186;
+      this.$('.viewer-well').height(well_height);
+      this.$('.tab-content').height(well_height - 54);
+      offset = this.$('#resource img').css('max-height', well_height).offset();
+      arcs.log(offset);
+      return this.$('#hotspots-wrapper').css('left', offset.left - 56);
     };
 
     Viewer.prototype.render = function() {

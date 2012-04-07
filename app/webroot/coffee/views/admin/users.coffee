@@ -43,7 +43,7 @@ class arcs.views.admin.Users extends Backbone.View
           options: @USER_ROLES
       buttons:
         save: 
-          class: 'btn success'
+          class: 'btn btn-success'
           callback: (vals) =>
             arcs.loader.show()
             user.unset 'password'
@@ -67,7 +67,7 @@ class arcs.views.admin.Users extends Backbone.View
           options: @USER_ROLES
       buttons:
         save:
-          class: 'btn success'
+          class: 'btn btn-success'
           callback: (vals) =>
             user = new arcs.models.User(vals)
             arcs.loader.show()
@@ -90,7 +90,7 @@ class arcs.views.admin.Users extends Backbone.View
           type: 'textarea'
       buttons:
         send:
-          class: 'btn success'
+          class: 'btn btn-success'
         cancel: ->
 
   render: ->
