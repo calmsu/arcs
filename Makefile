@@ -16,7 +16,6 @@
 COFFEE=app/webroot/coffee
 JS=app/webroot/js
 CSS=app/webroot/css
-LESS=app/webroot/css/lib
 ASSETS=app/webroot/assets
 
 # Need to outsource parsing the INI file
@@ -40,7 +39,7 @@ coffee:
 
 # Compile less in css/lib to css/arcs-skin.css
 less:
-	lessc $(LESS)/arcs-skin.less > $(CSS)/arcs-skin.css
+	cd $(CSS); lessc app.less > app.css
 
 # Concatenate and minify javascript.
 js: coffee
