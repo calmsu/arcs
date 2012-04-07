@@ -1,0 +1,91 @@
+// mixins.less
+// -----------
+
+.rounded-corners(@radius: 5px) {
+  border-radius: @radius;
+  -webkit-border-radius: @radius;
+  -moz-border-radius: @radius;
+} 
+
+.no-rounded {
+  border-radius: 0px !important;
+  -webkit-border-radius: 0px !important;
+  -moz-border-radius: 0px !important;
+}
+
+.rounded-corners-top(@radius: 5px) {
+  border-top-left-radius: @radius;
+  border-top-right-radius: @radius;
+}
+
+.rounded-corners-bottom(@radius: 5px) {
+  border-bottom-left-radius: @radius;
+  border-bottom-right-radius: @radius;
+}
+
+.gradient(@start: #ddd, @end: #bbb) {
+  // For browsers that don't support gradients
+  background: @start;
+  background: -webkit-gradient(linear, left top, left bottom, from(@start), to(@end));
+  background: -moz-linear-gradient(center bottom, @end, @start); 
+  filter: ~"progid:DXImageTransform.Microsoft.gradient(startColorstr='#dddddd', endColorstr='#bbbbbb')";
+}
+
+.shadow(@horiz: 0px, @vert: 0px, @blur: 5px, @spread: 5px, @color: #888) {
+  -moz-box-shadow: @horiz @vert @blur @spread @color;
+  -webkit-box-shadow: @horiz @vert @blur @spread @color;
+  box-shadow: @horiz @vert @blur @spread @color;
+}
+
+.opacity(@op: 100) {
+  filter: alpha(opacity=@op);
+  -moz-opacity: @op / 100;
+  -khtml-opacity: @op / 100;
+  opacity: @op / 100;
+}
+
+.text-shadow(@color: #777, @weight: 1px) {
+  text-shadow: 0 @weight @weight @color;
+}
+
+.centered {
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.cleared {
+  clear: both;
+}
+
+.transition(@prop, @duration, @effect) {
+  -moz-transition: @prop @duration @effect;
+  -webkit-transition: @prop @duration @effect;
+}
+
+.unselectable {
+  -moz-user-select: none;
+  -khtml-user-select: none;
+  -webkit-user-select: none;
+  user-select: none;
+}
+
+.highlighted {
+  background-color: #84BAFA !important;
+}
+
+.unfocused {
+  color: #888 !important;
+}
+
+.hidden {
+  display: none;
+}
+
+.subtle {
+  color: #444;
+}
+
+.data {
+  font-family: monospace;
+  font-size: 90%;
+}

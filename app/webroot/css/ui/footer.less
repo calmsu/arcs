@@ -1,0 +1,134 @@
+// footer.less
+// -----------
+
+.footer {
+  background:url(img/linen-texture.jpg);
+  text-align:center;
+  color:#bbb;
+  padding:15px;
+  padding-bottom:13px;
+  margin-top:-113px;
+  .text-shadow(#222);
+  border-top:1px solid #555;
+  outline:1px solid #222;
+  img {
+    height:35px;
+    margin-left:15px;
+    margin-right:15px;
+  }
+  hr {
+    border-bottom:1px solid #222;
+    border-top:1px solid #888;
+    margin:5px;
+  }
+  a {
+    color:#bbb;
+  }
+  span.disclaimer {
+    font-size:80%;
+  }
+}
+
+// Add some style to the credits on the footer
+footer#credits {
+  color: @grayLight;
+  margin-top: 25px;
+  background-color: @gray;
+  min-height: 170px;
+  padding: 10px 0 8px;
+  margin-top: -90px;
+  .text-shadow(#222);
+  border-top: 1px solid #555;
+  outline: 1px solid #222;
+  
+  img {
+    display: inline; 
+    clear: none;
+  }
+
+  a {
+    color: @grayLight;
+  }
+  
+  ul {
+    list-style: none;
+    margin: 0;
+    
+    li {
+      display: inline;
+    }
+  }
+  
+  .row {
+    margin-left: 0;
+    margin-bottom: 10px;
+  }
+  
+  h3 {
+    color: @grayLight;
+    font-size: 14px;
+  }
+  
+  #about-arcs-footer p {
+    color: @grayLighter;
+    font-size: @baseFontSize;
+    line-height: @baseLineHeight - 3px;
+  }
+  
+  a.credit-links {
+    display: block;
+  }
+  
+  .disclaimer {
+    font-size: @baseFontSize - 2px;
+    line-height: @baseLineHeight - 5px;
+  }
+
+  #neh_logo {
+    width: 150px;
+  }
+  
+  #msu_wordmark,
+  #cal_logo,
+  #ce_logo {
+    max-height: 30px;
+  }
+  
+  #copyright-and-credits {
+    width: 100%;
+    p {
+      text-align: center;
+      width: 100%;
+      line-height: @baseLineHeight - 2px;
+      margin-bottom: 0;
+      font-size: 10px;
+    }
+  }
+  
+  #quick-links {
+    a {
+      padding: 2px 5px;
+      color: @grayLighter !important;
+      &:hover {
+        color: @grayLighter;
+      }
+    }
+    ul li {
+      border-right: solid thin @grayLight;
+      &:last-child {
+        border: none;
+      }
+    }
+  }
+}
+
+.label-footer { 
+  &:last-child {
+    border-right: none;
+  }
+}
+
+.label-footer:hover {
+  text-decoration: underline; 
+  color: @grayLight; 
+}

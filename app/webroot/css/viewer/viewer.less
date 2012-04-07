@@ -1,0 +1,68 @@
+// viewer.less
+// -----------
+
+#viewer {
+  margin: 0 -3px -10px -10px;
+
+  .viewer-well {
+	background-color: @gray;
+    background:url(img/linen-texture.jpg);
+	border: 1px solid #888;
+    .rounded-corners(4px);
+	.box-shadow(inset 4px rgba(0,0,0,.55));
+    text-align:center;
+  	width: 75%;
+  	height: 100%;
+  	float: left;
+  	position: relative;
+  	
+  	#wrapping {
+      display: block;
+      width: 90%;
+      margin: 0 auto;
+      left: 0;
+
+      #resource {
+        display: block;
+        margin: 0 auto -5px;
+        img {
+          max-height:100%;
+          .unselectable();
+        }
+      }
+      #hotspots-wrapper {
+        position: relative;
+        .hotspot {
+          display: block;
+          position: absolute;
+          background-color: #222;
+          .opacity(20);
+          &:hover { .opacity(30); }
+        }
+      }
+	}
+  }
+
+  #standalone.viewer-well {
+    max-height: 75%;
+    max-width: 75%;
+    float: left;
+  }
+
+  // Previous and next buttons
+  .viewer-nav {
+    width: 18px;
+    position: absolute;
+    height: 100%;
+    &:hover    { cursor: pointer; }
+    &.disabled { opacity: 0.5; }
+  }
+  #prev-btn {
+    left: 0px;
+    background: #bbb url(img/nav.png) no-repeat left center;
+  }
+  #next-btn {
+    right: 0px;
+    background: #bbb url(img/nav.png) no-repeat right center;
+  }
+}

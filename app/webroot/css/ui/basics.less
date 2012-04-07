@@ -1,0 +1,128 @@
+// basics.less
+// -----------
+
+// Fonts
+@import url(http://fonts.googleapis.com/css?family=Pontano+Sans);
+
+// HTML, BODY 
+html, 
+body {
+  height: 100%;
+}
+
+body {
+  background-color: #efefef;
+}
+
+.page {
+  padding-left: 10px;
+  padding-right: 10px;
+}
+
+// STICKY FOOTER
+.wrap {
+  min-height: 100%;
+  height: auto !important;
+  height: 100%;
+  margin: 0 auto -100px;
+}
+.push {
+  height: 122px;
+  clear: both;
+}
+
+// THINNER HEADINGS
+h2, 
+h3 {
+  .text-shadow(#fff);
+  color: #555;
+  font-weight: normal;
+}
+
+input[type="text"], 
+input[type="password"], 
+textarea {
+  border: 1px solid #999;
+  .text-shadow(#fff);
+  &:focus {
+    border-color: rgba(82, 168, 236, 0.8);
+  }
+}
+
+.alert {
+  margin-top: 10px;
+}
+
+// Default buttons should have a darker border.
+.btn:not(.btn-success):not(.btn-danger):not(.btn-info):not(.btn-primary) {
+  border: 1px solid #999;
+}
+
+.modal-backdrop {
+  .opacity(50);
+}
+
+// JQUERY UI MODIFICATIONS
+// Ok, Bootstrap, I see your 1050 z-index and raise you 1. 
+.ui-autocomplete {
+  z-index: 1051 !important;
+}
+
+.ui-menu-item {
+  width: 100% !important; 
+  margin-bottom: 1px !important;
+}
+.ui-corner-all {
+  border-radius: 0px !important;
+}
+
+.ui-selectable-helper {
+  background-color: #08c;
+  background: rgb(0, 136, 204);
+  background: rgba(0, 136, 204, .1);
+  border: 1px dashed #08c;
+}
+
+// WEBKIT SCROLLBAR
+div {
+  ::-webkit-scrollbar {
+    width: 12px;
+  }
+
+  ::-webkit-scrollbar-track {
+    -webkit-box-shadow: inset 0 0 2px rgba(0,0,0,0.3);
+    border-radius: 3px;
+  }
+
+  ::-webkit-scrollbar-thumb {
+    border-radius: 3px;
+    background: #bbb;
+    border: 1px solid #888;
+  }
+}
+
+// ARCS FORMS (NEEDS TO GO)
+.arcs-form {
+  background-color: #ccc;
+  border: 1px solid #aaa;
+  padding: 15px;
+  width: 300px;
+  .rounded-corners(5px);
+  .centered();
+  .text-shadow(#fff);
+  margin-top: 10%;
+  margin-bottom: 100px;
+  padding-bottom: 0px;
+}
+
+.arcs-form-link {
+  float: right;
+  font-size: 70%;
+  color: #333;
+}
+
+#nav-container {
+  display: inline-block;
+  float: right;
+  clear: both;
+}

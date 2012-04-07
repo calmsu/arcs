@@ -1,0 +1,70 @@
+// carousel.less
+// -------------
+
+.es-carousel-wrapper {
+  background-color: #bbb !important;
+  box-shadow: none !important;
+  border: 1px solid #777;
+  height: 95px !important;
+  margin-left:-10px;
+  margin-right:-10px;
+  margin-bottom:0px;
+  .no-rounded();
+
+  .es-carousel {
+    background-color: #bbb !important;
+    height: 100px !important;
+
+    ul li div.overlay {
+      position: relative;
+      width: 40px;
+      height: 20px;
+      background-color: rgb(0,0,0);
+      background-color: rgba(0,0,0,0.3);
+      color: #eee;
+      bottom: 35px;
+      left: 28px;
+      text-align: center;
+      .rounded-corners();
+      padding: 0 0 3px;
+      .text-shadow(#444);
+      border: 1px solid #888;
+      &:hover { cursor: pointer; }
+
+      span {
+        position: relative;
+        top: 3px;
+      }
+    }
+  }
+}
+
+span.es-nav-next {
+  background-position: center right !important;
+  height: 80px !important;
+  top: 27% !important;
+  right: 2px !important;
+  padding-right: 5px;
+}
+
+span.es-nav-prev {
+  background-position: center left !important;
+  height: 80px !important;
+  left: 2px !important;
+  top: 27% !important;
+  padding-left: 5px;
+}
+
+.thumb {
+  .opacity(50);
+  border: 1px solid #aaa;
+  background-color: #333;
+  .shadow(1px, 1px, 0, 0, #555);
+
+  &:hover {
+    .opacity(80);
+    cursor: pointer;
+  }
+  &.hovered { .opacity(80); }
+  &.selected { .opacity(100); }
+}

@@ -1,0 +1,55 @@
+// annotations.less
+// ----------------
+
+.annotation:hover {
+  cursor: pointer;
+}
+
+.annotation-caption {
+  font-size: 13px;
+  line-height: 14px;
+  margin: 0 30px;
+}
+
+.active-hotspot {
+  .opacity(30);
+}
+
+.active-annotation {
+  color: black;
+  text-decoration: underline;
+}
+
+a.annotation, a.keyword {
+  font-size: 13px;
+  line-height: 14px;
+  margin: 5px 20px 0;
+}
+
+.hotspot {
+  display: block;
+  position: absolute;
+  background-color: #222;
+  .opacity(20);
+  &:hover {
+    .opacity(30);
+  }
+}
+
+.annotation:hover {
+  cursor: pointer;
+}
+
+.active-hotspot {
+  .opacity(30);
+}
+
+span.keyword-link {
+  font-family: Monospace;
+  padding: 1px;
+  border: 1px solid #888;
+  background-color: #ddd;
+  .text-shadow(#fff);
+  .rounded-corners(2px);
+  color: #444;
+}

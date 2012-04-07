@@ -1,0 +1,36 @@
+// thumbs.less
+// -----------
+
+ul.resource-thumbs {
+  list-style: none;
+  
+  li {
+    display: inline-block;
+    padding: 10px;
+    .border-radius(4px);
+      
+    a {
+      display: block;
+      font-size: @baseFontSize - 2px;
+      text-align: center;
+      &:hover {
+        color: #fff;
+      }
+      .transition(.1s linear all);
+    }
+  
+    &:hover {
+      background-color: #ccc;
+      border: 1px solid #ddd;
+      padding: 8px 9px;
+      @shadow: inset 0px 0px 2px rgba(0,0,0,.25);
+      .box-shadow(@shadow);
+      
+      a {
+        color: #fff;
+        text-decoration: underline;
+      }
+    }
+    .transition(.1s linear background-image);
+  }
+}

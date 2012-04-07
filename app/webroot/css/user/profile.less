@@ -1,0 +1,88 @@
+// profile.less
+// ------------
+
+#user-info {
+
+  margin-bottom: 20px;
+  
+  p {
+    margin-bottom: 0;
+  }
+  
+  .profile-image {
+    float: left;
+    margin-right: 10px;
+    background: #fff;
+  }
+  
+  div {
+    h2 { 
+      margin-left: 0; 
+      font-weight: 300;
+      .text-shadow(#fff);
+    }
+  }
+}
+
+#user-actions {
+
+  margin-left: 0;
+  tr:hover,
+  tr:nth-child(odd):hover td,
+  tr:nth-child(odd):hover th {
+    text-decoration: underline;
+    background-color: #eee;
+  }
+  .tab-content {
+    #activity-tab {
+
+      h3.activity-date {
+        text-align: right;
+        padding-right: 20px;
+      }
+
+      .activity-feed {
+        margin-left: 0;
+        padding-left: 15px;
+        border-left: solid 2px @grayLighter;
+        list-style: none;
+        
+        li {
+          list-style: none;
+          margin: 3px 0;
+          padding: 3px 10px;
+        }
+      }
+    }
+      
+    #uploads-tab i {
+      max-width: 20px;
+      max-height: 20px;
+    }
+
+    #annotations-tab {
+      label.radio {
+        display: inline-block;
+        margin-right: 15px;
+      }
+      
+      tr {
+        &:hover {
+          text-decoration: none;
+          background-color: @grayLight;
+        }
+      }
+    }
+
+    label.radio {
+      display: inline-block;
+      margin-right: 10px;
+       
+      input {
+        display: inline-block;
+        visibility: visible;
+        margin: 2px 10px 0 0;
+      }
+    }
+  }
+}

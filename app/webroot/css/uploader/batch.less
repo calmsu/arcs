@@ -1,0 +1,82 @@
+// batch.less
+// ----------
+
+#batch-upload {
+  .arcs-form;
+  width: 700px;
+
+  &.disabled {
+    .opacity(40);
+  }
+
+  .accordion-group {
+    margin-bottom: 10px;
+  }
+
+  .accordion-heading, .accordion-body {
+    background-color: #bbb;
+    border: 1px solid #888;
+    color: #000;
+  }
+
+  .accordion-heading {
+    border-bottom: none;
+  }
+
+  .accordion-inner {
+    border-top: 1px solid #888;
+  }
+
+  .accordion-body {
+    border-top: none;
+    input[type="text"] {
+      border: 1px solid #888;
+    }
+  }
+
+  .progress {
+    border: 1px solid #666;
+    .rounded-corners(0px);
+    float: right;
+    width: 150px;
+    margin-bottom: 0px;
+    .bar { .rounded-corners(0px) }
+  }
+
+  div.controls {
+    background-color: #bbb;
+    margin-left: -16px;
+    margin-right: -16px;
+    margin-bottom: -1px;
+    padding: 5px;
+    border: 1px solid #888;
+    .rounded-corners-bottom(5px);
+
+    span#progress-all {
+      float: right;
+      position: relative;
+      font-style: italic;
+      color: black;
+      top: 15px;
+      right: 5px;
+    }
+
+    div#fileupload-wrapper {
+      width: 65px;
+      height: 20px;
+      cursor: pointer;
+      span {
+        float: left;
+        top: 5px;
+      }
+      input#fileupload {
+        cursor: pointer;
+        float: left;
+        .opacity(0);
+        height: 100%;
+        position:relative;
+        top:-20px;
+      }
+    }
+  }
+}
