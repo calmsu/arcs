@@ -141,7 +141,25 @@ class UsersController extends AppController {
     public function profile($ref) {
         $this->User->flatten = false;
         $this->User->recursive = 1;
-        $user = $this->User->findByRef($ref);
+        $user = $this->User->find('first', array(
+            'conditions' => array(
+                'OR' => array('User.username' => $ref, 'User.id' => $ref)
+            ),
+            'contain' => array(
+                'Resource' => array(
+                    'limit' => 30
+                ),
+                'Hotspot' => array(
+                    'limit' => 30
+                ),
+                'Collection' => array(
+                    'limit' => 30
+                ),
+                'Comment' => array(
+                    'limit' => 30
+                )
+            )
+        ));
         if (!$user) {
             $this->redirect('404');
         }

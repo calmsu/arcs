@@ -13,6 +13,7 @@ class User extends AppModel {
     public $whitelist = array(
         'name', 'email', 'username', 'password'
     );
+    public $actsAs = array('Containable');
 
     /**
      * Don't give out the user's hashed password to non-primary finds. 
