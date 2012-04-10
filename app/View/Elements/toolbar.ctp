@@ -45,15 +45,4 @@
         <i class="icon-white icon-lock"></i> Admin
     </a>
     <?php endif ?>
-    <?php if (isset($actions) && $actions): ?>
-    <div class="btn-group toolbar-btn">
-        <button class="btn dropdown-toggle" data-toggle="dropdown">
-            <i class="icon-list-alt"></i> Actions <span class="caret"></span>
-        </button>
-        <ul class="dropdown-menu">
-            <li><a>Delete</a></li>
-            <li><a>Split PDF</a></li>
-        </ul>
-    </div>
-    <?php endif ?>
 </div>
