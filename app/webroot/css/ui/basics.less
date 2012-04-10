@@ -31,6 +31,12 @@ body {
   clear: both;
 }
 
+.btn,
+.btn-group .btn:first-child,
+.btn-group .btn:last-child {
+  .rounded-corners(2px);
+}
+
 // THINNER HEADINGS
 h2, 
 h3 {
@@ -41,8 +47,9 @@ h3 {
 
 input[type="text"], 
 input[type="password"], 
+select,
 textarea {
-  border: 1px solid #999;
+  border: 1px solid #888;
   .text-shadow(#fff);
   &:focus {
     border-color: rgba(82, 168, 236, 0.8);
@@ -60,6 +67,10 @@ textarea {
 
 .modal-backdrop {
   .opacity(50);
+}
+
+.dropdown-menu li a:hover {
+  cursor: pointer;
 }
 
 // JQUERY UI MODIFICATIONS
@@ -125,4 +136,8 @@ div {
   display: inline-block;
   float: right;
   clear: both;
+}
+
+.nav.nav-tabs {
+  margin-bottom: 0px;
 }

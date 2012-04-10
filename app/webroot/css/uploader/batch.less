@@ -11,9 +11,12 @@
 
   .accordion-group {
     margin-bottom: 10px;
+    border: 1px solid #d9d9d9;
+    .no-rounded();
   }
 
-  .accordion-heading, .accordion-body {
+  .accordion-heading, 
+  .accordion-body {
     background-color: #bbb;
     border: 1px solid #888;
     color: #000;
@@ -29,8 +32,8 @@
 
   .accordion-body {
     border-top: none;
-    input[type="text"] {
-      border: 1px solid #888;
+    select {
+      width: 130px;
     }
   }
 
@@ -40,7 +43,7 @@
     float: right;
     width: 150px;
     margin-bottom: 0px;
-    .bar { .rounded-corners(0px) }
+    .bar { .rounded-corners(0px); }
   }
 
   div.controls {
@@ -48,7 +51,7 @@
     margin-left: -16px;
     margin-right: -16px;
     margin-bottom: -1px;
-    padding: 5px;
+    padding: 9px;
     border: 1px solid #888;
     .rounded-corners-bottom(5px);
 
@@ -57,10 +60,11 @@
       position: relative;
       font-style: italic;
       color: black;
-      top: 15px;
       right: 5px;
+      top: 7px;
     }
 
+    // File input is hidden and overlayed with a button.
     div#fileupload-wrapper {
       width: 65px;
       height: 20px;
@@ -74,8 +78,8 @@
         float: left;
         .opacity(0);
         height: 100%;
-        position:relative;
-        top:-20px;
+        position: relative;
+        top: -20px;
       }
     }
   }

@@ -2,7 +2,7 @@
 // ------------------
 
 .hotspot-modal {
-  .rounded-corners(0px);
+  .no-rounded();
   .text-shadow(#fff);
   margin-top: 0px;
   top: 0px;
@@ -17,7 +17,7 @@
     border-top: none;
   }
 
-  .tabs {
+  .nav-tabs {
     border-bottom: 1px solid #aaa;
 
     li.active a {
@@ -26,12 +26,19 @@
     }
   }
 
-  #title, #caption, #type {
+  #title, 
+  #caption, 
+  #type {
     border: 1px solid #aaa;
   }
 
-  h3, h4 {
+  h3, 
+  h4 {
     font-weight: normal;
+  }
+
+  .modal-body {
+    max-height: none;
   }
 
   .modal-header {
@@ -55,9 +62,15 @@
   #resource-link {
     height: 300px;
 
+    #hotspot-search {
+      padding: 5px;
+      background: #fff;
+    }
+
     #hotspot-search-results {
-      height: 270px;
+      height: 260px;
       overflow: auto;
+      background: #fff;
 
       .result {
         width: 120px;
@@ -68,8 +81,11 @@
 
   #url-link {
     height: 45px;
+    background: #fff;
+    padding: 20px;
     #url {
       width: 80%;
+      margin: 0 0 0 -5px;
     }
   }
 }

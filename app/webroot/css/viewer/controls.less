@@ -1,0 +1,51 @@
+// controls.less
+// -------------
+
+#viewer-controls {
+  background: #ddd;
+  margin: -11px -10px -1px;
+  height: 40px;
+  border: 1px solid #888;
+
+  input[type="text"]:focus {
+    border: 1px solid #08c;
+    box-shadow: none;
+  }
+
+  .toolbar-btn {
+    float: right;
+    position: relative;
+    top: 6px;
+    margin-right: 15px;
+  }
+
+  .title {
+    display: inline;
+    position: relative;
+    top: 13px;
+    left: -95px;
+    font-size: 115%;
+    font-weight: 200;
+    color: #555;
+    .text-shadow(#fff);
+  }
+
+  .collection-search {
+    .no-rounded();
+    background-image: url("data:image/png;charset=utf-8;base64,iVBORw0KGgoAAAANSUhEUgAAAAwAAAAMCAIAAADZF8uwAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAAUZJREFUeNpUUM2qgmAQzS8NiUgLzTIXLZQW1QuI9AY9QPSW9gQ9QiriwpJQEBVrVWT2d7p2L9xZzDdzZs7M+YYqy/J8Ptu2vd/v4zgeDAaqqk4mE47jar9GnU6nzWbjOA5FUa/Xq0Jns9l8Pud5vkpp58cwAOzhcBhFkeu6GNztdg3D+Db5vo9nOp2iiWGYTqdDCMFe4LquI0aVpGmKR9M0lmUbjQY8YiBJklTb4YkoilBzOBzq9TogeMQIJEmqmlAlo9EIyXa7tSyrKAp4xEBkWUb5q2k8Hh+PR8/zwjCEgufz+aESstvtoKnVan2GgY31kBkEAfT1ej1FUZDiNIIgrFYr9H1ug3teLpfH43G/3/FBUJGu1+s8z8FZLpc0mmiabrfbf5fEumazuVgsTNO8Xq+3242qRNT+G0CMz7IMzH6//xZgAA60tj6rqzxpAAAAAElFTkSuQmCC");
+    background-repeat: no-repeat;
+    background-position: 2% 50%;
+    padding-left: 20px;
+  }
+
+  .page-nav {
+    button {
+      position: relative;
+    }
+    input {
+      width: 22px;
+      margin: 0 -4px 0 -4px;
+      text-align: center;
+    }
+  }
+}
