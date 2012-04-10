@@ -1,5 +1,5 @@
 <div id="user-profile">
-    <div class="row" id="user-info"> <!-- class="row span12"> -->
+    <div class="row" id="user-info">
         <div class="span10">
             <img class="profile-image thumbnail"
                 src="http://gravatar.com/avatar/<?php echo $user_info['User']['gravatar'] ?>">
@@ -21,29 +21,27 @@
             <p>
                 <strong class="label label-info">Email:</strong>
                 <a href="mailto:<?php echo $user_info['User']['email'] ?>">
-                    <?php echo $user_info['User']['email']; ?>
-                </a>
+                    <?php echo $user_info['User']['email']; ?></a>
             </p>
         </div>
-    </div><!-- user-info -->
+    </div>
 
-    <div class="row" id="user-actions">
-        <ul class="nav tabs">
+    <div class="row tabbable" id="user-actions">
+        <ul class="nav nav-tabs">
             <li class="active"><a data-toggle="tab" href="#uploads-tab">Uploads</a></li>
             <li><a data-toggle="tab" href="#annotations-tab">Annotations</a></li>
             <li><a data-toggle="tab" href="#flagged-tab">Flagged Items</a></li>
             <li><a data-toggle="tab" href="#disucssion-tab">Discussions</a></li>
             <li><a data-toggle="tab" href="#collections-tab">Collections</a></li>
-        </ul><!-- .tab-heads -->
-
+        </ul>
         <div class="tab-content">
             <?php echo $this->element('tabs/uploads-tab') ?>
             <?php echo $this->element('tabs/annotations-tab') ?>
             <?php echo $this->element('tabs/flags-tab') ?>
             <?php echo $this->element('tabs/discussion-tab') ?>
             <?php echo $this->element('tabs/collection-tab') ?>
-        </div><!-- sidebar-tab-content -->		    
-    </div><!-- tab-wrapper -->
+        </div>
+    </div>
 </div>
 
 <script type="text/javascript">
