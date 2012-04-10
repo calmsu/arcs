@@ -71,6 +71,7 @@ class CollectionsController extends AppController {
     public function viewer($id=null) {
         $collection = $this->Collection->findById($id);
         $this->set('title_for_layout', $collection['Collection']['title']);
+        $this->set('body_class', 'viewer');
         $this->set('footer', false);
         $this->loadModel('Resource');
         $rids = $this->Collection->Membership->find('list', array(

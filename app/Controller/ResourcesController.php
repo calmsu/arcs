@@ -126,10 +126,10 @@ class ResourcesController extends AppController {
         $this->set('memberships', $this->Resource->Membership->find('all', array(
             'conditions' => array('Membership.resource_id' => $id)
         )));
-
         $this->set('resource', $resource);
         $this->set('toolbar', array('actions' => true));
         $this->set('footer', false);
+        $this->set('body_class', 'viewer standalone');
 
         # On the first request of a particular resource (usually directly 
         # after upload), we might prompt the user for additional 
@@ -291,7 +291,7 @@ class ResourcesController extends AppController {
      * @param string $id   resource id
      */
     public function metadata($id) {
-        if (!$this->Resource->exists($id)) return $this->json(404);
+        if (!$this->Resource->findById($id)) return $this->json(404);
         if ($this->request->is('post') && $this->request->data) {
             foreach ($this->request->data as $k => $v)
                 $this->Resource->Metadatum->store($id, $k, $v);
