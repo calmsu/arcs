@@ -96,6 +96,7 @@ class arcs.views.Upload extends Backbone.View
       $u = @$uploads.find(".upload[data-id=#{u.cid}]")
       u.set 'title', $u.find('#upload-title').val()
       u.set 'identifier', $u.find('#upload-identifier').val()
+      u.set 'rtype', $u.find('#upload-type').val()
 
     # POST our uploads. 
     #

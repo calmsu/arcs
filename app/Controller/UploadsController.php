@@ -95,14 +95,21 @@ class UploadsController extends AppController {
                     'sha', 'file_name', 'file_size', 'user_id'
                 );
                 $this->Resource->add(array(
-                    'sha' => $upload['sha'],
+                    'sha'       => $upload['sha'],
                     'file_name' => $upload['name'],
                     'file_size' => $upload['size'],
                     'title'     => $upload['title'],
                     'mime_type' => $upload['type'],
+                    'type'      => $upload['rtype'],
                     'user_id'   => $this->Auth->user('id'),
                     'public'    => false
                 ));
+                if ($upload['identifier']) {
+                    $this->Resource->Metadatum->store(
+                        $this->Resource->id, 'identifier', $upload['identifier']
+                    );
+                    $this->Resource->Metadatum->create();
+                }
                 $this->Resource->create();
                 $this->Task->create();
             }

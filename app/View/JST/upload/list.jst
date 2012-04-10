@@ -1,20 +1,29 @@
 <div class="accordion-group upload" data-id="<%= cid %>">
-    <div class="accordion-heading">
-        <div class="accordion-toggle">
-        <%= name %> &nbsp;&nbsp;
-        <em><%= arcs.utils.convertBytes(size) %></em>
-        <span class="progress">
-            <div class="bar" style="width: <%= progress %>%"></div>
-        </span>
-        <span id="progress-done" class="pull-right" style="display:none">
-          <i class="icon-ok"></i> Done
-        </span>
-        </div>
+  <div class="accordion-heading">
+    <div class="accordion-toggle">
+    <%= name %> &nbsp;&nbsp;
+    <em><%= arcs.utils.convertBytes(size) %></em>
+    <span class="progress">
+      <div class="bar" style="width: <%= progress %>%"></div>
+    </span>
+    <span id="progress-done" class="pull-right" style="display:none">
+      <i class="icon-ok"></i> Done
+    </span>
     </div>
-    <div class="accordion-body collapse in">
-        <div class="accordion-inner">
-            <input type="text" id="upload-title" placeholder="Title" />
-            <input type="text" id="upload-identifier" placeholder="Identifier" />
-        </div>
+  </div>
+  <div class="accordion-body collapse in">
+    <div class="accordion-inner">
+      <input type="text" id="upload-title" placeholder="Title" />
+      <input type="text" id="upload-identifier" placeholder="Identifier" />
+      <select id="upload-type" style="display:inline-block">
+        <option disabled selected>Choose Type...</option>
+        <option>Photograph</option>
+        <option>Notebook</option>
+        <option>Inventory Card</option>
+        <option>Report</option>
+        <option>Drawing</option>
+        <option>Map</option>
+      </select>
     </div>
+  </div>
 </div>

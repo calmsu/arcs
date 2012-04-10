@@ -132,7 +132,8 @@
         var $u;
         $u = _this.$uploads.find(".upload[data-id=" + u.cid + "]");
         u.set('title', $u.find('#upload-title').val());
-        return u.set('identifier', $u.find('#upload-identifier').val());
+        u.set('identifier', $u.find('#upload-identifier').val());
+        return u.set('rtype', $u.find('#upload-type').val());
       });
       return $.ajax({
         url: arcs.baseURL + 'uploads/batch',
