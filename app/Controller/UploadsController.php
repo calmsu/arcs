@@ -7,7 +7,7 @@
  */
 class UploadsController extends AppController {
     public $name = 'Uploads';
-    public $uses = array('Resource', 'Task');
+    public $uses = array('Resource', 'Job');
 
     /**
      * Upload files without creating Resources. Responds with a JSON
@@ -111,7 +111,6 @@ class UploadsController extends AppController {
                     $this->Resource->Metadatum->create();
                 }
                 $this->Resource->create();
-                $this->Task->create();
             }
             return $this->json(201);
         }
