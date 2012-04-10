@@ -7,6 +7,7 @@
  */
 class AppController extends Controller {
     public $helpers = array('Html', 'Form', 'Session', 'Assets');
+    public $viewClass = 'TwigView.Twig';
 
     public $components = array(
         'Auth' => array(
@@ -31,6 +32,7 @@ class AppController extends Controller {
             'logo' => true,
             'buttons' => array()
         ));
+        $this->set('body_class', 'default');
         $this->set('footer', true);
         $this->RequestHandler->addInputType('json', array('json_decode', true));
     }
