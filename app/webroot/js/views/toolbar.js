@@ -23,18 +23,18 @@
     };
 
     Toolbar.prototype.events = {
-      'click .btn#full-res': 'openFullScreen',
-      'click .btn#permalink': 'clipboardPermalink',
-      'click .btn#split-pdf': 'splitPDF'
+      'click #thumbs-btn': 'openInSearch'
     };
 
     Toolbar.prototype.openFullScreen = function() {
-      return arcs.resourceView.openFullScreen();
+      return arcs.viewer.openFullScreen();
     };
 
     Toolbar.prototype.clipboardPermalink = function() {};
 
-    Toolbar.prototype.splitPDF = function() {};
+    Toolbar.prototype.openInSearch = function() {
+      return arcs.viewer.openInSearch();
+    };
 
     Toolbar.prototype.addButton = function(options) {
       return this.$el.find('#nav-container').append(arcs.tmpl('ui/button', options));

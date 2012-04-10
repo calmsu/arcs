@@ -30,7 +30,7 @@
     };
 
     Actions.prototype.events = {
-      'dblclick img': 'openResult',
+      'dblclick img': 'openResource',
       'click #open-btn': 'openSelected',
       'click #open-colview-btn': 'collectionFromSelected',
       'click #collection-btn': 'namedCollectionFromSelected',
@@ -43,52 +43,6 @@
       'click #zipped-btn': 'zippedDownloadSelected',
       'click #rethumb-btn': 'rethumbSelected',
       'click #split-btn': 'splitSelected'
-    };
-
-    Actions.prototype.openResult = function(result) {
-      arcs.log(result);
-      result = this._modelFromRef(result);
-      return window.open(arcs.baseURL + 'resource/' + result.id);
-    };
-
-    Actions.prototype.keywordResult = function(result, string) {
-      var keyword;
-      result.set('keywords', result.get('keywords').concat(string));
-      keyword = new arcs.models.Keyword({
-        resource_id: result.id,
-        keyword: string
-      });
-      return keyword.save();
-    };
-
-    Actions.prototype.flagResult = function(result, reason, explanation) {
-      var flag;
-      flag = new arcs.models.Flag({
-        resource_id: result.id,
-        reason: reason,
-        explanation: explanation
-      });
-      return flag.save();
-    };
-
-    Actions.prototype.editResult = function(result, metadata) {
-      result.set('metadata', _.extend(result.get('metadata'), metadata));
-      return $.ajax({
-        url: arcs.baseURL + 'resources/metadata/' + result.id,
-        type: 'POST',
-        contentType: 'application/json',
-        dataType: 'json',
-        data: JSON.stringify(metadata)
-      });
-    };
-
-    Actions.prototype.bookmarkResult = function(result, note) {
-      var bkmk;
-      bkmk = new arcs.models.Bookmark({
-        resource_id: result.id,
-        description: note
-      });
-      return bkmk.save();
     };
 
     Actions.prototype.deleteSelected = function() {
@@ -143,7 +97,7 @@
               _ref = _this.results.selected();
               for (_i = 0, _len = _ref.length; _i < _len; _i++) {
                 result = _ref[_i];
-                _this.keywordResult(result, vals.keyword);
+                _this.keywordResource(result, vals.keyword);
               }
               return _this._notify('keyworded');
             }
@@ -159,9 +113,7 @@
       _results = [];
       for (_i = 0, _len = _ref.length; _i < _len; _i++) {
         result = _ref[_i];
-        _results.push($.post(arcs.baseURL + 'resources/rethumb/' + result.id, function() {
-          return arcs.notify('Resource successfully queued for re-thumbnail.');
-        }));
+        _results.push(this.rethumbResource(result));
       }
       return _results;
     };
@@ -172,9 +124,7 @@
       _results = [];
       for (_i = 0, _len = _ref.length; _i < _len; _i++) {
         result = _ref[_i];
-        _results.push($.post(arcs.baseURL + 'resources/split_pdf/' + result.id, function() {
-          return arcs.notify('Resource successfully queued for split.');
-        }));
+        _results.push(this.splitResource(result));
       }
       return _results;
     };
@@ -209,7 +159,7 @@
               _ref = _this.results.selected();
               for (_i = 0, _len = _ref.length; _i < _len; _i++) {
                 result = _ref[_i];
-                _this.flagResult(result, vals.reason, vals.explain);
+                _this.flagResource(result, vals.reason, vals.explain);
               }
               return _this._notify('flagged');
             }
@@ -244,7 +194,7 @@
             "class": 'btn btn-success',
             callback: function(values) {
               if (_.isEqual(metadata, values)) return;
-              return _this.editResult(result, values);
+              return _this.editResource(result, values);
             }
           },
           cancel: function() {}
@@ -295,7 +245,7 @@
               _results = [];
               for (_j = 0, _len2 = _ref2.length; _j < _len2; _j++) {
                 r = _ref2[_j];
-                _results.push(_this.editResult(r, metadata));
+                _results.push(_this.editResource(r, metadata));
               }
               return _results;
             }
@@ -366,17 +316,12 @@
     };
 
     Actions.prototype.downloadSelected = function() {
-      var iframe, result, _i, _len, _ref, _results;
+      var result, _i, _len, _ref, _results;
       _ref = this.results.selected();
       _results = [];
       for (_i = 0, _len = _ref.length; _i < _len; _i++) {
         result = _ref[_i];
-        iframe = this.make('iframe', {
-          style: 'display:none',
-          id: "downloader-for-" + result.id
-        });
-        $('body').append(iframe);
-        _results.push(iframe.src = arcs.baseURL + 'resources/download/' + result.id);
+        _results.push(this.downloadResource(result));
       }
       return _results;
     };
@@ -399,7 +344,6 @@
         success: function(data) {
           var iframe;
           if (data.url != null) {
-            arcs.log(data);
             iframe = _this.make('iframe', {
               style: 'display:none'
             });
@@ -415,7 +359,7 @@
       _ref = this.results.selected();
       for (_i = 0, _len = _ref.length; _i < _len; _i++) {
         result = _ref[_i];
-        this.bookmarkResult(result);
+        this.bookmarkResource(result);
       }
       if (this.results.anySelected()) return this._notify('bookmarked');
     };
@@ -425,7 +369,7 @@
       _ref = this.results.selected();
       for (_i = 0, _len = _ref.length; _i < _len; _i++) {
         result = _ref[_i];
-        this.openResult(result);
+        this.openResource(result);
       }
       if (this.results.anySelected()) return this._notify('opened');
     };
@@ -444,7 +388,6 @@
       if (ref instanceof jQuery.Event) {
         ref.preventDefault();
         ref = $(ref.currentTarget).parents('.result');
-        arcs.log(ref);
       }
       id = $(ref).data('id');
       return this.results.get(id);
@@ -458,7 +401,7 @@
         'Download': 'downloadSelected'
       };
       restricted = {
-        'Info': 'editSelected',
+        'Edit': 'editSelected',
         'Flag': 'flagSelected'
       };
       admin = {
@@ -471,6 +414,6 @@
 
     return Actions;
 
-  })(Backbone.View);
+  })(arcs.views.BaseActions);
 
 }).call(this);

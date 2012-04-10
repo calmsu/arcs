@@ -1,7 +1,7 @@
 # actions.coffee
 # --------------
 arcs.views.search ?= {}
-class arcs.views.search.Actions extends Backbone.View
+class arcs.views.search.Actions extends arcs.views.BaseActions
 
   initialize: ->
     @results = @collection
@@ -20,7 +20,7 @@ class arcs.views.search.Actions extends Backbone.View
     arcs.keys.add 'space', false, @previewSelected, @
 
   events:
-    'dblclick img'           : 'openResult'
+    'dblclick img'           : 'openResource'
     'click #open-btn'        : 'openSelected'
     'click #open-colview-btn': 'collectionFromSelected'
     'click #collection-btn'  : 'namedCollectionFromSelected'
@@ -33,48 +33,6 @@ class arcs.views.search.Actions extends Backbone.View
     'click #zipped-btn'      : 'zippedDownloadSelected'
     'click #rethumb-btn'     : 'rethumbSelected'
     'click #split-btn'       : 'splitSelected'
-
-  # Open the resource view for a result.
-  openResult: (result) ->
-    # This method can be bound to a click event, so we'll resolve the 
-    # result param first. 
-    arcs.log result
-    result = @_modelFromRef(result)
-    window.open arcs.baseURL + 'resource/' + result.id
-
-  # Creates a new Keyword
-  keywordResult: (result, string) -> 
-    result.set 'keywords', result.get('keywords').concat(string)
-    keyword = new arcs.models.Keyword
-      resource_id: result.id
-      keyword: string
-    keyword.save()
-
-  # Creates a new Flag
-  flagResult: (result, reason, explanation) ->
-    flag = new arcs.models.Flag
-      resource_id: result.id
-      reason: reason
-      explanation: explanation
-    flag.save()
-
-  # POSTs edited metadata to the server.
-  editResult: (result, metadata) ->
-    result.set 'metadata', _.extend result.get('metadata'), metadata
-    $.ajax
-      url: arcs.baseURL + 'resources/metadata/' + result.id
-      type: 'POST'
-      contentType: 'application/json'
-      dataType: 'json'
-      data: JSON.stringify metadata
-
-  # Create a new Bookmark, given a result element and optionally a note 
-  # string.
-  bookmarkResult: (result, note) ->
-    bkmk = new arcs.models.Bookmark
-      resource_id: result.id
-      description: note 
-    bkmk.save()
 
   # Delete the selected results, by calling Resource.destroy() on each model.
   deleteSelected: ->
@@ -115,21 +73,17 @@ class arcs.views.search.Actions extends Backbone.View
           validate: true
           callback: (vals) =>
             for result in @results.selected()
-              @keywordResult result, vals.keyword
+              @keywordResource result, vals.keyword
             @_notify 'keyworded'
         cancel: ->
   
   # Send a request for the resource to be re-thumbnailed.
   rethumbSelected: ->
-    for result in @results.selected()
-      $.post arcs.baseURL + 'resources/rethumb/' + result.id, ->
-        arcs.notify 'Resource successfully queued for re-thumbnail.'
+    @rethumbResource(result) for result in @results.selected()
 
   # Send a request for the resource to be split.
   splitSelected: ->
-    for result in @results.selected()
-      $.post arcs.baseURL + 'resources/split_pdf/' + result.id, ->
-        arcs.notify 'Resource successfully queued for split.'
+    @splitResource(result) for result in @results.selected()
 
   # Opens a modal and prompts the user for information about flagging.
   flagSelected: ->
@@ -153,7 +107,7 @@ class arcs.views.search.Actions extends Backbone.View
           class: 'btn btn-success'
           callback: (vals) =>
             for result in @results.selected()
-              @flagResult result, vals.reason, vals.explain
+              @flagResource result, vals.reason, vals.explain
             @_notify 'flagged'
         cancel: ->
 
@@ -179,7 +133,7 @@ class arcs.views.search.Actions extends Backbone.View
           class: 'btn btn-success'
           callback: (values) =>
             return if _.isEqual metadata, values
-            @editResult(result, values)
+            @editResource result, values
         cancel: ->
 
   # Edit the selected results in bulk. The workflow is based on the behavior of
@@ -222,7 +176,7 @@ class arcs.views.search.Actions extends Backbone.View
               changed = true if _original[k] != v
             return unless changed
             for r in @results.selected()
-              @editResult r, metadata
+              @editResource r, metadata
         cancel: ->
 
   # Create a named collection from the selected results.
@@ -277,12 +231,7 @@ class arcs.views.search.Actions extends Backbone.View
 
   # Download selected files.
   downloadSelected: ->
-    for result in @results.selected()
-      iframe = @make 'iframe',
-        style: 'display:none'
-        id: "downloader-for-#{result.id}"
-      $('body').append iframe
-      iframe.src = arcs.baseURL + 'resources/download/' + result.id
+    @downloadResource(result) for result in @results.selected()
 
   # Request a download link for a zipfile of selected resources.
   zippedDownloadSelected: ->
@@ -297,20 +246,19 @@ class arcs.views.search.Actions extends Backbone.View
       data: JSON.stringify data
       success: (data) =>
         if data.url?
-          arcs.log data
           iframe = @make 'iframe', 
             style: 'display:none'
           $('body').append(iframe)
           iframe.src = data.url
 
-  # Call bookmarkResult on all selected results.
+  # Call bookmarkResource on all selected results.
   bookmarkSelected: ->
-    @bookmarkResult(result) for result in @results.selected()
+    @bookmarkResource(result) for result in @results.selected()
     @_notify 'bookmarked' if @results.anySelected()
 
-  # Opeggn all selected results through openResult
+  # Open all selected results through `openResource`
   openSelected: -> 
-    @openResult(result) for result in @results.selected()
+    @openResource(result) for result in @results.selected()
     @_notify 'opened' if @results.anySelected()
 
   # Displays a success notification given a past-tense verb.
@@ -329,7 +277,6 @@ class arcs.views.search.Actions extends Backbone.View
     if ref instanceof jQuery.Event
       ref.preventDefault()
       ref = $(ref.currentTarget).parents '.result'
-      arcs.log ref
     id = $(ref).data 'id'
     @results.get id
 
@@ -341,7 +288,7 @@ class arcs.views.search.Actions extends Backbone.View
       'Download': 'downloadSelected'
     
     restricted =
-      'Info' : 'editSelected'
+      'Edit' : 'editSelected'
       'Flag' : 'flagSelected'
 
     admin =

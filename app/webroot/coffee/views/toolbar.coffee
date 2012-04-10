@@ -15,22 +15,19 @@ class arcs.views.Toolbar extends Backbone.View
       class: 'image'
 
   events:
-    'click .btn#full-res': 'openFullScreen'
-    'click .btn#permalink': 'clipboardPermalink'
-    'click .btn#split-pdf': 'splitPDF'
+    'click #thumbs-btn': 'openInSearch'
 
   # Open the resource in a new window.
   openFullScreen: ->
     # delegate to the resource view
-    arcs.resourceView.openFullScreen()
+    arcs.viewer.openFullScreen()
 
   # Copy the permalink to the clipboard
   clipboardPermalink: ->
     # stub
   
-  # Schedule the resource for a split
-  splitPDF: ->
-    # stub
+  openInSearch: ->
+    arcs.viewer.openInSearch()
 
   # Add a button to the toolbar. Available options
   #   id: id attribute

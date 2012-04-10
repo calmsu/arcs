@@ -13,12 +13,21 @@
     Viewer.prototype.initialize = function() {
       var _ref,
         _this = this;
+      this.collectionModel = this.options.collectionModel;
       arcs.on('arcs:indexChange', this.set, this);
-      arcs.on('arcs:indexChange', function() {
-        return arcs.log('arcs:indexChange', arguments);
+      this.collection.on('add change remove', this.render, this);
+      this.model.on('add change remove', this.render, this);
+      $(window).resize(function() {
+        return arcs.trigger('arcs:resourceResize');
       });
+      arcs.on('arcs:resourceResize', this.resize, this);
       arcs.keys.add('left', false, this.prev, this);
       arcs.keys.add('right', false, this.next, this);
+      this.actions = new arcs.views.ViewerActions({
+        el: $('#viewer-controls'),
+        collection: this.collection,
+        viewer: this
+      });
       this.discussion = new arcs.views.Discussion({
         el: $('#discussion')
       });
@@ -41,19 +50,13 @@
         pushState: true,
         root: arcs.baseURL + (this.collection.length ? 'collection/' : 'resource/')
       });
-      $(window).resize(function() {
-        return arcs.trigger('arcs:resourceResize');
-      });
-      arcs.on('arcs:resourceResize', this.resize, this);
-      if (this.model.get('first_req')) {
-        if (this.model.get('mime_type') === 'application/pdf') this.splitPrompt();
-      }
+      if (this.model.get('first_req')) this.splitPrompt();
       if (this.index == null) this.index = 0;
       return this.resize();
     };
 
     Viewer.prototype.events = {
-      'dblclick img': 'open',
+      'dblclick img': 'openFull',
       'click #next-btn': 'next',
       'click #prev-btn': 'prev'
     };
@@ -78,7 +81,7 @@
         });
       }
       if (!options.noRender) this.render();
-      route = "" + ((_ref2 = (_ref3 = arcs.collectionData) != null ? _ref3.id : void 0) != null ? _ref2 : this.model.id) + "/" + (this.index + 1);
+      route = "" + ((_ref2 = (_ref3 = arcs.collectionModel) != null ? _ref3.id : void 0) != null ? _ref2 : this.model.id) + "/" + (this.index + 1);
       if (!options.noNavigate) this.router.navigate(route);
       if (!options.noPreload) this._preloadNeighbors();
       return true;
@@ -105,25 +108,26 @@
       });
     };
 
-    Viewer.prototype.open = function() {
+    Viewer.prototype.openFull = function() {
       return window.open(this.model.get('url'), '_blank', 'menubar=no');
     };
 
     Viewer.prototype.checkNav = function() {
       if (this.collection.length === this.index + 1) {
-        this.$('#next-button').addClass('disabled');
+        this.$('#next-btn').addClass('disabled');
       } else {
-        this.$('#next-button').removeClass('disabled');
+        this.$('#next-btn').removeClass('disabled');
       }
       if (this.index === 0) {
-        return this.$('#prev-button').addClass('disabled');
+        return this.$('#prev-btn').addClass('disabled');
       } else {
-        return this.$('#prev-button').removeClass('disabled');
+        return this.$('#prev-btn').removeClass('disabled');
       }
     };
 
     Viewer.prototype.splitPrompt = function() {
       var _this = this;
+      if (this.model.get('mime_type') !== 'application/pdf') return;
       return new arcs.views.Modal({
         title: "Split into a PDF?",
         subtitle: "We noticed you've uploaded a PDF. If you'd like, " + "we can split the PDF into a collection, where it can be " + "annotated and commented on--page by page.",
@@ -140,12 +144,12 @@
     };
 
     Viewer.prototype.resize = function() {
-      var offset, well_height;
-      well_height = $(window).height() - 186;
+      var margin, offset, well_height;
+      margin = $('body').hasClass('standalone') ? 168 : 195;
+      well_height = $(window).height() - margin;
       this.$('.viewer-well').height(well_height);
-      this.$('.tab-content').height(well_height - 54);
+      this.$('.tab-content').height(well_height - 75);
       offset = this.$('#resource img').css('max-height', well_height).offset();
-      arcs.log(offset);
       return this.$('#hotspots-wrapper').css('left', offset.left - 56);
     };
 
@@ -168,8 +172,8 @@
       this.$('#resource').html(arcs.tmpl(template, this.model.toJSON()));
       arcs.trigger('arcs:resourceLoaded');
       this.$('#resource-details').html(arcs.tmpl('viewer/table', this.model.toJSON()));
-      if (_.has(arcs, 'collectionData')) {
-        this.$('#collection-details').html(arcs.tmpl('viewer/collection_table', arcs.collectionData));
+      if (this.collectionModel != null) {
+        this.$('#collection-details').html(arcs.tmpl('viewer/collection_table', this.collectionModel.toJSON()));
       }
       this.checkNav();
       return this;

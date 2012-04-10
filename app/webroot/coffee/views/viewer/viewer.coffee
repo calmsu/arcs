@@ -3,18 +3,27 @@
 class arcs.views.Viewer extends Backbone.View
 
   initialize: ->
+    @collectionModel = @options.collectionModel
+
     # Set the resource on the `arcs:indexChange` event.
     # This may be triggered by the router or the Carousel view.
     arcs.on 'arcs:indexChange', @set, @
-    # Spy on the indexChange event--for debugging only.
-    arcs.on 'arcs:indexChange', ->
-      arcs.log 'arcs:indexChange', arguments
+
+    @collection.on 'add change remove', @render, @
+    @model.on 'add change remove', @render, @
+
+    $(window).resize => arcs.trigger 'arcs:resourceResize'
+    arcs.on 'arcs:resourceResize', @resize, @
 
     # Add our hotkeys
     arcs.keys.add 'left', false, @prev, @
     arcs.keys.add 'right', false, @next, @
 
     # Init sub-views
+    @actions = new arcs.views.ViewerActions
+      el: $('#viewer-controls')
+      collection: @collection
+      viewer: @
     @discussion = new arcs.views.Discussion
       el: $('#discussion')
     @keywords = new arcs.views.Keyword
@@ -35,21 +44,16 @@ class arcs.views.Viewer extends Backbone.View
       root: arcs.baseURL + 
         if @collection.length then 'collection/' else 'resource/'
 
-    $(window).resize => arcs.trigger 'arcs:resourceResize'
-    arcs.on 'arcs:resourceResize', @resize, @
-
     # Special logic for a resource's first request post-upload.  
-    if @model.get 'first_req'
-      if @model.get('mime_type') == 'application/pdf'
-        @splitPrompt()
+    @splitPrompt() if @model.get 'first_req'
 
     @index ?= 0
     @resize()
 
   events:
-    'dblclick img'    : 'open'
-    'click #next-btn' : 'next'
-    'click #prev-btn' : 'prev'
+    'dblclick img'      : 'openFull'
+    'click #next-btn'   : 'next'
+    'click #prev-btn'   : 'prev'
 
   # Set the resource, given an identifier.
   #
@@ -85,7 +89,7 @@ class arcs.views.Viewer extends Backbone.View
     arcs.trigger('arcs:indexChange', index, noSet: true) if options.trigger
     @render() unless options.noRender
     # Update the location
-    route = "#{arcs.collectionData?.id ? @model.id}/#{@index + 1}"
+    route = "#{arcs.collectionModel?.id ? @model.id}/#{@index + 1}"
     @router.navigate(route) unless options.noNavigate
     @_preloadNeighbors() unless options.noPreload
     # Return true if we were able to set the model and index.
@@ -105,23 +109,24 @@ class arcs.views.Viewer extends Backbone.View
   prev: -> @set @index - 1, trigger: true
 
   # Open the resource in a new window.
-  open: ->
+  openFull: ->
     window.open @model.get('url'), '_blank', 'menubar=no'
 
   # Disable nav buttons if we're at either end of the range.
   checkNav: ->
     if @collection.length == @index + 1
-      @$('#next-button').addClass 'disabled'
+      @$('#next-btn').addClass 'disabled'
     else
-      @$('#next-button').removeClass 'disabled'
+      @$('#next-btn').removeClass 'disabled'
 
     if @index == 0
-      @$('#prev-button').addClass 'disabled'
+      @$('#prev-btn').addClass 'disabled'
     else
-      @$('#prev-button').removeClass 'disabled'
+      @$('#prev-btn').removeClass 'disabled'
 
   # Prompt the user to consider splitting a PDF.
   splitPrompt: ->
+    return unless @model.get('mime_type') == 'application/pdf'
     new arcs.views.Modal
       title: "Split into a PDF?"
       subtitle: "We noticed you've uploaded a PDF. If you'd like, " +
@@ -135,11 +140,11 @@ class arcs.views.Viewer extends Backbone.View
         no: ->
 
   resize: ->
-    well_height = $(window).height() - 186
+    margin = if $('body').hasClass 'standalone' then 168 else 195
+    well_height = $(window).height() - margin
     @$('.viewer-well').height well_height
-    @$('.tab-content').height well_height - 54
+    @$('.tab-content').height well_height - 75
     offset = @$('#resource img').css('max-height', well_height).offset()
-    arcs.log offset
     @$('#hotspots-wrapper').css 'left', offset.left - 56
   
   # Render the resource.
@@ -159,8 +164,8 @@ class arcs.views.Viewer extends Backbone.View
     # Render the resource (and collection) info tables.
     @$('#resource-details').html arcs.tmpl 'viewer/table', 
       @model.toJSON()
-    if _.has(arcs, 'collectionData')
+    if @collectionModel?
       @$('#collection-details').html arcs.tmpl 'viewer/collection_table', 
-        arcs.collectionData
+        @collectionModel.toJSON()
     @checkNav()
     @
