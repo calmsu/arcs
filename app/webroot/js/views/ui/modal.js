@@ -26,7 +26,8 @@
 
     Modal.prototype.initialize = function() {
       var $sel, name, options, _ref, _ref2;
-      if (!$('#modal').length) $('body').append(arcs.tmpl('ui/modal_wrapper'));
+      $('#modal').remove();
+      $('body').append(arcs.tmpl('ui/modal_wrapper'));
       this.el = this.$el = $('#modal');
       if (this.options["class"]) this.$el.addClass(this.options["class"]);
       this.$el.html(arcs.tmpl(this.options.template, this.options));

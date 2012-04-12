@@ -78,9 +78,9 @@ class arcs.views.Modal extends Backbone.View
     buttons: {}
 
   initialize: ->
-    # Secure a DOM element
-    unless $('#modal').length
-      $('body').append arcs.tmpl 'ui/modal_wrapper'
+    # Delete any existing modal and make a new one. (Don't resuse.)
+    $('#modal').remove()
+    $('body').append arcs.tmpl 'ui/modal_wrapper'
     @el = @$el = $('#modal')
 
     # Add any classes to the modal el.
