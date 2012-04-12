@@ -4157,14 +4157,23 @@ body {
   clear: both;
 }
 .btn,
-.btn-group .btn:first-child,
-.btn-group .btn:last-child {
+.btn-group .btn:first-child {
   border-radius: 2px;
   -webkit-border-radius: 2px;
   -moz-border-radius: 2px;
   border-radius: 2px;
   -webkit-border-radius: 2px;
   -moz-border-radius: 2px;
+}
+.btn-group .btn:last-child,
+.btn-group .dropdown-toggle {
+  border-bottom-right-radius: 2px;
+  border-top-right-radius: 2px;
+  border-bottom-right-radius: 2px;
+  border-top-right-radius: 2px;
+}
+.btn:not(.btn-success):not(.btn-danger):not(.btn-info):not(.btn-primary) {
+  border: 1px solid #999;
 }
 h2,
 h3 {
@@ -4189,9 +4198,6 @@ textarea:focus {
 }
 .alert {
   margin-top: 10px;
-}
-.btn:not(.btn-success):not(.btn-danger):not(.btn-info):not(.btn-primary) {
-  border: 1px solid #999;
 }
 .modal-backdrop {
   opacity: 0.5;
@@ -4892,12 +4898,6 @@ div#toolbar .toolbar-btn {
   position: relative;
   top: 5px;
   margin-right: 10px;
-  border-radius: 5px;
-  -webkit-border-radius: 5px;
-  -moz-border-radius: 5px;
-  border-radius: 5px;
-  -webkit-border-radius: 5px;
-  -moz-border-radius: 5px;
 }
 #hotspot-search input[type=text],
 .search-wrapper input[type=text] {

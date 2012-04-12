@@ -32,9 +32,18 @@ body {
 }
 
 .btn,
-.btn-group .btn:first-child,
-.btn-group .btn:last-child {
+.btn-group .btn:first-child {
   .rounded-corners(2px);
+}
+
+.btn-group .btn:last-child,
+.btn-group .dropdown-toggle {
+  .rounded-corners-right(2px);
+}
+
+// Default buttons should have a darker border.
+.btn:not(.btn-success):not(.btn-danger):not(.btn-info):not(.btn-primary) {
+  border: 1px solid #999;
 }
 
 // THINNER HEADINGS
@@ -58,11 +67,6 @@ textarea {
 
 .alert {
   margin-top: 10px;
-}
-
-// Default buttons should have a darker border.
-.btn:not(.btn-success):not(.btn-danger):not(.btn-info):not(.btn-primary) {
-  border: 1px solid #999;
 }
 
 .modal-backdrop {

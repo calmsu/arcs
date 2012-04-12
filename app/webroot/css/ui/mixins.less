@@ -23,6 +23,16 @@
   border-bottom-right-radius: @radius;
 }
 
+.rounded-corners-left(@radius: 5px) {
+  border-bottom-left-radius: @radius;
+  border-top-left-radius: @radius;
+}
+
+.rounded-corners-right(@radius: 5px) {
+  border-bottom-right-radius: @radius;
+  border-top-right-radius: @radius;
+}
+
 .gradient(@start: #ddd, @end: #bbb) {
   // For browsers that don't support gradients
   background: @start;
