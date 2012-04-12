@@ -10,6 +10,7 @@ class SplitPdfTask extends AppShell {
         $id = $data['resource_id'];
         $collection_id = $data['collection_id'];
         $resource = $this->Resource->findById($id);
+        $metadata = $resource['Metadatum'];
         $resource = $resource['Resource'];
 
         # Get and set its path.
@@ -46,12 +47,21 @@ class SplitPdfTask extends AppShell {
                 'user_id' => $resource['user_id']
             ));
 
+            # Map the PDF's metadata on to the page.
+            $this->mapMetadata($this->Resource->id, $metadata);
+
             # Save the collection membership.
             $this->Membership->pair($this->Resource->id, $collection_id);
 
             # Reset the Resource and Membership models for the next round.
             $this->Resource->create();
             $this->Membership->create();
+        }
+    }
+
+    protected function mapMetadata($rid, $metadata) {
+        foreach($metadata as $m) {
+            $this->Resource->Metadatum->store($rid, $m['attribute'], $m['value']);
         }
     }
 }
