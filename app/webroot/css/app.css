@@ -4156,79 +4156,8 @@ body {
   height: 122px;
   clear: both;
 }
-.btn,
-.btn-group .btn:first-child {
-  border-radius: 2px;
-  -webkit-border-radius: 2px;
-  -moz-border-radius: 2px;
-  border-radius: 2px;
-  -webkit-border-radius: 2px;
-  -moz-border-radius: 2px;
-}
-.btn-group .btn:last-child,
-.btn-group .dropdown-toggle {
-  border-bottom-right-radius: 2px;
-  border-top-right-radius: 2px;
-  border-bottom-right-radius: 2px;
-  border-top-right-radius: 2px;
-}
-.btn:not(.btn-success):not(.btn-danger):not(.btn-info):not(.btn-primary) {
-  border: 1px solid #999;
-}
-h2,
-h3 {
-  text-shadow: 0 1px 1px #ffffff;
-  text-shadow: 0 1px 1px #ffffff;
-  color: #555;
-  font-weight: normal;
-}
-input[type="text"],
-input[type="password"],
-select,
-textarea {
-  border: 1px solid #888;
-  text-shadow: 0 1px 1px #ffffff;
-  text-shadow: 0 1px 1px #ffffff;
-}
-input[type="text"]:focus,
-input[type="password"]:focus,
-select:focus,
-textarea:focus {
-  border-color: rgba(82, 168, 236, 0.8);
-}
 .alert {
   margin-top: 10px;
-}
-.modal-backdrop {
-  opacity: 0.5;
-  filter: alpha(opacity=50);
-  filter: alpha(opacity=30);
-  -moz-opacity: 0.5;
-  -khtml-opacity: 0.5;
-  opacity: 0.5;
-  filter: alpha(opacity=30);
-  -moz-opacity: 0.5;
-  -khtml-opacity: 0.5;
-  opacity: 0.5;
-}
-.dropdown-menu li a:hover {
-  cursor: pointer;
-}
-.ui-autocomplete {
-  z-index: 1051 !important;
-}
-.ui-menu-item {
-  width: 100% !important;
-  margin-bottom: 1px !important;
-}
-.ui-corner-all {
-  border-radius: 0px !important;
-}
-.ui-selectable-helper {
-  background-color: #08c;
-  background: #0088cc;
-  background: rgba(0, 136, 204, 0.1);
-  border: 1px dashed #08c;
 }
 div ::-webkit-scrollbar {
   width: 12px;
@@ -4273,8 +4202,106 @@ div ::-webkit-scrollbar-thumb {
   float: right;
   clear: both;
 }
+.btn,
+.btn-group .btn:first-child {
+  border-radius: 2px;
+  -webkit-border-radius: 2px;
+  -moz-border-radius: 2px;
+  border-radius: 2px;
+  -webkit-border-radius: 2px;
+  -moz-border-radius: 2px;
+}
+.btn-group .btn:last-child,
+.btn-group .dropdown-toggle {
+  border-bottom-right-radius: 2px;
+  border-top-right-radius: 2px;
+  border-bottom-right-radius: 2px;
+  border-top-right-radius: 2px;
+}
+.btn:not(.btn-success):not(.btn-danger):not(.btn-info):not(.btn-primary) {
+  border: 1px solid #999;
+}
+input[type="text"],
+input[type="password"],
+select,
+textarea {
+  border: 1px solid #888;
+  text-shadow: 0 1px 1px #ffffff;
+  text-shadow: 0 1px 1px #ffffff;
+}
+input[type="text"]:focus,
+input[type="password"]:focus,
+select:focus,
+textarea:focus {
+  border-color: rgba(82, 168, 236, 0.8);
+}
+h2,
+h3 {
+  text-shadow: 0 1px 1px #ffffff;
+  text-shadow: 0 1px 1px #ffffff;
+  color: #555;
+  font-weight: normal;
+}
+.dropdown-menu li a:hover {
+  cursor: pointer;
+}
 .nav.nav-tabs {
   margin-bottom: 0px;
+}
+.modal-backdrop {
+  opacity: 0.5;
+  filter: alpha(opacity=50);
+  filter: alpha(opacity=30);
+  -moz-opacity: 0.5;
+  -khtml-opacity: 0.5;
+  opacity: 0.5;
+  filter: alpha(opacity=30);
+  -moz-opacity: 0.5;
+  -khtml-opacity: 0.5;
+  opacity: 0.5;
+}
+.ui-autocomplete {
+  z-index: 1051 !important;
+}
+.ui-menu-item {
+  width: 100% !important;
+  margin-bottom: 1px !important;
+}
+.ui-corner-all {
+  border-radius: 0px !important;
+}
+.ui-selectable-helper {
+  background-color: #08c;
+  background: #0088cc;
+  background: rgba(0, 136, 204, 0.1);
+  border: 1px dashed #08c;
+}
+.datepicker {
+  z-index: 1051;
+  padding: 5px;
+}
+.datepicker .prev,
+.datepicker .next {
+  cursor: pointer;
+}
+.datepicker td.day {
+  border-radius: 2px;
+  -webkit-border-radius: 2px;
+  -moz-border-radius: 2px;
+  border-radius: 2px;
+  -webkit-border-radius: 2px;
+  -moz-border-radius: 2px;
+  text-align: center;
+}
+.datepicker td.day:hover {
+  background: #eee;
+  cursor: pointer;
+}
+.datepicker td.day.active {
+  background: #08c;
+  color: #fff;
+  text-shadow: 0 1px 1px #333333;
+  text-shadow: 0 1px 1px #333333;
 }
 .footer {
   background: url(img/linen-texture.jpg);
