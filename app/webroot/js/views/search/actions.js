@@ -26,6 +26,7 @@
         context: this
       });
       arcs.keys.add('o', true, this.openSelected, this);
+      arcs.keys.add('e', true, this.editSelected, this);
       return arcs.keys.add('space', false, this.previewSelected, this);
     };
 

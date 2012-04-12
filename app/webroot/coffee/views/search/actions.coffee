@@ -17,6 +17,7 @@ class arcs.views.search.Actions extends arcs.views.BaseActions
 
     # <ctrl>-o to open selected
     arcs.keys.add 'o', true, @openSelected, @
+    arcs.keys.add 'e', true, @editSelected, @
     arcs.keys.add 'space', false, @previewSelected, @
 
   events:
