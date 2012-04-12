@@ -81,8 +81,6 @@
       <ul class="dropdown-menu">
         <li><a id="download-btn">Download</a></li>
         <li><a id="zipped-btn">Download as zipfile</a></li>
-        <li><a id="metadata-json-btn">Metadata (JSON)</a></li>
-        <li><a id="metadata-json-btn">Metadata (XML)</a></li>
       </ul>
     </div>
     <button id="top-btn" class="btn actions-right" style="margin-right:10px; display:none;">

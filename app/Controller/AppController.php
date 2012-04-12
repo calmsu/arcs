@@ -20,20 +20,24 @@ class AppController extends Controller {
     );
 
     public function beforeFilter() {
-        $this->set('user', array(
-            'loggedIn' => $this->Auth->loggedIn(),
-            'id' => $this->Auth->user('id'),
-            'name' => $this->Auth->user('name'),
-            'email' => $this->Auth->user('email'),
-            'role' => $this->Auth->loggedIn() ? intVal($this->Auth->user('role')) : 3,
-            'username' => $this->Auth->user('username')
+        $this->set(array(
+            'user' => array(
+                'loggedIn' => $this->Auth->loggedIn(),
+                'id' => $this->Auth->user('id'),
+                'name' => $this->Auth->user('name'),
+                'email' => $this->Auth->user('email'),
+                'role' => $this->Auth->loggedIn() ? 
+                    intVal($this->Auth->user('role')) : 3,
+                'username' => $this->Auth->user('username')
+            ),
+            'toolbar' => array(
+                'logo' => true,
+                'buttons' => array()
+            ),
+            'body_class' => 'default',
+            'footer' => true,
+            'debug' => Configure::read('debug')
         ));
-        $this->set('toolbar', array(
-            'logo' => true,
-            'buttons' => array()
-        ));
-        $this->set('body_class', 'default');
-        $this->set('footer', true);
         $this->RequestHandler->addInputType('json', array('json_decode', true));
     }
 
