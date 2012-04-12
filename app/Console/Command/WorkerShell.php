@@ -35,13 +35,13 @@ class WorkerShell extends AppShell {
             $id = $job['id'];
             $this->log("Starting work on $id ({$job['name']})", self::INFO);
 
-            # Lock the job.
+            # Try to lock the job.
             if (!$this->Job->lock($id, $this->name)) {
                 $this->log("Could not acquire a lock on $id", self::ERROR);
                 continue;
             }
 
-            $this->log("Acquired lock on $id ({$job['name']})");
+            $this->log("Acquired lock on $id ({$job['name']})", self::INFO);
 
             try {
                 # Dispatch the job.

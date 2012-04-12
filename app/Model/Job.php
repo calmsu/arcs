@@ -71,7 +71,8 @@ class Job extends AppModel {
         $locked_by = Sanitize::escape($locked_by);
         $id = Sanitize::escape($id);
 
-        return $this->query(sprintf("
+        # Try to lock it.
+        $this->query(sprintf("
             UPDATE jobs 
             SET locked_at = '%s', locked_by = '%s'
             WHERE 
@@ -79,6 +80,12 @@ class Job extends AppModel {
               (locked_at IS NULL OR locked_by = '%s') AND
               failed_at IS NULL
             ", date('Y-m-d H:i:s'), $locked_by, $id, $locked_by));
+
+        # Did we get it? (This seems necessary because the `query` method's 
+        # return is inconsistent across dbs. Maybe there's a better way?)
+        $maybe_locked = $this->findById($id);
+        if ($maybe_locked['locked_by'] == $locked_by) return true;
+        return false;
     }
 
     /**
