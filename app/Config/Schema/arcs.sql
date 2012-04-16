@@ -58,6 +58,7 @@ CREATE TABLE IF NOT EXISTS memberships (
     id CHAR(36) PRIMARY KEY,
     resource_id CHAR(36),
     collection_id CHAR(36),
+    page INT,
     created DATETIME DEFAULT NULL
 );
 

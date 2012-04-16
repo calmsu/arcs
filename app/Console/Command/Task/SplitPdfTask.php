@@ -51,7 +51,7 @@ class SplitPdfTask extends AppShell {
             $this->mapMetadata($this->Resource->id, $metadata);
 
             # Save the collection membership.
-            $this->Membership->pair($this->Resource->id, $collection_id);
+            $this->Membership->pair($this->Resource->id, $collection_id, $page);
 
             # Reset the Resource and Membership models for the next round.
             $this->Resource->create();

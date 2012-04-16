@@ -78,7 +78,9 @@ class CollectionsController extends AppController {
             'fields' => 'Membership.resource_id',
             'conditions' => array(
                 'collection_id' => $id
-        )));
+            ),
+            'order' => 'Membership.page'
+        ));
         $this->set('resources', $this->Resource->find('all', array(
             'conditions' => array(
                 'Resource.id' => $rids

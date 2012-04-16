@@ -17,12 +17,9 @@
       <input type="text" id="upload-identifier" placeholder="Identifier" />
       <select id="upload-type" style="display:inline-block">
         <option disabled selected>Choose Type...</option>
-        <option>Photograph</option>
-        <option>Notebook</option>
-        <option>Inventory Card</option>
-        <option>Report</option>
-        <option>Drawing</option>
-        <option>Map</option>
+      <% _.each(arcs.config.types, function(help, type) { %>
+        <option><%= type %></option>
+      <% }) %>
       </select>
     </div>
   </div>
