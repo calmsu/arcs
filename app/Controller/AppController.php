@@ -1,4 +1,5 @@
 <?php
+App::uses('Controller', 'Controller');
 /**
  * Application Controller
  * 
@@ -61,17 +62,14 @@ class AppController extends Controller {
      * HTTP status code (or 200, if not given), and delivers the (possibly 
      * empty) payload.
      *
-     * @param  int $code        HTTP status code to set, 200 (OK) by default.
+     * @param  int $status      HTTP status code to set, 200 (OK) by default.
      * @param  mixed $data      Payload to deliver, is coerced to an array.
-     * @param  string $render   Render path to use, '/Elements/ajax' by default.
      * @return void
      */
-    public function json($code=200, $data=null) {
-        $this->layout = 'ajax';
-        $this->response->statusCode($code);
+    public function json($status=200, $data=null) {
+        $this->autoRender = false;
+        $this->response->statusCode($status);
         $this->RequestHandler->respondAs('json');
-        $response = json_encode((array)$data);
-        $this->set('response', $response);
-        $this->render('/Layouts/ajax');
+        $this->response->body(json_encode((array)$data));
     }
 }
