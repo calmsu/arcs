@@ -276,10 +276,21 @@ class ResourcesController extends AppController {
      */
     public function rethumb($id) {
         if (!$this->request->is('post')) return $this->json(400);
-        if (!$this->Auth->user('id')) return $this->json(401);
+        if (!$this->Auth->loggedIn()) return $this->json(401);
         $resource = $this->Resource->findById($id);
         if (!$resource) return $this->json(404);
         $this->Job->enqueue('thumb', array(
+            'resource_id' => $resource['id']
+        ));
+        $this->json(202);
+    }
+
+    public function repreview($id) {
+        if (!$this->request->is('post')) return $this->json(400);
+        if (!$this->Auth->loggedIn()) return $this->json(401);
+        $resource = $this->Resource->findById($id);
+        if (!$resource) return $this->json(404);
+        $this->Job->enqueue('preview', array(
             'resource_id' => $resource['id']
         ));
         $this->json(202);
