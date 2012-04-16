@@ -45,14 +45,15 @@
     };
 
     ContextMenu.prototype.addEvents = function() {
-      var boundCb, cb, opt, _ref;
+      var boundCb, cb, id, opt, _ref;
       this.events["contextmenu " + this.options.filter] = 'show';
       _ref = this.options.options;
       for (opt in _ref) {
         cb = _ref[opt];
         if (this.options.context[cb] == null) continue;
         boundCb = _.bind(this.options.context[cb], this.options.context);
-        this.events["click #context-menu-option-" + (opt.replace(/\s/g, '-'))] = boundCb;
+        id = arcs.inflector.identifierize(opt);
+        this.events["click #context-menu-option-" + id] = boundCb;
       }
       return this.delegateEvents();
     };

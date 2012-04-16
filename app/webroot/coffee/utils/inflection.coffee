@@ -49,7 +49,22 @@ arcs.inflector =
     return verb unless n != 1
     @CONJUGATIONS[verb]
 
+  # Truncate a string to the specified length.
   truncate: (text, length, ending='...') ->
     return '' if not text?
     return text if text.length < length
     text.substring(0, length) + ending
+
+  # Takes a string and makes replacements as necessary so that it's suitable for
+  # use as a CSS or JS identifier. 
+  #
+  # Identifiers are unique to the string. The same string will always return the 
+  # same identifier, so the method can be used as a simple hash function.
+  identifierize: (string) ->
+    # For uniqueness, we're appending _.uniqueId. For same input => same output,
+    # we just cache strings we've already processed.
+    @_identifiers ?= {}
+    return @_identifiers[string] if @_identifiers[string]?
+    id = string.replace(/(\s|-)/g, '_').replace(/\W/g, '').toLowerCase()
+    id = '_' + id if id.match /^\d/
+    @_identifiers[string] = _.uniqueId id + '_'

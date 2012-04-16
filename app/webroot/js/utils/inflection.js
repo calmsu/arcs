@@ -54,6 +54,14 @@
       if (!(text != null)) return '';
       if (text.length < length) return text;
       return text.substring(0, length) + ending;
+    },
+    identifierize: function(string) {
+      var id;
+      if (this._identifiers == null) this._identifiers = {};
+      if (this._identifiers[string] != null) return this._identifiers[string];
+      id = string.replace(/(\s|-)/g, '_').replace(/\W/g, '').toLowerCase();
+      if (id.match(/^\d/)) id = '_' + id;
+      return this._identifiers[string] = _.uniqueId(id + '_');
     }
   };
 
