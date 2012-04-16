@@ -28,11 +28,12 @@ class MetaResourcesController extends AppController {
      */
     public function add() {
         $model = $this->modelClass;
-        if (!$this->request->data) return $this->json(400);
+        if (!$this->request->data) throw new NotFoundException;
         # Temporarily whitelist the user_id field.
         $this->$model->permit('user_id');
         $this->request->data['user_id'] = $this->Auth->user('id');
-        if (!$this->$model->add($this->request->data)) return $this->json(500);
+        if (!$this->$model->add($this->request->data)) 
+            throw new InternalErrorException();
         $this->json(201, $this->$model->findById($this->$model->id));
     }
 
@@ -42,11 +43,12 @@ class MetaResourcesController extends AppController {
     public function edit($id) {
         $model = $this->modelClass;
         $this->$model->read(null, $id);
-        if (!$this->$model->exists()) return $this->json(404);
-        if (!$this->request->data) return $this->json(400);
+        if (!$this->$model->exists()) throw new NotFoundException();
+        if (!$this->request->data) throw new BadRequestException();
         if (!($this->request->is('put') || $this->request->is('post'))) 
-            return $this->json(405);
-        if (!$this->$model->add($this->request->data)) return $this->json(500);
+            throw new MethodNotAllowedException();
+        if (!$this->$model->add($this->request->data)) 
+            throw new InternalErrorException();
         $this->json(200);
     }
 
@@ -58,7 +60,7 @@ class MetaResourcesController extends AppController {
     public function view($id) {
         $model = $this->modelClass;
         $result = $this->$model->findById($id);
-        if (!$result) return $this->json(404);
+        if (!$result) throw new NotFoundException(); 
         $this->json(200, $result);
     }
 
@@ -69,8 +71,8 @@ class MetaResourcesController extends AppController {
      */
     public function delete($id) {
         $model = $this->modelClass;
-        if (!$this->$model->findById($id)) return $this->json(404);
-        if (!$this->$model->delete($id)) return $this->json(500);
+        if (!$this->$model->findById($id)) throw new NotFoundException();
+        if (!$this->$model->delete($id)) throw new InternalErrorException();
         $this->json(204);
     }
 }
