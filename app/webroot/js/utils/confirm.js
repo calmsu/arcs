@@ -17,4 +17,19 @@
     });
   };
 
+  arcs.prompt = function() {
+    var msg, _ref;
+    msg = 1 <= arguments.length ? __slice.call(arguments, 0) : [];
+    return new arcs.views.Modal({
+      title: msg[0],
+      subtitle: (_ref = msg[1]) != null ? _ref : '',
+      buttons: {
+        ok: {
+          "class": 'btn btn-primary',
+          callback: function() {}
+        }
+      }
+    });
+  };
+
 }).call(this);

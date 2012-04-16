@@ -12,6 +12,10 @@
 
     Collection.prototype.model = arcs.models.Resource;
 
+    Collection.prototype.comparator = function(resource) {
+      return resource.get('page');
+    };
+
     return Collection;
 
   })(Backbone.Collection);

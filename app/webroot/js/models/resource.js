@@ -16,6 +16,7 @@
       mime_type: "unknown",
       modified: null,
       created: null,
+      page: 0,
       preview: false,
       public: false,
       selected: false
@@ -69,10 +70,11 @@
           delete r.Flag;
         }
         if (r.Membership != null) {
+          r.memberships = {};
           _ref2 = r.Membership;
           for (_i = 0, _len = _ref2.length; _i < _len; _i++) {
             m = _ref2[_i];
-            r.memberships = m.collection_id;
+            r.memberships[m.collection_id] = parseInt(m.page);
           }
           delete r.Membership;
         }

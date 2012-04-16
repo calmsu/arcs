@@ -64,7 +64,7 @@
         page: this.index + 1,
         count: this.collection.length
       };
-      this.$el.html(arcs.tmpl(this.options.template, _.extend(pageInfo, this.model.toJSON())));
+      this.$el.html(arcs.tmpl(this.options.template, _.extend(this.model.toJSON(), pageInfo)));
       return this;
     };
 

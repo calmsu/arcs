@@ -14,6 +14,7 @@
       var _ref,
         _this = this;
       this.collectionModel = this.options.collectionModel;
+      this.orderCollection();
       arcs.on('arcs:indexChange', this.set, this);
       this.collection.on('add change remove', this.render, this);
       this.model.on('add change remove', this.render, this);
@@ -59,6 +60,15 @@
       'dblclick img': 'openFull',
       'click #next-btn': 'next',
       'click #prev-btn': 'prev'
+    };
+
+    Viewer.prototype.orderCollection = function() {
+      var _this = this;
+      if (this.collectionModel.id == null) return;
+      this.collection.each(function(resource) {
+        return resource.set('page', resource.get('memberships')[_this.collectionModel.id]);
+      });
+      return this.collection.sort();
     };
 
     Viewer.prototype.set = function(identifier, options) {

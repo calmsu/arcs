@@ -63,5 +63,5 @@ class arcs.views.Preview extends Backbone.View
       count: @collection.length
     # Extend the page info with the Resource model and interpolate.
     @$el.html arcs.tmpl @options.template, 
-      _.extend pageInfo, @model.toJSON()
+      _.extend @model.toJSON(), pageInfo
     @

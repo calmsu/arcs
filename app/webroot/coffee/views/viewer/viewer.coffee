@@ -5,6 +5,8 @@ class arcs.views.Viewer extends Backbone.View
   initialize: ->
     @collectionModel = @options.collectionModel
 
+    @orderCollection()
+
     # Set the resource on the `arcs:indexChange` event.
     # This may be triggered by the router or the Carousel view.
     arcs.on 'arcs:indexChange', @set, @
@@ -54,6 +56,12 @@ class arcs.views.Viewer extends Backbone.View
     'dblclick img'      : 'openFull'
     'click #next-btn'   : 'next'
     'click #prev-btn'   : 'prev'
+
+  orderCollection: ->
+    return unless @collectionModel.id?
+    @collection.each (resource) =>
+      resource.set 'page', resource.get('memberships')[@collectionModel.id]
+    @collection.sort()
 
   # Set the resource, given an identifier.
   #

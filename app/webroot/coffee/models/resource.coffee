@@ -12,6 +12,7 @@ class arcs.models.Resource extends Backbone.Model
     mime_type: "unknown"
     modified: null
     created: null
+    page: 0
     preview: false
     public: false
     selected: false
@@ -60,7 +61,8 @@ class arcs.models.Resource extends Backbone.Model
         r.flags = r.Flag
         delete r.Flag
       if r.Membership?
-        r.memberships = m.collection_id for m in r.Membership
+        r.memberships = {}
+        r.memberships[m.collection_id] = parseInt(m.page) for m in r.Membership
         delete r.Membership
       if r.Hotspot?
         r.hotspots = r.Hotspot
