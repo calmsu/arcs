@@ -36,6 +36,16 @@
     };
 
     BaseActions.prototype.editResource = function(resource, metadata) {
+      var key, needs_save, value;
+      for (key in metadata) {
+        value = metadata[key];
+        if (key === 'type' || key === 'title' || key === 'access') {
+          resource.set(key, value);
+          needs_save = true;
+          delete metadata[key];
+        }
+      }
+      if (needs_save != null) resource.save();
       resource.set('metadata', _.extend(resource.get('metadata'), metadata));
       resource.trigger('change');
       return $.ajax({

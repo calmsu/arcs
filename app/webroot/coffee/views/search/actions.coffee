@@ -118,7 +118,10 @@ class arcs.views.search.Actions extends arcs.views.BaseActions
     return unless @results.anySelected()
     return @batchEditSelected() if @results.numSelected() > 1
     result = @results.selected()[0]
-    inputs = {}
+    inputs = 
+      title: value: result.get 'title'
+      type: value: result.get 'type'
+      access: value: result.get 'access'
     metadata = result.get 'metadata'
     fields = result.MODIFIABLE.sort()
     for field in fields

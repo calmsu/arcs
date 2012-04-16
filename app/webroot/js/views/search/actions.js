@@ -176,7 +176,17 @@
       if (!this.results.anySelected()) return;
       if (this.results.numSelected() > 1) return this.batchEditSelected();
       result = this.results.selected()[0];
-      inputs = {};
+      inputs = {
+        title: {
+          value: result.get('title')
+        },
+        type: {
+          value: result.get('type')
+        },
+        access: {
+          value: result.get('access')
+        }
+      };
       metadata = result.get('metadata');
       fields = result.MODIFIABLE.sort();
       for (_i = 0, _len = fields.length; _i < _len; _i++) {

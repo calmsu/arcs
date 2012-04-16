@@ -28,6 +28,6 @@ if arcs.mode > 0
     $('link[rel="stylesheet"]').each ->
       @href = @href.replace /\?.*|$/, query
 
-  # Run the stylesheet reloader on a setInterval, if requested.
+  # Run the stylesheet reloader on an interval, if requested.
   if arcs.dev.reload 
-    window.setInterval arcs.dev.reloadStylesheets, arcs.dev.reloadAt
+    setInterval arcs.dev.reloadStylesheets, arcs.dev.reloadAt

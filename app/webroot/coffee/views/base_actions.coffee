@@ -29,6 +29,12 @@ class arcs.views.BaseActions extends Backbone.View
 
   # POSTs edited metadata for the resource.
   editResource: (resource, metadata) ->
+    for key, value of metadata
+      if key in ['type', 'title', 'access']
+        resource.set key, value
+        needs_save = true
+        delete metadata[key]
+    resource.save() if needs_save?
     resource.set 'metadata', _.extend resource.get('metadata'), metadata
     resource.trigger 'change'
     $.ajax

@@ -23,7 +23,7 @@
       });
     };
     if (arcs.dev.reload) {
-      window.setInterval(arcs.dev.reloadStylesheets, arcs.dev.reloadAt);
+      setInterval(arcs.dev.reloadStylesheets, arcs.dev.reloadAt);
     }
   }
 
