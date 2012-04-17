@@ -12,7 +12,6 @@
         'Map' => 'Map'
     ))) ?><br>
     <?php echo $this->Form->input('public', array('label' => 'Public?')) ?><br>
-    <?php echo $this->Form->input('exclusive', array('label' => 'Exclusive?')) ?><br>
     <?php echo $this->Form->input('file', array('type' => 'file')) ?><br>
     <?php echo $this->Form->input('keywords', array('type' => 'text', 'style' => 'width:400px')) ?><br>
     <div class="arcs-form-actions">
