@@ -14,8 +14,9 @@ class arcs.views.Viewer extends Backbone.View
     @collection.on 'add change remove', @render, @
     @model.on 'add change remove', @render, @
 
+    @throttledResize = _.throttle(@resize, 500)
     $(window).resize => arcs.trigger 'arcs:resourceResize'
-    arcs.on 'arcs:resourceResize', @resize, @
+    arcs.on 'arcs:resourceResize', @throttledResize, @
 
     # Add our hotkeys
     arcs.keys.add 'left', false, @prev, @
@@ -32,8 +33,6 @@ class arcs.views.Viewer extends Backbone.View
       el: $('#information')
     @hotspots = new arcs.views.Hotspot
       el: $('#resource')
-    @toolbar = new arcs.views.Toolbar
-      el: $('#toolbar')
     @carousel = new arcs.views.Carousel
       el: $('#carousel-wrapper')
       collection: @collection
@@ -58,7 +57,7 @@ class arcs.views.Viewer extends Backbone.View
     'click #prev-btn'   : 'prev'
 
   orderCollection: ->
-    return unless @collectionModel.id?
+    return unless @collectionModel?.id?
     @collection.each (resource) =>
       resource.set 'page', resource.get('memberships')[@collectionModel.id]
     @collection.sort()
@@ -176,4 +175,5 @@ class arcs.views.Viewer extends Backbone.View
       @$('#collection-details').html arcs.tmpl 'viewer/collection_table', 
         @collectionModel.toJSON()
     @checkNav()
+    @resize()
     @
