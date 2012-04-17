@@ -13,8 +13,19 @@
 }
 
 // Default buttons should have a darker border on our gray bg.
-.btn:not(.btn-success):not(.btn-danger):not(.btn-info):not(.btn-primary) {
+.btn:not(.btn-success):not(.btn-danger):not(.btn-info):not(.btn-primary):not(.btn-dark) {
   border: 1px solid #999;
+}
+
+.btn-dark {
+  .text-shadow(#333);
+  .gradient(#777, #555);
+  border: 1px solid #444;
+  color: #eee;
+  &:hover {
+    color: #eee;
+    .gradient(#666, #555);
+  }
 }
 
 // Same thing with inputs
@@ -24,8 +35,10 @@ select,
 textarea {
   border: 1px solid #888;
   .text-shadow(#fff);
+  .no-rounded();
   &:focus {
-    border-color: rgba(82, 168, 236, 0.8);
+    border: 1px solid #08c;
+    box-shadow: none;
   }
 }
 
@@ -70,6 +83,14 @@ h3 {
   background: rgb(0, 136, 204);
   background: rgba(0, 136, 204, .1);
   border: 1px dashed #08c;
+}
+
+.VS-search .ui-autocomplete-input:focus {
+  border: none !important;
+}
+
+.VS-search .search_facet input {
+  line-height: 14px;
 }
 
 // Datepickers should be above the modal.
