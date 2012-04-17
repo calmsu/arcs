@@ -23,10 +23,6 @@
                 '/logout') ?></li>
         </ul>
     </div>
-    <a class="btn btn-primary toolbar-btn"
-        href="<?php echo $this->Html->url('/upload')?>">
-        <i class="icon-white icon-upload"></i> Upload
-    </a>
     <?php else: ?>
     <div class="btn-group toolbar-btn">
         <a class="btn" 
@@ -35,14 +31,26 @@
             href="<?php echo $this->Html->url('/signup') ?>">Signup</a>
     </div>
     <?php endif ?>
-    <a class="btn btn-info toolbar-btn"
-        href="<?php echo $this->Html->url('/help')?>">
-        <i class="icon-white icon-file"></i> Help
-    </a>
-    <?php if ($user['role'] === 0): ?>
-    <a class="btn btn-danger toolbar-btn"
-        href="<?php echo $this->Html->url('/admin')?>">
-        <i class="icon-white icon-lock"></i> Admin
-    </a>
-    <?php endif ?>
+    <div class="btn-group toolbar-btn">
+        <?php if ($user['role'] === 0): ?>
+        <a class="btn btn-dark"
+            href="<?php echo $this->Html->url('/admin')?>">
+            <i class="icon-white icon-lock"></i> Admin
+        </a>
+        <?php endif ?>
+        <?php if ($user['loggedIn']): ?>
+        <a class="btn btn-dark"
+            href="<?php echo $this->Html->url('/upload')?>">
+            <i class="icon-white icon-upload"></i> Upload
+        </a>
+        <?php endif ?>
+        <a class="btn btn-dark"
+            href="<?php echo $this->Html->url('/search')?>">
+            <i class="icon-white icon-search"></i> Search
+        </a>
+        <a class="btn btn-dark"
+            href="<?php echo $this->Html->url('/help')?>">
+            <i class="icon-white icon-book"></i> Help
+        </a>
+    </div>
 </div>
