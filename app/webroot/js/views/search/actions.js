@@ -1,7 +1,8 @@
 (function() {
   var _base,
     __hasProp = Object.prototype.hasOwnProperty,
-    __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor; child.__super__ = parent.prototype; return child; };
+    __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor; child.__super__ = parent.prototype; return child; },
+    __indexOf = Array.prototype.indexOf || function(item) { for (var i = 0, l = this.length; i < l; i++) { if (i in this && this[i] === item) return i; } return -1; };
 
   if ((_base = arcs.views).search == null) _base.search = {};
 
@@ -43,7 +44,8 @@
       'click #download-btn': 'downloadSelected',
       'click #zipped-btn': 'zippedDownloadSelected',
       'click #rethumb-btn': 'rethumbSelected',
-      'click #split-btn': 'splitSelected'
+      'click #split-btn': 'splitSelected',
+      'click #access-btn': 'setAccessForSelected'
     };
 
     Actions.prototype.deleteSelected = function() {
@@ -141,12 +143,7 @@
         inputs: {
           reason: {
             type: 'select',
-            options: {
-              'Incorrect attributes': 'incorrect',
-              'Spam': 'spam',
-              'Duplicate': 'duplicate',
-              'Other': 'other'
-            }
+            options: _.inverse(arcs.config.flags)
           },
           explain: {
             type: 'textarea'
@@ -171,7 +168,7 @@
     };
 
     Actions.prototype.editSelected = function() {
-      var field, fields, inputs, metadata, result, _i, _len, _ref,
+      var field, fields, help, inputs, metadata, result, _ref,
         _this = this;
       if (!this.results.anySelected()) return;
       if (this.results.numSelected() > 1) return this.batchEditSelected();
@@ -181,16 +178,15 @@
           value: result.get('title')
         },
         type: {
+          type: 'select',
+          options: _.keys(arcs.config.types),
           value: result.get('type')
-        },
-        access: {
-          value: result.get('access')
         }
       };
       metadata = result.get('metadata');
-      fields = result.MODIFIABLE.sort();
-      for (_i = 0, _len = fields.length; _i < _len; _i++) {
-        field = fields[_i];
+      fields = arcs.config.metadata;
+      for (field in fields) {
+        help = fields[field];
         inputs[field] = {
           value: (_ref = metadata[field]) != null ? _ref : ''
         };
@@ -214,14 +210,15 @@
     };
 
     Actions.prototype.batchEditSelected = function() {
-      var batchFields, checked, field, inputs, results, value, values, _i, _len, _original, _ref,
+      var batchFields, checked, field, help, inputs, results, value, values, _original, _ref,
         _this = this;
-      inputs = {};
       results = this.results.selected();
+      inputs = {};
       _original = {};
-      batchFields = _.difference(results[0].MODIFIABLE, results[0].SINGULAR).sort();
-      for (_i = 0, _len = batchFields.length; _i < _len; _i++) {
-        field = batchFields[_i];
+      batchFields = arcs.config.metadata;
+      for (field in batchFields) {
+        help = batchFields[field];
+        if (__indexOf.call(arcs.config.metadataSingular, field) >= 0) continue;
         values = _.map(results, function(r) {
           return r.get('metadata')[field];
         });
@@ -245,7 +242,7 @@
           save: {
             "class": 'btn btn-success',
             callback: function(metadata) {
-              var changed, k, r, v, _j, _len2, _ref2, _results;
+              var changed, k, r, v, _i, _len, _ref2, _results;
               changed = false;
               for (k in metadata) {
                 v = metadata[k];
@@ -254,8 +251,8 @@
               if (!changed) return;
               _ref2 = _this.results.selected();
               _results = [];
-              for (_j = 0, _len2 = _ref2.length; _j < _len2; _j++) {
-                r = _ref2[_j];
+              for (_i = 0, _len = _ref2.length; _i < _len; _i++) {
+                r = _ref2[_i];
                 _results.push(_this.editResource(r, metadata));
               }
               return _results;
@@ -385,6 +382,39 @@
       if (this.results.anySelected()) return this._notify('opened');
     };
 
+    Actions.prototype.setAccessForSelected = function() {
+      var n,
+        _this = this;
+      n = this.results.numSelected();
+      return new arcs.views.Modal({
+        title: 'Set Access',
+        subtitle: "<b>Private</b> resources may only be viewed by ARCS users. " + "<b>Public</b> resources may be viewed by the general public.",
+        inputs: {
+          access: {
+            type: 'select',
+            options: ['Public', 'Private']
+          }
+        },
+        buttons: {
+          save: {
+            "class": 'btn btn-success',
+            callback: function(vals) {
+              var result, _i, _len, _ref, _results;
+              _ref = _this.results.selected();
+              _results = [];
+              for (_i = 0, _len = _ref.length; _i < _len; _i++) {
+                result = _ref[_i];
+                result.set('access', vals.access.toLowerCase());
+                _results.push(result.save());
+              }
+              return _results;
+            }
+          },
+          cancel: function() {}
+        }
+      });
+    };
+
     Actions.prototype._notify = function(verb, n) {
       var msg;
       if (verb == null) verb = 'affected';
@@ -412,11 +442,11 @@
         'Download': 'downloadSelected'
       };
       restricted = {
-        'Edit': 'editSelected',
-        'Flag': 'flagSelected'
+        'Edit...': 'editSelected',
+        'Flag...': 'flagSelected'
       };
       admin = {
-        'Delete': 'deleteSelected'
+        'Delete...': 'deleteSelected'
       };
       if (arcs.user.isAdmin()) return _.extend(public, restricted, admin);
       if (arcs.user.isLoggedIn()) return _.extend(public, restricted);

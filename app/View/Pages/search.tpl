@@ -9,8 +9,8 @@
           <span class="caret"></span>
         </button>
         <ul class="dropdown-menu">
-          <li><a id="collection-btn">Create new collection</a></li>
-          <li><a id="collection-add-btn">Add to existing collection</a></li>
+          <li><a id="collection-btn">Create new collection...</a></li>
+          <li><a id="collection-add-btn">Add to existing collection...</a></li>
           <li><a id="bookmark-btn">Add to bookmarks</a></li>
         </ul>
       </div>
@@ -32,10 +32,11 @@
           <span class="caret"></span>
         </button>
         <ul class="dropdown-menu">
+          <li><a id="access-btn">Set Access...</a></li>
           <li><a id="rethumb-btn">Re-thumbnail</a></li>
           <li><a id="split-btn">Split PDF</a></li>
           {% if user.role == 0 %}
-          <li><a id="delete-btn">Delete</a></li>
+          <li><a id="delete-btn">Delete...</a></li>
           {% endif %}
         </ul>
       </div>

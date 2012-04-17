@@ -1,5 +1,6 @@
 # actions.coffee
 # --------------
+# Nick Reynolds
 arcs.views.search ?= {}
 class arcs.views.search.Actions extends arcs.views.BaseActions
 
@@ -34,6 +35,7 @@ class arcs.views.search.Actions extends arcs.views.BaseActions
     'click #zipped-btn'      : 'zippedDownloadSelected'
     'click #rethumb-btn'     : 'rethumbSelected'
     'click #split-btn'       : 'splitSelected'
+    'click #access-btn'      : 'setAccessForSelected'
 
   # Delete the selected results, by calling Resource.destroy() on each model.
   deleteSelected: ->
@@ -96,11 +98,7 @@ class arcs.views.search.Actions extends arcs.views.BaseActions
       inputs:
         reason:
           type: 'select'
-          options:
-            'Incorrect attributes' : 'incorrect'
-            'Spam'                 : 'spam'
-            'Duplicate'            : 'duplicate'
-            'Other'                : 'other'
+          options: _.inverse arcs.config.flags
         explain:
           type: 'textarea'
       buttons:
@@ -120,11 +118,14 @@ class arcs.views.search.Actions extends arcs.views.BaseActions
     result = @results.selected()[0]
     inputs = 
       title: value: result.get 'title'
-      type: value: result.get 'type'
-      access: value: result.get 'access'
+      type: 
+        type: 'select'
+        options: _.keys arcs.config.types
+        value: result.get 'type'
+
     metadata = result.get 'metadata'
-    fields = result.MODIFIABLE.sort()
-    for field in fields
+    fields = arcs.config.metadata
+    for field, help of fields
       inputs[field] = value: metadata[field] ? ''
 
     new arcs.views.Modal
@@ -146,12 +147,13 @@ class arcs.views.search.Actions extends arcs.views.BaseActions
   # are updated on save, even if blank.
   batchEditSelected: ->
     # First we need to build the inputs and find any shared values.
-    inputs = {}
     results = @results.selected()
+    inputs = {}
     # We'll maintain an object of the original fields for diffing later.
     _original = {}
-    batchFields = _.difference(results[0].MODIFIABLE, results[0].SINGULAR).sort()
-    for field in batchFields
+    batchFields = arcs.config.metadata
+    for field, help of batchFields
+      continue if field in arcs.config.metadataSingular
       values = _.map results, (r) ->
         r.get('metadata')[field]
       [checked, value] = [false, '']
@@ -265,6 +267,25 @@ class arcs.views.search.Actions extends arcs.views.BaseActions
     @openResource(result) for result in @results.selected()
     @_notify 'opened' if @results.anySelected()
 
+  setAccessForSelected: ->
+    n = @results.numSelected()
+    new arcs.views.Modal
+      title: 'Set Access'
+      subtitle: "<b>Private</b> resources may only be viewed by ARCS users. " +
+        "<b>Public</b> resources may be viewed by the general public."
+      inputs:
+        access:
+          type: 'select'
+          options: ['Public', 'Private']
+      buttons:
+        save: 
+          class: 'btn btn-success'
+          callback: (vals) =>
+            for result in @results.selected()
+              result.set 'access', vals.access.toLowerCase()
+              result.save()
+        cancel: ->
+
   # Displays a success notification given a past-tense verb.
   # We have a lot of "12 resources were tagged"-style notifications. This 
   # method simplifies those calls to just a verb.
@@ -287,16 +308,16 @@ class arcs.views.search.Actions extends arcs.views.BaseActions
   # Return context menu options based on the current user's state.
   _getContextOptions: ->
     public =
-      'Open'    : 'openSelected'
-      'Preview' : 'previewSelected'
-      'Download': 'downloadSelected'
+      'Open'     : 'openSelected'
+      'Preview'  : 'previewSelected'
+      'Download' : 'downloadSelected'
     
     restricted =
-      'Edit' : 'editSelected'
-      'Flag' : 'flagSelected'
+      'Edit...' : 'editSelected'
+      'Flag...' : 'flagSelected'
 
     admin =
-      'Delete' : 'deleteSelected'
+      'Delete...' : 'deleteSelected'
 
     return _.extend(public, restricted, admin) if arcs.user.isAdmin()
     return _.extend(public, restricted) if arcs.user.isLoggedIn()
