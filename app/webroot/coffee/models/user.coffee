@@ -1,3 +1,5 @@
+# user.coffee
+# -----------
 class arcs.models.User extends Backbone.Model
   ROLES:
     'Admin'          : 0
@@ -6,8 +8,6 @@ class arcs.models.User extends Backbone.Model
     'Guest'          : 3
 
   urlRoot: arcs.baseURL + 'users'
-
-  initialize: ->
 
   is: (role) ->
     @get('role') == @ROLES[role]

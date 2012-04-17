@@ -10,9 +10,6 @@
     title: function() {
       return this._get('resources/complete/title');
     },
-    type: function() {
-      return this._get('resources/complete/type');
-    },
     created: function() {
       return this._date('resources/complete/created');
     },

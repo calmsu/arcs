@@ -94,7 +94,7 @@ class arcs.utils.Search
     created: -> arcs.utils.complete.created()
     uploaded: -> arcs.utils.complete.created()
     modified: -> arcs.utils.complete.modified()
-    type: -> arcs.utils.complete.type()
+    type: -> _.compact _.keys arcs.config.types
 
   # Query the server and update the results collection.
   #

@@ -19,8 +19,6 @@
 
     User.prototype.urlRoot = arcs.baseURL + 'users';
 
-    User.prototype.initialize = function() {};
-
     User.prototype.is = function(role) {
       return this.get('role') === this.ROLES[role];
     };

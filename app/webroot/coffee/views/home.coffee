@@ -1,5 +1,6 @@
 # home.coffee
 # -----------
+#
 class arcs.views.Home extends Backbone.View
 
   initialize: ->
