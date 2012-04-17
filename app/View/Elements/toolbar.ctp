@@ -17,8 +17,6 @@
         <ul class="dropdown-menu">
             <li><?php echo $this->Html->link('Account', 
                 '/user/' . $user['username']) ?></li>
-            <li><?php echo $this->Html->link('Bookmarks', 
-                '/users/bookmarks/' . $user['username']) ?></li>
             <li><?php echo $this->Html->link('Logout', 
                 '/logout') ?></li>
         </ul>
