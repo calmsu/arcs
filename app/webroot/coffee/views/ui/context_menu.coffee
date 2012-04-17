@@ -41,7 +41,8 @@ class arcs.views.ContextMenu extends Backbone.View
     for opt, cb of @options.options
       continue unless @options.context[cb]?
       boundCb = _.bind @options.context[cb], @options.context
-      @events["click #context-menu-option-#{opt.replace(/\s/g, '-')}"] = boundCb
+      id = arcs.inflector.identifierize opt
+      @events["click #context-menu-option-#{id}"] = boundCb
     @delegateEvents()
 
   hide: (e) ->

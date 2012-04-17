@@ -2,33 +2,35 @@
 
   arcs.config = {
     metadata: {
-      'identifier': 'some help text',
       'copyright': '',
-      'creator': '',
-      'location': '',
-      'subject': '',
       'coverage': '',
+      'creator': '',
       'date': '',
-      'format': '',
       'date-modified': '',
-      'language': '',
       'description': '',
-      'medium': ''
+      'format': '',
+      'identifier': 'some help text',
+      'language': '',
+      'location': '',
+      'medium': '',
+      'subject': ''
     },
     metadataSingular: ['identifier'],
     types: {
+      '': '',
+      'Drawing': '',
+      'Inventory': '',
+      'Map': '',
       'Notebook': '',
       'Notebook Page': '',
-      'Inventory': '',
-      'Report': '',
-      'Drawing': '',
-      'Map': ''
+      'Photograph': '',
+      'Report': ''
     },
     flags: {
-      'Incorrect attributes': 'incorrect',
-      'Spam': 'spam',
-      'Duplicate': 'duplicate',
-      'Other': 'other'
+      'incorrect': 'Incorrect attributes',
+      'spam': 'Spam',
+      'duplicate': 'Duplicate',
+      'other': 'Other'
     }
   };
 
