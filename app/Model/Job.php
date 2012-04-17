@@ -1,11 +1,15 @@
 <?php
 App::uses('Sanitize', 'Utility');
-
 /**
  * Job Model
  *
  * Defines some methods for more semantic (and convenient) use of our
  * little pretend job queue.
+ *
+ * @package    ARCS
+ * @link       http://github.com/calmsu/arcs
+ * @copyright  Copyright 2012, Michigan State University Board of Trustees
+ * @license    BSD License (http://www.opensource.org/licenses/bsd-license.php)
  */
 class Job extends AppModel {
 
