@@ -15,9 +15,6 @@ arcs.utils.complete =
   title: ->
     @_get 'resources/complete/title'
 
-  type: ->
-    @_get 'resources/complete/type'
-
   created: ->
     @_date 'resources/complete/created'
 

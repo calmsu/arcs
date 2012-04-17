@@ -6,8 +6,10 @@ App::uses('ConnectionManager', 'Model');
  * This is largely a read-only group of views. Admin actions are carried out 
  * through ajax requests to the proper controller actions on the client-side.
  *
- * @package      ARCS
- * @copyright    Copyright 2012, Michigan State University Board of Trustees
+ * @package    ARCS
+ * @link       http://github.com/calmsu/arcs
+ * @copyright  Copyright 2012, Michigan State University Board of Trustees
+ * @license    BSD License (http://www.opensource.org/licenses/bsd-license.php)
  */
 class AdminController extends AppController {
     public $name = 'Admin';

@@ -37,7 +37,7 @@ HEADER="/**\n\
 coffee:
 	coffee --compile --output $(JS) $(COFFEE)
 
-# Compile less in css/lib to css/arcs-skin.css
+# Compile less in (and included in) css/app.less to css/app.css
 less:
 	cd $(CSS); lessc app.less > app.css
 

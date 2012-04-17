@@ -396,7 +396,7 @@ class Search {
                 $cond = " `$model`.`$field` = ':$name'";
                 break;
             case "date":
-                $date = DateTime::createFromFormat('m-d-Y', $value);
+                $date = \DateTime::createFromFormat('m-d-Y', $value);
                 $value = $date->format('Y-m-d');
                 $cond = " DATE(`$model`.`$field`) = DATE(:$name)";
                 break;

@@ -18,10 +18,11 @@
       arcs.on('arcs:indexChange', this.set, this);
       this.collection.on('add change remove', this.render, this);
       this.model.on('add change remove', this.render, this);
+      this.throttledResize = _.throttle(this.resize, 500);
       $(window).resize(function() {
         return arcs.trigger('arcs:resourceResize');
       });
-      arcs.on('arcs:resourceResize', this.resize, this);
+      arcs.on('arcs:resourceResize', this.throttledResize, this);
       arcs.keys.add('left', false, this.prev, this);
       arcs.keys.add('right', false, this.next, this);
       this.actions = new arcs.views.ViewerActions({
@@ -37,9 +38,6 @@
       });
       this.hotspots = new arcs.views.Hotspot({
         el: $('#resource')
-      });
-      this.toolbar = new arcs.views.Toolbar({
-        el: $('#toolbar')
       });
       this.carousel = new arcs.views.Carousel({
         el: $('#carousel-wrapper'),
@@ -63,8 +61,11 @@
     };
 
     Viewer.prototype.orderCollection = function() {
-      var _this = this;
-      if (this.collectionModel.id == null) return;
+      var _ref,
+        _this = this;
+      if (((_ref = this.collectionModel) != null ? _ref.id : void 0) == null) {
+        return;
+      }
       this.collection.each(function(resource) {
         return resource.set('page', resource.get('memberships')[_this.collectionModel.id]);
       });
@@ -186,6 +187,7 @@
         this.$('#collection-details').html(arcs.tmpl('viewer/collection_table', this.collectionModel.toJSON()));
       }
       this.checkNav();
+      this.resize();
       return this;
     };
 

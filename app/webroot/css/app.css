@@ -4302,6 +4302,11 @@ h3 {
 .ui-corner-all {
   border-radius: 0px !important;
 }
+.ui-autocomplete .ui-menu-item .ui-state-hover {
+  background: #08c;
+  border-top: none;
+  border-bottom: none;
+}
 .ui-selectable-helper {
   background-color: #08c;
   background: #0088cc;

@@ -12,7 +12,6 @@ arcs.config =
     'location'      : 'Area of the dig this resource concerns'
     'medium'        : 'What is this resource made of? (e.g: Notebook page: white paper and ink)'
     'subject'       : 'Subjects are like tags or keywords...short, basic  descriptions about things what a resource describes'
-
   metadataSingular: ['identifier']
 
   types:

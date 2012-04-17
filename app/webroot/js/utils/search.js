@@ -89,7 +89,7 @@
         return arcs.utils.complete.modified();
       },
       type: function() {
-        return arcs.utils.complete.type();
+        return _.compact(_.keys(arcs.config.types));
       }
     };
 

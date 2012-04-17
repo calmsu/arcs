@@ -1,6 +1,11 @@
+# config.god
+# ----------
+# This is an example configuration for managing ARCS workers with 
+# the God process manager.
+
 WORKERS = 2
-GROUP = 'arcsdev'
-ROOT = '/home/reyno321/public_html/arcs'
+GROUP = 'arcs'
+ROOT = '/home/var/cakedev/arcs'
 CMD = './app/Console/cake worker -s'
 
 (1..WORKERS).each do |n|
@@ -8,7 +13,7 @@ CMD = './app/Console/cake worker -s'
     w.uid = 'www-data'
     w.dir = ROOT
     w.group = GROUP
-    w.name = "arcsdev-worker-#{n}"
+    w.name = "#{GROUP}-worker-#{n}"
     w.start = CMD + " -l #{w.name}"
     w.log = "#{ROOT}/app/tmp/logs/worker.log"
     w.keepalive
