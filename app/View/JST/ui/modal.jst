@@ -19,9 +19,9 @@
     <select class="<%= i.class %>" id="modal-<%= name %>-input"
       <%= i.focused ? 'autofocus' : '' %>
       name="modal-<%= name %>">
-    <% _.each(i.options, function(opt, key) { %>
-      <option value="<%= opt %>"?>
-        <%= key ? key : opt %>
+    <% _.each(i.options, function(val, key) { %>
+      <option <%= i.value == val ? 'selected' : '' %> value="<%= val %>"?>
+        <%= _.isArray(i.options) ? val : key %>
       </option>
     <% }) %>
     </select>
