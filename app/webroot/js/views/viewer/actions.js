@@ -127,19 +127,30 @@
     };
 
     ViewerActions.prototype.edit = function() {
-      var field, fields, inputs, metadata, _i, _len, _ref,
+      var field, fields, help, inputs, metadata, _ref,
         _this = this;
       metadata = arcs.resource.get('metadata');
-      fields = arcs.resource.MODIFIABLE.sort();
-      inputs = {};
-      for (_i = 0, _len = fields.length; _i < _len; _i++) {
-        field = fields[_i];
+      inputs = {
+        title: {
+          value: this.viewer.model.get('title')
+        },
+        type: {
+          type: 'select',
+          options: _.keys(arcs.config.types),
+          value: this.viewer.model.get('type')
+        }
+      };
+      metadata = this.viewer.model.get('metadata');
+      fields = arcs.config.metadata;
+      for (field in fields) {
+        help = fields[field];
         inputs[field] = {
           value: (_ref = metadata[field]) != null ? _ref : ''
         };
       }
       return new arcs.views.Modal({
         title: 'Edit Info',
+        subtitle: '',
         template: 'ui/modal_columned',
         inputs: inputs,
         buttons: {

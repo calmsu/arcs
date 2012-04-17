@@ -92,13 +92,21 @@ class arcs.views.ViewerActions extends arcs.views.BaseActions
 
   edit: ->
     metadata = arcs.resource.get 'metadata'
-    fields = arcs.resource.MODIFIABLE.sort()
-    inputs = {}
-    for field in fields
+    inputs = 
+      title: value: @viewer.model.get 'title'
+      type: 
+        type: 'select'
+        options: _.keys arcs.config.types
+        value: @viewer.model.get 'type'
+
+    metadata = @viewer.model.get 'metadata'
+    fields = arcs.config.metadata
+    for field, help of fields
       inputs[field] = value: metadata[field] ? ''
 
     new arcs.views.Modal
       title: 'Edit Info'
+      subtitle: ''
       template: 'ui/modal_columned'
       inputs: inputs
       buttons:

@@ -41,12 +41,6 @@ class arcs.views.Hotspot extends Backbone.View
       backdrop: false
       class: 'hotspot-modal'
       inputs:
-        type:
-          type: 'select'
-          options: 
-            'Photo' : 'photo'
-            'Sketch': 'sketch' 
-        title: true
         caption:
           type: 'textarea'
       buttons:

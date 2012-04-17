@@ -108,7 +108,7 @@
       pos = $actions.offset().top - 10;
       $window.scroll(function() {
         if ($window.scrollTop() > pos) {
-          $actions.addClass('toolbar-fixed').width($results.width() + 23);
+          $actions.addClass('toolbar-fixed').width($results.width() + 22);
           _this.$('#top-btn').show();
         } else {
           $actions.removeClass('toolbar-fixed').width('auto');

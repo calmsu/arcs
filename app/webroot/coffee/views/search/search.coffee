@@ -100,7 +100,7 @@ class arcs.views.search.Search extends Backbone.View
     $window.scroll =>
       # Toggle the toolbar's fixed position
       if $window.scrollTop() > pos
-        $actions.addClass('toolbar-fixed').width $results.width() + 23
+        $actions.addClass('toolbar-fixed').width $results.width() + 22
         @$('#top-btn').show()
       else
         $actions.removeClass('toolbar-fixed').width 'auto'
