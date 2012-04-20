@@ -6,8 +6,6 @@
     <?php echo $this->Form->create('User'); ?>
     <label for="data[User][username]">
         Username or Email
-        <?php echo $this->Html->link("Don't have an account?",
-            '/signup', array('class' => 'login-link')) ?>
     </label>
     <?php echo $this->Form->input('username', 
         array('label' => false)); ?>
@@ -15,7 +13,7 @@
     <label for="data[User][password]">
         Password
         <?php echo $this->Html->link('Forgot your password?',
-            array('controller' => 'users', 'action' => 'resetPassword'),
+            array('controller' => 'users', 'action' => 'reset_password'),
             array('class' => 'login-link')) ?>
     </label>
     <?php echo $this->Form->input('password',

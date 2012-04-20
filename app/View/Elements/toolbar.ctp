@@ -22,12 +22,8 @@
         </ul>
     </div>
     <?php else: ?>
-    <div class="btn-group toolbar-btn">
-        <a class="btn" 
-            href="<?php echo $this->Html->url('/login') ?>">Login</a>
-        <a class="btn primary" 
-            href="<?php echo $this->Html->url('/signup') ?>">Signup</a>
-    </div>
+    <a class="btn toolbar-btn" 
+        href="<?php echo $this->Html->url('/login') ?>">Login</a>
     <?php endif ?>
     <div class="btn-group toolbar-btn">
         <?php if ($user['role'] === 0): ?>
