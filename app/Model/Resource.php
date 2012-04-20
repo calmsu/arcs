@@ -69,6 +69,16 @@ class Resource extends AppModel {
     }
 
     /**
+     * Queue up a job to delete the resource in SOLR.
+     */
+    public function afterDelete() {
+        $job = new Job();
+        $job->enqueue('solr_delete', array(
+            'resource_id' => $this->id
+        ));
+    }
+
+    /**
      * Creates the file-level components of a Resource.
      *
      * Given a file path, it will calculate a SHA1 checksum of the file at the
