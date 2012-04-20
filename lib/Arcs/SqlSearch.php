@@ -5,16 +5,15 @@
  */
 namespace Arcs;
 
+require_once('Utilities.php');
+
 /**
- * Search
+ * SqlSearch
  *
  * Instances of the Search class build SQL for faceted search queries, given 
  * an array of facets, and returns the IDs of matching rows.
- *
- * I expect this functionality to be replaced by Apache SOLR, which is much 
- * more qualified to do this sort of thing.
  */
-class Search {
+class SqlSearch {
 
     /**
      * Before we can use facets, they have be mapped to table columns. The
@@ -183,7 +182,7 @@ class Search {
     /**
      * Constructor
      *
-     * @param mixed query      numerically indexed facets array containing 
+     * @param mixed $query     numerically indexed facets array containing 
      *                         sub-arrays with 'category' and 'value' keys, 
      *                         or a JSON query string that will be parsed into 
      *                         facets. An example facet array is below:
@@ -210,7 +209,7 @@ class Search {
      *                         A query string without any facets will default 
      *                         to the special 'all' facet.
      *
-     * @param array config     contains the database configuration, should contain
+     * @param array $config    contains the database configuration, should contain
      *                         the following keys:
      *
      *                           host     - database hostname (e.g. localhost)
@@ -263,8 +262,8 @@ class Search {
      * Facets can be added incrementally to a live instance, even after a 
      * search has already been made.
      *
-     * @param string category   facet category, returns false if not in mappings.
-     * @param string value      facet value
+     * @param string $category   facet category, returns false if not in mappings.
+     * @param string $value      facet value
      * @return bool             true on success, false otherwise.
      */
     public function addFacet($category, $value) {
@@ -304,16 +303,24 @@ class Search {
      *
      * @return array     id of each result
      */
-    public function results($limit=null, $offset=null) {
-        if (!is_null($limit)) {
-            $this->LIMIT = $limit;
-        }
-        if (!is_null($offset)) {
-            $this->OFFSET = $offset;
-        }
+    public function search($query=null, $limit=null, $offset=null) {
+        if (is_array($query)) $this->_addFacets($query);
+        if (!is_null($limit)) $this->LIMIT = $limit;
+        if (!is_null($offset)) $this->OFFSET = $offset;
         $sql = $this->_buildStatement();
+        $count_sql = $this->_buildStatement(true);
         $rows = $this->_execute($sql, $this->values);
-        return array_map(function($r) { return $r['id']; }, $rows);
+        $count = $this->_execute($count_sql, $this->values);
+        return array(
+            'total' => $count[0][0],
+            'limit' => $this->LIMIT,
+            'offset' => $this->OFFSET,
+            'mode' => 'sql',
+            'query' => $query,
+            'raw_query' => $this->getSQL(),
+            'results' => \_\pluck($rows, 'id'),
+            'num_results' => count($rows)
+        );
     }
 
     /**
@@ -334,7 +341,7 @@ class Search {
     /**
      * Adds each facet in an array of facets.
      *
-     * @param array facets   numerically indexed facets array. See above
+     * @param array $facets  numerically indexed facets array. See above
      *                       for a better description.
      * @return bool          true if all facets were added, false otherwise.
      */
@@ -360,10 +367,10 @@ class Search {
     /**
      * Adds a condition to the conditions property.
      *
-     * @param string model       model (table alias) to use in the condition.     
-     * @param string field       field (column) to use in the condition.
-     * @param string value       value to compare with.
-     * @param string comparison  comparison type
+     * @param string $model       model (table alias) to use in the condition.     
+     * @param string $field       field (column) to use in the condition.
+     * @param string $value       value to compare with.
+     * @param string $comparison  comparison type
      *
      * @return mixed   Returns the condition (truthy) if one could be made and 
      *                 false otherwise.
@@ -416,8 +423,8 @@ class Search {
      * Adds an INNER JOIN to the joins property, and the joining table to the
      * joined property. If the table is already in joined, we won't do another.
      *
-     * @param string table
-     * @param array predicate
+     * @param string $table
+     * @param array $predicate
      * @return bool True if the table was joined, false otherwise.
      */
     private function _addJoin($table, $predicate) {
@@ -449,10 +456,14 @@ class Search {
      *
      * @return string SQL statement
      */
-    private function _buildStatement() {
+    private function _buildStatement($count=false) {
         $lop = $this->DISJUNCTIVE ? 'OR' : 'AND';
 
-        $sql = "SELECT `{$this->MODEL}`.`id` FROM ";
+        if ($count)
+            $sql = "SELECT COUNT(`{$this->MODEL}`.`id`) FROM ";
+        else
+            $sql = "SELECT `{$this->MODEL}`.`id` FROM ";
+
         $sql .= "`{$this->database}`.`{$this->TABLE}` ";
         $sql .= "AS `{$this->MODEL}`";
         foreach($this->joins as $j)
@@ -463,8 +474,12 @@ class Search {
             $where = $this->conditions ? " " : " WHERE ";
             $sql .= "$where  AND  `Resource`.`public` = 1 ";
         }
+
+        if ($count) return $sql;
+
         $sql .= " LIMIT {$this->LIMIT}";
         $sql .= " OFFSET {$this->OFFSET}";
+
         return $sql;
     }
 
