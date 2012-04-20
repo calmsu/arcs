@@ -5,9 +5,19 @@ class WorkerShell extends AppShell {
 
     public $uses = array('Job');
 
+    /**
+     * Default wait time (in server mode) before re-checking the Job queue.
+     */
     public $sleep     = 5;
+
+    /**
+     * Default log level.
+     */
     public $logLevel  = 1;
 
+    /**
+     * Log severity levels
+     */
     const CRITICAL = 4;
     const    ERROR = 3;
     const     WARN = 2;
@@ -37,14 +47,17 @@ class WorkerShell extends AppShell {
 
             # Try to lock the job.
             if (!$this->Job->lock($id, $this->name)) {
+                $this->log(debug($this->Job->findById($id)), self::ERROR);
                 $this->log("Could not acquire a lock on $id", self::ERROR);
                 continue;
             }
 
             $this->log("Acquired lock on $id ({$job['name']})", self::INFO);
 
+            # Dispatch the job.
             try {
-                # Dispatch the job.
+                # We're inflecting the job name to a Task class name.
+                # (e.g. split_pdf => SplitPdf)
                 $name = Inflector::camelize($job['name']);
                 $task = $this->Tasks->load($name);
                 $task->execute($job['data']);
@@ -69,16 +82,32 @@ class WorkerShell extends AppShell {
         $this->log('Starting up...', self::INFO);
     }
 
+    /**
+     * Get the name of the worker, which is a concatenation of the system's
+     * hostname, PID and any labels.
+     *
+     * @return string 
+     */
     public function getName() {
         return trim(`hostname`) . ':' . getmypid() .
             (isset($this->params['label']) ? " ({$this->params['label']})" : '');
     }
 
+    /**
+     * Log a message to STDOUT, if the severity is greater than or equal to the
+     * configured log level.
+     *
+     * @param string $msg
+     * @param int $severity
+     */
     public function log($msg, $severity=self::CRITICAL) {
         if ($severity >= $this->logLevel)
             printf("[%s] [%s] %s\n", date('r'), $this->name, $msg);
     }
 
+    /**
+     * Set up the option parser.
+     */
     public function getOptionParser() {
         $parser = parent::getOptionParser();
         $parser->addOptions(array(
