@@ -21,11 +21,11 @@ class AssetsHelper extends AppHelper {
      * Resolve an array of paths with unix filename patterns. Returns the
      * unique array of all matched paths.
      *
-     * @param wilds      an array of paths that may include patterns.
-     * @param base       a base path to prepend when resolving paths.
-     * @param keep_base  if true, the prepended base path is included in
-     *                   each resolved path. This defaults to false to cater
-     *                   to usage with Html->script.
+     * @param array $wilds     an array of paths that may include patterns.
+     * @param string $base     a base path to prepend when resolving paths.
+     * @param bool $keep_base  if true, the prepended base path is included in
+     *                         each resolved path. This defaults to false to 
+     *                         cater to usage with Html->script.
      */
     private function _resolvePaths($wilds, $base='', $keep_base=false) {
         $paths = array();
@@ -45,8 +45,8 @@ class AssetsHelper extends AppHelper {
      * Returns true if any of the given paths were modified after the 
      * given timestamp.
      *
-     * @param paths  array of existing paths
-     * @param time   unix timestamp
+     * @param array $paths  array of existing paths
+     * @param int $time     unix timestamp
      */
     private function _modifiedAfter($paths, $time) {
         foreach($paths as $p)
@@ -82,10 +82,10 @@ class AssetsHelper extends AppHelper {
      * given namespace--given an array of template containing file paths. 
      * We'll strip newlines and escape doublequotes.
      *
-     * @param paths
-     * @param base
-     * @param dst
-     * @param namespace
+     * @param array $paths
+     * @param string $base
+     * @param string $dst
+     * @param string $namespace
      */
     private function _buildTemplates($paths, $base, $dst, $namespace) {
         $fhandle = fopen($dst, "w");
