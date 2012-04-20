@@ -1,6 +1,8 @@
 <?php
-include_once(LIB . 'relic' . DS . 'library' . DS . 'Mime.php');
-include_once(LIB . 'relic' . DS . 'library' . DS . 'Image.php');
+require_once(LIB . 'Relic' . DS . 'Library' . DS . 'Mime.php');
+require_once(LIB . 'Relic' . DS . 'Library' . DS . 'Image.php');
+App::import('Model', 'Job');
+
 /**
  * Resource model
  *
@@ -10,8 +12,11 @@ include_once(LIB . 'relic' . DS . 'library' . DS . 'Image.php');
  * @license    BSD License (http://www.opensource.org/licenses/bsd-license.php)
  */
 class Resource extends AppModel {
+
     public $name = 'Resource';
+
     public $belongsTo = 'User';
+
     public $hasMany = array(
         'Membership',
         'Comment',
@@ -20,6 +25,7 @@ class Resource extends AppModel {
         'Flag',
         'Metadatum'
     );
+
     public $whitelist = array(
         'public',
         'exclusive',
@@ -50,6 +56,16 @@ class Resource extends AppModel {
             return $r;
         }, $this);
         return $results;
+    }
+
+    /**
+     * Queue up a job to index the resource in SOLR.
+     */
+    public function afterSave($created) {
+        $job = new Job();
+        $job->enqueue('solr_index', array(
+            'resource_id' => $this->id
+        ));
     }
 
     /**
@@ -129,11 +145,11 @@ class Resource extends AppModel {
      *
      * This is based on the paths.uploads setting in `arcs.ini`
      *
-     * @param sha    resource's SHA1
-     * @param fname  filename
+     * @param string $sha    resource's SHA1
+     * @param string $fname  filename
      */
     public function path($sha, $fname=null) {
-        $path = $this->_path($sha, Configure::read('paths.uploads'), DS);
+        $path = $this->_path($sha, Configure::read('uploads.path'), DS);
         if ($fname) return $path . DS . $fname;
         return $path;
     }
@@ -143,11 +159,11 @@ class Resource extends AppModel {
      *
      * This is based on the urls.uploads setting in `arcs.ini`
      *
-     * @param sha   resource's SHA1
-     * @param fname resource's filename
+     * @param string $sha     resource's SHA1
+     * @param string $fname   resource's filename
      */
     public function url($sha, $fname=null) {
-        $url = $this->_path($sha, Configure::read('urls.uploads'));
+        $url = $this->_path($sha, Configure::read('uploads.url'));
         if ($fname) return $url . DS . $fname;
         return $url;
     }
@@ -155,13 +171,18 @@ class Resource extends AppModel {
     /**
      * Return the file size of a Resource, in bytes.
      *
-     * @param sha   resource's SHA1
-     * @param fname resource's filename
+     * @param string $sha     resource's SHA1
+     * @param string $fname   resource's filename
      */
     public function size($sha, $fname) {
         return filesize($this->path($sha, $fname));
     }
 
+    /**
+     * Make a thumbnail for a file, delegating to Relic.
+     *
+     * @param string $sha
+     */
     public function makeThumbnail($sha) {
         return \Relic\Image::thumbnail(
             $this->path($sha, $sha),
@@ -169,6 +190,11 @@ class Resource extends AppModel {
         );
     }
 
+    /**
+     * Make a preview image for a file, delegating to Relic.
+     *
+     * @param string $sha
+     */
     public function makePreview($sha) {
         return \Relic\Image::preview(
             $this->path($sha, $sha),
@@ -177,8 +203,11 @@ class Resource extends AppModel {
     }
 
     /**
+     * Create a Zip archive of the named files in $files.
      *
-     * @param files
+     * @param array $files     (name, sha) associations.
+     * @param string $zipname  name for the resulting archive.
+     * @return mixed          result of `createFile`, either a SHA1 or false.
      */
     public function makeZipfile($files, $zipname) {
         if (!class_exists('ZipArchive')) return false;
@@ -200,13 +229,19 @@ class Resource extends AppModel {
         ));
     }
 
+    /**
+     * Unset the first request state. This is often called when the `first_req` 
+     * of a resource is true, after some special logic has been done.
+     *
+     * @param string $id
+     */
     public function firstRequest($id) {
         $this->read(null, $id);
         $this->set('first_req', false);
         $this->save();
     }
 
-    /* PRIVATE METHODS */
+    /* PROTECTED METHODS */
 
     /**
      * Builds paths for resources using the ARCS spec. For example:
@@ -215,12 +250,12 @@ class Resource extends AppModel {
      *
      * # '/root/dir/1/2/3/456789abcdef...'
      *
-     * @param sha   resource's SHA1
-     * @param root  root path to prepend
-     * @param sep   separator to use, in most cases '/' or '\'
-     * @return      full path
+     * @param string $sha   resource's SHA1
+     * @param string $root  root path to prepend
+     * @param string $sep   separator to use, in most cases '/' or '\'
+     * @return string       full path
      */
-    private function _path($sha, $root='', $sep='/') {
+    protected function _path($sha, $root='', $sep='/') {
         # Trim any trailing sep
         $root = rtrim($root, $sep);
         return $root . $sep . 
@@ -233,14 +268,21 @@ class Resource extends AppModel {
     /**
      * Computes a SHA1 checksum of the file at the given path.
      *
-     * @param name   file path
-     * @return       a SHA1 hexdigest
+     * @param string $name   file path
+     * @return string        a SHA1 hexdigest
      */
-    private function _getSHA($path) {
+    protected function _getSHA($path) {
         return sha1_file($path);
     }
 
-    private function _needsPreview($sha) {
+    /**
+     * Determines whether or not the resource 'needs' a preview image.
+     * Large files and PDFs are two examples.
+     *
+     * @param string $sha
+     * @return bool        True if the resource needs a preview.
+     */
+    protected function _needsPreview($sha) {
         $path = $this->path($sha, $sha);
         # Anything greater than a megabyte.
         if (filesize($path) > 1000000) return true;
@@ -256,9 +298,10 @@ class Resource extends AppModel {
      * We don't create thumbnails during the Request-Response loop, but 
      * we'll copy over a placeholder.
      *
-     * @param sha
+     * @param string $sha
+     * @return void
      */
-    private function _setDefaultThumb($sha) {
+    protected function _setDefaultThumb($sha) {
         $types = \Relic\Mime::extensions($this->path($sha, $sha));
         $image = 'generic';
         foreach($types as $type) {

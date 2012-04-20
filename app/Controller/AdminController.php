@@ -31,16 +31,16 @@ class AdminController extends AppController {
             'debug' => Configure::read('debug'),
             'database' => @ConnectionManager::getDataSource('default')
         ));
-        $uploads_path = Configure::read('paths.uploads');
+        $uploads_path = Configure::read('uploads.path');
         $this->set('uploads', array(
-            'url' => Configure::read('urls.uploads'),
+            'url' => Configure::read('uploads.url'),
             'path' => $uploads_path,
             'exists' => is_dir($uploads_path),
             'writable' => is_writable($uploads_path),
             'executable' => is_executable($uploads_path)
         ));
         $this->set('dependencies', array(
-            'Ghostscript' => is_executable(Configure::read('executables.ghostscript')),
+            'Ghostscript' => is_executable('ghostscript'),
             'Imagemagick' => class_exists('Imagick')
         ));
     }
@@ -50,9 +50,10 @@ class AdminController extends AppController {
      */
     public function logs() {
         $this->set(array(
-            'error' => @file_get_contents(LOGS . 'error.log'),
-            'debug' => @file_get_contents(LOGS . 'debug.log'),
-            'relic' => @file_get_contents(LOGS . 'relic.log')
+            'error'  => @file_get_contents(LOGS . 'error.log'),
+            'debug'  => @file_get_contents(LOGS . 'debug.log'),
+            'worker' => @file_get_contents(LOGS . 'worker.log'),
+            'relic'  => @file_get_contents(LOGS . 'relic.log')
         ));
     }
 
