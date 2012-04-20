@@ -1,6 +1,6 @@
 <?php echo $this->element('admin_nav', array('active' => 'jobs')) ?>
 <div id="admin-jobs">
-    <input id="filter-input" name="filter" placeholder="Filter jobs..."/>
+    <input id="filter-input" type="text" name="filter" placeholder="Filter jobs..."/>
     &nbsp;Last updated <strong><span id="time">just now</span></strong>
     &nbsp;Auto-update? <input type="checkbox" id="auto-update"/>
     <div id="jobs" style="max-height:80%; overflow:auto;"></div>
