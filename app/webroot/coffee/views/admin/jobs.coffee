@@ -35,7 +35,10 @@ class arcs.views.admin.Jobs extends Backbone.View
     job = @collection.get $(e.currentTarget).data('id')
     arcs.confirm "Are you sure you want to retry this job?", 
       "Job <b>#{job.id}</b> will be set to <b>pending</b>.", =>
-        job.set 'status', '1'
+        job.set 
+          status: '1'
+          failed_at: null
+          error: null
         arcs.loader.show()
         job.save {}
           success: ->
