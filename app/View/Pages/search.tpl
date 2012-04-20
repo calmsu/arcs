@@ -36,7 +36,9 @@
           <li><a id="rethumb-btn">Re-thumbnail</a></li>
           <li><a id="split-btn">Split PDF</a></li>
           {% if user.role == 0 %}
+          <li class="divider"></li>
           <li><a id="delete-btn">Delete...</a></li>
+          <li><a id="solr-btn">Queue SOLR index</a></li>
           {% endif %}
         </ul>
       </div>
