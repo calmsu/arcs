@@ -46,7 +46,7 @@
         data: JSON.stringify(data),
         success: function(data) {
           return el.children('div').html(arcs.tmpl('home/details', {
-            resources: data
+            resources: data.results
           }));
         }
       });

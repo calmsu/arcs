@@ -152,7 +152,8 @@ class arcs.views.Viewer extends Backbone.View
     @$('.viewer-well').height well_height
     @$('.tab-content').height well_height - 75
     offset = @$('#resource img').css('max-height', well_height).offset()
-    @$('#hotspots-wrapper').css 'left', offset.left - 56
+    if @$('#hotspots-wrapper').length and offset
+      @$('#hotspots-wrapper').css('left', offset.left - 56) 
   
   # Render the resource.
   render: ->

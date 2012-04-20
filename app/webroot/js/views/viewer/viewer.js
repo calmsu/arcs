@@ -161,7 +161,9 @@
       this.$('.viewer-well').height(well_height);
       this.$('.tab-content').height(well_height - 75);
       offset = this.$('#resource img').css('max-height', well_height).offset();
-      return this.$('#hotspots-wrapper').css('left', offset.left - 56);
+      if (this.$('#hotspots-wrapper').length && offset) {
+        return this.$('#hotspots-wrapper').css('left', offset.left - 56);
+      }
     };
 
     Viewer.prototype.render = function() {

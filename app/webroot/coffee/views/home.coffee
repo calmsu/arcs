@@ -30,4 +30,4 @@ class arcs.views.Home extends Backbone.View
       data: JSON.stringify data
       success: (data) ->
         el.children('div').html arcs.tmpl 'home/details', 
-          resources: data
+          resources: data.results
