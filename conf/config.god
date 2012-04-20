@@ -5,7 +5,7 @@
 
 WORKERS = 2
 GROUP = 'arcs'
-ROOT = '/home/var/cakedev/arcs'
+ROOT = '/var/cakedev/arcs'
 CMD = './app/Console/cake worker -s'
 
 (1..WORKERS).each do |n|
