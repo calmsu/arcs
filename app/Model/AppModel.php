@@ -57,7 +57,7 @@ class AppModel extends Model {
     /**
      * Temporarily permit a field for saving, by adding it to the whitelist.
      *
-     * @param  field  one or more fields as arguments.
+     * @param string $field  one or more fields as arguments.
      * @return void
      */
     public function permit($field) {
@@ -70,7 +70,7 @@ class AppModel extends Model {
     /**
      * Complement to `permit`. Temporarily forbid a field for saving.
      *
-     * @param  field  one or more fields as arguments.
+     * @param string $field  one or more fields as arguments.
      * @return void
      */
     public function forbid($field) {
@@ -81,11 +81,17 @@ class AppModel extends Model {
     }
 
     /**
+     * 
+     */
+    public function touch($id) {
+    }
+    
+    /**
      * Convenience method for generating autocompletion arrays.
      *
-     * @param field       e.g. Resource.title
-     * @param conditions  an array of conditions that will be passed along
-     *                    to the find method.
+     * @param string $field      e.g. Resource.title
+     * @param array $conditions  an array of conditions that will be passed along
+     *                           to the find method.
      */
     public function complete($field, $conditions=array()) {
         $_flatten = $this->flatten;
@@ -99,7 +105,7 @@ class AppModel extends Model {
         return array_unique(array_values($values));
     }
 
-    /*
+    /**
      * Convenience method for saving a model without needing to wrap it
      * in an outer HABTM array, as in:
      *
@@ -109,29 +115,43 @@ class AppModel extends Model {
      *
      *   Model::add(array('title' => 'Some Title'))
      *
+     * @param array $data
      */
     public function add($data) {
         return $this->save(array($this->name => $data));
     }
 
-    /*
+    /**
+     * Returns results where Model.id is in $ids. The important bit is that it 
+     * will also return the results in the order of the given ids, by using 
+     * MySQL's FIELD() function.
+     */
+    public function findAllFromIds($ids) {
+        $this->find('all', array(
+            'conditions' => array('id' => $ids)
+            # TODO
+        ));
+    }
+
+    /**
      * This is a utility method for reformatting the results arrays that are
      * returned by the afterFind callback. The results can take a few different
      * formats. This method will normalize the results and provide them in a
      * consistent format to a callback function.
      *
-     * @param results   the results parameter of the afterFind method. Should be
-     *                  an array, of one of three formats:
+     * @param array $results   the results parameter of the afterFind method. 
+     *                         Should be an array, of one of three formats:
      *
-     *                      array(...)
-     *                      array('Model' => ...)
-     *                      array(0 => 'Model' => ...)
+     *                           array(...)
+     *                           array('Model' => ...)
+     *                           array(0 => 'Model' => ...)
      *                  
-     * @param func      an anonymous function or other callable. We'll pass it
-     *                  the normalized result and use the return value to reset
-     *                  the result.
-     * @param context   pass an object (such as $this) in, and you can use it 
-     *                  within the function, through the second parameter.
+     * @param function $func   an anonymous function or other callable. We'll 
+     *                         pass it the normalized result and use the return 
+     *                         value to reset the result.
+     * @param object $context  pass an object (such as $this) in, and you can 
+     *                         use it within the function, through the second 
+     *                         parameter.
      */
     public function resultsMap($results, $func, $context=null) {
         if (isset($results[0][$this->name])) {

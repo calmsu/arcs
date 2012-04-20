@@ -1,7 +1,4 @@
 <?php 
-# Require our Search class.
-require_once(LIB . 'arcs' . DS . 'Search.php');
-
 /**
  * Resources Controller
  *
@@ -44,7 +41,7 @@ class ResourcesController extends AppController {
      */
     public function add() {
         # TODO
-        if (!$this->request->is('post')) return $this->json(405);
+        if (!$this->request->is('post')) throw new MethodNotAllowedException();
         $this->json(501);
     }
 
@@ -55,11 +52,12 @@ class ResourcesController extends AppController {
      * @param string $id    resource id
      */
     public function split_pdf($id=null) {
-        if (!$this->request->is('post')) return $this->json(405);
-        if (!$id) return $this->json(400);
+        if (!$this->request->is('post')) throw new MethodNotAllowedException();
+        if (!$id) throw new BadRequestException(); 
         $resource = $this->Resource->findById($id);
-        if (!$resource) return $this->json(404);
-        if (!$resource['mime_type'] == 'application/pdf') return $this->json(400);
+        if (!$resource) throw new NotFoundException();
+        if (!$resource['mime_type'] == 'application/pdf') 
+            throw new BadRequestException();
 
         # Create a new collection for the split.
         $this->Collection->permit('user_id');
@@ -74,7 +72,8 @@ class ResourcesController extends AppController {
         # Make a new task to split the PDF.
         $this->Job->enqueue('split_pdf', array(
             'resource_id' => $id, 
-            'collection_id' => $this->Collection->id
+            'collection_id' => $this->Collection->id,
+            'type' => 'Notebook Page'
         ));
         $this->json(202);
     }
@@ -86,11 +85,11 @@ class ResourcesController extends AppController {
      */
     public function edit($id=null) {
         if (!($this->request->is('post') || $this->request->is('put'))) 
-            return $this->json(410);
+            throw new MethodNotAllowedException();
         $resource = $this->Resource->findById($id);
-        if (!$resource) return $this->json(404);
+        if (!$resource) throw new NotFoundException();
         if ($this->Resource->add($this->request->data)) return $this->json(200);
-        $this->json(500);
+        throw new InternalErrorException();
     }
 
     /**
@@ -146,18 +145,13 @@ class ResourcesController extends AppController {
      * @param string $id    resource id
      */
     public function view($id=null) {
-        # Bad method...
-        if (!$this->request->is('get')) return $this->json(405);
-        # No id...
-        if (!$id) return $this->json(400);
+        if (!$this->request->is('get')) throw new MethodNotAllowedException();
+        if (!$id) throw new BadRequestException();
         $resource = $this->Resource->findById($id);
-        # No resource...
-        if (!$resource) return $this->json(404);
+        if (!$resource) throw new NotFoundException();
         $public = $resource['Resource']['public'];
         $allowed = $public || $this->Auth->loggedIn();
-        # Not allowed...
-        if (!$allowed) return $this->json(403);
-        # Ok.
+        if (!$allowed) throw new ForbiddenException();
         $this->json(200, $resource);
     }
 
@@ -167,9 +161,9 @@ class ResourcesController extends AppController {
      * @param string $id    resource id
      */
     public function delete($id=null) {
-        if (!$this->request->is('delete')) return $this->json(405);
-        if (!$this->Auth->loggedIn()) return $this->json(401);
-        if (!$this->Resource->delete($id)) return $this->json(500);
+        if (!$this->request->is('delete')) throw new MethodNotAllowedException();
+        if (!$this->Auth->loggedIn()) throw new UnauthorizedException();
+        if (!$this->Resource->delete($id)) throw new InternalErrorException();
         $this->json(204);
     }
 
@@ -191,34 +185,59 @@ class ResourcesController extends AppController {
         }
 
         if ($this->request->data) {
-            # Get our datasource object ready to give to the Search class.
-            $dbo = $this->Resource->getDataSource('default');
-            $config = $dbo->config;
-
             # Instantiate our Search object with the db config and facets.
-            $search = new \Arcs\Search($config, $this->request->data);
-
-            # If not logged in, only public resources may be viewed.
-            if ($public) $search->public = true;
+            $searcher = $this->_getSearcher();
 
             # Get the result ids.
-            $ids = $search->results($limit, $offset);
-
-            # Return the results in HABTM format.
-            return $this->json(200, $this->Resource->find('all', array(
+            $response = $searcher->search($this->request->data, $limit, $offset);
+            $response['results'] = $this->Resource->find('all', array(
                 'conditions' => array(
-                    'Resource.id' => $ids
+                    'Resource.id' => $response['results']
                 ),
                 'order' => "Resource.$order DESC"
-            )));
+            ));
+            if (!$this->Access->isAdmin()) {
+                unset($response['raw_query']);
+                unset($response['mode']);
+            }
+            return $this->json(200, $response);
         }
+
         # No facets provided. Give them back some recent resources.
-        $this->json(200, $this->Resource->find('all', array(
+        $resources = $this->Resource->find('all', array(
             'conditions' => $public ? array('Resource.public' => 1) : null,
             'limit' => $limit,
             'offset' => $offset,
             'order' => "Resource.$order DESC"
-        )));
+        ));
+        $this->json(200, array(
+            'results' => $resources,
+            'num_results' => count($resources),
+            'limit' => $limit,
+            'offset' => $offset,
+            'total' => $this->Resource->find('count')
+        ));
+    }
+
+    /**
+     * Return an instance of a search class. SolrSearch if available, otherwise
+     * SqlSearch. This depends on the `arcs.ini` configuration file.
+     *
+     * @return object
+     */
+    private function _getSearcher() {
+        if (Configure::read('solr.uses')) {
+            require_once(LIB . 'Arcs' . DS . 'Solr.php');
+            return new \Arcs\SolrSearch(
+                Configure::read('solr.host'),
+                Configure::read('solr.port'),
+                Configure::read('solr.webapp')
+            );
+        }
+        require_once(LIB . 'Arcs' . DS . 'SqlSearch.php');
+        $dbo = $this->Resource->getDataSource('default');
+        $config = $dbo->config;
+        return new \Arcs\SqlSearch($config);
     }
 
     /**
@@ -230,7 +249,7 @@ class ResourcesController extends AppController {
      */
     public function download($id) {
         $resource = $this->Resource->findById($id);
-        if (!$resource) return $this->redirect('/404');
+        if (!$resource) throw new NotFoundException();
         $this->layout = false;
         Configure::write('debug', 0);
         $sha = $resource['sha'];
@@ -245,8 +264,10 @@ class ResourcesController extends AppController {
      * object containing a url to the zipfile.
      */
     public function zipped() {
+        # TODO: Look into streaming the zipfile, vs. making it and then providing
+        # the link...
         if (!($this->request->is('post') && $this->request->data))
-            return $this->json(400);
+            throw new BadRequestException();
         $ids = $this->request->data['resources'];
         $resources = $this->Resource->find('all', array(
             'conditions' => array(
@@ -269,28 +290,49 @@ class ResourcesController extends AppController {
 
     /**
      * Request a re-thumbnail of a resource's thumbnail image. This is handled
-     * through the Task Worker. We'll respond with a 202 status code if
+     * through the Job Worker. We'll respond with a 202 status code if
      * everything checks out.
      *
      * @param string $id   resource id
      */
     public function rethumb($id) {
-        if (!$this->request->is('post')) return $this->json(400);
-        if (!$this->Auth->loggedIn()) return $this->json(401);
+        if (!$this->request->is('post')) throw new BadRequestException();
+        if (!$this->Auth->loggedIn()) throw new UnauthorizedException();
         $resource = $this->Resource->findById($id);
-        if (!$resource) return $this->json(404);
+        if (!$resource) throw new NotFoundException();
         $this->Job->enqueue('thumb', array(
             'resource_id' => $resource['id']
         ));
         $this->json(202);
     }
 
+    /**
+     * Request that a resource's preview image be redone.
+     *
+     * @param string $id   resource id
+     */
     public function repreview($id) {
-        if (!$this->request->is('post')) return $this->json(400);
-        if (!$this->Auth->loggedIn()) return $this->json(401);
+        if (!$this->request->is('post')) throw new BadRequestException();
+        if (!$this->Auth->loggedIn()) throw new UnauthorizedException();
         $resource = $this->Resource->findById($id);
-        if (!$resource) return $this->json(404);
+        if (!$resource) throw new NotFoundException();
         $this->Job->enqueue('preview', array(
+            'resource_id' => $resource['id']
+        ));
+        $this->json(202);
+    }
+
+    /**
+     * Request that a resource by (re)indexed in SOLR.
+     *
+     * @param string $id   resource id
+     */
+    public function solr($id) {
+        if (!$this->request->is('post')) throw new BadRequestException();
+        if (!$this->Auth->loggedIn()) throw new UnauthorizedException();
+        $resource = $this->Resource->findById($id);
+        if (!$resource) throw new NotFoundException();
+        $this->Job->enqueue('solr_index', array(
             'resource_id' => $resource['id']
         ));
         $this->json(202);
@@ -302,18 +344,18 @@ class ResourcesController extends AppController {
      * @param string $id   resource id
      */
     public function metadata($id) {
-        if (!$this->Resource->findById($id)) return $this->json(404);
+        if (!$this->Resource->findById($id)) throw new NotFoundException();
         if ($this->request->is('post') && $this->request->data) {
             foreach ($this->request->data as $k => $v)
                 $this->Resource->Metadatum->store($id, $k, $v);
-            return $this->json(200);
+            return $this->json(201);
         }
         if ($this->request->is('get'))
             return $this->json(200, $this->Resource->Metadatum->find('all', array(
                 'conditions' => array(
                     'Metadatum.resource_id' => $id
             ))));
-        $this->json(400);
+        throw new BadRequestException();
     }
 
     /**
@@ -322,7 +364,7 @@ class ResourcesController extends AppController {
      * @param string $id    resource id
      */
     public function comments($id=null) {
-        if (!$this->request->is('get') || !$id) return $this->json(400);
+        if (!$this->request->is('get') || !$id) throw new BadRequestException();
         $this->json(200, $this->Resource->Comment->find('all',
             array('conditions' => array('Resource.id' => $id))
         ));
@@ -334,7 +376,7 @@ class ResourcesController extends AppController {
      * @param string $id    resource id
      */
     public function keywords($id=null) {
-        if (!$this->request->is('get') || !$id) return $this->json(400);
+        if (!$this->request->is('get') || !$id) throw new BadRequestException();
         $this->json(200, $this->Resource->Keyword->find('all',
             array('conditions' => array('Resource.id' => $id))
         ));
@@ -346,7 +388,7 @@ class ResourcesController extends AppController {
      * @param string $id    resource id
      */
     public function hotspots($id=null) {
-        if (!$this->request->is('get') || !$id) return $this->json(400);
+        if (!$this->request->is('get') || !$id) throw new BadRequestException();
         $this->json(200, $this->Resource->Hotspot->find('all',
             array('conditions' => array('Resource.id' => $id))
         ));
@@ -358,7 +400,7 @@ class ResourcesController extends AppController {
      * @param string $field   Resource field to complete.
      */
     public function complete($field=null) {
-        if (!$this->request->is('get') || !$field) return $this->json(400);
+        if (!$this->request->is('get') || !$id) throw new BadRequestException();
         switch ($field) {
             case 'title':
                 $values = $this->Resource->complete('Resource.title');

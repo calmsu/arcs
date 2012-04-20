@@ -18,8 +18,8 @@ class Membership extends AppModel {
      * Convenience method for connecting a resource to a collection
      * through a membership.
      *
-     * @param rid    resource id
-     * @param cid    collection id
+     * @param string $rid    resource id
+     * @param string $cid    collection id
      */
     public function pair($rid, $cid, $page=null) {
         if (!$page)
@@ -31,6 +31,35 @@ class Membership extends AppModel {
             'resource_id' => $rid,
             'collection_id' => $cid,
             'page' => $page
+        ));
+    }
+
+    /**
+     * Get the ids of collections to which the resource is a member.
+     *
+     * @param string $rid   resource id
+     */
+    public function memberships($rid) {
+        return $this->find('list', array(
+            'fields' => 'Membership.collection_id',
+            'conditions' => array(
+                'resource_id' => $rid
+            )
+        ));
+    }
+
+    /**
+     * Get the ids of member resources of a collection.
+     *
+     * @param string $cid   collection id
+     */
+    public function members($cid) {
+        return $this->find('list', array(
+            'fields' => 'Membership.resource_id',
+            'conditions' => array(
+                'collection_id' => $cid
+            ),
+            'order' => 'Membership.page'
         ));
     }
 }

@@ -8,10 +8,20 @@
  * @license    BSD License (http://www.opensource.org/licenses/bsd-license.php)
  */
 class Metadatum extends AppModel {
+
     public $name = 'Metadatum';
+
     public $belongsTo = array('Resource');
+
     public $whitelist = array('resource_id', 'attribute', 'value');
 
+    /**
+     * Store a piece of metadata for a resource.
+     *
+     * @param string $rid
+     * @param string $attr
+     * @param string $val
+     */
     public function store($rid, $attr, $val) {
         $existing = $this->find('first', array(
             'conditions' => array(

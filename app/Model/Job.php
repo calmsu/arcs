@@ -14,13 +14,19 @@ App::uses('Sanitize', 'Utility');
 class Job extends AppModel {
 
     public $name      = 'Job';
+
     public $flatten   = true;
+
     public $recursive = -1;
+
     public $whitelist = array(
         'name', 'data', 'status', 'locked_at', 'locked_by', 'error',
         'failed_at', 'attempts'
     );
 
+    /**
+     * Job statuses
+     */
     const        DONE = 0;
     const     PENDING = 1;
     const     FAILING = 2;
@@ -86,7 +92,7 @@ class Job extends AppModel {
             ", date('Y-m-d H:i:s'), $locked_by, $id, $locked_by));
 
         # Did we get it? (This seems necessary because the `query` method's 
-        # return is inconsistent across dbs. Maybe there's a better way?)
+        # return is inconsistent across DBs. Maybe there's a better way?)
         $maybe_locked = $this->findById($id);
         if ($maybe_locked['locked_by'] == $locked_by) return true;
         return false;
@@ -107,6 +113,7 @@ class Job extends AppModel {
     }
 
     /**
+     * Finish a job by deleting it from the queue.
      *
      * @param string $id
      */
@@ -115,6 +122,7 @@ class Job extends AppModel {
     }
 
     /**
+     * Return the number of attempts for a particular job.
      *
      * @param string $id
      * @param string $error
@@ -125,6 +133,7 @@ class Job extends AppModel {
     }
 
     /**
+     * Set the job's status to FAILING.
      *
      * @param string $id
      */
@@ -137,6 +146,9 @@ class Job extends AppModel {
     }
 
     /**
+     * Finish the job, but with error. This means we'll set the error field
+     * to the given error message, increment the attempts counter, and set
+     * the status to FAILED.
      *
      * @param string $id
      * @param string $error

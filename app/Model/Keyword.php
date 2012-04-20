@@ -12,6 +12,15 @@ class Keyword extends AppModel {
     public $belongsTo = array('User', 'Resource');
     public $whitelist = array('keyword', 'resource_id');
 
+    /**
+     * Given a string of comma-separated values, split the values and save each
+     * of them as keywords.
+     *
+     * @param string $string  Keyword string (e.g. "one, two, three")
+     * @param array $data     A template save array, that will be extended with
+     *                        each keyword. Use this to include `user_id`, etc.
+     * @return bool           Result of `saveMany`
+     */
     public function saveFromString($string, $data=array()) {
         $keywords = array();
         foreach(explode(',', $string) as $k) {

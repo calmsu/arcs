@@ -8,7 +8,9 @@
  * @license    BSD License (http://www.opensource.org/licenses/bsd-license.php)
  */
 class User extends AppModel {
+
     public $name = 'User';
+
     public $hasMany = array(
         'Resource', 
         'Keyword', 
@@ -17,9 +19,11 @@ class User extends AppModel {
         'Hotspot',
         'Collection'
     );
+
     public $whitelist = array(
         'name', 'email', 'username', 'password'
     );
+
     public $actsAs = array('Containable');
 
     /**
@@ -42,49 +46,16 @@ class User extends AppModel {
     }
 
     /**
-     * Return true if the given user is allowed to create Meta-resources
-     * for the given resource.
-     *
-     * @param user
-     * @param resource
-     */
-    function canMakeMeta($user, $resource) {
-        if (!$resource['Resource']['exclusive']) return true;
-        return false;
-    }
-
-    /** 
-     * Return true if the given user is allowed to resolve Flags for
-     * the given resource.
-     *
-     * @param user
-     * @param resource
-     */
-    function canResolveFlag($user, $resource) {
-        if ($user['User']['role'] <= 1) return true;
-        return false;
-    }
-
-    /**
      * (Try to) find a user given a reference, which may be the
      * id or username.
      *
-     * @param ref   id or username
+     * @param string ref   id or username
+     * @return array       user array
      */
     function findByRef($ref) {
         $user = $this->findById($ref);
         if (!$user) $user = $this->findByUsername($ref);
         return $user;
-    }
-
-    /**
-     * Return the id, as a string, of the user with the given name.
-     * If two users with the same name exist, you only get the first
-     * one.
-     */
-    function getIDbyName($name) {
-        $user = $this->findByName($name);
-        return $user['User']['name'];
     }
 
     /**
