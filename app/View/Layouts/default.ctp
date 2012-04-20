@@ -34,5 +34,13 @@
         </div>
         <?php if ($footer) echo $this->element('footer') ?>
         <?php if ($user['role'] == 0 && Configure::read('debug') == 2) echo $this->element('sql') ?> 
+        <script type="text/javascript">
+            var uvOptions = {};
+            (function() {
+                var uv = document.createElement('script'); uv.type = 'text/javascript'; uv.async = true;
+                uv.src = ('https:' == document.location.protocol ? 'https://' : 'http://') + 'widget.uservoice.com/B3bdw2BnP1GAnvQETNhAKA.js';
+                var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(uv, s);
+            })();
+        </script>
     </body>
 </html>
