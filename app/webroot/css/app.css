@@ -4131,6 +4131,9 @@ a.thumbnail:hover {
 .subtle {
   color: #444;
 }
+.subtle:hover {
+  color: #444;
+}
 .data {
   font-family: monospace;
   font-size: 90%;
@@ -4625,6 +4628,9 @@ footer#credits #quick-links ul li:last-child {
   display: none;
 }
 .subtle {
+  color: #444;
+}
+.subtle:hover {
   color: #444;
 }
 .data {
@@ -5390,7 +5396,7 @@ span.es-nav-prev {
   opacity: 1;
 }
 .comment-header {
-  width: 95%;
+  width: 85%;
   color: #444;
   padding: 3px 5px 3px 5px;
   border: 1px solid #aaa;
@@ -5404,6 +5410,9 @@ span.es-nav-prev {
   filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#dddddd', endColorstr='#bbbbbb');
   text-shadow: 0 1px 1px #ffffff;
   text-shadow: 0 1px 1px #ffffff;
+  position: relative;
+  left: 40px;
+  top: -45px;
 }
 .comment-header .name {
   font-weight: bold;
@@ -5411,13 +5420,22 @@ span.es-nav-prev {
 .comment-header .time {
   font-weight: bold;
 }
+.comment-voice {
+  width: 35px;
+  position: relative;
+  left: -10px;
+}
 .comment {
-  width: 95%;
+  width: 85%;
   padding: 5px;
   border: 1px solid #ccc;
   background-color: none;
   margin-bottom: 5px;
   border-top: none;
+  position: relative;
+  left: 40px;
+  top: -45px;
+  margin-bottom: -40px;
 }
 textarea#content {
   width: 95%;
@@ -5549,7 +5567,7 @@ textarea#content {
 .hotspot {
   position: absolute;
   background: #222;
-  border: 1px solid #000;
+  border: 2px dashed #000;
   opacity: 0.2;
   filter: alpha(opacity=20);
   filter: alpha(opacity=30);

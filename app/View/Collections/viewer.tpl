@@ -87,8 +87,10 @@
         <div id="comment-wrapper"></div>
         <br>
         {% if user.loggedIn %}
-        <textarea id="content" name="content"></textarea>
-        <button id="comment-btn" class="btn">Comment</button>
+        <div class="well">
+          <textarea id="content" name="content"></textarea>
+          <button id="comment-btn" class="btn">Comment</button>
+        </div>
         {% else %}
         {{ html.link('Login', '/login') }} to comment.
         {% endif %}
