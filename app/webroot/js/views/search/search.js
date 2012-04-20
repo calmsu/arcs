@@ -39,7 +39,8 @@
       if (!this.router.searched) this.search.run();
       this.search.results.on('remove', this.render, this);
       arcs.on('arcs:selection', this.afterSelection, this);
-      return arcs.keys.add('a', true, this.selectAll, this);
+      arcs.keys.add('a', true, this.selectAll, this);
+      return arcs.keys.add('t', false, this.scrollTop, this);
     };
 
     Search.prototype.events = {

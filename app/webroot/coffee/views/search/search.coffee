@@ -38,6 +38,7 @@ class arcs.views.search.Search extends Backbone.View
 
     # <ctrl>-a to select all
     arcs.keys.add 'a', true, @selectAll, @
+    arcs.keys.add 't', false, @scrollTop, @
 
   events:
     'click img'              : 'toggle'
