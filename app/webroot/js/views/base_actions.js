@@ -89,6 +89,12 @@
       });
     };
 
+    BaseActions.prototype.indexResource = function(resource) {
+      return $.post(arcs.baseURL + 'resources/solr/' + resource.id, function() {
+        return arcs.notify('Resource successfully queued for SOLR index.');
+      });
+    };
+
     return BaseActions;
 
   })(Backbone.View);

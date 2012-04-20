@@ -36,6 +36,7 @@ class arcs.views.search.Actions extends arcs.views.BaseActions
     'click #rethumb-btn'     : 'rethumbSelected'
     'click #split-btn'       : 'splitSelected'
     'click #access-btn'      : 'setAccessForSelected'
+    'click #solr-btn'        : 'indexSelected'
 
   # Delete the selected results, by calling Resource.destroy() on each model.
   deleteSelected: ->
@@ -285,6 +286,9 @@ class arcs.views.search.Actions extends arcs.views.BaseActions
               result.set 'access', vals.access.toLowerCase()
               result.save()
         cancel: ->
+
+  indexSelected: ->
+    @indexResource(result) for result in @results.selected()
 
   # Displays a success notification given a past-tense verb.
   # We have a lot of "12 resources were tagged"-style notifications. This 

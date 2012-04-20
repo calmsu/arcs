@@ -70,3 +70,7 @@ class arcs.views.BaseActions extends Backbone.View
   rethumbResource: (resource) ->
     $.post arcs.baseURL + 'resources/rethumb/' + resource.id, ->
       arcs.notify 'Resource successfully queued for re-thumbnail.'
+
+  indexResource: (resource) ->
+    $.post arcs.baseURL + 'resources/solr/' + resource.id, ->
+      arcs.notify 'Resource successfully queued for SOLR index.'

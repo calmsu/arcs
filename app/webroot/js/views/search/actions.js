@@ -45,7 +45,8 @@
       'click #zipped-btn': 'zippedDownloadSelected',
       'click #rethumb-btn': 'rethumbSelected',
       'click #split-btn': 'splitSelected',
-      'click #access-btn': 'setAccessForSelected'
+      'click #access-btn': 'setAccessForSelected',
+      'click #solr-btn': 'indexSelected'
     };
 
     Actions.prototype.deleteSelected = function() {
@@ -413,6 +414,17 @@
           cancel: function() {}
         }
       });
+    };
+
+    Actions.prototype.indexSelected = function() {
+      var result, _i, _len, _ref, _results;
+      _ref = this.results.selected();
+      _results = [];
+      for (_i = 0, _len = _ref.length; _i < _len; _i++) {
+        result = _ref[_i];
+        _results.push(this.indexResource(result));
+      }
+      return _results;
     };
 
     Actions.prototype._notify = function(verb, n) {
