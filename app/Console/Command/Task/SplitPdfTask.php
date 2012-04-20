@@ -1,6 +1,6 @@
 <?php
 
-include_once(LIB . 'relic' . DS . 'library' . DS . 'PDF.php');
+include_once(LIB . 'Relic' . DS . 'Library' . DS . 'PDF.php');
 
 class SplitPdfTask extends AppShell {
     public $uses = array('Resource', 'Membership');
@@ -44,6 +44,7 @@ class SplitPdfTask extends AppShell {
                 'file_name' => $fname,
                 'file_size' => $this->Resource->size($sha, $fname),
                 'mime_type' => 'image/jpeg',
+                'type' => isset($data['type']) ? $data['type'] : null,
                 'user_id' => $resource['user_id']
             ));
 
