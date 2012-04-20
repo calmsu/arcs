@@ -75,6 +75,11 @@
       return _results;
     };
 
+    ResultSet.prototype.parse = function(response) {
+      this.metadata = response;
+      return response.results;
+    };
+
     return ResultSet;
 
   })(Backbone.Collection);

@@ -53,3 +53,7 @@ class arcs.collections.ResultSet extends Backbone.Collection
       model = @get(id)
       continue unless model
       model.set 'selected', func(model)
+
+  parse: (response) ->
+    @metadata = response
+    response.results
