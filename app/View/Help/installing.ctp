@@ -63,5 +63,20 @@ $ chown www-data uploads
 <pre><code>$ vi app/Config/arcs.ini
 </code></pre>
 <h3>SOLR</h3>
+<p>Install OpenJDK 6 and the solr-jetty package. The solr-jetty package includes 
+SOLR and the Java servlet container, Jetty.</p>
 <pre><code>sudo apt-get install openjdk-6-jdk solr-jetty
 </code></pre>
+<p>We've provided a base configuration for jetty. Copy it to, or edit the values in
+<code>/etc/default/jetty</code>.</p>
+<pre><code>sudo cp conf/solr/jetty /etc/default/jetty
+</code></pre>
+<p>Next, copy over the SOLR schema and configuration.</p>
+<pre><code>sudo cp conf/solr/schema.xml /etc/solr/conf/
+sudo cp conf/solr/solrconfig.xml /etc/solr/conf/
+</code></pre>
+<p>Start the servlet container.</p>
+<pre><code>sudo /etc/init.d/jetty start
+</code></pre>
+<p>Jetty should now be available at <a href="http://localhost:8983">http://localhost:8983</a> and SOLR at 
+<a href="http://localhost:8983/solr/admin/">http://localhost:8983/solr/admin/</a> (if you're running it locally).</p>

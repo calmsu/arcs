@@ -77,4 +77,24 @@ Configure ARCS (set uploads path and url).
 
 ### SOLR ###
 
+Install OpenJDK 6 and the solr-jetty package. The solr-jetty package includes 
+SOLR and the Java servlet container, Jetty.
+
     sudo apt-get install openjdk-6-jdk solr-jetty
+
+We've provided a base configuration for jetty. Copy it to, or edit the values in
+`/etc/default/jetty`.
+
+    sudo cp conf/solr/jetty /etc/default/jetty
+
+Next, copy over the SOLR schema and configuration.
+    
+    sudo cp conf/solr/schema.xml /etc/solr/conf/
+    sudo cp conf/solr/solrconfig.xml /etc/solr/conf/
+
+Start the servlet container.
+
+    sudo /etc/init.d/jetty start
+
+Jetty should now be available at <http://localhost:8983> and SOLR at 
+<http://localhost:8983/solr/admin/> (if you're running it locally).
