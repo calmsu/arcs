@@ -72,6 +72,6 @@ class AppController extends Controller {
         $this->autoRender = false;
         $this->response->statusCode($status);
         $this->RequestHandler->respondAs('json');
-        $this->response->body(json_encode((array)$data));
+        $this->response->body(json_encode((array)$data, JSON_NUMERIC_CHECK));
     }
 }
