@@ -4254,8 +4254,6 @@ input[type="password"],
 select,
 textarea {
   border: 1px solid #888;
-  text-shadow: 0 1px 1px #ffffff;
-  text-shadow: 0 1px 1px #ffffff;
   border-radius: 0px !important;
   -webkit-border-radius: 0px !important;
   -moz-border-radius: 0px !important;
@@ -4578,6 +4576,10 @@ footer#credits #quick-links ul li:last-child {
 .well-nav {
   border: 1px solid #cdcdcd;
   background-color: #ddd;
+}
+.well-nav span {
+  float: left;
+  margin-right: 20px;
 }
 .context-menu {
   background: #f8f8f8;
@@ -4969,7 +4971,7 @@ div#toolbar h1#logo {
   text-shadow: 0 1px 1px #fff;
   padding-left: 45px;
   padding-bottom: 5px;
-  color: #555;
+  color: #444;
   background: no-repeat top left url('img/arcs-icon.png');
   background-position: 10px 0px;
   margin-top: 2px;
