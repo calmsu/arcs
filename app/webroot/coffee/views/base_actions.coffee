@@ -27,22 +27,21 @@ class arcs.views.BaseActions extends Backbone.View
       explanation: explanation
     flag.save()
 
-  # POSTs edited metadata for the resource.
-  editResource: (resource, metadata) ->
-    for key, value of metadata
-      if key in ['type', 'title', 'access']
+  # Applies form values to resource and its metadata, performs a comparison,
+  # and syncs any changes to the server.
+  editResource: (resource, attributes) ->
+    metadata = resource.get 'metadata'
+    _resource = _.clone resource.attributes
+    _metadata = _.clone metadata.attributes
+    for key, value of attributes
+      if key in _.keys resource.attributes
         resource.set key, value
-        needs_save = true
-        delete metadata[key]
-    resource.save() if needs_save?
-    resource.set 'metadata', _.extend resource.get('metadata'), metadata
-    resource.trigger 'change'
-    $.ajax
-      url: arcs.baseURL + 'resources/metadata/' + resource.id
-      type: 'POST'
-      contentType: 'application/json'
-      dataType: 'json'
-      data: JSON.stringify metadata
+      else if metadata.get(key) or value
+        metadata.set key, value
+    resource.save() unless _.isEqual(resource.attributes, _resource)
+    unless _.isEqual(metadata.attributes, _metadata)
+      metadata.save()
+      resource.trigger 'change'
 
   # Create a new Bookmark, given a resource and optionally a note string.
   bookmarkResource: (resource, note) ->

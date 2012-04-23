@@ -91,7 +91,6 @@ class arcs.views.ViewerActions extends arcs.views.BaseActions
         cancel: ->
 
   edit: ->
-    metadata = arcs.resource.get 'metadata'
     inputs = 
       title: value: @viewer.model.get 'title'
       type: 
@@ -102,7 +101,7 @@ class arcs.views.ViewerActions extends arcs.views.BaseActions
     metadata = @viewer.model.get 'metadata'
     fields = arcs.config.metadata
     for field, help of fields
-      inputs[field] = value: metadata[field] ? ''
+      inputs[field] = value: metadata.get(field) ? ''
 
     new arcs.views.Modal
       title: 'Edit Info'
@@ -113,7 +112,6 @@ class arcs.views.ViewerActions extends arcs.views.BaseActions
         save: 
           class: 'btn btn-success'
           callback: (values) =>
-            return if _.isEqual metadata, values
             @editResource @viewer.model, values
         cancel: ->
 

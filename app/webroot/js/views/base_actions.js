@@ -1,6 +1,7 @@
 (function() {
   var __hasProp = Object.prototype.hasOwnProperty,
-    __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor; child.__super__ = parent.prototype; return child; };
+    __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor; child.__super__ = parent.prototype; return child; },
+    __indexOf = Array.prototype.indexOf || function(item) { for (var i = 0, l = this.length; i < l; i++) { if (i in this && this[i] === item) return i; } return -1; };
 
   arcs.views.BaseActions = (function(_super) {
 
@@ -35,26 +36,24 @@
       return flag.save();
     };
 
-    BaseActions.prototype.editResource = function(resource, metadata) {
-      var key, needs_save, value;
-      for (key in metadata) {
-        value = metadata[key];
-        if (key === 'type' || key === 'title' || key === 'access') {
+    BaseActions.prototype.editResource = function(resource, attributes) {
+      var key, metadata, value, _metadata, _resource;
+      metadata = resource.get('metadata');
+      _resource = _.clone(resource.attributes);
+      _metadata = _.clone(metadata.attributes);
+      for (key in attributes) {
+        value = attributes[key];
+        if (__indexOf.call(_.keys(resource.attributes), key) >= 0) {
           resource.set(key, value);
-          needs_save = true;
-          delete metadata[key];
+        } else if (metadata.get(key) || value) {
+          metadata.set(key, value);
         }
       }
-      if (needs_save != null) resource.save();
-      resource.set('metadata', _.extend(resource.get('metadata'), metadata));
-      resource.trigger('change');
-      return $.ajax({
-        url: arcs.baseURL + 'resources/metadata/' + resource.id,
-        type: 'POST',
-        contentType: 'application/json',
-        dataType: 'json',
-        data: JSON.stringify(metadata)
-      });
+      if (!_.isEqual(resource.attributes, _resource)) resource.save();
+      if (!_.isEqual(metadata.attributes, _metadata)) {
+        metadata.save();
+        return resource.trigger('change');
+      }
     };
 
     BaseActions.prototype.bookmarkResource = function(resource, note) {

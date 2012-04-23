@@ -10,3 +10,7 @@ _.mixin
     result = {}
     result[v] = k for k, v of object
     result
+
+  # Returns true if all elements of the array are identical.
+  twins: (array) ->
+    _.uniq(array).length == 1

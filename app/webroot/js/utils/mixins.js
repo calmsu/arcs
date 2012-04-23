@@ -12,6 +12,9 @@
         result[v] = k;
       }
       return result;
+    },
+    twins: function(array) {
+      return _.uniq(array).length === 1;
     }
   });
 

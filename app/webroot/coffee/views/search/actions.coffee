@@ -127,7 +127,7 @@ class arcs.views.search.Actions extends arcs.views.BaseActions
     metadata = result.get 'metadata'
     fields = arcs.config.metadata
     for field, help of fields
-      inputs[field] = value: metadata[field] ? ''
+      inputs[field] = value: metadata.get(field) ? ''
 
     new arcs.views.Modal
       title: 'Edit Info'
@@ -138,7 +138,6 @@ class arcs.views.search.Actions extends arcs.views.BaseActions
         save: 
           class: 'btn btn-success'
           callback: (values) =>
-            return if _.isEqual metadata, values
             @editResource result, values
         cancel: ->
 
@@ -149,22 +148,22 @@ class arcs.views.search.Actions extends arcs.views.BaseActions
   batchEditSelected: ->
     # First we need to build the inputs and find any shared values.
     results = @results.selected()
-    inputs = {}
-    # We'll maintain an object of the original fields for diffing later.
-    _original = {}
-    batchFields = arcs.config.metadata
-    for field, help of batchFields
+    types = _.map results, (r) -> r.get 'type'
+    inputs = 
+      type: 
+        type: 'select'
+        options: _.keys arcs.config.types
+        value: if _.twins(types) then results[0].get('type') else ''
+        checkbox: _.twins(types) and results[0].get('type')
+
+    for field, help of arcs.config.metadata
       continue if field in arcs.config.metadataSingular
-      values = _.map results, (r) ->
-        r.get('metadata')[field]
-      [checked, value] = [false, '']
-      if _.unique(values).length == 1 and values[0]
-        checked = true
-        value = values[0]
+      values = _.map results, (r) -> r.get('metadata').get(field)
+      checked = _.twins(values) and values[0]
+      value = if _.twins(values) and values[0] then values[0]
       inputs[field] =
-        checkbox: checked
+        checkbox: !!checked
         value: value ? ''
-      _original[field] = value ? ''
 
     # Make a new modal, using the columned template. Pass in our generated
     # inputs.
@@ -177,13 +176,9 @@ class arcs.views.search.Actions extends arcs.views.BaseActions
       buttons:
         save: 
           class: 'btn btn-success'
-          callback: (metadata) =>
-            changed = false
-            for k, v of metadata
-              changed = true if _original[k] != v
-            return unless changed
+          callback: (values) =>
             for r in @results.selected()
-              @editResource r, metadata
+              @editResource r, values
         cancel: ->
 
   # Create a named collection from the selected results.
@@ -270,6 +265,11 @@ class arcs.views.search.Actions extends arcs.views.BaseActions
 
   setAccessForSelected: ->
     n = @results.numSelected()
+    settings = _.map @results.selected(), (r) -> r.get 'public'
+    if not _.twins(settings)
+      value = ''
+    else
+      value = if settings[0] then 'Public' else 'Private'
     new arcs.views.Modal
       title: 'Set Access'
       subtitle: "<b>Private</b> resources may only be viewed by ARCS users. " +
@@ -277,13 +277,15 @@ class arcs.views.search.Actions extends arcs.views.BaseActions
       inputs:
         access:
           type: 'select'
-          options: ['Public', 'Private']
+          options: ['', 'Public', 'Private']
+          value: value
       buttons:
         save: 
           class: 'btn btn-success'
           callback: (vals) =>
+            return unless vals.access
             for result in @results.selected()
-              result.set 'access', vals.access.toLowerCase()
+              result.set 'public', vals.access == 'Public'
               result.save()
         cancel: ->
 

@@ -189,7 +189,7 @@
       for (field in fields) {
         help = fields[field];
         inputs[field] = {
-          value: (_ref = metadata[field]) != null ? _ref : ''
+          value: (_ref = metadata.get(field)) != null ? _ref : ''
         };
       }
       return new arcs.views.Modal({
@@ -201,7 +201,6 @@
           save: {
             "class": 'btn btn-success',
             callback: function(values) {
-              if (_.isEqual(metadata, values)) return;
               return _this.editResource(result, values);
             }
           },
@@ -211,28 +210,33 @@
     };
 
     Actions.prototype.batchEditSelected = function() {
-      var batchFields, checked, field, help, inputs, results, value, values, _original, _ref,
+      var checked, field, help, inputs, results, types, value, values, _ref,
         _this = this;
       results = this.results.selected();
-      inputs = {};
-      _original = {};
-      batchFields = arcs.config.metadata;
-      for (field in batchFields) {
-        help = batchFields[field];
+      types = _.map(results, function(r) {
+        return r.get('type');
+      });
+      inputs = {
+        type: {
+          type: 'select',
+          options: _.keys(arcs.config.types),
+          value: _.twins(types) ? results[0].get('type') : '',
+          checkbox: _.twins(types) && results[0].get('type')
+        }
+      };
+      _ref = arcs.config.metadata;
+      for (field in _ref) {
+        help = _ref[field];
         if (__indexOf.call(arcs.config.metadataSingular, field) >= 0) continue;
         values = _.map(results, function(r) {
-          return r.get('metadata')[field];
+          return r.get('metadata').get(field);
         });
-        _ref = [false, ''], checked = _ref[0], value = _ref[1];
-        if (_.unique(values).length === 1 && values[0]) {
-          checked = true;
-          value = values[0];
-        }
+        checked = _.twins(values) && values[0];
+        value = _.twins(values) && values[0] ? values[0] : void 0;
         inputs[field] = {
-          checkbox: checked,
+          checkbox: !!checked,
           value: value != null ? value : ''
         };
-        _original[field] = value != null ? value : '';
       }
       return new arcs.views.BatchEditModal({
         title: 'Edit Info (Multiple)',
@@ -242,19 +246,13 @@
         buttons: {
           save: {
             "class": 'btn btn-success',
-            callback: function(metadata) {
-              var changed, k, r, v, _i, _len, _ref2, _results;
-              changed = false;
-              for (k in metadata) {
-                v = metadata[k];
-                if (_original[k] !== v) changed = true;
-              }
-              if (!changed) return;
+            callback: function(values) {
+              var r, _i, _len, _ref2, _results;
               _ref2 = _this.results.selected();
               _results = [];
               for (_i = 0, _len = _ref2.length; _i < _len; _i++) {
                 r = _ref2[_i];
-                _results.push(_this.editResource(r, metadata));
+                _results.push(_this.editResource(r, values));
               }
               return _results;
             }
@@ -384,16 +382,25 @@
     };
 
     Actions.prototype.setAccessForSelected = function() {
-      var n,
+      var n, settings, value,
         _this = this;
       n = this.results.numSelected();
+      settings = _.map(this.results.selected(), function(r) {
+        return r.get('public');
+      });
+      if (!_.twins(settings)) {
+        value = '';
+      } else {
+        value = settings[0] ? 'Public' : 'Private';
+      }
       return new arcs.views.Modal({
         title: 'Set Access',
         subtitle: "<b>Private</b> resources may only be viewed by ARCS users. " + "<b>Public</b> resources may be viewed by the general public.",
         inputs: {
           access: {
             type: 'select',
-            options: ['Public', 'Private']
+            options: ['', 'Public', 'Private'],
+            value: value
           }
         },
         buttons: {
@@ -401,11 +408,12 @@
             "class": 'btn btn-success',
             callback: function(vals) {
               var result, _i, _len, _ref, _results;
+              if (!vals.access) return;
               _ref = _this.results.selected();
               _results = [];
               for (_i = 0, _len = _ref.length; _i < _len; _i++) {
                 result = _ref[_i];
-                result.set('access', vals.access.toLowerCase());
+                result.set('public', vals.access === 'Public');
                 _results.push(result.save());
               }
               return _results;

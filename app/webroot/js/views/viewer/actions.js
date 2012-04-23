@@ -129,7 +129,6 @@
     ViewerActions.prototype.edit = function() {
       var field, fields, help, inputs, metadata, _ref,
         _this = this;
-      metadata = arcs.resource.get('metadata');
       inputs = {
         title: {
           value: this.viewer.model.get('title')
@@ -145,7 +144,7 @@
       for (field in fields) {
         help = fields[field];
         inputs[field] = {
-          value: (_ref = metadata[field]) != null ? _ref : ''
+          value: (_ref = metadata.get(field)) != null ? _ref : ''
         };
       }
       return new arcs.views.Modal({
@@ -157,7 +156,6 @@
           save: {
             "class": 'btn btn-success',
             callback: function(values) {
-              if (_.isEqual(metadata, values)) return;
               return _this.editResource(_this.viewer.model, values);
             }
           },
