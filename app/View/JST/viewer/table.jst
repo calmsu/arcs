@@ -3,8 +3,8 @@
   <td><%- title %></td>
 </tr>
 <tr>
-  <td>Public</td>
-  <td><%= public ? "Yes" : "No" %></td>
+  <td>Access</td>
+  <td><%= public ? "public" : "private" %></td>
 </tr>
 <tr>
   <td>Type</td>
@@ -21,10 +21,14 @@
 </tr>
 <% } %>
 <tr>
-  <td>Download Link</td>
+  <td>File-name</td>
   <td><a href="<%= url %>"><%= file_name %></a></td>
 </tr>
-<% _.each(metadata, function(v, k) { %>
+<tr>
+  <td>File-type</td>
+  <td><a href="<%= url %>"><%= mime_type %></a></td>
+</tr>
+<% _.each(metadata.attributes, function(v, k) { %>
 <% if (v) { %>
 <tr>
   <td><%- k.charAt(0).toUpperCase() + k.substr(1) %></td>
