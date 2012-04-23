@@ -86,6 +86,9 @@ class arcs.views.admin.Users extends Backbone.View
       inputs:
         email: 
           focused: true
+        role:
+          type: 'select'
+          options: @USER_ROLES
       buttons:
         send:
           class: 'btn btn-success'
@@ -96,6 +99,8 @@ class arcs.views.admin.Users extends Backbone.View
               contentType: 'application/json'
               dataType: 'json'
               data: JSON.stringify vals
+              success: => 
+                @collection.add vals
         cancel: ->
 
   render: ->

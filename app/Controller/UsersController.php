@@ -111,13 +111,14 @@ class UsersController extends AppController {
         if (!$this->Access->isAdmin()) throw new ForbiddenException();
         if (!$this->request->is('post')) throw new MethodNotAllowedException();
         $data = $this->request->data;
-        if (!($data && $data['email'])) 
+        if (!($data && $data['email'] && $data['role'])) 
             throw new BadRequestException();
         App::uses('String', 'Utility');
         $token = String::uuid();
-        $this->User->permit('activation');
+        $this->User->permit('activation', 'role');
         $this->User->add(array(
             'email' => $data['email'],
+            'role' => $data['role'],
             'activation' => $token
         ));
         $this->Job->enqueue('email', array(
@@ -128,6 +129,7 @@ class UsersController extends AppController {
                 'activation' => $this->baseURL() . '/register/' . $token
             )
         ));
+        $this->json(202);
     }
 
     public function register($activation) {

@@ -128,6 +128,10 @@
         inputs: {
           email: {
             focused: true
+          },
+          role: {
+            type: 'select',
+            options: this.USER_ROLES
           }
         },
         buttons: {
@@ -139,7 +143,10 @@
                 type: 'POST',
                 contentType: 'application/json',
                 dataType: 'json',
-                data: JSON.stringify(vals)
+                data: JSON.stringify(vals),
+                success: function() {
+                  return _this.collection.add(vals);
+                }
               });
             }
           },
