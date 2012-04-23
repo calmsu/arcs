@@ -11,7 +11,7 @@ App::uses('Controller', 'Controller');
 class AppController extends Controller {
     public $helpers = array('Html', 'Form', 'Session', 'Assets');
     public $viewClass = 'TwigView.Twig';
-
+    public $uses = array('Job');
     public $components = array(
         'Auth' => array(
             'authenticate' => array('Form'),
@@ -55,6 +55,10 @@ class AppController extends Controller {
         foreach($checks as $check)
             if (!$this->request->is($check)) return false;
         return true;
+    }
+
+    public function baseURL() {
+        return 'http://' . $_SERVER['HTTP_HOST'] . $this->base;
     }
 
     /**

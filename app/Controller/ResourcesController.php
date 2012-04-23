@@ -345,7 +345,9 @@ class ResourcesController extends AppController {
      */
     public function metadata($id) {
         if (!$this->Resource->findById($id)) throw new NotFoundException();
-        if ($this->request->is('post') && $this->request->data) {
+        if (($this->request->is('post') || $this->request->is('put')) && 
+            $this->request->data) 
+        {
             foreach ($this->request->data as $k => $v)
                 $this->Resource->Metadatum->store($id, $k, $v);
             return $this->json(201);

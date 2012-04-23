@@ -40,8 +40,8 @@
     );
 
     # Signup
-    Router::connect('/signup', 
-        array('controller' => 'users', 'action' => 'signup')
+    Router::connect('/register/*', 
+        array('controller' => 'users', 'action' => 'register')
     );
 
     # Login/logout
