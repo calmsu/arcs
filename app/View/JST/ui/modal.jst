@@ -27,7 +27,7 @@
     </select>
   <% } else if (i.type === 'textarea') { %>
     <textarea class="<%= i.class %>" id="modal-<%= name %>-input"
-      name="modal-<%= name %>" <%= i.focused ? 'autofocus' : '' %>></textarea>
+      name="modal-<%= name %>" <%= i.focused ? 'autofocus' : '' %>><%= i.value || '' %></textarea>
   <% } else { %>
     <input type="<%= i.type ? i.type : 'text' %>" class="<%= i.class %>"
       id="modal-<%= name %>-input" value="<%= i.value %>"

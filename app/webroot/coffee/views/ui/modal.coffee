@@ -80,6 +80,7 @@ class arcs.views.Modal extends Backbone.View
   initialize: ->
     # Delete any existing modal and make a new one. (Don't resuse.)
     $('#modal').remove()
+    $('.modal-backdrop').remove()
     $('body').append arcs.tmpl 'ui/modal_wrapper'
     @el = @$el = $('#modal')
 
