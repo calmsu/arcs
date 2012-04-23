@@ -33,6 +33,7 @@
     };
 
     ContextMenu.prototype.show = function(e) {
+      this.hide();
       this.menu.css({
         position: 'absolute',
         top: e.pageY + 'px',

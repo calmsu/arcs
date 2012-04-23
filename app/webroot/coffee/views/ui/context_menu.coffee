@@ -25,6 +25,9 @@ class arcs.views.ContextMenu extends Backbone.View
     @addEvents()
 
   show: (e) ->
+    # Hide if already open.
+    @hide()
+
     @menu.css
       position: 'absolute'
       top: e.pageY + 'px'
