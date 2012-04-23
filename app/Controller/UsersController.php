@@ -12,7 +12,7 @@ class UsersController extends AppController {
 
     public function beforeFilter() {
         parent::beforeFilter();
-        $this->Auth->allow('signup', 'login', 'reset_password');
+        $this->Auth->allow('signup', 'login', 'register', 'reset_password');
         $this->User->flatten = true;
         $this->User->recursive = -1;
     }
@@ -39,31 +39,6 @@ class UsersController extends AppController {
             $this->User->permit('role');
         if (!$this->User->add($this->request->data)) return $this->json(400);
         $this->json(201, $this->User->findById($this->User->id));
-    }
-
-    /**
-     * User signup.
-     */
-    public function signup() {
-        if ($this->Auth->loggedIn()) {
-            $this->Session->setFlash("You can't signup while logged in.", 
-                                     'flash_error');
-            $this->redirect('/');
-        }
-        if ($this->request->is('post') && $this->data) {
-            # Save the new user.
-            if ($this->User->save($this->data)) {
-                # Log them in after signup.
-                $id = $this->User->id;
-                $this->request->data['User'] = array_merge(
-                    $this->request->data["User"], 
-                    array('id' => $id)
-                );
-                $this->Auth->login($this->request->data['User']);
-                # Redirect home.
-                $this->redirect('/');
-            }
-        }
     }
 
     /**
@@ -130,9 +105,53 @@ class UsersController extends AppController {
     }
 
     /**
-     * Reset the user's password.
+     * Send an invite email and set up a skeleton account.
      */
-    public function reset_password() {
+    public function invite() {
+        if (!$this->Access->isAdmin()) throw new ForbiddenException();
+        if (!$this->request->is('post')) throw new MethodNotAllowedException();
+        $data = $this->request->data;
+        if (!($data && $data['email'])) 
+            throw new BadRequestException();
+        App::uses('String', 'Utility');
+        $token = String::uuid();
+        $this->User->permit('activation');
+        $this->User->add(array(
+            'email' => $data['email'],
+            'activation' => $token
+        ));
+        $this->Job->enqueue('email', array(
+            'to' => $data['email'],
+            'subject' => 'Welcome to ARCS',
+            'template' => 'welcome',
+            'vars' => array(
+                'activation' => $this->baseURL() . '/register/' . $token
+            )
+        ));
+    }
+
+    public function register($activation) {
+        if (!$activation) throw new BadRequestException();
+        $user = $this->User->findByActivation($activation);
+        if (!$user) throw new NotFoundException();
+        if ($this->request->is('post')) {
+            $this->User->read(null, $user['id']);
+            $this->User->set(array(
+                'password' => $this->request->data['User']['password'],
+                'username' => $this->request->data['User']['username'],
+                'name' => $this->request->data['User']['name'],
+                'activation' => null
+            ));
+            $this->User->save();
+            $user = array_merge($user, $this->request->data['User']);
+            $this->Auth->login($user);
+            $this->redirect('/');
+        } else {
+            $this->set(array(
+                'email' => $user['email'],
+                'gravatar' => $user['gravatar']
+            ));
+        }
     }
 
     /**
@@ -175,5 +194,11 @@ class UsersController extends AppController {
     public function complete() {
         if (!$this->request->is('get')) return $this->json(405);
         return $this->json(200, $this->User->complete('User.name'));
+    }
+
+    public function email_test() {
+        $this->autoRender = false;
+        $email = new CakeEmail('default');
+        $email->to('ndreynolds@gmail.com')->subject('Hello')->send('Hi Nick.');
     }
 }

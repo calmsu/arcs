@@ -86,11 +86,16 @@ class arcs.views.admin.Users extends Backbone.View
       inputs:
         email: 
           focused: true
-        message: 
-          type: 'textarea'
       buttons:
         send:
           class: 'btn btn-success'
+          callback: (vals) =>
+            $.ajax
+              url: arcs.baseURL + 'users/invite'
+              type: 'POST'
+              contentType: 'application/json'
+              dataType: 'json'
+              data: JSON.stringify vals
         cancel: ->
 
   render: ->

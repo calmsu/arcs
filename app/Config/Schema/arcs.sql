@@ -70,6 +70,7 @@ CREATE TABLE IF NOT EXISTS users (
     username VARCHAR(100),
     password VARCHAR(100),
     role INT(1),
+    activation CHAR(36),
     created DATETIME DEFAULT NULL,
     modified DATETIME DEFAULT NULL
 );

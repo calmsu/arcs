@@ -121,20 +121,27 @@
     };
 
     Users.prototype.sendInvite = function() {
+      var _this = this;
       return new arcs.views.Modal({
         title: 'Invite someone to ARCS',
         subtitle: "Provide an email address and an optional message, and we'll" + " send them a link that will allow them to create an account.",
         inputs: {
           email: {
             focused: true
-          },
-          message: {
-            type: 'textarea'
           }
         },
         buttons: {
           send: {
-            "class": 'btn btn-success'
+            "class": 'btn btn-success',
+            callback: function(vals) {
+              return $.ajax({
+                url: arcs.baseURL + 'users/invite',
+                type: 'POST',
+                contentType: 'application/json',
+                dataType: 'json',
+                data: JSON.stringify(vals)
+              });
+            }
           },
           cancel: function() {}
         }
