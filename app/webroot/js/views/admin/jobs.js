@@ -40,7 +40,14 @@
       'change #auto-update': 'setUpdate',
       'click #retry-btn': 'retryJob',
       'click #delete-btn': 'deleteJob',
-      'click #release-btn': 'releaseJob'
+      'click #release-btn': 'releaseJob',
+      'click #show-btn': 'showJob'
+    };
+
+    Jobs.prototype.showJob = function(e) {
+      var job;
+      job = this.collection.get($(e.currentTarget).data('id'));
+      return arcs.prompt("Job " + job.id, arcs.tmpl('admin/show_job', job.toJSON()));
     };
 
     Jobs.prototype.retryJob = function(e) {

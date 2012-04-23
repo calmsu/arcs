@@ -36,6 +36,8 @@
     <td class="data"><%= arcs.inflector.truncate(j.data, 50) %></td>
     <td class="data"><%= arcs.inflector.truncate(j.error, 50) %></td>
     <td>
+      <button id="show-btn" class="btn btn-mini"
+        data-id="<%= j.id %>">Show</button>
       <button id="retry-btn" class="btn btn-mini"
         data-id="<%= j.id %>">Retry</button>
       <button id="release-btn" class="btn btn-mini"

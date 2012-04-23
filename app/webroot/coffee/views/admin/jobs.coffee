@@ -30,6 +30,12 @@ class arcs.views.admin.Jobs extends Backbone.View
     'click #retry-btn'   : 'retryJob'
     'click #delete-btn'  : 'deleteJob'
     'click #release-btn' : 'releaseJob'
+    'click #show-btn'    : 'showJob'
+
+  showJob: (e) ->
+    job = @collection.get $(e.currentTarget).data('id')
+    arcs.prompt "Job #{job.id}",
+      arcs.tmpl 'admin/show_job', job.toJSON()
 
   retryJob: (e) ->
     job = @collection.get $(e.currentTarget).data('id')
