@@ -35,7 +35,7 @@
       comment.save();
       comment.set({
         name: 'You',
-        created: 'just now'
+        created: new Date
       });
       return this.collection.add(comment);
     };

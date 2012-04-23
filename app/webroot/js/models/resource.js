@@ -7,15 +7,12 @@
     __extends(Resource, _super);
 
     Resource.prototype.defaults = {
-      id: null,
       title: '',
       keywords: [],
       hotspots: [],
       comments: [],
       metadata: {},
       mime_type: "unknown",
-      modified: null,
-      created: null,
       page: 0,
       preview: false,
       public: false,
@@ -31,10 +28,6 @@
     };
 
     Resource.prototype.urlRoot = arcs.baseURL + 'resources';
-
-    Resource.prototype.MODIFIABLE = ['identifier', 'copyright', 'creator', 'location', 'subject', 'coverage', 'date', 'format', 'date-modified', 'language', 'description', 'medium'];
-
-    Resource.prototype.SINGULAR = ['identifier'];
 
     Resource.prototype.parse = function(r) {
       var k, m, v, _i, _j, _len, _len2, _ref, _ref2, _ref3;
@@ -83,11 +76,12 @@
           delete r.Hotspot;
         }
         if (r.Metadatum != null) {
-          r.metadata = {};
+          r.metadata = new arcs.models.MetadataContainer;
+          r.metadata.id = r.id;
           _ref3 = r.Metadatum;
           for (_j = 0, _len2 = _ref3.length; _j < _len2; _j++) {
             m = _ref3[_j];
-            r.metadata[m.attribute] = m.value;
+            r.metadata.set(m.attribute, m.value);
           }
           delete r.Metadatum;
         }

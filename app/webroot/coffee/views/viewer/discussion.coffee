@@ -25,7 +25,7 @@ class arcs.views.Discussion extends Backbone.View
     comment.save()
     comment.set 
       name: 'You' 
-      created: 'just now'
+      created: new Date
     @collection.add(comment)
 
   render: ->

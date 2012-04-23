@@ -97,6 +97,8 @@ class arcs.views.Upload extends Backbone.View
       u.set 'title', $u.find('#upload-title').val()
       u.set 'identifier', $u.find('#upload-identifier').val()
       u.set 'rtype', $u.find('#upload-type').val()
+      # Don't use the placeholder.
+      u.set('identifier', '') if u.get('identifier') == 'Identifier'
 
     # POST our uploads. 
     #

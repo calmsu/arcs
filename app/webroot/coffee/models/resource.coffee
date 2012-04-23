@@ -2,16 +2,14 @@
 # ---------------
 # Resource model
 class arcs.models.Resource extends Backbone.Model
+
   defaults:
-    id: null
     title: ''
     keywords: []
     hotspots: []
     comments: []
     metadata: {}
     mime_type: "unknown"
-    modified: null
-    created: null
     page: 0
     preview: false
     public: false
@@ -20,28 +18,10 @@ class arcs.models.Resource extends Backbone.Model
   constructor: (attributes) ->
     super @parse attributes
 
-  url: -> arcs.baseURL + 'resources/' + @id
+  url: -> 
+    arcs.baseURL + 'resources/' + @id
+
   urlRoot: arcs.baseURL + 'resources'
-
-  # List of attributes that the server will accept updates to.
-  MODIFIABLE: [
-    'identifier',
-    'copyright',
-    'creator',
-    'location',
-    'subject'
-    'coverage',
-    'date',
-    'format',
-    'date-modified',
-    'language',
-    'description',
-    'medium'
-  ]
-
-  SINGULAR: [
-    'identifier'
-  ]
 
   parse: (r) ->
     # Flatten an HABTM object.
@@ -68,8 +48,9 @@ class arcs.models.Resource extends Backbone.Model
         r.hotspots = r.Hotspot
         delete r.Hotspot
       if r.Metadatum?
-        r.metadata = {}
-        r.metadata[m.attribute] = m.value for m in r.Metadatum
+        r.metadata = new arcs.models.MetadataContainer
+        r.metadata.id = r.id
+        r.metadata.set(m.attribute, m.value) for m in r.Metadatum
         delete r.Metadatum
       delete r.Resource
 
@@ -77,6 +58,7 @@ class arcs.models.Resource extends Backbone.Model
     r.modified = false if r.modified is r.created
 
     # Make the file_size readable.
+    # TODO: Do this in the templates.
     r.file_size = arcs.utils.convertBytes r.file_size
 
     # All done.
