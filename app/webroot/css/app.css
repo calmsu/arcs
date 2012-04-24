@@ -5843,16 +5843,17 @@ span.keyword-link {
   top: 7px;
 }
 #batch-upload div.controls div#fileupload-wrapper {
-  width: 65px;
+  width: 95px;
   height: 20px;
-  cursor: pointer;
+  cursor: pointer !important;
 }
 #batch-upload div.controls div#fileupload-wrapper span {
-  float: left;
+  display: inline-block;
   top: 5px;
-}
-#batch-upload div.controls div#fileupload-wrapper input#fileupload {
   cursor: pointer;
+}
+#batch-upload div.controls div#fileupload-wrapper input {
+  cursor: pointer !important;
   float: left;
   opacity: 0;
   filter: alpha(opacity=0);

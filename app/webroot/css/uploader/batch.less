@@ -66,15 +66,18 @@
 
     // File input is hidden and overlayed with a button.
     div#fileupload-wrapper {
-      width: 65px;
+      width: 95px;
       height: 20px;
-      cursor: pointer;
+      cursor: pointer !important;
       span {
-        float: left;
+        //float: left;
+        display: inline-block;
         top: 5px;
-      }
-      input#fileupload {
+        //padding: 4px 8px 8px;
         cursor: pointer;
+      }
+      input {
+        cursor: pointer !important;
         float: left;
         .opacity(0);
         height: 100%;
