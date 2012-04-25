@@ -20,9 +20,11 @@ class arcs.views.Upload extends Backbone.View
     @uploads = new arcs.collections.UploadSet
     @setupFileupload()
     @$uploads = @$el.find('#uploads-container')
+    @uploads.on 'add remove change', @render, @
 
   events:
     'click #upload-btn': 'upload'
+    'click .remove'    : 'remove'
 
   # Fire up jQuery-File-Upload (https://github.com/blueimp/jQuery-File-Upload)
   # and attach event handlers.
@@ -144,6 +146,12 @@ class arcs.views.Upload extends Backbone.View
 
       # Disable the uploader.
       @disable()
+
+  remove: (e) ->
+    $upload = @$(e.currentTarget).parents '.upload'
+    @uploads.remove @uploads.getByCid $upload.data 'id'
+    $upload.remove()
+    @$('#upload-btn').addClass('disabled') unless @uploads.length
 
   # Disable the uploader (visually) in an error scenario.
   disable: ->

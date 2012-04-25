@@ -1,14 +1,22 @@
 <div class="accordion-group upload" data-id="<%= cid %>">
   <div class="accordion-heading">
     <div class="accordion-toggle">
-    <%= name %> &nbsp;&nbsp;
-    <em><%= arcs.utils.convertBytes(size) %></em>
-    <span class="progress">
-      <div class="bar" style="width: <%= progress %>%"></div>
-    </span>
-    <span id="progress-done" class="pull-right" style="display:none">
-      <i class="icon-ok"></i> Done
-    </span>
+      <% if (arcs.mime.isImage(type)) { %>
+        <i class="icon-picture"></i>
+      <% } else if (arcs.mime.isVideo(type)) { %>
+        <i class="icon-film"></i>
+      <% } else { %>
+        <i class="icon-file"></i>
+      <% } %>
+      <%= name %> &nbsp;&nbsp;
+      <em><%= arcs.utils.convertBytes(size) %></em> &nbsp;&nbsp;
+      <div class="remove"></div>
+      <span class="progress">
+        <div class="bar" style="width: <%= progress %>%"></div>
+      </span>
+      <span id="progress-done" class="pull-right" style="display:none">
+        <i class="icon-ok"></i> Done
+      </span>
     </div>
   </div>
   <div class="accordion-body collapse in">

@@ -1,7 +1,7 @@
 (function() {
   var __indexOf = Array.prototype.indexOf || function(item) { for (var i = 0, l = this.length; i < l; i++) { if (i in this && this[i] === item) return i; } return -1; };
 
-  arcs.utils.mime = {
+  arcs.utils.mime = arcs.mime = {
     imageTypes: {
       'image/png': 'png',
       'image/jpeg': 'jpeg',
@@ -20,7 +20,17 @@
     videoTypes: {
       'video/mpeg': 'mpeg',
       'video/msvideo': 'avi',
-      'video/quicktime': 'mov'
+      'video/quicktime': 'mov',
+      'video/mp4': 'mp4'
+    },
+    isDocument: function(mime) {
+      return __indexOf.call(_.keys(this.documentTypes), mime) >= 0;
+    },
+    isImage: function(mime) {
+      return __indexOf.call(_.keys(this.imageTypes), mime) >= 0;
+    },
+    isVideo: function(mime) {
+      return __indexOf.call(_.keys(this.videoTypes), mime) >= 0;
     },
     types: function() {
       return _.extend(this.videoTypes, this.documentTypes, this.imageTypes);

@@ -30,11 +30,13 @@
     Upload.prototype.initialize = function() {
       this.uploads = new arcs.collections.UploadSet;
       this.setupFileupload();
-      return this.$uploads = this.$el.find('#uploads-container');
+      this.$uploads = this.$el.find('#uploads-container');
+      return this.uploads.on('add remove change', this.render, this);
     };
 
     Upload.prototype.events = {
-      'click #upload-btn': 'upload'
+      'click #upload-btn': 'upload',
+      'click .remove': 'remove'
     };
 
     Upload.prototype.setupFileupload = function() {
@@ -167,6 +169,14 @@
         _results.push(this.disable());
       }
       return _results;
+    };
+
+    Upload.prototype.remove = function(e) {
+      var $upload;
+      $upload = this.$(e.currentTarget).parents('.upload');
+      this.uploads.remove(this.uploads.getByCid($upload.data('id')));
+      $upload.remove();
+      if (!this.uploads.length) return this.$('#upload-btn').addClass('disabled');
     };
 
     Upload.prototype.disable = function() {

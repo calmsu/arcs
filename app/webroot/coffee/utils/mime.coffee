@@ -1,7 +1,7 @@
 # mime.coffee
 # -----------
 # Return information about mime types
-arcs.utils.mime = 
+arcs.utils.mime = arcs.mime = 
   imageTypes:
     'image/png': 'png'
     'image/jpeg': 'jpeg'
@@ -21,6 +21,16 @@ arcs.utils.mime =
     'video/mpeg': 'mpeg'
     'video/msvideo': 'avi'
     'video/quicktime': 'mov'
+    'video/mp4': 'mp4'
+
+  isDocument: (mime) ->
+    mime in _.keys @documentTypes
+
+  isImage: (mime) ->
+    mime in _.keys @imageTypes
+
+  isVideo: (mime) ->
+    mime in _.keys @videoTypes
 
   types: ->
     _.extend @videoTypes, @documentTypes, @imageTypes
