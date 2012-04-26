@@ -11,14 +11,25 @@
     }
 
     BatchEditModal.prototype.initialize = function() {
+      var _this = this;
       BatchEditModal.__super__.initialize.call(this);
-      return this.$('input[type=text][id^=modal]').keydown(function() {
-        var ckbox, id, name, _ref;
-        _ref = $(this).attr('id').match(/modal-([\w-]+)-input/), id = _ref[0], name = _ref[1];
-        ckbox = $("input#modal-" + name + "-checkbox");
-        if (!$(this).val()) return ckbox.prop('checked', false);
-        return ckbox.prop('checked', true);
+      this.$('input[type=text][id^=modal]').change(function(e) {
+        return _this._checkBox($(e.currentTarget));
       });
+      this.$('input[type=text][id^=modal]').keyup(function(e) {
+        return _this._checkBox($(e.currentTarget));
+      });
+      return this.$('select[id^=modal]').change(function(e) {
+        return _this._checkBox($(e.currentTarget));
+      });
+    };
+
+    BatchEditModal.prototype._checkBox = function($el) {
+      var ckbox, id, name, _ref;
+      _ref = $el.attr('id').match(/modal-([\w-]+)-input/), id = _ref[0], name = _ref[1];
+      ckbox = $("input#modal-" + name + "-checkbox");
+      if (!$el.val()) return ckbox.prop('checked', false);
+      return ckbox.prop('checked', true);
     };
 
     BatchEditModal.prototype.getValues = function() {
