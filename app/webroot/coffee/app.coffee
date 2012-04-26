@@ -19,8 +19,12 @@ arcs.mode = CAKE_DEBUG
 arcs.debug = arcs.mode > 0
 arcs.version = "0.9.3"
 
-# Base URL holds any prefix needed to link to pages relatively.
+# Base url that holds any prefix needed to link to pages relatively.
 arcs.baseURL = '/'
+
+# Build a url relative to the base url.
+arcs.url = (components...) ->
+  arcs.baseURL + components.join '/'
 
 # Logs messages with an ARCS prefix if debug is on and a console is 
 # available (there's no console in older IE's).
@@ -41,6 +45,22 @@ arcs.tmpl = (key, data, func) ->
   func ?= _.template
   tmpl = if _.has(JST, key) then JST[key] else key
   func tmpl, (data ? {})
+
+# jQuery extensions
+$.fn.extend
+  toggleAttr: (attr) ->
+    return $(@).removeAttr(attr) if $(@).attr(attr)
+    $(@).attr attr, attr
+
+# Convenience wrapper for POST-ing a JSON object.
+$.postJSON = (url, data, success) ->
+  $.ajax
+    url: url
+    data: JSON.stringify data
+    type: 'POST'
+    contentType: 'application/json'
+    dataType: 'json'
+    success: success
 
 # We'll bind app-wide events to the arcs object.
 _.extend arcs, Backbone.Events
