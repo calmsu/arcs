@@ -1,7 +1,7 @@
 <div class="tab-pane" id="collections-tab">
-<?php if(empty($user_info['Collection'])): ?>
-    <h3>Looks like this user hasn't made any discussion items yet</h3>
-<?php  elseif(isset($user_info['Collection'])): ?>
+<?php if (empty($user_info['Collection'])): ?>
+    <h4>No collections</h4>
+<?php else: ?>
     <table class="table table-striped">
         <thead>
             <tr>
@@ -22,18 +22,14 @@
                     <span class="label info">Private</span>
                 <?php endif ?>
                 <td>
-                    <?php echo $this->Html->link(
-                        $collection['title'], 
-                        array(
-                            'controller' => 'collection', 
-                            'action' => 'view', $collection['id']
-                    )) ?>
-                </td> <!-- title -->
-                <td><?php echo $collection['description'] ?></td><!-- description -->
-                <td><?php echo $collection['created'] ?></td><!-- creation date -->
+                <?php echo $this->Html->link($collection['title'], 
+                    '/collection/' . $collection['id']) ?>
+                </td>
+                <td><?php echo $collection['description'] ?></td>
+                <td><?php echo $collection['created'] ?></td>
             </tr>
         <?php endforeach; ?>
         </tbody>
     </table>
 <?php endif; ?>
-</div><!-- #collections-tab -->
+</div>
