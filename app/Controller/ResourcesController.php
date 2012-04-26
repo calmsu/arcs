@@ -123,7 +123,10 @@ class ResourcesController extends AppController {
         }
 
         $this->set('memberships', $this->Resource->Membership->find('all', array(
-            'conditions' => array('Membership.resource_id' => $id)
+            'conditions' => array(
+                'Membership.resource_id' => $id,
+                'Collection.title !=' => 'Temporary Collection'
+            )
         )));
         $this->set('resource', $resource);
         $this->set('toolbar', array('actions' => true));
