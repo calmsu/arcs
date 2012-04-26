@@ -17,7 +17,8 @@ CREATE TABLE IF NOT EXISTS resources (
     context CHAR(36) DEFAULT NULL,
     first_req BOOL DEFAULT TRUE,
     created DATETIME DEFAULT NULL,
-    modified DATETIME DEFAULT NULL
+    modified DATETIME DEFAULT NULL,
+    FULLTEXT(title)
 );
 
 -- metadata
