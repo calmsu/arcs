@@ -4,18 +4,17 @@
   <input type="text" class="collection-search toolbar-btn" 
     placeholder="Search this collection..." />
   <button id="thumbs-btn" class="btn toolbar-btn" rel="tooltip"
-    data-original-title="View this collection in the search">
+    title="View this collection in the search" data-placement="bottom">
     <i class="icon-th-large"></i></button>
-  <button id="full-screen-btn" class="btn toolbar-btn" rel="tooltip"
-    data-original-title="Enter full screen"><i class="icon-resize-full"></i></button>
+  <button id="full-screen-btn" class="btn toolbar-btn" rel="tooltip" title="Enter full screen"
+    data-placement="bottom"><i class="icon-resize-full"></i></button>
   <div class="page-nav toolbar-btn input-append input-prepend">
     <button id="mini-prev-btn" class="btn"><i class="icon-arrow-left"></i></button>
     <input type="text" class="span2" />
     <button id="mini-next-btn" class="btn"><i class="icon-arrow-right"></i></button>
   </div>
   <div id="export-buttons" class="btn-group toolbar-btn">
-    <button id="export-btn" class="btn dropdown-toggle" rel="tooltip"
-      data-toggle="dropdown" data-original-title="Export this resource">
+    <button id="export-btn" class="btn dropdown-toggle" data-toggle="dropdown">
       <i class="icon-download-alt"></i> Export
       <span class="caret"></span>
     </button>
@@ -25,13 +24,13 @@
   </div>
   {% if user.loggedIn %}
   <div id="action-buttons" class="btn-group toolbar-btn">
-    <button id="edit-btn" class="btn" rel="tooltip" 
-      data-original-title="Edit this resource's info"><i class="icon-pencil"></i> Edit</button>
+    <button id="edit-btn" class="btn" rel="tooltip" title="Edit this resource's info"
+      data-placement="bottom"><i class="icon-pencil"></i> Edit</button>
     <button id="flag-btn" class="btn" rel="tooltip"
-      data-original-title="Flag this resource"><i class="icon-flag"></i> Flag</button>
+      title="Flag this resource" data-placement="bottom"><i class="icon-flag"></i> Flag</button>
     <div id="advanced-buttons" class="btn-group pull-left">
-      <button id="advanced-btn" class="btn" rel="tooltip" style="border-left:none"
-        data-toggle="dropdown"><i class="icon-cog"></i>
+      <button id="advanced-btn" class="btn" style="border-left:none" data-toggle="dropdown">
+        <i class="icon-cog"></i>
         <span class="caret"></span>
       </button>
       <ul class="dropdown-menu">

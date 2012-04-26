@@ -4,7 +4,7 @@
     <div id="action-buttons" class="btn-group">
     {% if user.loggedIn %}
       <div id="collection-buttons" class="btn-group pull-left">
-        <button id="test-btn" class="btn no-rounded needs-resource disabled" rel="tooltip"
+        <button id="test-btn" class="btn no-rounded needs-resource disabled"
            data-toggle="dropdown"><i class="icon-book"></i> Collection
           <span class="caret"></span>
         </button>
@@ -15,29 +15,36 @@
         </ul>
       </div>
       <button id="keyword-btn" class="btn needs-resource disabled" rel="tooltip"
-        data-original-title="Keyword the selected results">
+        title="Keyword the selected results" data-placement="bottom">
         <i class="icon-tag"></i> Keyword
       </button>
-      <button id="attribute-btn" class="btn needs-resource no-rounded disabled" rel="tooltip"
-        data-original-title="Edit the attributes of the selected results">
+      <button id="attribute-btn" class="btn needs-resource no-rounded disabled" 
+        rel="tooltip" title="Edit the attributes of the selected results" 
+        data-placement="bottom">
         <i class="icon-pencil"></i> Edit
       </button>
       <button id="flag-btn" class="btn needs-resource disabled" rel="tooltip"
-        data-original-title="Flag the selected results">
+        title="Flag the selected results" data-placement="bottom">
         <i class="icon-flag"></i> Flag
       </button>
       <div id="advanced-buttons" class="btn-group pull-left">
-        <button id="advanced-btn" class="btn needs-resource no-rounded disabled" rel="tooltip" style="border-left:none"
-          data-toggle="dropdown"><i class="icon-cog"></i>
+        <button id="advanced-btn" class="btn needs-resource no-rounded disabled" 
+          rel="tooltip" style="border-left:none" data-toggle="dropdown">
+          <i class="icon-cog"></i>
           <span class="caret"></span>
         </button>
         <ul class="dropdown-menu">
+          {% if user.role < 2 %}
           <li><a id="access-btn">Set Access...</a></li>
-          <li><a id="rethumb-btn">Re-thumbnail</a></li>
+          <li class="divider"></li>
+          {% endif %}
+          <li><a id="rethumb-btn">Redo thumbnail</a></li>
+          <li><a id="repreview-btn">Redo preview</a></li>
           <li><a id="split-btn">Split PDF</a></li>
           {% if user.role == 0 %}
           <li class="divider"></li>
           <li><a id="delete-btn">Delete...</a></li>
+          <li class="divider"></li>
           <li><a id="solr-btn">Queue SOLR index</a></li>
           {% endif %}
         </ul>
@@ -61,14 +68,16 @@
       </button>
       <ul class="dropdown-menu">
         <li><a class="sort-btn" id="sort-title-btn">title&nbsp;</a></li>
-        <li><a class="sort-btn" id="sort-modified-btn">modified&nbsp;<i class="icon-ok"></i></a></li>
+        <li><a class="sort-btn" id="sort-modified-btn">modified&nbsp;
+          <i class="icon-ok"></i></a></li>
         <li><a class="sort-btn" id="sort-created-btn">created&nbsp;</a></li>
       </ul>
     </div>
     <div id="open-buttons" class="btn-group actions-right">
       <button id="open-btn" class="btn needs-resource disabled" rel="tooltip"
-        data-original-title="Open selected results">Open</button>
-      <button class="btn needs-resource disabled dropdown-toggle" data-toggle="dropdown">
+        title="Open selected results" data-placement="bottom">Open</button>
+      <button class="btn needs-resource disabled dropdown-toggle" 
+        data-toggle="dropdown">
         <span class="caret"></span>
       </button>
       <ul class="dropdown-menu">
@@ -77,8 +86,9 @@
       </ul>
     </div>
     <div id="export-buttons" class="btn-group actions-right" style="margin-right:30px">
-      <button id="export-btn" class="btn dropdown-toggle needs-resource disabled" rel="tooltip"
-        data-toggle="dropdown"><i class="icon-download-alt"></i> Export
+      <button id="export-btn" class="btn dropdown-toggle needs-resource disabled" 
+        data-toggle="dropdown">
+        <i class="icon-download-alt"></i> Export
         <span class="caret"></span>
       </button>
       <ul class="dropdown-menu">
