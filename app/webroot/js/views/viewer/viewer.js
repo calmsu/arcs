@@ -46,7 +46,7 @@
         collection: this.collection,
         index: (_ref = this.index) != null ? _ref : 0
       });
-      this.router = new arcs.routers.Resource;
+      this.router = new arcs.routers.Viewer;
       Backbone.history.start({
         pushState: true,
         root: arcs.baseURL + (this.collection.length ? 'collection/' : 'resource/')

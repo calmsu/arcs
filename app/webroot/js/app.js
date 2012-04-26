@@ -19,7 +19,7 @@
 
   arcs.debug = arcs.mode > 0;
 
-  arcs.version = "0.9.3";
+  arcs.version = "0.9.6";
 
   arcs.baseURL = '/';
 

@@ -17,7 +17,7 @@ arcs.mode = CAKE_DEBUG
 # Debug will be on by default in dev mode. Set the var from the console 
 # to turn it off.
 arcs.debug = arcs.mode > 0
-arcs.version = "0.9.3"
+arcs.version = "0.9.6"
 
 # Base url that holds any prefix needed to link to pages relatively.
 arcs.baseURL = '/'
