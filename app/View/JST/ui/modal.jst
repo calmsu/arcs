@@ -13,6 +13,9 @@
   <% if (_.isUndefined(i.label) || i.label !== false) { %>
     <label for="modal-<%= name %>">
       <%= _.isUndefined(i.label) ? name.charAt(0).toUpperCase() + name.substr(1) : i.label %> 
+      <% if (i.help) { %>
+        <i class="icon-info-sign" rel="tooltip" title="<%= i.help %>"></i>
+      <% } %>
     </label>
   <% } %>
   <% if (i.type === 'select') { %>
