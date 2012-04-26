@@ -19,8 +19,10 @@
       if (!$('#modal').length) $('body').append(arcs.tmpl('ui/modal_wrapper'));
       this.el = this.$el = $('#modal');
       this.$el.modal();
-      arcs.keys.add('left', false, this.prev, this);
-      arcs.keys.add('right', false, this.next, this);
+      arcs.keys.map(this, {
+        left: this.prev,
+        right: this.next
+      });
       return this.set(this.options.index, true);
     };
 

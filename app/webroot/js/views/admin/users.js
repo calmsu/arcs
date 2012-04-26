@@ -138,15 +138,8 @@
           send: {
             "class": 'btn btn-success',
             callback: function(vals) {
-              return $.ajax({
-                url: arcs.baseURL + 'users/invite',
-                type: 'POST',
-                contentType: 'application/json',
-                dataType: 'json',
-                data: JSON.stringify(vals),
-                success: function() {
-                  return _this.collection.add(vals);
-                }
+              return $.postJSON(arcs.baseURL + 'users/invite', vals, function() {
+                return _this.collection.add(vals);
               });
             }
           },

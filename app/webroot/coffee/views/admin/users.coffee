@@ -93,14 +93,8 @@ class arcs.views.admin.Users extends Backbone.View
         send:
           class: 'btn btn-success'
           callback: (vals) =>
-            $.ajax
-              url: arcs.baseURL + 'users/invite'
-              type: 'POST'
-              contentType: 'application/json'
-              dataType: 'json'
-              data: JSON.stringify vals
-              success: => 
-                @collection.add vals
+            $.postJSON arcs.baseURL + 'users/invite', vals, =>
+              @collection.add vals
         cancel: ->
 
   render: ->

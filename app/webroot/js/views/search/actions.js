@@ -26,9 +26,11 @@
         },
         context: this
       });
-      arcs.keys.add('o', true, this.openSelected, this);
-      arcs.keys.add('e', true, this.editSelected, this);
-      return arcs.keys.add('space', false, this.previewSelected, this);
+      return arcs.keys.map(this, {
+        'ctrl+o': this.openSelected,
+        'ctrl+e': this.editSelected,
+        space: this.previewSelected
+      });
     };
 
     Actions.prototype.events = {
@@ -189,7 +191,8 @@
       for (field in fields) {
         help = fields[field];
         inputs[field] = {
-          value: (_ref = metadata.get(field)) != null ? _ref : ''
+          value: (_ref = metadata.get(field)) != null ? _ref : '',
+          help: help
         };
       }
       return new arcs.views.Modal({
@@ -235,7 +238,8 @@
         value = _.twins(values) && values[0] ? values[0] : void 0;
         inputs[field] = {
           checkbox: !!checked,
-          value: value != null ? value : ''
+          value: value != null ? value : '',
+          help: help
         };
       }
       return new arcs.views.BatchEditModal({
@@ -303,7 +307,7 @@
       });
       return collection.save({}, {
         success: function(newCol) {
-          return window.open(arcs.baseURL + 'collection/' + newCol.id);
+          return window.open(arcs.url('collection', newCol.id));
         },
         error: function() {
           return arcs.notify('An error occurred.', 'error');
@@ -342,21 +346,14 @@
       data = {
         resources: _.pluck(this.results.selected(), 'id')
       };
-      return $.ajax({
-        url: arcs.baseURL + 'resources/zipped',
-        type: 'POST',
-        contentType: 'application/json',
-        dataType: 'json',
-        data: JSON.stringify(data),
-        success: function(data) {
-          var iframe;
-          if (data.url != null) {
-            iframe = _this.make('iframe', {
-              style: 'display:none'
-            });
-            $('body').append(iframe);
-            return iframe.src = data.url;
-          }
+      return $.postJSON(arcs.baseURL + 'resources/zipped', data, function(response) {
+        var iframe;
+        if (response.url != null) {
+          iframe = _this.make('iframe', {
+            style: 'display:none'
+          });
+          $('body').append(iframe);
+          return iframe.src = response.url;
         }
       });
     };
