@@ -128,8 +128,7 @@ class SqlSearch {
             'field' => 'sha'
         ),
         'title' => array(
-            'field' => 'title',
-            'comparison' => 'match'
+            'field' => 'title'
         ),
         'id' => array(
             'field' => 'id'
@@ -166,7 +165,7 @@ class SqlSearch {
      */
     public $DISJUNCTIVE = false;
 
-    public $public      = false;
+    public $publicFilter = true;
 
     /**
      * The table and model values must be configured here.
@@ -470,7 +469,7 @@ class SqlSearch {
             $sql .= $j;
         if ($this->conditions)
             $sql .= " WHERE " . implode(" $lop ", $this->conditions);
-        if ($this->public) {
+        if ($this->publicFilter) {
             $where = $this->conditions ? " " : " WHERE ";
             $sql .= "$where  AND  `Resource`.`public` = 1 ";
         }
