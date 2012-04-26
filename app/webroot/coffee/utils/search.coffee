@@ -37,6 +37,7 @@ class arcs.utils.Search
       order: 'modified'
       add: false
       run: true
+      onSearch: ->
       success: ->
       error: ->
 
@@ -54,6 +55,8 @@ class arcs.utils.Search
         search: (query, searchCollection) =>
           # Update our query value
           @query = query
+          # Fire the onSearch cb
+          @options.onSearch query
           # Call our run method with the facets
           @run searchCollection.toJSON()
         facetMatches: (callback) =>
@@ -121,12 +124,10 @@ class arcs.utils.Search
     options = _.extend defaults, @options, options
 
     # Get the facets from the VS object if not given.
-    if not facets? and @vs?
-      facets = @vs.searchQuery.toJSON()
+    facets = @vs.searchQuery.toJSON() if not facets? and @vs?
 
     # Don't want the app prop included.
-    _.each facets, (f) ->
-      delete f.app
+    _.each facets, (f) -> delete f.app
 
     # Calculate the url parameters
     offset = (options.page - 1) * options.n

@@ -28,7 +28,7 @@ class arcs.views.search.Search extends Backbone.View
     Backbone.history.start
       pushState: true
       root: @options.url
-    
+
     # Search unless the Router already delegated it.
     @search.run() unless @router.searched
 
@@ -37,8 +37,9 @@ class arcs.views.search.Search extends Backbone.View
     arcs.on 'arcs:selection', @afterSelection, @
 
     # <ctrl>-a to select all
-    arcs.keys.add 'a', true, @selectAll, @
-    arcs.keys.add 't', false, @scrollTop, @
+    arcs.keys.map @,
+      'ctrl+a': @selectAll
+      t: @scrollTop
 
   events:
     'click img'              : 'toggle'
@@ -83,12 +84,11 @@ class arcs.views.search.Search extends Backbone.View
       loader: true
       # This callback will be fired each time a search is done.
       success: =>
-        @router.navigate encodeURIComponent(@search.query)
+        @router.navigate encodeURIComponent @search.query
         @searchPage = 1
-        # Render the results.
-        @render()
         # Setup the endless scroll unless it's already been done.
         @setupScroll() and @scrollReady = true unless @scrollReady
+        @render()
 
   # Setup the endless scroll. This is called after we've received our first set
   # of results. 
@@ -112,13 +112,11 @@ class arcs.views.search.Search extends Backbone.View
         # When the modulus is non-zero, it means the last search returned
         # fewer results than allowed, and we don't need to search again.
         return unless @search.results.length % @options.numResults == 0
-        @searchPage += 1
         @search.run null,
           add: true
-          page: @searchPage
+          page: @searchPage += 1
           order: @options.sort
-          success: =>
-            @append()
+          success: => @append()
 
     # Fix the toolbar width on resizes. 
     $window.resize ->
