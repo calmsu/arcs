@@ -1,0 +1,15 @@
+#!/usr/bin/env bash
+#
+# Runs the cake command. Tries to sudo as the web server user to
+# avoid permissions errors.
+
+DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+WWW_USER="www-data"
+USER=`whoami`
+
+if [ $USER != $WWW_USER ]
+then
+    sudo -u $WWW_USER ${DIR}/../app/Console/cake $@
+else
+    ${DIR}/../app/Console/cake $@
+fi

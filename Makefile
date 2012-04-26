@@ -16,7 +16,7 @@
 COFFEE=app/webroot/coffee
 JS=app/webroot/js
 CSS=app/webroot/css
-LESS=app/webroot/css/lib
+ASSETS=app/webroot/assets
 
 # Need to outsource parsing the INI file
 SCRIPTS=$(shell bin/get-assets --js)
@@ -35,26 +35,27 @@ HEADER="/**\n\
 
 # Compile coffee in webroot/coffee to webroot/js
 coffee:
-	coffee --compile --bare --output $(JS) $(COFFEE)
+	coffee --compile --output $(JS) $(COFFEE)
 
-# Compile less in css/lib to css/arcs-skin.css
+# Compile less in (and included in) css/app.less to css/app.css
 less:
-	lessc $(LESS)/arcs-skin.less > $(CSS)/arcs-skin.css
+	cd $(CSS); lessc app.less > app.css
 
 # Concatenate and minify javascript.
 js: coffee
-	echo $(HEADER) > $(JS)/arcs.min.js
-	$(foreach script, $(SCRIPTS), uglifyjs $(JS)/$(script) >> $(JS)/arcs.min.js;)
+	echo $(HEADER) > $(ASSETS)/arcs.js
+	$(foreach script, $(SCRIPTS), uglifyjs -nc $(JS)/$(script) >> $(ASSETS)/arcs.js;)
+	cat $(ASSETS)/templates.js >> $(ASSETS)/arcs.js
 
 # Concatenate and minify css.
 css: less
-	echo $(HEADER) > $(CSS)/arcs.min.css
-	$(foreach style, $(STYLESHEETS), cleancss $(CSS)/$(style) >> $(CSS)/arcs.min.css;)
+	echo $(HEADER) > $(ASSETS)/arcs.css
+	$(foreach style, $(STYLESHEETS), cleancss $(CSS)/$(style) >> $(ASSETS)/arcs.css;)
 
 # Convert user documentation from Markdown and put it in the View directory.
 doc: 
 	$(foreach doc, $(DOCS), markdown_py -x tables $(doc) > \
-		app/View/Docs/$(notdir $(basename $(doc))).ctp;)
+		app/View/Help/$(notdir $(basename $(doc))).ctp;)
 
 # Make everything.
 all: js css doc

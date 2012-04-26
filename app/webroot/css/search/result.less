@@ -1,0 +1,56 @@
+// result.less
+// -----------
+
+.result {
+
+  &.grid {
+    text-align: center;
+    strong {
+      font-size: 120%;
+    }
+    .img-wrapper {
+      height: 110px;
+      line-height: 110px;
+      img {
+        vertical-align: middle;
+      }
+    }
+    font-size: 85%;
+    line-height: 16px;
+    float: left;
+    width: 160px;
+    max-height: 140px;
+    margin: 20px;
+  }
+
+  &.list {
+    border-bottom: 1px solid #888;
+    td {
+      padding: 0 10px;
+    }
+    td.img-wrapper {
+      width: 100px;
+      padding: 20px;
+    }
+  }
+
+  &.selected img {
+    padding: 0px;
+    border: 3px solid #08c;
+    margin: 1px;
+  }
+
+  div {
+    .text-shadow(#fff);
+  }
+
+  img {
+    padding: 1px;
+    background: #444;
+    margin: 3px;
+
+    &:hover {
+      cursor: pointer;
+    }
+  }
+}

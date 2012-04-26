@@ -1,0 +1,18 @@
+<tr>
+  <td>Title</td>
+  <td><%= title %></td>
+</tr>
+<tr>
+  <td>Description</td>
+  <td><%= description %></td>
+</tr>
+<tr>
+  <td>Public</td>
+  <td><%= public ? "Yes" : "No" %></td>
+</tr>
+<% if (pdf) { %>
+<tr>
+  <td>Original PDF</td>
+  <td><a href="<%= arcs.baseURL + 'resource/' + pdf %>">Link</a></td>
+</tr>
+<% } %>

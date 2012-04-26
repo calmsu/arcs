@@ -2,11 +2,18 @@
 /**
  * Collections Controller
  * 
- * @package      ARCS
- * @copyright    Copyright 2012, Michigan State University Board of Trustees
+ * @package    ARCS
+ * @link       http://github.com/calmsu/arcs
+ * @copyright  Copyright 2012, Michigan State University Board of Trustees
+ * @license    BSD License (http://www.opensource.org/licenses/bsd-license.php)
  */
 class CollectionsController extends AppController {
     public $name = 'Collections';
+
+    public function beforeFilter() {
+        parent::beforeFilter();
+        $this->Auth->allow('view', 'viewer', 'create', 'complete');
+    }
 
     /**
      * Display all collections.
@@ -26,13 +33,13 @@ class CollectionsController extends AppController {
         if ($this->request->is('post') && $this->data) {
             # Save the collection.
             $data = array('Collection' => $this->data);
+            $this->Collection->permit('user_id');
             $data['Collection']['user_id'] = $this->Auth->user('id');
             $this->Collection->save($data);
 
             # The 'Members' key may be given as a list of resource 
             # id's that will be saved as Memberships.
             if ($this->data['members']) {
-                $this->loadModel('Membership');
                 $members = array();
                 foreach ($this->data['members'] as $member) {
                     array_push($members, array(
@@ -40,29 +47,14 @@ class CollectionsController extends AppController {
                         'resource_id' => $member
                     ));
                 }
-                $this->Membership->saveMany($members);
+                $this->Collection->Membership->saveMany($members);
             }
             if ($this->request->is('ajax')) {
-                $this->jsonResponse(201, array('id' => $this->Collection->id));
+                $this->json(201, array('id' => $this->Collection->id));
             } else {
                 $this->redirect('/collection/' . $this->Collection->id);
             }
         }
-    }
-
-    /**
-     * Add a resource to a collection.
-     *
-     * @param id            collection id
-     * @param resource_id   resource id
-     */
-    public function addMember($id, $resource_id) {
-        $this->loadModel('Membership');
-        $this->Membership->save(array(
-            'Membership' => array(
-                'collection_id' => $id,
-                'resource_id' => $resource_id
-        )));
     }
 
     /**
@@ -78,17 +70,22 @@ class CollectionsController extends AppController {
      *
      * @param id
      */
-    public function view($id=null) {
+    public function viewer($id=null) {
         $collection = $this->Collection->findById($id);
-        $this->set('title_for_layout', $collection['Collection']['description']);
+        $this->set('title_for_layout', $collection['Collection']['title']);
+        $this->set('body_class', 'viewer');
+        $this->set('footer', false);
+        $this->loadModel('Resource');
+        $rids = $this->Collection->Membership->members($id);
+        $this->set('resources', $this->Resource->find('all', array(
+            'conditions' => array(
+                'Resource.id' => $rids
+        ))));
         $this->set('collection', $collection['Collection']);
-        $this->set('resources', $this->Collection->getResources($id, false));
-        $this->set('_serialize', array('collection', 'resources'));
-    }
-
-    public function resources($id=null) {
-        $this->set('resources', $this->Collection->getResources($id));
-        $this->set('_serialize', 'resources');
+        $this->set('toolbar', array(
+            'actions' => true,
+            'logo' => true
+        ));
     }
 
     /**
@@ -97,5 +94,15 @@ class CollectionsController extends AppController {
      * @param id
      */
     public function delete($id=null) {
+    }
+
+    public function complete() {
+        if ($this->request->is('ajax')) {
+            return $this->json(200, $this->Collection->complete(
+                'Collection.title', array(
+                    'Collection.title !=' => 'Temporary Collection'
+                )
+            ));
+        }
     }
 }

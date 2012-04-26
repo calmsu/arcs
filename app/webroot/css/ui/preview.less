@@ -1,0 +1,32 @@
+// preview.less
+// ------------
+
+.preview {
+  background: url(img/linen-texture.jpg);
+  .preview-image {
+    display: block;
+    max-height: 65%;
+    max-width: 560px;
+    margin-left: auto;
+    margin-right: auto;
+  }
+  .preview-footer {
+    .gradient(#ccc, #bbb);
+    padding: 10px;
+    border-top: 1px solid #fff;
+    outline: 1px solid #333;
+    .text-shadow(#fff);
+  }
+  span#prev-btn, span#next-btn {
+    &:hover { 
+      cursor: pointer;
+    }
+  }
+
+  a {
+    color: #333;
+    &:hover {
+      color: #333;
+    }
+  }
+}

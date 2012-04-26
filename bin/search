@@ -1,6 +1,4 @@
 #!/usr/bin/env bash
-#
-# Probably needs to be run as the web-server user or root.
 
 DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
-${DIR}/../app/Console/cake search
+${DIR}/cake search $@

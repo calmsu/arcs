@@ -1,0 +1,125 @@
+// overrides.less
+// --------------
+// Bootstrap, jQuery UI, and VS restyles go here.
+
+// Take it easy with those corners.
+.btn,
+.btn-group .btn:first-child {
+  .rounded-corners(2px);
+}
+.btn-group .btn:last-child,
+.btn-group .dropdown-toggle {
+  .rounded-corners-right(2px);
+}
+
+// Default buttons should have a darker border on our gray bg.
+.btn:not(.btn-success):not(.btn-danger):not(.btn-info):not(.btn-primary):not(.btn-dark) {
+  border: 1px solid #999;
+}
+
+.btn-dark {
+  .text-shadow(#333);
+  .gradient(#777, #555);
+  border: 1px solid #444;
+  color: #eee;
+  &:hover {
+    color: #eee;
+    .gradient(#666, #555);
+  }
+}
+
+// Same thing with inputs
+input[type="text"], 
+input[type="password"], 
+select,
+textarea {
+  border: 1px solid #888;
+  .no-rounded();
+  &:focus {
+    border: 1px solid #08c;
+    box-shadow: none;
+  }
+}
+
+// Thinner headings
+h2, 
+h3 {
+  .text-shadow(#fff);
+  color: #555;
+  font-weight: normal;
+}
+
+// Evented, sans-href anchors need a pointer.
+.dropdown-menu li a:hover {
+  cursor: pointer;
+}
+
+// Drop the nav-tabs margin.
+.nav.nav-tabs {
+  margin-bottom: 0px;
+}
+
+// Lighten up the backdrop.
+.modal-backdrop {
+  .opacity(50);
+}
+
+// Ok, Bootstrap, I see your 1050 z-index and raise you 1. 
+.tooltip,
+.popover,
+.ui-autocomplete {
+  z-index: 1051 !important;
+}
+
+.ui-menu-item {
+  width: 100% !important; 
+  margin-bottom: 1px !important;
+}
+
+.ui-corner-all {
+  border-radius: 0px !important;
+}
+
+.ui-autocomplete .ui-menu-item .ui-state-hover {
+  background: #08c;
+  border-top: none;
+  border-bottom: none;
+}
+
+.ui-selectable-helper {
+  background-color: #08c;
+  background: rgb(0, 136, 204);
+  background: rgba(0, 136, 204, .1);
+  border: 1px dashed #08c;
+}
+
+.VS-search .ui-autocomplete-input:focus {
+  border: none !important;
+}
+
+.VS-search .search_facet input {
+  line-height: 14px;
+}
+
+// Datepickers should be above the modal.
+.datepicker {
+  z-index: 1051;
+  padding: 5px;
+  .prev,
+  .next {
+    cursor: pointer;
+  }
+  td.day {
+    .rounded-corners(2px);
+    text-align: center;
+    &:hover {
+      background: #eee;
+      cursor: pointer;
+    }
+    &.active {
+      background: #08c;
+      color: #fff;
+      .text-shadow(#333);
+    }
+  }
+}

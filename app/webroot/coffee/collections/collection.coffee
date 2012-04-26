@@ -1,10 +1,9 @@
 # collection.coffee
 # -----------------
+# This is our standard collection for holding resources.
 class arcs.collections.Collection extends Backbone.Collection
-    model: arcs.models.Resource
 
-    parse: (response) ->
-        for r in response
-            if r.modified == r.created
-                r.modified = null
-        response
+  model: arcs.models.Resource
+
+  comparator: (resource) ->
+    resource.get 'page'

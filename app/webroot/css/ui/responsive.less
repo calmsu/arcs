@@ -1,0 +1,279 @@
+// responsive.less
+// ---------------
+
+
+// REPEAT VARIABLES & MIXINS
+// -------------------------
+// Required since we compile the responsive stuff separately
+
+@import "variables.less"; // Modify this for custom colors, font-sizes, etc
+@import "mixins.less";
+
+
+// RESPONSIVE CLASSES
+// ------------------
+
+// Hide from screenreaders and browsers
+// Credit: HTML5BP
+.hidden {
+  display: none;
+  visibility: hidden;
+}
+
+
+// LANDSCAPE PHONE TO SMALL DESKTOP & PORTRAIT TABLET
+// --------------------------------------------------
+
+@media (min-width: 360px) and (max-width: 940px) {
+  /*Bootstrap business */
+  html{
+    max-width: 940px;
+    min-width: 460px;
+  }
+  
+  .fluid-container{
+    min-width: 460px;
+    max-width: 940px;
+  }
+  
+  // Unfix the navbar
+  .navbar-fixed {
+    position: absolute;
+  }//.navbar-fixed
+  
+  div#information table tbody tr td {
+    padding: 2px 4px;
+    line-height: @baseFontSize + 1;
+  }//#information
+  
+  .navbar-fixed .nav {
+    float: none;
+  }//.navbar-fixed
+
+  // Remove width from containers
+  .container {
+    width: auto;
+    padding: 0 20px;
+  }//.container
+
+  // Make all columns even
+  .row > [class*="span"] {
+    float: none;
+    display: block;
+    width: auto;
+    margin: 0;
+  }//.row
+
+/* Resource viewer */
+  .tab-content {
+    padding: 5px;
+  }
+  
+  #credits {
+    .row {
+      div {
+        padding: 10px 0;
+        border-bottom: solid thin @grayLight;
+        margin-bottom: 10px;
+    
+        &.quick-links {
+          padding-top: 0;
+        }
+        
+        &:last-child {
+          border-bottom: none;
+        }
+        
+        img {
+          display: block;
+          
+          &#neh_logo {
+            width: 175px;
+            height: auto;
+          }
+          
+          &#msu_wordmark {
+            height: 55px;
+            max-height: none;
+            width: auto;
+          }
+        }
+      }
+    }
+  }
+}
+
+// PORTRAIT TABLET TO DEFAULT DESKTOP
+// ----------------------------------
+// THIS STYLE IS ONLY FOR COLUMNS...RESOURCE VIEWS ARE IN OTHER QUERIES
+
+@media (min-width: 768px) and (max-width: 940px) {
+
+  // Reset grid variables
+  @gridColumns:       16;
+  @gridColumnWidth:   44px;
+  @gridGutterWidth:   20px;
+  @siteWidth:         748px;
+
+  // Bring grid mixins to recalculate widths
+  .columns(@columns: 1) {
+    width: (@gridColumnWidth * @columns) + (@gridGutterWidth * (@columns - 1));
+  }
+  .offset(@columns: 1) {
+    margin-left: (@gridColumnWidth * @columns) + (@gridGutterWidth * (@columns - 1)) + (@gridGutterWidth * 2);
+  }
+
+  // 16cols at 30px wide with 16px gutters
+  .container {
+    width: @siteWidth;
+  }
+  
+
+  // Default columns
+  .span1     { .columns(1); }
+  .span2     { .columns(2); }
+  .span3     { .columns(3); }
+  .span4     { .columns(4); }
+  .span5     { .columns(5); }
+  .span6     { .columns(6); }
+  .span7     { .columns(7); }
+  .span8     { .columns(8); }
+  .span9     { .columns(9); }
+  .span10    { .columns(10); }
+  .span11    { .columns(11); }
+  .span12    { .columns(12); }
+
+  // Offset column options
+  .offset1   { .offset(1); }
+  .offset2   { .offset(2); }
+  .offset3   { .offset(3); }
+  .offset4   { .offset(4); }
+  .offset5   { .offset(5); }
+  .offset6   { .offset(6); }
+  .offset7   { .offset(7); }
+  .offset8   { .offset(8); }
+  .offset9   { .offset(9); }
+  .offset10  { .offset(10); }
+  .offset11  { .offset(11); }
+  .offset12  { .offset(12); }
+
+}//portrait-tablet
+
+// LANDSCAPE TABLET
+// ----------------
+
+@media (min-width: 940px) and (max-width: 1024px) and (max-height: 768px){
+}
+
+@media (max-width: 1100px) and (min-width: 760px){
+}//media
+
+// LARGE DESKTOP & UP
+// ------------------
+
+@media (min-width: 1210px) and (min-height: 850px){	
+  // Reset grid variables
+  @gridColumns:       12;
+  @gridColumnWidth:   70px;
+  @gridGutterWidth:   30px;
+  @siteWidth:         1170px;
+
+  // Bring grid mixins to recalculate widths
+  .columns(@columns: 1) {
+    width: (@gridColumnWidth * @columns) + (@gridGutterWidth * (@columns - 1));
+  }
+  .offset(@columns: 1) {
+    margin-left: (@gridColumnWidth * @columns) + (@gridGutterWidth * (@columns - 1)) + (@gridGutterWidth * 2);
+  }
+
+  .container {
+    width: @siteWidth;
+  }
+  [class*="span"] {
+    margin-left: @gridGutterWidth;
+  }
+  
+
+  // Default columns
+  .span1     { .columns(1); }
+  .span2     { .columns(2); }
+  .span3     { .columns(3); }
+  .span4     { .columns(4); }
+  .span5     { .columns(5); }
+  .span6     { .columns(6); }
+  .span7     { .columns(7); }
+  .span8     { .columns(8); }
+  .span9     { .columns(9); }
+  .span10    { .columns(10); }
+  .span11    { .columns(11); }
+  .span12    { .columns(12); }
+
+  // Offset column options
+  .offset1   { .offset(1); }
+  .offset2   { .offset(2); }
+  .offset3   { .offset(3); }
+  .offset4   { .offset(4); }
+  .offset5   { .offset(5); }
+  .offset6   { .offset(6); }
+  .offset7   { .offset(7); }
+  .offset8   { .offset(8); }
+  .offset9   { .offset(9); }
+  .offset10  { .offset(10); }
+  .offset11  { .offset(11); }
+  .offset12  { .offset(12); }
+  
+}//large desktop and up
+
+@media (min-width: 1360px) and (min-height: 950px) {
+
+  // Reset grid variables
+  @gridColumns:       12;
+  @gridColumnWidth:   70px;
+  @gridGutterWidth:   30px;
+  @siteWidth:         1170px;
+
+  // Bring grid mixins to recalculate widths
+  .columns(@columns: 1) {
+    width: (@gridColumnWidth * @columns) + (@gridGutterWidth * (@columns - 1));
+  }
+  .offset(@columns: 1) {
+    margin-left: (@gridColumnWidth * @columns) + (@gridGutterWidth * (@columns - 1)) + (@gridGutterWidth * 2);
+  }
+
+  .container {
+    width: @siteWidth;
+  }
+  [class*="span"] {
+    margin-left: @gridGutterWidth;
+  }
+
+  // Default columns
+  .span1     { .columns(1); }
+  .span2     { .columns(2); }
+  .span3     { .columns(3); }
+  .span4     { .columns(4); }
+  .span5     { .columns(5); }
+  .span6     { .columns(6); }
+  .span7     { .columns(7); }
+  .span8     { .columns(8); }
+  .span9     { .columns(9); }
+  .span10    { .columns(10); }
+  .span11    { .columns(11); }
+  .span12    { .columns(12); }
+
+  // Offset column options
+  .offset1   { .offset(1); }
+  .offset2   { .offset(2); }
+  .offset3   { .offset(3); }
+  .offset4   { .offset(4); }
+  .offset5   { .offset(5); }
+  .offset6   { .offset(6); }
+  .offset7   { .offset(7); }
+  .offset8   { .offset(8); }
+  .offset9   { .offset(9); }
+  .offset10  { .offset(10); }
+  .offset11  { .offset(11); }
+  .offset12  { .offset(12); }
+  
+  
+}//BIG DESKTOP

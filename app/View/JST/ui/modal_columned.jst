@@ -1,0 +1,70 @@
+<div class="modal-header">
+  <a class="close" data-dismiss="modal">×</a>
+  <h3><%= title %></h3>
+</div>
+
+<div class="modal-body">
+<% if (subtitle) { %>
+  <%= subtitle %>
+  <br><br>
+<% } %>
+<% var left = true %>
+<% _.each(inputs, function(i, name) { %>
+  <% if (left) { %>
+  <div class="row">
+  <% } %>
+
+  <span class="span-6">
+  <% if (_.isUndefined(i.label) || i.label !== false) { %>
+    <label for="modal-<%= name %>">
+      <%= _.isUndefined(i.label) ? name.substr(0, 1).toUpperCase() + name.substr(1) : i.label %> 
+      <% if (i.help) { %>
+        <i class="icon-info-sign" rel="tooltip" title="<%= i.help %>"></i>
+      <% } %>
+    </label>
+  <% } %>
+  <% if (i.type === 'select') { %>
+    <select class="<%= i.class %>" id="modal-<%= name %>-input"
+      <%= i.focused ? 'autofocus' : '' %>
+      name="modal-<%= name %>">
+    <% _.each(i.options, function(val, key) { %>
+      <option <%= i.value == val ? 'selected' : '' %> value="<%= val %>">
+        <%= _.isArray(i.options) ? val : key %>
+      </option>
+    <% }) %>
+    </select>
+  <% } else if (i.type === 'textarea') { %>
+    <textarea class="<%= i.class %>" id="modal-<%= name %>-input"
+      name="modal-<%= name %>" <%= i.focused ? 'autofocus' : '' %>></textarea>
+  <% } else { %>
+    <input type="<%= i.type ? i.type : 'text' %>" class="<%= i.class %>"
+      id="modal-<%= name %>-input" value="<%= i.value %>"
+      <%= i.focused ? 'autofocus' : '' %>
+      name="modal-<%= name %>" placeholder="<%= i.placeholder %>" />
+  <% } %>
+  <% if (!_.isUndefined(i.checkbox)) { %>
+    <input class="checkbox inline" id="modal-<%= name %>-checkbox" 
+      type="checkbox" <%= (i.checkbox) ? 'checked' : '' %> />
+  <% } %>
+  </span>
+
+  <% if (!left) { %>
+  </div>
+  <% } %>
+  <% left = !left %>
+<% }) %>
+
+<% if (!left) { %>
+  </div>
+<% } %>
+
+</div>
+
+<div class="modal-footer">
+<% _.each(buttons, function(b, name) { %>
+  <button class="<%= b.class ? b.class : 'btn' %>" 
+    id="modal-<%= name %>-button">
+    <%= name.substr(0, 1).toUpperCase() + name.substr(1) %> 
+  </button>
+<% }) %>
+</div>

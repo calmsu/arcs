@@ -9,7 +9,7 @@ var relativeDate = (function(undefined){
       MONTH = YEAR / 12;
 
   var formats = [
-    [ 0.7 * MINUTE, 'just now' ],
+    [ 0.7 * MINUTE, 'seconds ago', SECOND],
     [ 1.5 * MINUTE, 'a minute ago' ],
     [ 60 * MINUTE, 'minutes ago', MINUTE ],
     [ 1.5 * HOUR, 'an hour ago' ],

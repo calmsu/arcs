@@ -2,10 +2,7 @@
 # ------------------
 class arcs.collections.HotspotMap extends Backbone.Collection
 
-    model: arcs.models.Hotspot
+  model: arcs.models.Hotspot
 
-    url: ->
-        arcs.baseURL + "resources/hotspots/" + arcs.resource.id
-
-    parse: (response) ->
-        return (r.Hotspot for r in response)
+  url: ->
+    arcs.baseURL + "resources/hotspots/" + arcs.resource.id

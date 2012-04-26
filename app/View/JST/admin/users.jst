@@ -1,0 +1,26 @@
+<table class="table table-striped table-bordered">
+  <tr>
+    <th>Name</th>
+    <th>Username</th>
+    <th>Email</th>
+    <th>Role</th>
+    <th>Actions</th>
+  </tr>
+<% _.each(users, function(u, i) { %>
+  <tr>
+    <td><%= u.name %></td>
+    <td><%= u.username %></td>
+    <td><%= u.email %></td>
+    <td>
+      <% if (u.role == 0) print('Admin') %>
+      <% if (u.role == 1) print('Sr. Researcher') %>
+      <% if (u.role == 2) print('Researcher') %>
+    <td>
+      <button id="delete-btn" class="btn btn-danger btn-mini "
+        data-id="<%= u.id %>">Delete</button>
+      <button id="edit-btn" class="btn btn-info btn-mini"
+        data-id="<%= u.id %>">Edit</button>
+    </td>
+  </tr>
+<% }) %>
+</table>

@@ -1,0 +1,101 @@
+// batch.less
+// ----------
+
+#batch-upload {
+  .arcs-form;
+  width: 700px;
+
+  .remove {
+    display: inline-block;
+    position: relative;
+    top: 1px;
+    width: 11px; 
+    height: 11px;
+    background-position: center -11px;
+    .opacity(70);
+    background-image: url("data:image/png;charset=utf-8;base64,iVBORw0KGgoAAAANSUhEUgAAAAsAAAAWCAYAAAAW5GZjAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAAb9JREFUeNqUUr1qAkEQ3j0khQp6kihaeGgEEa18gTQR0iRY+BaBSMDGwidIEUKqFL6BopgqBAJ5AMFGjUU0d4WHEvwJarvZ77gRIzGYgb1hZr+Z75vZ40IIzqTNZrPj8Xicn0wmmcViEXS73aaqqq+BQODG6/W+A8MBNk3zfDAY3C6Xy0O2ZS6X6zMSiVwHg8FHLjtq7Xb7RQKj7BeTzVCgJ5PJU2U0GhUk7REuMpkMi8fjFggeMeecrVYrFRId0CgTAgDDMFg4HLbA8IjJgHNgGEr0er0fQIphUmZAwdSUADUB4RFDsz3oSMF6CLzZkQqgGebz+Z75dDqNdTqdp13bgDmdTj2VSp0oWHg0Gr2UNH2Z/9o+yMv7K4/HY/C/XhDUfr//jl7QQVT9fp/V63VWqVRYt9tliUSCZbPZg1wux9Lp9PqFeK1Wu9A0DdXz7YM87i0FrVZLs4Fi1wmFQh/NZjOmVKvVgq7rR/QflMtlixGedjwcDlUpMQ9tbzalkAAB2/R297mNW+sT2wUbUnA//V/nYrH4QOBNABUQuFQq3TNMuc82sDVrz41G42yvPeODAwZQ0QzwiJEnzLcAAwBJ6WXlwoBgZAAAAABJRU5ErkJggg==");
+    &:hover {
+      .opacity(100);
+      cursor: pointer;
+    }
+  }
+
+  &.disabled {
+    .opacity(40);
+  }
+
+  .accordion-group {
+    margin-bottom: 10px;
+    border: 1px solid #d9d9d9;
+    .no-rounded();
+  }
+
+  .accordion-heading, 
+  .accordion-body {
+    background-color: #bbb;
+    border: 1px solid #888;
+    color: #000;
+  }
+
+  .accordion-heading {
+    border-bottom: none;
+  }
+
+  .accordion-inner {
+    border-top: 1px solid #888;
+  }
+
+  .accordion-body {
+    border-top: none;
+    select {
+      width: 130px;
+    }
+  }
+
+  .progress {
+    border: 1px solid #666;
+    .rounded-corners(0px);
+    float: right;
+    width: 150px;
+    margin-bottom: 0px;
+    .bar { .rounded-corners(0px); }
+  }
+
+  div.controls {
+    background-color: #bbb;
+    margin-left: -16px;
+    margin-right: -16px;
+    margin-bottom: -1px;
+    padding: 9px;
+    border: 1px solid #888;
+    .rounded-corners-bottom(5px);
+
+    span#progress-all {
+      float: right;
+      position: relative;
+      font-style: italic;
+      color: black;
+      right: 5px;
+      top: 7px;
+    }
+
+    // File input is hidden and overlayed with a button.
+    div#fileupload-wrapper {
+      width: 65px;
+      height: 20px;
+      cursor: pointer;
+      span {
+        float: left;
+        top: 5px;
+      }
+      input#fileupload {
+        cursor: pointer;
+        float: left;
+        .opacity(0);
+        height: 100%;
+        position: relative;
+        top: -20px;
+      }
+    }
+  }
+}

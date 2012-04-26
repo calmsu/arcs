@@ -1,0 +1,50 @@
+<table class="table table-striped table-bordered">
+  <tr>
+    <th>Job</th>
+    <th>Status</th>
+    <th>Lock</th>
+    <th>Created</th>
+    <th>Data</th>
+    <th>Error</th>
+    <th>Actions</th>
+  </tr>
+<% _.each(jobs, function(j, i) { %>
+  <tr>
+    <td><%= j.name %></td>
+    <td>
+      <% if (j.status == 0) { %>
+      <span class="label label-success">done</span>
+      <% } if (j.status == 1) { %>
+      <span class="label label-info">pending</span>
+      <% } if (j.status == 2) { %>
+      <span class="label label-warning has-error" rel="popover" data-original-title="Error"
+        data-content="<%= j.error %>">failing</span>
+      <% } if (j.status == 3) { %>
+      <span class="label label-important has-error" rel="popover" data-original-title="Error"
+        data-content="<%= j.error %>">failed</span>
+      <% } if (j.status == 4) { %>
+      <span class="label label-important has-error" rel="popover" data-original-title="Error"
+        data-content="<%= j.error %>">interrupted</span>
+      <% } %>
+    </td>
+    <td>
+    <% if (j.locked_by) { %>
+      <%= relativeDate(new Date(j.locked_at)) %> by <span class="label"><%= j.locked_by %></span> 
+    <% } %>
+    </td>
+    <td><%= relativeDate(new Date(j.created)) %></td>
+    <td class="data"><%= arcs.inflector.truncate(j.data, 50) %></td>
+    <td class="data"><%= arcs.inflector.truncate(j.error, 50) %></td>
+    <td>
+      <button id="show-btn" class="btn btn-mini"
+        data-id="<%= j.id %>">Show</button>
+      <button id="retry-btn" class="btn btn-mini"
+        data-id="<%= j.id %>">Retry</button>
+      <button id="release-btn" class="btn btn-mini"
+        data-id="<%= j.id %>">Release</button>
+      <button id="delete-btn" class="btn btn-danger btn-mini"
+        data-id="<%= j.id %>">Delete</button>
+    </td>
+  </tr>
+<% }) %>
+</table>

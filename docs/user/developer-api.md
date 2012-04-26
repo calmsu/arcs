@@ -1,248 +1,394 @@
-API Reference
-=============
-The ARCS API can be queried by sending the appropriate HTTP request to the 
-given URL. 
+API v1 Reference
+================
+We provide a REST API that lets you interact with ARCS using anything that can
+send an HTTP request. This makes it easy to write custom import and export
+scripts.
 
-Responses and Status Codes
---------------------------
-If the request is a `GET` and the request is authorized, the response
-will always be a JSON object. If the request is a `POST` or `DELETE`, the 
-response will be empty and the HTTP status code will reflect the result of the 
-operation. For reference, the relevant status codes are:
+>As we continue to develop ARCS and our API, we'll sometimes need to break old
+functionality. When this happens, we'll let you know, and update the changes 
+here.
 
-#### GET
+Schema
+------
+All request/response data is sent and received as JSON. We've tried to adhere
+to the HTTP specification defined in [RFC 2616][1].
 
-* `200` OK
-* `401` UNAUTHORIZED
-* `403` FORBIDDEN
-* `404` NOT FOUND
-* `500` SERVER ERROR
+### Requests
 
-#### POST
+You can make API requests using a number of programming languages. PHP, 
+Python, Ruby, JavaScript, and many others, have libraries for making 
+HTTP requests.
 
-* `200` OK
-* `201` CREATED
-* `202` ACCEPTED
-* `401` UNAUTHORIZED
-* `403` FORBIDDEN
-* `404` NOT FOUND
-* `500` SERVER ERROR
+Each API action expects a certain HTTP method. These methods, defined in 
+RFC 2616, can be referenced [here][2].
 
-#### DELETE
+When using the `POST` and `PUT` methods, the request's `Content-Type` should
+be set to `application/json`, and the body of the request must be JSON.
 
-* `204` OK
-* `401` NOT AUTHORIZED
-* `403` FORBIDDEN
-* `404` NOT FOUND
-* `500` SERVER ERROR
+For examples in this document, we'll use `curl`. The following request would
+create a new comment for the authenticated user:
 
-### Forbidden vs. Unauthorized
+    curl -X POST \
+      -H "Content-Type: application/json" \
+      -d '{"content": "Some comment", "resource_id": "4f7351c..."}' \
+      http://arcs.cal.msu.edu/comments
 
-When there is no user authenticated (and the request requires being 
-authenticated), a `401` is returned. If the user *is* authenticated, but not
-permitted to request the specified action, a `403` is returned.
+### Responses
 
-For further clarification, see this StackOverflow [answer][1].
+All responses will contain a JSON object. In most non-`GET` requests, this
+object will be empty. An example response to a `GET` request is below:
 
-### Accepted
+    {
+      "id": "4f136ac5-b264-485f-952e-343c54c5f7e9",
+      "user_id": "4f1366de-9188-4bc7-b9e8-2dc02308e057",
+      "sha": "9d9d991b3010de942b3c1633d556b1eec4bcfa64",
+      "public": true,
+      "file_name": "RS4883_67-ARC-001.pdf-1.jpeg",
+      "mime_type": "image/jpeg",
+      "title": "RS4883_67-ARC-001.pdf-1.jpeg",
+      "created": "2012-01-15 19:09:41",
+      "modified": "2012-01-15 19:09:41",
+      "url": "http://arcs.cal.msu.edu/arcs-data/9/.../RS4883_67-ARC-001.pdf-1.jpeg",
+      "thumb": "http://arcs.cal.msu.edu/arcs-data/9/.../thumb.png"}
+    }
 
-Some requested actions take longer to perform than a normal Request-Response
-loop allows. In these cases, ARCS will queue the action and it will be performed
-as soon as possible. The `202` code is returned in such a scenario--meaning
-it's been accepted, and we're working on it.
+### Authentication
 
+To access private resources, or make edits or deletions, you'll need to 
+authenticate your request. 
+
+You can do this by sending a `POST` to the login action, as shown below:
+
+    curl -X POST \
+      -H "Content-Type: application/json" \
+      -d '{"username": "ndreynolds", "password": "pAsSwOrD"}' \
+      http://arcs.cal.msu.edu/login
+
+>We plan to support authentication using OAuth2 in a later release.
+
+### Status Codes
+
+Each response is accompanied by an HTTP status code that indicates the result
+of the requested action. You can read about these in detail in [RFC 2616][3].
+The ones we've used frequently are also explained below:
+
+Status Code        | Explanation
+------------------ | -----------------------------------------------------------
+`200 Ok`           | We found the object(s) referenced by your URI, completed 
+                   | the action you've requested, and have included any relevant
+                   | information.
+`201 Created`      | Creating the object was successful.
+`202 Accepted`     | We've accepted your request, but it's not completed yet.
+                   | (We'll use this for long-running tasks like PDF splits.)
+`400 Bad Request`  | Your request wasn't formatted correctly. It's either 
+                   | missing information or is inappropriate.
+`401 Unauthorized` | You're not logged in.
+`403 Forbidden`    | You're logged in, but not allowed to do that.
+`404 Not Found`    | That object doesn't exist.
+`500 Server Error` | Something went wrong on our end. Let us know if this 
+                   | happens repeatedly.
 
 Resources
 ---------
 
-### Creating a new resource (`POST`)
+### Getting a resource by id
 
-    /resources
+    GET /resources/:id
 
-### Searching resources with a simple query (`GET`)
-
-    /resources/search/:query
-    /search/:query
-    
-### Searching resources with a faceted query (`POST`)
-
-    /resources/search
-    /search
-
-ARCS uses Visual Search for faceted searching. Results are resources that meet
-each facet. This functionality is also available through the API. To use it, 
-make a `POST` with a JSON array containing facet objects. For example:
-
-    [
-        {
-            "category": "user",
-            "value": "Nick Reynolds"
-        },
-        {
-            "category": "tag",
-            "value": "East Field",
-        }
-    ]
-
-An example request using `jQuery.ajax`:
-
-    $.ajax({
-        url: '/search',
-        type: 'POST',
-        contentType: 'application/json',
-        data: JSON.stringify(facets),
-        success: function(data) {
-            // do something
-        },
-        error: function() {
-            // do something
-        }
-    });
-
-The response will be an array of objects containing resources (and related user,
-tags, comments, and hotspots:
-
-    [
-        {
-            "Resource": {
-                "id": "4f1ee6c9-3fa0-469c-910c-3f6c2308e057",
-                "user_id":"4f1ee67a-5c5c-4f05-a8e0-3f6d2308e057",
-                "sha":"cc0ad4b316520b76a3892ee0f33588f7c9eadb80",
-                "public":true,
-                "file_name":"RS4887_71-ARC-001.pdf",
-                "mime_type":"application\/pdf",
-                "title":"Architecture 1971",
-                "created":"2012-01-24 12:13:45",
-                "modified":"2012-01-24 12:13:45",
-                "url":"http:\/\/arcs.dev.cal.msu.edu\/arcs-...",
-                "thumb":"http:\/\/arcs.dev.cal.msu.edu\/arc..."
-            },
-            "User": {
-                ...
-            },
-            "Tag": [],
-            "Comment": []
-        },
-        {
-            "Resource": {
-                ...
-            },
-            "User": {
-                ...
-            }
-        }
-    ]
-
-
-### Showing a specific resource (`GET`)
-
-    /resources/view/:id
-    /resource/:id
-
-If the resource exists and the request is authorized, a JSON object like
-this will be returned:
+**Response**   
+`200 Ok`
 
     {
-        "id": "4f136ac5-b264-485f-952e-343c54c5f7e9",
-        "user_id": "4f1366de-9188-4bc7-b9e8-2dc02308e057",
-        "sha": "9d9d991b3010de942b3c1633d556b1eec4bcfa64",
-        "public": true,
-        "file_name": "RS4883_67-ARC-001.pdf-1.jpeg",
-        "mime_type": "image/jpeg",
-        "title": "RS4883_67-ARC-001.pdf-1.jpeg",
-        "created": "2012-01-15 19:09:41",
-        "modified": "2012-01-15 19:09:41",
-        "url": "http://arcs.dev.cal.msu.edu/arcs-data/9/.../RS4883_67-ARC-001.pdf-1.jpeg",
-        "thumb": "http://arcs.dev.cal.msu.edu/arcs-data/9/.../thumb.png"}
+      "id": "4f136ac5-b264-485f-952e-343c54c5f7e9",
+      "user_id": "4f1366de-9188-4bc7-b9e8-2dc02308e057",
+      "sha": "9d9d991b3010de942b3c1633d556b1eec4bcfa64",
+      "public": true,
+      "file_name": "RS4883_67-ARC-001.pdf-1.jpeg",
+      "mime_type": "image/jpeg",
+      "title": "RS4883_67-ARC-001.pdf-1.jpeg",
+      "created": "2012-01-15 19:09:41",
+      "modified": "2012-01-15 19:09:41",
+      "url": "http://arcs.cal.msu.edu/arcs-data/9/.../RS4883_67-ARC-001.pdf-1.jpeg",
+      "thumb": "http://arcs.cal.msu.edu/arcs-data/9/.../thumb.png"}
+    }
+---
+
+### Creating a new resource
+
+    POST /resources
+
+**Input**
+
+Key      | Value
+---------|----------------------------------------------------
+`title`  | A title for the resource
+`public` | Whether or not the resource is publicly accessible.
+`url`    | Provide a url and we'll download the file.
+
+**Response**   
+`200 Ok`
+---
+
+### Searching resources with a simple query
+
+    GET /resources/search/:query
+
+**Response**    
+`200 Ok`
+    
+    [
+      {
+        "id": "4f1ee6c9-3fa0-469c-910c-3f6c2308e057",
+        "user_id":"4f1ee67a-5c5c-4f05-a8e0-3f6d2308e057",
+        "sha":"cc0ad4b316520b76a3892ee0f33588f7c9eadb80",
+        "public":true,
+        "file_name":"RS4887_71-ARC-001.pdf",
+        "mime_type":"application/pdf",
+        "title":"Architecture 1971-1",
+        "created":"2012-01-24 12:13:45",
+        "modified":"2012-01-24 12:13:45",
+        "url":"http://arcs.cal.msu.edu/arcs-...",
+        "thumb":"http://arcs.cal.msu.edu/arc..."
+      },
+      {
+        "id": "4f1ee6c9-3a57-469c-91743-3f6c2308e057",
+        "user_id":"4f1ee67a-5c5c-4f05-a8e0-3f6d2308e057",
+        "sha":"cc0ad4b316520b76a3892ee0f33588f7c9eadb80",
+        "public":true,
+        "file_name":"RS4887_71-ARC-002.pdf",
+        "mime_type":"application/pdf",
+        "title":"Architecture 1971-2",
+        "created":"2012-01-24 12:13:47",
+        "modified":"2012-01-24 12:13:47",
+        "url":"http://arcs.cal.msu.edu/arcs-...",
+        "thumb":"http://arcs.cal.msu.edu/arc..."
+      }
+    ]
+---
+
+### Searching resources with a faceted query
+
+    POST /resources/search
+
+**Input**
+
+Key        | Value
+-----------|----------------------------------------------------
+`category` | Facet category. See the Searching [documentation](searching).
+`value`    | The value you are testing for.
+
+Provide an array of facet objects. For example:
+
+    [
+      {
+        "category": "user",
+        "value": "Nick Reynolds"
+      },
+      {
+        "category": "keyword",
+        "value": "East Field",
+      }
+    ]
+
+**Response**     
+`200 Ok`
+
+    [
+      {
+        "id": "4f1ee6c9-3fa0-469c-910c-3f6c2308e057",
+        "user_id":"4f1ee67a-5c5c-4f05-a8e0-3f6d2308e057",
+        "sha":"cc0ad4b316520b76a3892ee0f33588f7c9eadb80",
+        "public":true,
+        "file_name":"RS4887_71-ARC-001.pdf",
+        "mime_type":"application/pdf",
+        "title":"Architecture 1971-1",
+        "created":"2012-01-24 12:13:45",
+        "modified":"2012-01-24 12:13:45",
+        "url":"http://arcs.cal.msu.edu/arcs-...",
+        "thumb":"http://arcs.cal.msu.edu/arc..."
+      },
+      {
+        "id": "4f1ee6c9-3a57-469c-91743-3f6c2308e057",
+        "user_id":"4f1ee67a-5c5c-4f05-a8e0-3f6d2308e057",
+        "sha":"cc0ad4b316520b76a3892ee0f33588f7c9eadb80",
+        "public":true,
+        "file_name":"RS4887_71-ARC-002.pdf",
+        "mime_type":"application/pdf",
+        "title":"Architecture 1971-2",
+        "created":"2012-01-24 12:13:47",
+        "modified":"2012-01-24 12:13:47",
+        "url":"http://arcs.cal.msu.edu/arcs-...",
+        "thumb":"http://arcs.cal.msu.edu/arc..."
+      }
+    ]
+---
+
+### Deleting a resource by id
+
+    DELETE /resources/:id
+
+**Response**    
+`204 Deleted`
+---
+ 
+Metadata
+--------
+
+### Getting metadata for a resource
+
+    GET /resources/metadata/:id
+
+**Response**  
+`200 Ok`
+
+    {
+      "language": "Hebrew",
+      "description": "An artifact",
+      "location": "Egypt",
+      "creator": "Nick Reynolds"
+    }
+---
+
+### Setting metadata for a resource
+
+    POST /resources/metadata/:id
+
+**Input**
+
+    {
+      "copyright": "2012, Michigan State University",
+      "language": "English"
+      "location": "East Lansing, MI"
     }
 
-### Deleting a resource (`DELETE`)
-
-    /resources/:id
-
-### Listing resources uploaded by a specific user (`GET`)
-
-    /resources/users/:id
- 
- 
-Collections
------------
+**Response**  
+`201 Created`
+---
  
 Comments
 --------
 
-### Creating a new comment (`POST`)
+### Getting a comment by id
 
-    /comments
+    GET /comments/:id
 
-The `POST` should contain a JSON object with the following information:
+**Response**    
+`200 Ok`
+
+    {
+      "id": "4f136ac5-b264-485f-952e-343c54c5f7e9",
+      "content": "This is a sample comment.",
+      "created": "2012-01-15 19:09:41",
+      "user_id": "4f1366de-9188-4bc7-b9e8-2dc02308e057"
+      "resource_id":
+    }
+---
+
+### Creating a new comment
+
+    POST /comments
+
+**Input**
+
+Key           | Value
+--------------|----------------------------------------------------
+`resource_id` | The id of the resource being commented on.
+`content`     | Comment, as a string.
+
+For example:
     
     {
-        "resource_id": "4f136ac5-b264-485f-952e-343c54c5f7e9",
-        "content": "This a sample comment."
+      "resource_id": "4f136ac5-b264-485f-952e-343c54c5f7e9",
+      "content": "This a sample comment."
     }
 
-If all goes well, a `200` status code is returned.
+**Response**    
+`201 Created`
+---
 
-### Deleting a comment (`DELETE`)
+### Deleting a comment
 
-    /comments/:id 
+    DELETE /comments/:id 
 
-After sending a `DELETE` to the url above, if deleting the comment was 
-successful, a `204` status will be returned.
+**Response**     
+`204 Deleted`
+---
 
-### Showing a specific comment (`GET`)
+Keywords
+--------
 
-    /comments/:id 
+### Getting a keyword by id
 
-If the comment exists and the request is authorized, a JSON object like
-this will be returned:
+    GET /keywords/:id 
 
-    {
-        "id": "4f136ac5-b264-485f-952e-343c54c5f7e9",
-        "content": "This is a sample comment.",
-        "created": "2012-01-15 19:09:41",
-        "user_id": "4f1366de-9188-4bc7-b9e8-2dc02308e057"
-        "resource_id":
-    }
+**Response**     
+`200 Ok`
 
+    STUB
+---
 
-Tags
-----
+### Getting keywords for a resource
 
-### Creating a new tag (`POST`)
+    GET /resource/keywords/:id
 
-    /tags
+**Response**
+`200 Ok`
 
-The `POST` should contain a JSON object with the following information:
+    STUB
+
+---
+
+### Creating a new keyword
+
+    POST /keywords
+
+**Input**
+
+Key           | Value
+--------------|----------------------------------------------------
+`resource_id` | The id of the resource that the keyword will belong 
+              | to.
+`keyword`     | Keyword string.
     
+For example:
+
     {
-        "tag": "East-Field",
-        "resource_id": "4f136ac5-b264-485f-952e-343c54c5f7e9"
+      "resource_id": "4f136ac5-b264-485f-952e-343c54c5f7e9",
+      "keyword": "East-Field"
     }
 
-### Updating a tag (`PUT`)
+**Response**     
+`201 Created`
+---
 
-    /tags/:id
+### Updating a keyword
 
-The `POST` should contain a JSON object with information that will be updated:
+    POST|PUT /keywords/:id
+
+**Input**
     
+Key       | Value
+----------|-----------------
+`keyword` | Keyword string.
+
+For example:
+
     {
-        "tag": "West-Field"
+      "keyword": "West-Field"
     }
 
-### Deleting a tag (`DELETE`)
+**Response**   
+`200 Ok`
+---
 
-    /tags/:id
+### Deleting a keyword
 
-After sending a `DELETE` to the url above, if deleting the tag was 
-successful, a `204` status will be returned. 
+    DELETE /keywords/:id
 
-### Showing a specific tag (`GET`)
+**Response**    
+`204 Deleted`
+---
 
-    /tags/:id 
-
-After sending a `GET` to the url above, a JSON object containing the tag's
-properties will be returned.
-
-[1]:http://stackoverflow.com/questions/3297048/403-forbidden-vs-401-unauthorized-http-responses#answer-6937030
+[1]:http://www.w3.org/Protocols/rfc2616/rfc2616.html
+[2]:http://www.w3.org/Protocols/rfc2616/rfc2616-sec9.html#sec9
+[3]:http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10

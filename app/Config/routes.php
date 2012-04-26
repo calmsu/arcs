@@ -22,8 +22,8 @@
  */
 
     # Home page
-    Router::redirect('/', 
-        array('controller' => 'resources', 'action' => 'search')
+    Router::connect('/', 
+        array('controller' => 'pages', 'action' => 'display', 'home')
     );
 
     # Error pages
@@ -40,8 +40,8 @@
     );
 
     # Signup
-    Router::connect('/signup', 
-        array('controller' => 'users', 'action' => 'add')
+    Router::connect('/register/*', 
+        array('controller' => 'users', 'action' => 'register')
     );
 
     # Login/logout
@@ -54,23 +54,23 @@
 
     # Upload
     Router::connect('/upload',
-        array('controller' => 'resources', 'action' => 'add')
+        array('controller' => 'uploads', 'action' => 'batch')
     );
 
     # Resource, collection, and user singular aliases
     Router::connect('/resource/*', 
-        array('controller' => 'resources', 'action' => 'view')
+        array('controller' => 'resources', 'action' => 'viewer')
     );
     Router::connect('/collection/*', 
-        array('controller' => 'collections', 'action' => 'view')
+        array('controller' => 'collections', 'action' => 'viewer')
     );
     Router::connect('/user/*', 
-        array('controller' => 'users', 'action' => 'view')
+        array('controller' => 'users', 'action' => 'profile')
     );
 
     # Search
     Router::connect('/search/**', 
-        array('controller' => 'resources', 'action' => 'search')
+        array('controller' => 'pages', 'action' => 'search')
     );
 
     # Search must have a trailing slash, for the client-side code's
@@ -78,22 +78,8 @@
     Router::redirect('/search', '/search/');
 
     # Configuration status
-    Router::connect('/status',
-        array('controller' => 'pages', 'action' => 'status')
-    );
-
-    # Resource hasMany routes
-    Router::connect('/resources/:id/comments',
-        array('controller' => 'resources', 'action' => 'comments'),
-        array('id' => '[\d]+')
-    );
-    Router::connect('/resources/:id/tags',
-        array('controller' => 'resources', 'action' => 'tags'),
-        array('id' => '[\d]+')
-    );
-    Router::connect('/resources/:id/hotspots',
-        array('controller' => 'resources', 'action' => 'hotspots'),
-        array('id' => '[\d]+')
+    Router::redirect('/admin',
+        array('controller' => 'admin', 'action' => 'status')
     );
 
     # Pages routes
@@ -102,22 +88,25 @@
     );
 
     # Docs routes
-    Router::connect('/docs',
-        array('controller' => 'docs', 'action' => 'display', 'index')
+    Router::connect('/help',
+        array('controller' => 'help', 'action' => 'display', 'index')
     );
-    Router::connect('/docs/*', 
-        array('controller' => 'docs', 'action' => 'display')
+    Router::connect('/help/*', 
+        array('controller' => 'help', 'action' => 'display')
     );
 
     # Map resources for the ajax-only controllers
     Router::mapResources(array(
+        'resources',
         'comments',
-        'tags',
+        'keywords',
         'hotspots',
-        'bookmarks'
+        'bookmarks',
+        'users',
+        'flags',
+        'jobs',
+        'metadata'
     ));
-
-    # Parse extensions (not super useful for us)
     Router::parseExtensions();
 
 	CakePlugin::routes();

@@ -1,16 +1,15 @@
 # collection.coffee
 # -----------------
-# Collection model
-#
-# Name might be confusing, but it refers to an ARCS Collection,
-# which, for those playing at home, is also a server-side model with
-# definable characteristics.
+# The name might be confusing, but it refers the server-side model
+# which maintains information about a resource collection (e.g. title,
+# description)
 class arcs.models.Collection extends Backbone.Model
-    defaults: 
-        id: null
-        title: 'Temporary Collection'
-        description: ''
-        public: false
-        members: []
+  defaults: 
+    id: null
+    title: 'Temporary Collection'
+    description: ''
+    public: false
+    members: []
 
-    urlRoot: arcs.baseURL + 'collections/create'
+  # TODO: fix base url
+  urlRoot: arcs.baseURL + 'collections/create'

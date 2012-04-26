@@ -1,0 +1,41 @@
+// annotations.less
+// ----------------
+
+.annotation, 
+.annotation-caption,
+.keyword {
+  font-size: 13px;
+  line-height: 14px;
+  margin: 5px 20px 0;
+  &:hover {
+    cursor: pointer;
+  }
+}
+
+.annotation-caption {
+  margin: 0 30px;
+}
+
+.hotspot {
+  position: absolute;
+  background: #222;
+  border: 2px dashed #000;
+  .opacity(20);
+  &:hover {
+    .opacity(30);
+  }
+  &.active {
+    background: #08c;
+    border: 1px solid darken(#08c, 10%);
+  }
+}
+
+.keyword-link {
+  font-family: Monospace;
+  padding: 1px;
+  border: 1px solid #888;
+  background-color: #ddd;
+  .text-shadow(#fff);
+  .rounded-corners(2px);
+  color: #444;
+}

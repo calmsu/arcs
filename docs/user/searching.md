@@ -1,5 +1,5 @@
-Searching the ARCS catalog
-==========================
+Searching ARCS
+==============
 We've tried to make it easy to find resources in ARCS, even when you
 know very little about them. 
 
@@ -18,7 +18,7 @@ Facet         | Description
               |
 `caption`     | Matches annotation caption text.
               |
-`collection`\*| Matches resources within a collection. For example:
+`collection`  | Matches resources within a collection. For example:
               | `collection: Bones 1980's`
               |
 `comment`     | Matches comment text.
@@ -38,8 +38,8 @@ Facet         | Description
 `modified`    | Matches the date on which the resource was last 
               | changed. 
               |
-`tag`         | Matches resources with a tag. For example: 
-              | `tag: east-field`
+`keyword`     | Matches resources with a keyword. For example: 
+              | `keyword: east-field`
               |
 `title`       | Matches the title of the resource. For example:
               | `title: Bones 1989`
@@ -59,3 +59,7 @@ Auto-completion
 ---------------
 Facet values will be auto-completed when possible. For certain facets,
 like `user`, we'll only auto-complete the values if you're logged in.
+
+Boolean Logic
+-------------
+stub

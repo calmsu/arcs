@@ -1,0 +1,5 @@
+#!/usr/bin/env php
+<?php
+const DS = DIRECTORY_SEPARATOR;
+require(dirname(dirname(__FILE__)) . DS .  'library' . DS .  'CommandLine.php');
+new \Relic\CommandLine();

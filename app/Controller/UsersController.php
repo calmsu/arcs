@@ -2,20 +2,19 @@
 /**
  * Users Controller
  * 
- * @package      ARCS
- * @copyright    Copyright 2012, Michigan State University Board of Trustees
+ * @package    ARCS
+ * @link       http://github.com/calmsu/arcs
+ * @copyright  Copyright 2012, Michigan State University Board of Trustees
+ * @license    BSD License (http://www.opensource.org/licenses/bsd-license.php)
  */
 class UsersController extends AppController {
     public $name = 'Users';
 
     public function beforeFilter() {
         parent::beforeFilter();
-        $this->Auth->allow('add', 'login');
-        
-        $this->set('toolbar', array(
-            'logo' => true,
-            'buttons' => array()
-        ));
+        $this->Auth->allow('signup', 'login', 'register', 'reset_password');
+        $this->User->flatten = true;
+        $this->User->recursive = -1;
     }
 
     /**
@@ -33,35 +32,56 @@ class UsersController extends AppController {
         ))));
     }
 
-    /**
-     * Add a new user.
-     */
     public function add() {
-        if ($this->Auth->loggedIn()) {
-            $this->Session->setFlash("You can't signup while logged in.", 
-                                     'flash_error');
-            $this->redirect('/');
-        }
-        if ($this->request->is('post') && $this->data) {
-            # Save the new user.
-            if ($this->User->save($this->data)) {
-                # Log them in after signup.
-                $id = $this->User->id;
-                $this->request->data['User'] = array_merge(
-                    $this->request->data["User"], 
-                    array('id' => $id)
-                );
-                $this->Auth->login($this->request->data['User']);
-                # Redirect home.
-                $this->redirect('/');
-            }
-        }
+        if (!($this->request->is('post') && $this->request->data))
+            return $this->json(400);
+        if ($this->Access->isAdmin())
+            $this->User->permit('role');
+        if (!$this->User->add($this->request->data)) return $this->json(400);
+        $this->json(201, $this->User->findById($this->User->id));
+    }
+
+    /**
+     * Edit a user.
+     *
+     * @param string $id   user id
+     */
+    public function edit($id=null) {
+        if (!($this->request->is('put') || $this->request->is('post'))) 
+            return $this->json(405);
+        if (!$this->request->data || !$id) return $this->json(400);
+        $user = $this->User->read(null, $id);
+        if (!$user) return $this->json(404);
+        # Must be editing own account, or an admin.
+        if (!($this->User->id == $this->Auth->user('id') || $this->Access->isAdmin()))
+            return $this->json(403);
+        # Only admins can change user roles.
+        if ($this->Access->isAdmin()) 
+            $this->User->permit('role');
+        if (!$this->User->add($this->request->data)) return $this->json(500);
+        # Update the Auth Session var, if necessary.
+        if ($id == $this->Auth->user('id'))
+            $this->Session->write('Auth.User', $this->User->findById($id));
+        $this->json(200, $this->User->findById($id));
+    }
+
+    public function delete($id=null) {
+        if (!$this->request->is('delete')) return $this->json(405);
+        if (!$this->Access->isAdmin()) return $this->json(403);
+        if (!$this->User->findById($id)) return $this->json(404);
+        if (!$this->User->delete($id)) return $this->json(500);
+        $this->json(204);
     }
 
     /**
      * Display the login form or authenticate a POSTed form.
+     *
+     * @param string $id   user id
      */
     public function login() {
+        $this->set('toolbar', false);
+        $this->set('footer', false);
+        $this->User->flatten = false;
         $redirect = $this->Session->read('redirect');
         if ($redirect) {
             $this->Session->write('Auth.redirect', $redirect);
@@ -85,12 +105,84 @@ class UsersController extends AppController {
     }
 
     /**
-     * Display information about a user.
-     *
-     * @param ref  username or id of an existing user
+     * Send an invite email and set up a skeleton account.
      */
-    public function view($ref) {
-        $user = $this->User->findByRef($ref);
+    public function invite() {
+        if (!$this->Access->isAdmin()) throw new ForbiddenException();
+        if (!$this->request->is('post')) throw new MethodNotAllowedException();
+        $data = $this->request->data;
+        if (!($data && $data['email'] && $data['role'])) 
+            throw new BadRequestException();
+        App::uses('String', 'Utility');
+        $token = String::uuid();
+        $this->User->permit('activation', 'role');
+        $this->User->add(array(
+            'email' => $data['email'],
+            'role' => $data['role'],
+            'activation' => $token
+        ));
+        $this->Job->enqueue('email', array(
+            'to' => $data['email'],
+            'subject' => 'Welcome to ARCS',
+            'template' => 'welcome',
+            'vars' => array(
+                'activation' => $this->baseURL() . '/register/' . $token
+            )
+        ));
+        $this->json(202);
+    }
+
+    public function register($activation) {
+        if (!$activation) throw new BadRequestException();
+        $user = $this->User->findByActivation($activation);
+        if (!$user) throw new NotFoundException();
+        if ($this->request->is('post')) {
+            $this->User->read(null, $user['id']);
+            $this->User->set(array(
+                'password' => $this->request->data['User']['password'],
+                'username' => $this->request->data['User']['username'],
+                'name' => $this->request->data['User']['name'],
+                'activation' => null
+            ));
+            $this->User->save();
+            $user = array_merge($user, $this->request->data['User']);
+            $this->Auth->login($user);
+            $this->redirect('/');
+        } else {
+            $this->set(array(
+                'email' => $user['email'],
+                'gravatar' => $user['gravatar']
+            ));
+        }
+    }
+
+    /**
+     * Display the user's profile.
+     *
+     * @param string $ref  username or id of an existing user
+     */
+    public function profile($ref) {
+        $this->User->flatten = false;
+        $this->User->recursive = 1;
+        $user = $this->User->find('first', array(
+            'conditions' => array(
+                'OR' => array('User.username' => $ref, 'User.id' => $ref)
+            ),
+            'contain' => array(
+                'Resource' => array(
+                    'limit' => 30
+                ),
+                'Hotspot' => array(
+                    'limit' => 30
+                ),
+                'Collection' => array(
+                    'limit' => 30
+                ),
+                'Comment' => array(
+                    'limit' => 30
+                )
+            )
+        ));
         if (!$user) {
             $this->redirect('404');
         }
@@ -102,12 +194,13 @@ class UsersController extends AppController {
      * autocompletion purposes. Responds only to ajax requests.
      */
     public function complete() {
-        if ($this->request->is('ajax')) {
-            $this->jsonResponse(200, $this->User->find('list', array(
-                'fields' => array('User.name')
-            )));
-        } else {
-            $this->redirect('/404');
-        }
+        if (!$this->request->is('get')) return $this->json(405);
+        return $this->json(200, $this->User->complete('User.name'));
+    }
+
+    public function email_test() {
+        $this->autoRender = false;
+        $email = new CakeEmail('default');
+        $email->to('ndreynolds@gmail.com')->subject('Hello')->send('Hi Nick.');
     }
 }

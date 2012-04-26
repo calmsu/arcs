@@ -1,9 +1,6 @@
 #!/usr/bin/env bash
 #
-# Does pending thumbnail and PDF process jobs.
-# The actual script is located at $ARCS/app/Console/Command/WorkerShell.php
-#
-# Probably needs to be run as the web-server user or root.
+# Run the ARCS worker.
 
 DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
-${DIR}/../app/Console/cake worker
+${DIR}/cake worker $@

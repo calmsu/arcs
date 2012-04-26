@@ -29,3 +29,6 @@ App::uses('IniReader', 'Configure', 'Security');
 Configure::config('default', new IniReader(APP . 'Config' . DS));
 Configure::load('arcs');
 Configure::load('assets');
+define("TWIG_VIEW_CACHE", APP . 'tmp');
+define("LIB", CORE_PATH);
+CakePlugin::load('TwigView');

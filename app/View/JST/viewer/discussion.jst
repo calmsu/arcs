@@ -1,0 +1,15 @@
+<% _.each(comments, function(c) { %>
+<div class="comment-wrapper" id="comment-<%= c.id %>">
+  <div class="comment-voice thumbnail">
+    <img class="user-thmb" src="http://gravatar.com/avatar/<%= c.gravatar %>?s=40"/>
+  </div>
+  <div class="comment-header">
+    <a class="name subtle" href="<%= arcs.baseURL + 'user/' + c.username %>">
+      <%= c.name %>
+    </a>
+    commented 
+    <span class="time"><%= relativeDate(new Date(c.created)) %></span>
+  </div>
+  <div class="comment"><%- c.content %></div>
+</div>
+<% }) %>

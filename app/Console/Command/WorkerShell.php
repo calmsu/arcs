@@ -1,179 +1,131 @@
-<?php
+<?php 
 
+App::uses('Inflector', 'Core');
 class WorkerShell extends AppShell {
 
-    public $uses = array('Task', 'Resource', 'Membership');
-    public $tasks = array('PDF');
-
-    public function main() {
-        # We look for open tasks each time the loop executes, so
-        # it should be relatively thread-safe.
-        
-        while (true) {
-            # Find a new task...
-            $task = $this->Task->find('first', array(
-                'conditions' => array(
-                    'Task.status' => 1, 
-                    'Task.in_progress' => false
-            )));
-            # ...or die.
-            if (!$task) {
-                return;
-            }
-            
-            $task = $task['Task'];
-
-            # Set task as in-progress.
-            $this->Task->read(null, $task['id']);
-            $this->Task->set('in_progress', true);
-            $this->Task->save();
-
-            # Debug.
-            $this->out("Task: " .  $task['id'] .  " (" . $task['job'] . ")");
-
-            # Delegate.
-            $job = $task['job'];
-            switch ($job) {
-                case "thumb":
-                    $success = $this->makeThumb($task['resource_id']);
-                    break;
-                case "pdf_split":
-                    $success = $this->splitPDF($task['resource_id'], 
-                                               $task['data']);
-                    break;
-            }
-
-            # Debug that it's done.
-            if ($success) {
-                $this->out('Done.');
-            }
-
-            # Save the task return status
-            $this->Task->set('status', ($success ? 0 : 2));
-            $this->Task->set('in_progress', false);
-            $this->Task->save();
-        }
-    }
+    public $uses = array('Job');
 
     /**
-     * Makes a thumbnail for a given resource, if possible.
+     * Default wait time (in server mode) before re-checking the Job queue.
      */
-    public function makeThumb($id, $width=100, $height=100) {
-        $resource = $this->Resource->findById($id);
-        $resource = $resource['Resource'];
-
-        $src = $this->Resource->path(
-            $resource['sha'],
-            $resource['file_name']
-        );
-        $dst = $this->Resource->path($resource['sha'], 'thumb.png');
-
-        # If it's a PDF, add an index of 0 to the path.
-        # ImageMagick will then make a thumb from the first page. 
-        if ($resource['mime_type'] == 'application/pdf') {
-            $src .= '[0]';
-        }
-
-        # Fire up an Imagick instance
-		$imagick = new Imagick();
-		try {
-			$imagick->readimage($src);
-		} catch (Exception $e){
-            $this->out("Reading image failed.\n");
-			return false; 
-		}
-
-        # Scale it.
-		$imagick->setImageFormat('png');
-        $imagick->scaleImage($width, $height, true);
-		
-        # Write it.
-		if (!$imagick->writeImage($dst)) {
-            $this->out("Writing thumbnail failed.\n");
-			return false;
-		}
-
-        # Return successful.
-        return true;
-    }
+    public $sleep     = 5;
 
     /**
-     * Converts a single PDF resource into a collection of resources 
-     * (as JPEGs)--one for each page of the PDF.
+     * Default log level.
+     */
+    public $logLevel  = 1;
+
+    /**
+     * Log severity levels
+     */
+    const CRITICAL = 4;
+    const    ERROR = 3;
+    const     WARN = 2;
+    const     INFO = 1;
+    const    DEBUG = 0;
+
+    /**
+     * Checks the queue and delegates jobs.
      *
-     * @param id              resource id of the PDF
-     * @param collection_id   id of the collection to fill. (This method
-     *                        doesn't create one.)
+     * @return void
      */
-    public function splitPDF($id, $collection_id) {
+    public function main() {
+        while (true) {
+            # Find a new job...
+            $job = $this->Job->pop();
+            # ...or if there aren't any:
+            if (!$job) {
+                $this->log("Failed to find a job.", self::DEBUG);
+                if (!$this->params['server']) 
+                    return $this->log("Shutting down.", self::INFO);
+                sleep($this->sleep);
+                continue;
+            }
 
-        # Find the PDF resource.
-        $resource_arr = $this->Resource->findById($id);
-        $resource = $resource_arr['Resource'];
+            $id = $job['id'];
+            $this->log("Starting work on $id ({$job['name']})", self::INFO);
 
-        # If it's not a PDF, return unsucessful.
-        if (!($resource['mime_type'] == 'application/pdf')) return false;
+            # Try to lock the job.
+            if (!$this->Job->lock($id, $this->name)) {
+                $this->log(debug($this->Job->findById($id)), self::ERROR);
+                $this->log("Could not acquire a lock on $id", self::ERROR);
+                continue;
+            }
 
-        # Get and set its path.
-        $resource['path'] = $this->Resource->path(
-            $resource['sha'], 
-            $resource['file_name']
-        );
+            $this->log("Acquired lock on $id ({$job['name']})", self::INFO);
 
-        # Get the page resolution.
-        $pdfinfo = $this->PDF->getInfo($resource['path']);
-        $resolution = $this->PDF->getPageResolution($pdfinfo);
-
-        # For each page in the PDF:
-        for ($page=1; $page<=$pdfinfo['Pages']; $page++) {
-
-            # Output our progress
-            $this->out("$page/{$pdfinfo['Pages']}");
-
-            # Make a JPEG for the PDF page.
-            #
-            # We'll write it to a tmp file so we can later use the Resource
-            # model's createFile method as if the file was uploaded.
-            $tmp_file = tempnam(sys_get_temp_dir(), 'ARCS');
-            $this->PDF->processPage(
-                $page, // page number
-                $resource['path'], // path to the PDF
-                $tmp_file, // path to our tmp file
-                $resolution // page resolution
-            );
-
-            # Move the file into place and get a SHA.
-            #
-            # The name is just the PDF file name plus "-pX.jpeg"
-            $fname = rtrim($resource['file_name'], '.pdf') . "-p$page.jpeg";
-            $sha = $this->Resource->createFile($tmp_file, $fname);
-
-            # Save the resource.
-            $this->Resource->save(array(
-                'Resource' => array(
-                    'sha' => $sha,
-                    'title' => $resource['title'] . "-p$page",
-                    'public' => $resource['public'],
-                    'file_name' => $fname,
-                    'file_size' => $this->Resource->size($sha, $fname),
-                    'mime_type' => 'image/jpeg',
-                    'user_id' => $resource['user_id']
-            )));
-
-            # Save the collection membership.
-            $this->Membership->save(array(
-                'Membership' => array(
-                    'resource_id' => $this->Resource->id,
-                    'collection_id' => $collection_id
-            )));
-
-            # Make a thumbnail for it.
-            $this->makeThumb($this->Resource->id);
-
-            # Reset the Resource and Membership models for the next round.
-            $this->Resource->create();
-            $this->Membership->create();
+            # Dispatch the job.
+            try {
+                # We're inflecting the job name to a Task class name.
+                # (e.g. split_pdf => SplitPdf)
+                $name = Inflector::camelize($job['name']);
+                $task = $this->Tasks->load($name);
+                $task->execute($job['data']);
+                $this->Job->finish($id);
+                $this->log("Finished work on $id ({$job['name']})", self::INFO);
+            } catch (Exception $e) {
+                $this->Job->finishWithError($id, $e->getMessage());
+                $this->log("Error on $id ({$job['name']})", self::ERROR);
+            }
         }
-        return true;
+    }
+
+    /**
+     * Prints out the startup message.
+     *
+     * @return void
+     */
+    public function startup() {
+        $this->name = $this->getName();
+        if (isset($this->params['debug'])) 
+            $this->logLevel = $this->params['debug'];
+        $this->log('Starting up...', self::INFO);
+    }
+
+    /**
+     * Get the name of the worker, which is a concatenation of the system's
+     * hostname, PID and any labels.
+     *
+     * @return string 
+     */
+    public function getName() {
+        return trim(`hostname`) . ':' . getmypid() .
+            (isset($this->params['label']) ? " ({$this->params['label']})" : '');
+    }
+
+    /**
+     * Log a message to STDOUT, if the severity is greater than or equal to the
+     * configured log level.
+     *
+     * @param string $msg
+     * @param int $severity
+     */
+    public function log($msg, $severity=self::CRITICAL) {
+        if ($severity >= $this->logLevel)
+            printf("[%s] [%s] %s\n", date('r'), $this->name, $msg);
+    }
+
+    /**
+     * Set up the option parser.
+     */
+    public function getOptionParser() {
+        $parser = parent::getOptionParser();
+        $parser->addOptions(array(
+            'server' => array(
+                'short' => 's',
+                'help' => 'Run the worker continuously, checking for new jobs ' .
+                    'on the configured interval.',
+                'boolean' => true
+            ),
+            'label' => array(
+                'short' => 'l',
+                'help' => 'A label for the worker that will be used in debug messages.'
+            ),
+            'debug' => array(
+                'short' => 'd',
+                'help' => 'Set the desired log level (0-4).'
+            )
+        ));
+        return $parser;
     }
 }

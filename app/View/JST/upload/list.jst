@@ -1,0 +1,34 @@
+<div class="accordion-group upload" data-id="<%= cid %>">
+  <div class="accordion-heading">
+    <div class="accordion-toggle">
+      <% if (arcs.mime.isImage(type)) { %>
+        <i class="icon-picture"></i>
+      <% } else if (arcs.mime.isVideo(type)) { %>
+        <i class="icon-film"></i>
+      <% } else { %>
+        <i class="icon-file"></i>
+      <% } %>
+      <%= name %> &nbsp;&nbsp;
+      <em><%= arcs.utils.convertBytes(size) %></em> &nbsp;&nbsp;
+      <div class="remove"></div>
+      <span class="progress">
+        <div class="bar" style="width: <%= progress %>%"></div>
+      </span>
+      <span id="progress-done" class="pull-right" style="display:none">
+        <i class="icon-ok"></i> Done
+      </span>
+    </div>
+  </div>
+  <div class="accordion-body collapse in">
+    <div class="accordion-inner">
+      <input type="text" id="upload-title" placeholder="Title" />
+      <input type="text" id="upload-identifier" placeholder="Identifier" />
+      <select id="upload-type" style="display:inline-block">
+        <option disabled selected>Choose Type...</option>
+      <% _.each(arcs.config.types, function(help, type) { %>
+        <option><%= type %></option>
+      <% }) %>
+      </select>
+    </div>
+  </div>
+</div>

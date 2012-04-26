@@ -2,30 +2,25 @@
 /**
  * MetaResources controller.
  *
- * This controller will only respond to ajax requests. 
+ * The MetaResource controller is extended in ARCS and used as a template for
+ * RESTful actions. It doesn't use views--all data is sent and received as
+ * JSON.
  *
- * The MetaResource controller is extended in ARCS to provide the common 
- * functionality needed by the meta-resources (e.g. Comments, Tags, Hotspots).
- *
- * By default, the Auth component is configured to block unauthenticated 
- * requests to the add and delete actions. The view action is, however, allowed.
- * This behavior may be overriden by a sub-class in the beforeFilter, just be 
- * sure to call the parent beforeFilter first.
- *
- * @package      ARCS
- * @copyright    Copyright 2012, Michigan State University Board of Trustees
+ * @package    ARCS
+ * @link       http://github.com/calmsu/arcs
+ * @copyright  Copyright 2012, Michigan State University Board of Trustees
+ * @license    BSD License (http://www.opensource.org/licenses/bsd-license.php)
  */
 class MetaResourcesController extends AppController {
 
     public function beforeFilter() {
         parent::beforeFilter();
-        if (!$this->request->is('ajax')) {
-            # this controller only accepts ajax requests.
-            $this->response->statusCode(404);
-            $this->redirect('/404');
-        }
-        $this->RequestHandler->addInputType('json', array('json_decode', true));
         $this->Auth->allow('view');
+        $model = $this->modelClass;
+        if (!isset($this->request->query['related'])) {
+            $this->$model->recursive = -1;
+            $this->$model->flatten = true;
+        }
     }
 
     /**
@@ -33,41 +28,51 @@ class MetaResourcesController extends AppController {
      */
     public function add() {
         $model = $this->modelClass;
-        if ($this->request->data) {
-            $data = array($model => $this->request->data);
-            $data[$model]['user_id'] = $this->Auth->user('id');
-            if ($this->$model->save($data)) {
-                return $this->jsonResponse(201);
-            } 
-        } 
-        # jsonResponse is defined in AppController
-        return $this->jsonResponse(400);
+        if (!$this->request->data) throw new NotFoundException;
+        # Temporarily whitelist the user_id field.
+        $this->$model->permit('user_id');
+        $this->request->data['user_id'] = $this->Auth->user('id');
+        if (!$this->$model->add($this->request->data)) 
+            throw new InternalErrorException();
+        $this->json(201, $this->$model->findById($this->$model->id));
+    }
+
+    /**
+     * Edit a meta-resource
+     */
+    public function edit($id) {
+        $model = $this->modelClass;
+        $this->$model->read(null, $id);
+        if (!$this->$model->exists()) throw new NotFoundException();
+        if (!$this->request->data) throw new BadRequestException();
+        if (!($this->request->is('put') || $this->request->is('post'))) 
+            throw new MethodNotAllowedException();
+        if (!$this->$model->add($this->request->data)) 
+            throw new InternalErrorException();
+        $this->json(200);
     }
 
     /**
      * View a meta-resource
      *
-     * @param id
+     * @param string $id
      */
     public function view($id) {
         $model = $this->modelClass;
         $result = $this->$model->findById($id);
-        if (!$result) {
-            return $this->jsonResponse(404);
-        }
-        return $this->jsonResponse(200, $result);
+        if (!$result) throw new NotFoundException(); 
+        $this->json(200, $result);
     }
 
     /**
      * Delete a meta-resource
      *
-     * @param id
+     * @param string $id
      */
     public function delete($id) {
         $model = $this->modelClass;
-        if ($this->$model->delete($id)) {
-            return $this->jsonResponse(204);
-        } 
-        return $this->jsonResponse(500);
+        if (!$this->$model->findById($id)) throw new NotFoundException();
+        if (!$this->$model->delete($id)) throw new InternalErrorException();
+        $this->json(204);
     }
 }

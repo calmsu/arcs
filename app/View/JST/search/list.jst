@@ -1,0 +1,54 @@
+<table style="width:100%">
+<% _.each(results, function(r, i) { %>
+  <tr class="result list" data-id="<%= r.id %>">
+    <td class="img-wrapper">
+      <img src="<%= r.thumb %>" data-id="<%= r.id %>" />
+    </td>
+    <td>
+      <div>
+        <strong><%= r.title %></strong> &nbsp;
+        <% if (r.metadata.get('identifier')) { %>
+          <span class="monospace"><%= r.metadata.get('identifier') %></span> &nbsp;
+        <% } %>
+        <a class="subtle" href="<%= r.url %>"><%= r.file_name %></a> &nbsp;
+        (<em><%= r.file_size %></em>)
+      </div>
+      <% if (r.type) { %>
+      <div>
+        <% if (arcs.mime.isImage(r.mime_type)) { %>
+          <i class="icon-picture"></i>
+        <% } else if (arcs.mime.isVideo(r.mime_type)) { %>
+          <i class="icon-film"></i>
+        <% } else { %>
+          <i class="icon-file"></i>
+        <% } %>
+        <%= r.type %>
+      </div>
+      <% } %>
+      <div>
+        Uploaded
+        <%= relativeDate(new Date(r.created)) %>
+        by
+        <a class="subtle" href="<%= arcs.url('user', r.user.name) %>"><%= r.user.name %></a> 
+      </div>
+      <div>
+        <% _.each(r.keywords, function(k) { %>
+          <a class="keyword-link subtle" 
+            href="<%= arcs.url('search', 'keyword:' + k) %>"><%= k %></a>
+        <% }) %>
+      </div>
+      <div>
+        <% if (r.comments.length) { %>
+          <%= r.comments.length %> <i class="icon-comment"></i>
+        <% } if (r.hotspots.length) { %>
+          <%= r.hotspots.length %> <i class="icon-map-marker"></i>
+        <% } if (r.flags.length) { %>
+          <%= r.flags.length %> <i class="icon-flag"></i>
+        <% } if (!r.public) { %>
+          <i class="icon-lock"></i>
+        <% } %>
+      </div>
+    </td>
+  </tr>
+<% }) %>
+</table>

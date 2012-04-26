@@ -76,7 +76,7 @@ class DATABASE_CONFIG {
 		'host' => 'localhost',
 		'login' => 'www',
 		'password' => 'www',
-		'database' => 'arcs_tests',
+		'database' => 'arcs_test',
 		'prefix' => '',
     );
 }
