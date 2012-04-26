@@ -15,8 +15,8 @@
       this.search = new arcs.utils.Search({
         container: $('.search-wrapper'),
         run: false,
-        success: function() {
-          return location.href = arcs.baseURL + 'search/' + _this.search.query;
+        onSearch: function() {
+          return location.href = arcs.url('search', _this.search.query);
         }
       });
       return this.renderDetails($('details:first'));
@@ -27,28 +27,27 @@
     };
 
     Home.prototype.onClick = function(e) {
-      return this.renderDetails($(e.currentTarget).parent());
+      var $el;
+      $el = $(e.currentTarget).parent();
+      $el.toggleAttr('open');
+      this.renderDetails($el);
+      e.preventDefault();
+      return false;
     };
 
-    Home.prototype.renderDetails = function(el) {
+    Home.prototype.renderDetails = function($el) {
       var data, type;
-      type = el.data('type');
+      type = $el.data('type');
       data = [
         {
-          'category': 'type',
-          'value': type
+          category: 'type',
+          value: type
         }
       ];
-      return $.ajax({
-        type: 'POST',
-        url: arcs.baseURL + 'resources/search?n=12',
-        contentType: 'application/json',
-        data: JSON.stringify(data),
-        success: function(data) {
-          return el.children('div').html(arcs.tmpl('home/details', {
-            resources: data.results
-          }));
-        }
+      return $.postJSON(arcs.baseURL + 'resources/search?n=12', data, function(response) {
+        return $el.children('div').html(arcs.tmpl('home/details', {
+          resources: response.results
+        }));
       });
     };
 
