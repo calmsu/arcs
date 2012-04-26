@@ -25,6 +25,8 @@ class arcs.routers.Search extends Backbone.Router
 
   # Run the search and set the url.
   doSearch: (query='') ->
+    return @navigate('/', replace: true) if query == 'search'
+
     @search.setQuery query
     @search.run()
     @navigate encodeURIComponent @search.query
