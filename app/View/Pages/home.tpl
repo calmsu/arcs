@@ -17,7 +17,7 @@
     <div></div>
   </details>
 
-  <details class="unselectable" data-type="Inventory Card">
+  <details class="unselectable" data-type="Artifact">
     <summary class="large">Artifacts</summary>
     <div></div>
   </details>
