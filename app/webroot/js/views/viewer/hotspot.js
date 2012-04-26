@@ -14,7 +14,7 @@
       this.collection = new arcs.collections.HotspotMap;
       this.reRender = _.throttle(this.render, 50);
       arcs.bind('arcs:resourceResize', this.reRender, this);
-      arcs.bind('arcs:resourceLoaded', this.setup, this);
+      arcs.bind('arcs:indexChange', this.setup, this);
       return this.collection.bind('add remove reset', this.render, this);
     };
 
@@ -137,7 +137,7 @@
     };
 
     Hotspot.prototype.render = function() {
-      var $annotations, $hotspots, data, json, m, _i, _len, _ref;
+      var $annotations, $hotspots, data, json, m, margin, offset, well_height, _i, _len, _ref;
       $hotspots = $('#hotspots-wrapper');
       $annotations = $('#annotations-wrapper');
       $hotspots.html('');
@@ -160,6 +160,10 @@
       }
       $hotspots.html(arcs.tmpl('viewer/hotspots', json));
       $annotations.html(arcs.tmpl('viewer/annotations', json));
+      margin = $('body').hasClass('standalone') ? 168 : 195;
+      well_height = $(window).height() - margin;
+      offset = $('#resource img').css('max-height', well_height).offset();
+      if ($hotspots.length && offset) $hotspots.css('left', offset.left - 56);
       return this;
     };
 
