@@ -1,28 +1,31 @@
 <div id="user-profile">
     <div class="row" id="user-info">
-        <div class="span10">
+        <h2><?php echo $user_info['User']['name'] ?></h2>
+        <?php if ($user['id'] == $user_info['User']['id']): ?>
+        <button class="btn" id="edit-btn">
+            <i class="icon-edit"></i>
+            Edit
+        </button>
+        <?php endif ?>
+        <div>
             <img class="profile-image thumbnail"
                 src="http://gravatar.com/avatar/<?php echo $user_info['User']['gravatar'] ?>">
-            <h2>
-                <?php echo $user_info['User']['name'] ?>
-                <?php if ($user['id'] == $user_info['User']['id']): ?>
-                <a id="edit-btn" style="font-size:60%; cursor:pointer;">Edit Account</a>
-                <?php endif ?>
-            </h2>
-            <p>
-                <strong class="label label-info">Role:</strong>&nbsp;
+            <dl>
+                <dt>Role</dt>
+                <dd>
                 <?php 
                     $role = $user_info['User']['role'];
                     if ($role == 0) echo "Admin";
                     if ($role == 1) echo "Moderator";
                     if ($role == 2) echo "Researcher";
                 ?>
-            </p>
-            <p>
-                <strong class="label label-info">Email:</strong>
+                </dd>
+                <dt>Email</dt>
+                <dd>
                 <a href="mailto:<?php echo $user_info['User']['email'] ?>">
                     <?php echo $user_info['User']['email']; ?></a>
-            </p>
+                </dd>
+            </dl>
         </div>
     </div>
 

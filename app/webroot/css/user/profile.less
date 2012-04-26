@@ -2,34 +2,37 @@
 // ------------
 
 #user-info {
+  padding: 10px;
+  margin-left: 0px;
   margin-bottom: 20px;
-  p {
-    margin-bottom: 0;
+  dl {
+    float:left;
   }
   .profile-image {
     float: left;
     margin-right: 10px;
     background: #fff;
   }
-  div h2 { 
-    margin-left: 0; 
-    font-weight: 300;
-    .text-shadow(#fff);
+  #edit-btn {
+    display: inline;
+    position: relative;
+    bottom: 5px;
+    left: 10px;
+  }
+  h2 { 
+    display: inline-block;
   }
 }
 
-
 #user-actions {
-  margin: 5px;
-  tr:hover,
-  tr:nth-child(odd):hover td,
-  tr:nth-child(odd):hover th {
-    text-decoration: underline;
-    background-color: #eee;
-  }
+  margin: 0px;
+  padding: 10px;
+
   .tab-content {
     padding: 10px;
     background: #fff;
+    border: 1px solid #ddd;
+    border-top: none;
 
     .tab-pane {
       height: 500px;
