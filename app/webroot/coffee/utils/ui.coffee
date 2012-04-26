@@ -3,22 +3,23 @@
 # Miscellaneous UI logic (e.g. placeholder support for older browsers).
 
 $ ->
-  $('body').delegate 'input[placeholder]', 'focus', (e) ->
+  $('body').on 'focus', 'input[placeholder]', (e) ->
     $el = $(e.currentTarget)
     if $el.val() == $el.attr('placeholder')
       $el.val ''
       $el.removeClass 'unfocused'
 
-  $('body').delegate 'input[placeholder]', 'blur', (e) ->
+  $('body').on 'blur', 'input[placeholder]', (e) ->
     $el = $(e.currentTarget)
     if $el.val() == ''
       $el.val $el.attr('placeholder')
       $el.addClass 'unfocused'
 
-  $('[rel=tooltip]').tooltip
-    placement: 'bottom'
+  $('body').tooltip
+    selector: '[rel=tooltip]'
 
-  $('[rel=popover]').popover()
+  $('body').popover
+    selector: '[rel=popover]'
 
   $('body').delegate 'input[type="text"][id*="date"]', 'focus', (e) ->
     $(e.currentTarget).datepicker
