@@ -33,12 +33,15 @@ class SolrService {
 class SolrSearch extends SolrService {
 
     protected $_facets = array();
+    public $publicFilter = true;
 
     public function search($query=null, $limit=30, $offset=0) {
         if (is_array($query)) {
             $this->_addFacets($query);
             $query = $this->_facetsToString($query);
         }
+        if ($this->publicFilter)
+            $this->_addFacet('access', 'public');
         $results = $this->solr->search($query, $offset, $limit);
         # Repackage the results to play nicely with SqlSearch.
         return array(

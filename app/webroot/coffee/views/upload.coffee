@@ -20,9 +20,11 @@ class arcs.views.Upload extends Backbone.View
     @uploads = new arcs.collections.UploadSet
     @setupFileupload()
     @$uploads = @$el.find('#uploads-container')
+    @uploads.on 'add remove change', @render, @
 
   events:
     'click #upload-btn': 'upload'
+    'click .remove'    : 'remove'
 
   # Fire up jQuery-File-Upload (https://github.com/blueimp/jQuery-File-Upload)
   # and attach event handlers.
@@ -30,7 +32,7 @@ class arcs.views.Upload extends Backbone.View
     @fileupload = @$el.find('#fileupload')
     @fileupload.fileupload
       dataType: 'json'
-      url: arcs.baseURL + 'uploads/add_files'
+      url: arcs.url 'uploads/add_files'
 
       add: (e, data) =>
         maybeUploads = (new arcs.models.Upload(f) for f in data.files)
@@ -105,13 +107,8 @@ class arcs.views.Upload extends Backbone.View
     # The server already has the files, it's given us back their SHA1s. Now 
     # we're telling it that we want resources connected to those files, using 
     # the inputs we just collected.
-    $.ajax
-      url: arcs.baseURL + 'uploads/batch'
-      data: JSON.stringify @uploads
-      type: 'POST'
-      contentType: 'application/json'
-      success: (data) ->
-        location.href = arcs.baseURL + 'search/'
+    $.postJSON arcs.baseURL + 'uploads/batch', @uploads.toJSON(), (data) ->
+      location.href = arcs.url 'search/'
 
   # Scan the backbone models for errors (each maintains an `error` prop).
   # If an error is found, shut things down and report it.
@@ -138,12 +135,18 @@ class arcs.views.Upload extends Backbone.View
 
       # Tack on a help link and notify the user.
       msg += " For more information, see our " +
-        "<a href='#{arcs.baseURL + 'help/uploading'}'>Uploading " +
+        "<a href='#{arcs.url 'help/uploading'}'>Uploading " +
         "documentation.</a>"
       arcs.notify msg, 'error', false
 
       # Disable the uploader.
       @disable()
+
+  remove: (e) ->
+    $upload = @$(e.currentTarget).parents '.upload'
+    @uploads.remove @uploads.getByCid $upload.data 'id'
+    $upload.remove()
+    @$('#upload-btn').addClass('disabled') unless @uploads.length
 
   # Disable the uploader (visually) in an error scenario.
   disable: ->

@@ -1,6 +1,5 @@
 # actions.coffee
 # --------------
-# Nick Reynolds
 arcs.views.search ?= {}
 class arcs.views.search.Actions extends arcs.views.BaseActions
 
@@ -16,10 +15,10 @@ class arcs.views.search.Actions extends arcs.views.BaseActions
         arcs.trigger 'arcs:selection'
       context: @
 
-    # <ctrl>-o to open selected
-    arcs.keys.add 'o', true, @openSelected, @
-    arcs.keys.add 'e', true, @editSelected, @
-    arcs.keys.add 'space', false, @previewSelected, @
+    arcs.keys.map @,
+      'ctrl+o': @openSelected
+      'ctrl+e': @editSelected
+      space: @previewSelected
 
   events:
     'dblclick img'           : 'openResource'
@@ -127,7 +126,9 @@ class arcs.views.search.Actions extends arcs.views.BaseActions
     metadata = result.get 'metadata'
     fields = arcs.config.metadata
     for field, help of fields
-      inputs[field] = value: metadata.get(field) ? ''
+      inputs[field] = 
+        value: metadata.get(field) ? ''
+        help: help
 
     new arcs.views.Modal
       title: 'Edit Info'
@@ -164,6 +165,7 @@ class arcs.views.search.Actions extends arcs.views.BaseActions
       inputs[field] =
         checkbox: !!checked
         value: value ? ''
+        help: help
 
     # Make a new modal, using the columned template. Pass in our generated
     # inputs.
@@ -215,7 +217,7 @@ class arcs.views.search.Actions extends arcs.views.BaseActions
 
     collection.save {},
       success: (newCol) ->
-        window.open(arcs.baseURL + 'collection/' + newCol.id)
+        window.open arcs.url('collection', newCol.id)
       error: =>
         arcs.notify 'An error occurred.', 'error'
 
@@ -240,18 +242,12 @@ class arcs.views.search.Actions extends arcs.views.BaseActions
     unless @results.numSelected() > 1
       return arcs.notify 'To download resources zipped, select at least 2.',
     data = resources: _.pluck @results.selected(), 'id'
-    $.ajax
-      url: arcs.baseURL + 'resources/zipped'
-      type: 'POST'
-      contentType: 'application/json'
-      dataType: 'json'
-      data: JSON.stringify data
-      success: (data) =>
-        if data.url?
-          iframe = @make 'iframe', 
-            style: 'display:none'
-          $('body').append(iframe)
-          iframe.src = data.url
+    $.postJSON arcs.baseURL + 'resources/zipped', data, (response) =>
+      if response.url?
+        iframe = @make 'iframe', 
+          style: 'display:none'
+        $('body').append(iframe)
+        iframe.src = response.url
 
   # Call bookmarkResource on all selected results.
   bookmarkSelected: ->

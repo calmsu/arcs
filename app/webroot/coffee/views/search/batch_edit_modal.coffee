@@ -8,11 +8,18 @@ class arcs.views.BatchEditModal extends arcs.views.Modal
     super()
     # On keydown of an input, find the corresponding 'Apply to all' checkbox 
     # and check it, unless the input is empty.
-    @$('input[type=text][id^=modal]').keydown ->
-      [id, name] = $(@).attr('id').match /modal-([\w-]+)-input/
-      ckbox = $("input#modal-#{name}-checkbox")
-      return ckbox.prop('checked', false) unless $(@).val()
-      ckbox.prop('checked', true)
+    @$('input[type=text][id^=modal]').change (e) => 
+      @_checkBox $ e.currentTarget
+    @$('input[type=text][id^=modal]').keyup (e) => 
+      @_checkBox $ e.currentTarget
+    @$('select[id^=modal]').change (e) =>
+      @_checkBox $ e.currentTarget
+
+  _checkBox: ($el) ->
+    [id, name] = $el.attr('id').match /modal-([\w-]+)-input/
+    ckbox = $("input#modal-#{name}-checkbox")
+    return ckbox.prop('checked', false) unless $el.val()
+    ckbox.prop('checked', true)
 
   # Overrides `getValues` method to only return inputs with corresponding 
   # checked checkboxes..

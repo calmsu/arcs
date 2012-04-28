@@ -19,8 +19,9 @@ class arcs.views.Viewer extends Backbone.View
     arcs.on 'arcs:resourceResize', @throttledResize, @
 
     # Add our hotkeys
-    arcs.keys.add 'left', false, @prev, @
-    arcs.keys.add 'right', false, @next, @
+    arcs.keys.map @,
+      left: @prev
+      right: @next
 
     # Init sub-views
     @actions = new arcs.views.ViewerActions
@@ -39,7 +40,7 @@ class arcs.views.Viewer extends Backbone.View
       index: @index ? 0
 
     # Start the router and Backbone.history
-    @router = new arcs.routers.Resource
+    @router = new arcs.routers.Viewer
     Backbone.history.start
       pushState: true
       root: arcs.baseURL + 
@@ -49,7 +50,7 @@ class arcs.views.Viewer extends Backbone.View
     @splitPrompt() if @model.get 'first_req'
 
     @index ?= 0
-    @resize()
+    @resize() and @hotspots.reRender()
 
   events:
     'dblclick img'      : 'openFull'
@@ -72,6 +73,7 @@ class arcs.views.Viewer extends Backbone.View
   #                 to no-op when also bound to that event.
   #    noRender   - don't call the render method.
   #    noNavigate - don't call router.navigate()
+  #    replace    - use replace:true with router.navigate
   #
   set: (identifier, options={}) ->
     return false if options.noSet
@@ -85,6 +87,7 @@ class arcs.views.Viewer extends Backbone.View
       model = @collection.get identifier
       index = @collection.models.indexOf model
       options.noNavigate = false
+      options.replace = true
 
     # Can't continue without a valid model and index.
     return false unless model and index >= 0
@@ -97,7 +100,7 @@ class arcs.views.Viewer extends Backbone.View
     @render() unless options.noRender
     # Update the location
     route = "#{arcs.collectionModel?.id ? @model.id}/#{@index + 1}"
-    @router.navigate(route) unless options.noNavigate
+    @router.navigate(route, {replace: options.replace}) unless options.noNavigate
     @_preloadNeighbors() unless options.noPreload
     # Return true if we were able to set the model and index.
     return true
@@ -151,9 +154,7 @@ class arcs.views.Viewer extends Backbone.View
     well_height = $(window).height() - margin
     @$('.viewer-well').height well_height
     @$('.tab-content').height well_height - 75
-    offset = @$('#resource img').css('max-height', well_height).offset()
-    if @$('#hotspots-wrapper').length and offset
-      @$('#hotspots-wrapper').css('left', offset.left - 56) 
+    @hotspots.render()
   
   # Render the resource.
   render: ->

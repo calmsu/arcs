@@ -12,6 +12,7 @@
         order: 'modified',
         add: false,
         run: true,
+        onSearch: function() {},
         success: function() {},
         error: function() {}
       };
@@ -25,6 +26,7 @@
         callbacks: {
           search: function(query, searchCollection) {
             _this.query = query;
+            _this.options.onSearch(query);
             return _this.run(searchCollection.toJSON());
           },
           facetMatches: function(callback) {

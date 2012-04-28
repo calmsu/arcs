@@ -11,8 +11,7 @@
     }
 
     Modal.prototype.options = {
-      draggable: false,
-      dragHandle: null,
+      draggable: true,
       backdrop: true,
       keyboard: true,
       show: true,
@@ -46,8 +45,9 @@
       }
       if (this.options.draggable) {
         this.$el.draggable({
-          handle: this.options.dragHandle
+          handle: this.$('.modal-header')
         });
+        this.$('.modal-header').css('cursor', 'move');
       }
       this.$el.modal({
         backdrop: this.options.backdrop,

@@ -16,8 +16,9 @@ class arcs.views.Preview extends Backbone.View
       $('body').append arcs.tmpl 'ui/modal_wrapper'
     @el = @$el = $('#modal')
     @$el.modal()
-    arcs.keys.add 'left', false, @prev, @
-    arcs.keys.add 'right', false, @next, @
+    arcs.keys.map @,
+      left: @prev
+      right: @next
     @set @options.index, true
 
   # Set up the previous and next buttons.

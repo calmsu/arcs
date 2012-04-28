@@ -15,19 +15,34 @@
     };
 
     Search.prototype.routes = {
+      '': 'root',
       ':query': 'doSearch'
+    };
+
+    Search.prototype.root = function() {
+      return this.hasTrailing = true && this.doSearch();
+    };
+
+    Search.prototype.navigate = function(fragment, options) {
+      options || (options = {});
+      if (!this.hasTrailing) {
+        options.replace = true;
+        this.hasTrailing = true;
+      }
+      return Search.__super__.navigate.call(this, fragment, options);
     };
 
     Search.prototype.doSearch = function(query) {
       if (query == null) query = '';
-      if (query !== 'search') {
-        this.search.setQuery(query);
-        this.search.run();
-        this.navigate(this.search.query);
-        this.searched = true;
-        return this.searched;
+      if (query === 'search') {
+        return this.navigate('/', {
+          replace: true
+        });
       }
-      return this.navigate('/');
+      this.search.setQuery(query);
+      this.search.run();
+      this.navigate(encodeURIComponent(this.search.query));
+      return this.searched = true;
     };
 
     return Search;

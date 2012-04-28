@@ -144,7 +144,8 @@
       for (field in fields) {
         help = fields[field];
         inputs[field] = {
-          value: (_ref = metadata.get(field)) != null ? _ref : ''
+          value: (_ref = metadata.get(field)) != null ? _ref : '',
+          help: help
         };
       }
       return new arcs.views.Modal({

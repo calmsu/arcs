@@ -30,11 +30,13 @@
     Upload.prototype.initialize = function() {
       this.uploads = new arcs.collections.UploadSet;
       this.setupFileupload();
-      return this.$uploads = this.$el.find('#uploads-container');
+      this.$uploads = this.$el.find('#uploads-container');
+      return this.uploads.on('add remove change', this.render, this);
     };
 
     Upload.prototype.events = {
-      'click #upload-btn': 'upload'
+      'click #upload-btn': 'upload',
+      'click .remove': 'remove'
     };
 
     Upload.prototype.setupFileupload = function() {
@@ -42,7 +44,7 @@
       this.fileupload = this.$el.find('#fileupload');
       return this.fileupload.fileupload({
         dataType: 'json',
-        url: arcs.baseURL + 'uploads/add_files',
+        url: arcs.url('uploads/add_files'),
         add: function(e, data) {
           var existing, f, maybeUploads, u, upload, uploads, _i, _len;
           maybeUploads = (function() {
@@ -136,14 +138,8 @@
         u.set('rtype', $u.find('#upload-type').val());
         if (u.get('identifier') === 'Identifier') return u.set('identifier', '');
       });
-      return $.ajax({
-        url: arcs.baseURL + 'uploads/batch',
-        data: JSON.stringify(this.uploads),
-        type: 'POST',
-        contentType: 'application/json',
-        success: function(data) {
-          return location.href = arcs.baseURL + 'search/';
-        }
+      return $.postJSON(arcs.baseURL + 'uploads/batch', this.uploads.toJSON(), function(data) {
+        return location.href = arcs.url('search/');
       });
     };
 
@@ -162,11 +158,19 @@
         } else {
           msg = "Something went wrong. Please refresh the page and " + "try again. If the problem persists, contact the system " + "administrator.";
         }
-        msg += " For more information, see our " + ("<a href='" + (arcs.baseURL + 'help/uploading') + "'>Uploading ") + "documentation.</a>";
+        msg += " For more information, see our " + ("<a href='" + (arcs.url('help/uploading')) + "'>Uploading ") + "documentation.</a>";
         arcs.notify(msg, 'error', false);
         _results.push(this.disable());
       }
       return _results;
+    };
+
+    Upload.prototype.remove = function(e) {
+      var $upload;
+      $upload = this.$(e.currentTarget).parents('.upload');
+      this.uploads.remove(this.uploads.getByCid($upload.data('id')));
+      $upload.remove();
+      if (!this.uploads.length) return this.$('#upload-btn').addClass('disabled');
     };
 
     Upload.prototype.disable = function() {

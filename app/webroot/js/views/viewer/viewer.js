@@ -23,8 +23,10 @@
         return arcs.trigger('arcs:resourceResize');
       });
       arcs.on('arcs:resourceResize', this.throttledResize, this);
-      arcs.keys.add('left', false, this.prev, this);
-      arcs.keys.add('right', false, this.next, this);
+      arcs.keys.map(this, {
+        left: this.prev,
+        right: this.next
+      });
       this.actions = new arcs.views.ViewerActions({
         el: $('#viewer-controls'),
         collection: this.collection,
@@ -44,14 +46,14 @@
         collection: this.collection,
         index: (_ref = this.index) != null ? _ref : 0
       });
-      this.router = new arcs.routers.Resource;
+      this.router = new arcs.routers.Viewer;
       Backbone.history.start({
         pushState: true,
         root: arcs.baseURL + (this.collection.length ? 'collection/' : 'resource/')
       });
       if (this.model.get('first_req')) this.splitPrompt();
       if (this.index == null) this.index = 0;
-      return this.resize();
+      return this.resize() && this.hotspots.reRender();
     };
 
     Viewer.prototype.events = {
@@ -83,6 +85,7 @@
         model = this.collection.get(identifier);
         index = this.collection.models.indexOf(model);
         options.noNavigate = false;
+        options.replace = true;
       }
       if (!(model && index >= 0)) return false;
       _ref = [model, model, index], this.model = _ref[0], arcs.resource = _ref[1], this.index = _ref[2];
@@ -93,7 +96,11 @@
       }
       if (!options.noRender) this.render();
       route = "" + ((_ref2 = (_ref3 = arcs.collectionModel) != null ? _ref3.id : void 0) != null ? _ref2 : this.model.id) + "/" + (this.index + 1);
-      if (!options.noNavigate) this.router.navigate(route);
+      if (!options.noNavigate) {
+        this.router.navigate(route, {
+          replace: options.replace
+        });
+      }
       if (!options.noPreload) this._preloadNeighbors();
       return true;
     };
@@ -155,15 +162,12 @@
     };
 
     Viewer.prototype.resize = function() {
-      var margin, offset, well_height;
+      var margin, well_height;
       margin = $('body').hasClass('standalone') ? 168 : 195;
       well_height = $(window).height() - margin;
       this.$('.viewer-well').height(well_height);
       this.$('.tab-content').height(well_height - 75);
-      offset = this.$('#resource img').css('max-height', well_height).offset();
-      if (this.$('#hotspots-wrapper').length && offset) {
-        return this.$('#hotspots-wrapper').css('left', offset.left - 56);
-      }
+      return this.hotspots.render();
     };
 
     Viewer.prototype.render = function() {

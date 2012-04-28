@@ -11,7 +11,7 @@ class arcs.views.Hotspot extends Backbone.View
     # Bind the setup to the resourceLoaded event,
     # which is triggered directly after the resource
     # is rendered (and after resourceChange).
-    arcs.bind 'arcs:resourceLoaded', @setup, @
+    arcs.bind 'arcs:indexChange', @setup, @
 
     @collection.bind 'add remove reset', @render, @
 
@@ -135,4 +135,11 @@ class arcs.views.Hotspot extends Backbone.View
     # Render the templates.
     $hotspots.html arcs.tmpl 'viewer/hotspots', json
     $annotations.html arcs.tmpl 'viewer/annotations', json
+
+    # Fix positioning.
+    margin = if $('body').hasClass 'standalone' then 168 else 195
+    well_height = $(window).height() - margin
+    offset = $('#resource img').css('max-height', well_height).offset()
+    if $hotspots.length and offset
+      $hotspots.css('left', offset.left - 56) 
     @

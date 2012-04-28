@@ -39,33 +39,49 @@
       return true;
     };
 
-    Keys.prototype.add = function(key, modifier, callback, context, bubble) {
-      if (modifier == null) modifier = false;
+    Keys.prototype.add = function(key, callback, context, bubble) {
       if (bubble == null) bubble = false;
-      this.mappings.push({
+      return this.mappings.push({
         key: key,
         callback: callback,
-        modifier: modifier,
         context: context,
         bubble: bubble
       });
-      return this.mappings;
+    };
+
+    Keys.prototype.map = function(ctx, map) {
+      var cb, key, _results;
+      _results = [];
+      for (key in map) {
+        cb = map[key];
+        _results.push(this.mappings.push({
+          key: key,
+          callback: cb,
+          context: ctx
+        }));
+      }
+      return _results;
     };
 
     Keys.prototype.get = function(keyCode, modifier) {
-      var matches,
+      var key, matches,
         _this = this;
       if (modifier == null) modifier = false;
+      key = this.humanize(keyCode, modifier);
       return matches = _.filter(this.mappings, function(map) {
-        return map.key === _this.humanize(keyCode) && map.modifier === modifier;
+        return map.key === key;
       });
     };
 
     Keys.prototype.mappings = [];
 
-    Keys.prototype.humanize = function(keyCode) {
-      if (_.has(this.specialKeys, keyCode)) return this.specialKeys[keyCode];
-      return String.fromCharCode(keyCode).toLowerCase();
+    Keys.prototype.humanize = function(keyCode, modifier) {
+      var key;
+      key = modifier ? 'ctrl+' : '';
+      if (this.specialKeys[keyCode] != null) {
+        return key += this.specialKeys[keyCode];
+      }
+      return key += String.fromCharCode(keyCode).toLowerCase();
     };
 
     Keys.prototype.specialKeys = {

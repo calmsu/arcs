@@ -1,6 +1,6 @@
 <div class="tab-pane" id="flagged-tab">
 <?php if(!isset($user_info['Flags']) || empty($user_info['Flags'])): ?>
-    <h3>This user hasn't made any Flags yet</h3>
+    <h4>No Flags</h4>
 <?php elseif(isset($user_info['Hotspot'])): ?>
     <label class="radio">
     <input type="radio" name="optionsRadios" 

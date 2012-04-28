@@ -101,7 +101,9 @@ class arcs.views.ViewerActions extends arcs.views.BaseActions
     metadata = @viewer.model.get 'metadata'
     fields = arcs.config.metadata
     for field, help of fields
-      inputs[field] = value: metadata.get(field) ? ''
+      inputs[field] = 
+        value: metadata.get(field) ? ''
+        help: help
 
     new arcs.views.Modal
       title: 'Edit Info'

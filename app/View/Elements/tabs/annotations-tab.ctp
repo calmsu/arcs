@@ -1,7 +1,7 @@
 <div class="tab-pane" id="annotations-tab">        		
 <?php if(empty($user_info['Hotspot'])): ?>
-    <h3>This user hasn't made any Annotations yet</h3>
-<?php elseif(isset($user_info['Resource'])): ?>
+    <h4>No Annotations</h4>
+<?php else: ?>
     <table class="table table-striped">
         <thead>
             <tr>

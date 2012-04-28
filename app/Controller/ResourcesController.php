@@ -123,7 +123,10 @@ class ResourcesController extends AppController {
         }
 
         $this->set('memberships', $this->Resource->Membership->find('all', array(
-            'conditions' => array('Membership.resource_id' => $id)
+            'conditions' => array(
+                'Membership.resource_id' => $id,
+                'Collection.title !=' => 'Temporary Collection'
+            )
         )));
         $this->set('resource', $resource);
         $this->set('toolbar', array('actions' => true));
@@ -187,6 +190,8 @@ class ResourcesController extends AppController {
         if ($this->request->data) {
             # Instantiate our Search object with the db config and facets.
             $searcher = $this->_getSearcher();
+            if ($this->Auth->loggedIn())
+                $searcher->publicFilter = false;
 
             # Get the result ids.
             $response = $searcher->search($this->request->data, $limit, $offset);
@@ -402,7 +407,7 @@ class ResourcesController extends AppController {
      * @param string $field   Resource field to complete.
      */
     public function complete($field=null) {
-        if (!$this->request->is('get') || !$id) throw new BadRequestException();
+        if (!$this->request->is('get') || !$field) throw new BadRequestException();
         switch ($field) {
             case 'title':
                 $values = $this->Resource->complete('Resource.title');

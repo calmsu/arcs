@@ -34,8 +34,7 @@ class arcs.utils.Keys
 
     # Get matching mappings
     mappings = @get e.which, modifier
-    unless mappings.length
-      return true
+    return true unless mappings.length
 
     # Iterate the mappings.
     # It's unlikely that there'd be more than one, but it's allowed.
@@ -65,22 +64,28 @@ class arcs.utils.Keys
   #              DOM's document element (which the keydown is bound to).
   #   bubble   - bubble up the event. By default, we'll return false and
   #              block further action with preventDefault().
-  add: (key, modifier=false, callback, context, bubble=false) ->
+  add: (key, callback, context, bubble=false) ->
     @mappings.push
       key: key
       callback: callback
-      modifier: modifier
       context: context
       bubble: bubble
-    @mappings
+
+  map: (ctx, map) ->
+    for key, cb of map
+      @mappings.push
+        key: key
+        callback: cb
+        context: ctx
 
   # Get a mapping.
   #
   #   keyCode  - value of e.which or e.keyCode
   #   modifier - matches must match this modifier setting.
   get: (keyCode, modifier=false) ->
+    key = @humanize keyCode, modifier
     matches = _.filter @mappings, (map) =>
-      map.key == @humanize(keyCode) and map.modifier == modifier
+      map.key == key
 
   # Collection of key mapping objects here.
   mappings: []
@@ -89,12 +94,12 @@ class arcs.utils.Keys
   # this may fail for certain codes.
   #
   #   keyCode - value of e.which or e.keyCode
-  humanize: (keyCode) ->
+  humanize: (keyCode, modifier) ->
+    key = if modifier then 'ctrl+' else ''
     # Special key?
-    if _.has @specialKeys, keyCode
-      return @specialKeys[keyCode]
+    return key += @specialKeys[keyCode] if @specialKeys[keyCode]?
     # Nope, normal key.
-    String.fromCharCode(keyCode).toLowerCase()
+    key += String.fromCharCode(keyCode).toLowerCase()
 
   # Partial list of special keys (just the ones we're likely to use).
   specialKeys: 

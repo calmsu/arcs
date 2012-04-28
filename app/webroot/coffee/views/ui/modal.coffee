@@ -10,8 +10,7 @@
 # The options (when using the default template) are described below.
 #
 # options:     
-#   draggable:  Make the modal draggable. 
-#   dragHandle: Selector to use as the draggable handle
+#   draggable:  Make the modal draggable (header is the handle).
 #   backdrop:   Use an overlay
 #   keyboard:   <esc> will close the modal
 #   show:       Show the modal on init
@@ -65,8 +64,7 @@ class arcs.views.Modal extends Backbone.View
 
   # defaults
   options:
-    draggable: false
-    dragHandle: null
+    draggable: true
     backdrop: true
     keyboard: true
     show: true
@@ -101,7 +99,9 @@ class arcs.views.Modal extends Backbone.View
           source: options.multicomplete ? options.complete
 
     # Draggable?
-    @$el.draggable(handle: @options.dragHandle) if @options.draggable
+    if @options.draggable
+      @$el.draggable(handle: @$('.modal-header'))
+      @$('.modal-header').css 'cursor', 'move'
 
     # Setup Bootstrap modal
     @$el.modal

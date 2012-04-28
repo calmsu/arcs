@@ -39,8 +39,10 @@
       if (!this.router.searched) this.search.run();
       this.search.results.on('remove', this.render, this);
       arcs.on('arcs:selection', this.afterSelection, this);
-      arcs.keys.add('a', true, this.selectAll, this);
-      return arcs.keys.add('t', false, this.scrollTop, this);
+      return arcs.keys.map(this, {
+        'ctrl+a': this.selectAll,
+        t: this.scrollTop
+      });
     };
 
     Search.prototype.events = {
@@ -92,10 +94,10 @@
         success: function() {
           _this.router.navigate(encodeURIComponent(_this.search.query));
           _this.searchPage = 1;
-          _this.render();
           if (!_this.scrollReady) {
-            return _this.setupScroll() && (_this.scrollReady = true);
+            _this.setupScroll() && (_this.scrollReady = true);
           }
+          return _this.render();
         }
       });
     };
@@ -117,10 +119,9 @@
         }
         if ($window.scrollTop() === $(document).height() - $window.height()) {
           if (_this.search.results.length % _this.options.numResults !== 0) return;
-          _this.searchPage += 1;
           return _this.search.run(null, {
             add: true,
-            page: _this.searchPage,
+            page: _this.searchPage += 1,
             order: _this.options.sort,
             success: function() {
               return _this.append();

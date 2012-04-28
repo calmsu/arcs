@@ -4,7 +4,18 @@
     <a href="<%= arcs.baseURL + 'resource/' + r.id %>">
       <img src="<%= r.thumb %>" alt="resource" />
     </a>
-    <a href="<%= arcs.baseURL + 'resource/' + r.id %>"><%= r.title %></a>
+    <a class="subtle" href="<%= arcs.baseURL + 'resource/' + r.id %>"><%= r.title %></a>
   </li>
 <% }) %>
+<% if (!resources.length) { %>
+  <li>
+    <i class="icon-exclamation-sign"></i> No Results Found
+  </li>
+<% } else { %>
+  <li>
+    <a href='<%= arcs.baseURL + 'search/type:"' + resources[0].type + '"' %>'>
+      <i class="icon-share-alt"></i> Show all
+    </a>
+  </li>
+<% } %>
 </ul>
