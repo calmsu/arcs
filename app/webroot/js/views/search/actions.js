@@ -22,7 +22,7 @@
         options: this._getContextOptions(),
         onShow: function(e) {
           $(e.currentTarget).parents('.result').addClass('selected');
-          return arcs.trigger('arcs:selection');
+          return arcs.bus.trigger('selection');
         },
         context: this
       });
@@ -46,6 +46,7 @@
       'click #download-btn': 'downloadSelected',
       'click #zipped-btn': 'zippedDownloadSelected',
       'click #rethumb-btn': 'rethumbSelected',
+      'click #repreview-btn': 'repreviewSelected',
       'click #split-btn': 'splitSelected',
       'click #access-btn': 'setAccessForSelected',
       'click #solr-btn': 'indexSelected'
@@ -428,6 +429,17 @@
       for (_i = 0, _len = _ref.length; _i < _len; _i++) {
         result = _ref[_i];
         _results.push(this.indexResource(result));
+      }
+      return _results;
+    };
+
+    Actions.prototype.repreviewSelected = function() {
+      var result, _i, _len, _ref, _results;
+      _ref = this.results.selected();
+      _results = [];
+      for (_i = 0, _len = _ref.length; _i < _len; _i++) {
+        result = _ref[_i];
+        _results.push(this.repreviewResource(result));
       }
       return _results;
     };

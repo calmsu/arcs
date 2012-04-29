@@ -11,6 +11,10 @@ arcs.utils = {}
 arcs.routers = {}
 arcs.templates = {}
 
+# Event bus
+arcs.bus = {}
+_.extend arcs.bus, Backbone.Events
+
 # Development mode?
 arcs.mode = CAKE_DEBUG
 
@@ -61,6 +65,3 @@ $.postJSON = (url, data, success) ->
     contentType: 'application/json'
     dataType: 'json'
     success: success
-
-# We'll bind app-wide events to the arcs object.
-_.extend arcs, Backbone.Events

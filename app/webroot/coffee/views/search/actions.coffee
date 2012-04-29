@@ -12,7 +12,7 @@ class arcs.views.search.Actions extends arcs.views.BaseActions
       options: @_getContextOptions()
       onShow: (e) ->
         $(e.currentTarget).parents('.result').addClass 'selected'
-        arcs.trigger 'arcs:selection'
+        arcs.bus.trigger 'selection'
       context: @
 
     arcs.keys.map @,
@@ -33,6 +33,7 @@ class arcs.views.search.Actions extends arcs.views.BaseActions
     'click #download-btn'    : 'downloadSelected'
     'click #zipped-btn'      : 'zippedDownloadSelected'
     'click #rethumb-btn'     : 'rethumbSelected'
+    'click #repreview-btn'   : 'repreviewSelected'
     'click #split-btn'       : 'splitSelected'
     'click #access-btn'      : 'setAccessForSelected'
     'click #solr-btn'        : 'indexSelected'
@@ -287,6 +288,9 @@ class arcs.views.search.Actions extends arcs.views.BaseActions
 
   indexSelected: ->
     @indexResource(result) for result in @results.selected()
+
+  repreviewSelected: ->
+    @repreviewResource(result) for result in @results.selected()
 
   # Displays a success notification given a past-tense verb.
   # We have a lot of "12 resources were tagged"-style notifications. This 
