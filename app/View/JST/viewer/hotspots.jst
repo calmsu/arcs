@@ -1,9 +1,10 @@
-<% _.each(annotations, function(h) { %>
-<a class="hotspot" style="left:<%= h.x1 + offset %>px; top:<%= h.y1 %>px; 
-  width:<%= h.x2 - h.x1 %>px; height:<%= h.y2 - h.y1 %>px;" 
-  data-id="<%= h.id %>" href="<%= h.link || '#' %>">
-  <% if (arcs.user.get('loggedIn')) { %>
-    <i class="remove-btn icon-remove"></i>
-  <% } %>
-</a>
+<% _.each(annotations, function(a) { %>
+  <%= a.url = a.url || '#' %>
+  <a class="hotspot" style="left:<%= a.x1 + offset %>px; top:<%= a.y1 %>px; 
+    width:<%= a.x2 - a.x1 %>px; height:<%= a.y2 - a.y1 %>px;" data-id="<%= a.id %>" 
+    href="<%= a.relation ? arcs.url('resource', a.relation.id) : a.url %>">
+    <% if (arcs.user.isLoggedIn()) { %>
+      <i class="remove-btn icon-remove"></i>
+    <% } %>
+  </a>
 <% }) %>
