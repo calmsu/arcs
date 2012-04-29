@@ -1,0 +1,33 @@
+//ABOUT LESS
+//----------
+
+#intro_para {
+	background-color: #696969;
+	padding: 20px;
+}
+
+div.feature{
+  padding:30px;
+  position: relative;
+  clear: right;
+  background-color: purple !important;
+  
+  &:nth-child(odd){
+    border-left:24px solid #c3c3c3;
+    
+    .number {
+    	position: absolute;
+    	left: 0;
+    	top: 30px;
+    }//.number
+  }//:odd
+  
+  &:nth-child(even){
+    border-right:24px solid #c3c3c3;
+    
+    .number {
+    	position: absolute;
+    	right: 0;
+    }//.number
+  }//:even
+}//.feature
