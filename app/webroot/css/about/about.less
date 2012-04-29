@@ -3,31 +3,34 @@
 
 #intro_para {
 	background-color: #696969;
-	padding: 20px;
+	padding: 20px 0;
+	text-align: center;
 }
 
-div.feature{
+.feature{
   padding:30px;
   position: relative;
   clear: right;
-  background-color: purple !important;
+  display: block;
   
-  &:nth-child(odd){
+  &.left{
     border-left:24px solid #c3c3c3;
+    border-image-bottom: url('img/h1.png') 61px;
     
     .number {
     	position: absolute;
-    	left: 0;
+    	left: -42px !important;
     	top: 30px;
     }//.number
   }//:odd
   
-  &:nth-child(even){
+  &.right{
     border-right:24px solid #c3c3c3;
     
     .number {
     	position: absolute;
-    	right: 0;
+    	right: -42px !important;
+    	top: 30px;
     }//.number
   }//:even
-}//.feature
+}//.feature		
