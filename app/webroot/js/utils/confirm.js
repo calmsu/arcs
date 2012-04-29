@@ -32,4 +32,23 @@
     });
   };
 
+  arcs.needsLogin = function() {
+    var title;
+    if (arcs.user.get('loggedIn')) {
+      title = 'You have been logged out.';
+    } else {
+      title = "You'll need to login to do that.";
+    }
+    return new arcs.views.Modal({
+      title: title,
+      subtitle: "Click 'Login' below to go to the login page.",
+      buttons: {
+        login: function() {
+          return location.href = arcs.url('login');
+        },
+        cancel: function() {}
+      }
+    });
+  };
+
 }).call(this);

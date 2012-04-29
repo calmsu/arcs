@@ -111,7 +111,7 @@
       });
       offset = (options.page - 1) * options.n;
       params = "?related&n=" + options.n + "&offset=" + offset + "&order=" + options.order;
-      if (this.options.loader) arcs.utils.loader.show();
+      if (this.options.loader) arcs.loader.show();
       this.results.fetch({
         add: options.add,
         data: JSON.stringify(facets),
@@ -120,11 +120,11 @@
         contentType: 'application/json',
         success: function() {
           options.success();
-          if (_this.options.loader) return arcs.utils.loader.hide();
+          if (_this.options.loader) return arcs.loader.hide();
         },
         error: function() {
           options.error();
-          if (_this.options.loader) return arcs.utils.loader.hide();
+          if (_this.options.loader) return arcs.loader.hide();
         }
       });
       this.query = this.vs.searchBox.value();
