@@ -13,11 +13,15 @@
     ViewerActions.prototype.initialize = function() {
       var _this = this;
       this.viewer = this.options.viewer;
-      arcs.on('arcs:indexChange', function() {
+      arcs.bus.on('indexChange', function() {
         _this.updateNav(arguments[0]);
         return _this.checkNav();
       });
-      return this.onNavKeyup = _.debounce(this.setNav, 1000);
+      this.onNavKeyup = _.debounce(this.setNav, 1000);
+      return arcs.keys.map(this, {
+        'ctrl+e': this.edit,
+        p: this.onNavClick
+      });
     };
 
     ViewerActions.prototype.events = {
@@ -32,6 +36,7 @@
       'click #flag-btn': 'flag',
       'click #full-screen-btn': 'fullScreen',
       'click #delete-btn': 'delete',
+      'click #delete-col-btn': 'deleteCollection',
       'click #split-btn': 'split',
       'click #rethumb-btn': 'rethumb',
       'click #download-btn': 'download'
@@ -166,7 +171,24 @@
     };
 
     ViewerActions.prototype["delete"] = function() {
-      return this.viewer.model.destroy();
+      var _this = this;
+      return arcs.confirm("Are you sure you want to delete this resource?", "<b>" + (this.viewer.model.get('title')) + "</b> will be permanently deleted.", function() {
+        return _this.viewer.model.destroy();
+      });
+    };
+
+    ViewerActions.prototype.deleteCollection = function() {
+      var _this = this;
+      return arcs.confirm("Are you sure you want to delete this collection?", ("<p>Collection <b>" + (this.viewer.collectionModel.get('title')) + "</b> will be ") + "deleted. <p><b>N.B.</b> Resources within the collection will not be " + "deleted. They may still be accessed from other collections to which they " + "belong.", function() {
+        arcs.loader.show();
+        return $.ajax({
+          url: arcs.url('collections', 'delete', _this.viewer.collectionModel.id),
+          type: 'DELETE',
+          success: function() {
+            return location.href = arcs.baseURL;
+          }
+        });
+      });
     };
 
     ViewerActions.prototype.rethumb = function() {

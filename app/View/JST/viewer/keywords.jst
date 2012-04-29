@@ -1,5 +1,7 @@
+<ul class="keyword-list">
 <% _.each(keywords, function(k) { %>
-<a class="keyword" id="keyword-<%= k.id %>" href="<%= k.link %>">
+  <li><a class="keyword-link subtle" id="keyword-<%= k.id %>" href="<%= k.link %>">
     <%- k.keyword %>
-</a><br>
+  </a></li>
 <% }) %>
+</ul>

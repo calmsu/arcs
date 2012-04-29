@@ -1,5 +1,9 @@
-<% _.each(hotspots, function(h) { %>
-<a class="hotspot" style="left:<%= h.left %>px; top:<%= h.top %>px; width:<%= h.width %>px;
-    height:<%= h.height %>px;" rel="popover" data-original-title="<%= h.type %>"
-    data-content="<%= h.caption %>" href="<%= h.link %>"></a>
+<% _.each(annotations, function(h) { %>
+<a class="hotspot" style="left:<%= h.x1 + offset %>px; top:<%= h.y1 %>px; 
+  width:<%= h.x2 - h.x1 %>px; height:<%= h.y2 - h.y1 %>px;" 
+  data-id="<%= h.id %>" href="<%= h.link || '#' %>">
+  <% if (arcs.user.get('loggedIn')) { %>
+    <i class="remove-btn icon-remove"></i>
+  <% } %>
+</a>
 <% }) %>

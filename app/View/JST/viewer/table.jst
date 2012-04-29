@@ -1,14 +1,26 @@
 <tr>
   <td>Title</td>
-  <td><%- title %></td>
+  <td>
+    <a class="subtle" href="<%= arcs.url('search', "title:'" + title + "'") %>">
+      <%- title %>
+    </a>
+  </td>
 </tr>
 <tr>
   <td>Access</td>
-  <td><%= public ? "public" : "private" %></td>
+  <td>
+    <a class="subtle" href="<%= arcs.url('search', 'access:' + (public ? 'public' : 'private')) %>">
+      <%= public ? "public" : "private" %>
+    </a>
+  </td>
 </tr>
 <tr>
   <td>Type</td>
-  <td><%- type || '' %></td>
+  <td>
+    <a class="subtle" href="<%= arcs.url('search', 'type:' + type) %>">
+      <%- type || '' %>
+    </a>
+  </td>
 </tr>
 <tr>
   <td>Created</td>
@@ -26,13 +38,17 @@
 </tr>
 <tr>
   <td>File-type</td>
-  <td><a href="<%= url %>"><%= mime_type %></a></td>
+  <td>
+    <a class="subtle" href="<%= arcs.url('search', 'filetype:' + mime_type) %>">
+      <%= mime_type %>
+    </a>
+  </td>
 </tr>
 <% _.each(metadata.attributes, function(v, k) { %>
-<% if (v) { %>
-<tr>
-  <td><%- k.charAt(0).toUpperCase() + k.substr(1) %></td>
-  <td><%- v %></td>
-</tr>
-<% } %>
+  <% if (v) { %>
+  <tr>
+    <td><%- k.charAt(0).toUpperCase() + k.substr(1) %></td>
+    <td><%- v %></td>
+  </tr>
+  <% } %>
 <% }) %>
