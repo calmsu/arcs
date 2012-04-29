@@ -21,7 +21,7 @@ class Resource extends AppModel {
         'Membership',
         'Comment',
         'Keyword',
-        'Hotspot',
+        'Annotation',
         'Flag',
         'Metadatum'
     );

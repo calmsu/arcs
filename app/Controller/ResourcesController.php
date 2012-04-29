@@ -22,7 +22,7 @@ class ResourcesController extends AppController {
         # Read-only actions, such as viewing resources and associated comments
         # are allowed by default.
         $this->Auth->allow(
-            'index', 'view', 'viewer', 'search', 'comments', 'hotspots', 
+            'index', 'view', 'viewer', 'search', 'comments', 'annotations', 
             'keywords', 'complete', 'zipped', 'download'
         );
 
@@ -394,11 +394,22 @@ class ResourcesController extends AppController {
      *
      * @param string $id    resource id
      */
-    public function hotspots($id=null) {
+    public function annotations($id=null) {
         if (!$this->request->is('get') || !$id) throw new BadRequestException();
-        $this->json(200, $this->Resource->Hotspot->find('all',
-            array('conditions' => array('Resource.id' => $id))
+        $this->Resource->Annotation->flatten = true;
+        $respo = array();
+        $resp['annotations'] = $this->Resource->Annotation->find('all', array(
+            'conditions' => array('Resource.id' => $id)
         ));
+        $relations = array_filter(array_map(function($a) {
+            return isset($a['relation']) ?  $a['relation'] : null;
+        }, $resp['annotations']));
+        if ($relations) {
+            $resp['relations'] = $this->Resource->find('all', array(
+                'conditions' => array('Resource.id' => $relations)
+            ));
+        }
+        $this->json(200, $resp);
     }
 
     /**
