@@ -12,12 +12,14 @@
     <br>
     <label for="data[User][password]">
         Password
-        <?php echo $this->Html->link('Forgot your password?',
-            array('controller' => 'users', 'action' => 'reset_password'),
-            array('class' => 'login-link')) ?>
+        <a class="login-link" href="#" id="forgot-password">Forgot your password?</a>
     </label>
     <?php echo $this->Form->input('password',
         array('label' => false)); ?>
+    <div id="forgot-explain" style="display:none">
+        Enter your email address, and we'll send you a link to reset your password.
+    </div>
+    <?php echo $this->Form->input('forgot_password', array('type' => 'hidden')) ?>
     <br>
     <?php echo $this->Form->submit('Login', array('class' => 'btn')); ?>
     <?php echo $this->Form->end() ?>
@@ -42,6 +44,15 @@
                 e.preventDefault();
                 return false;
             }
+        });
+        // Replace the password field with reset password instructions.
+        $('#forgot-password').click(function(e) {
+            $('#UserPassword, label[for="data[User][password]"]').slideUp(300, function() {
+                $('label[for="data[User][username]"]').html('Email');
+                $('input[type=submit]').val('Send reset link');
+                $('input[name="data[User][forgot_password]"]').val('true');
+                $('#forgot-explain').show();
+            });
         });
     });
 </script>
