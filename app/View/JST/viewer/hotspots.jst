@@ -1,5 +1,5 @@
 <% _.each(annotations, function(a) { %>
-  <%= a.url = a.url || '#' %>
+  <% a.url = a.url || '#' %>
   <a class="hotspot" style="left:<%= a.x1 + offset %>px; top:<%= a.y1 %>px; 
     width:<%= a.x2 - a.x1 %>px; height:<%= a.y2 - a.y1 %>px;" data-id="<%= a.id %>" 
     href="<%= a.relation ? arcs.url('resource', a.relation.id) : a.url %>">

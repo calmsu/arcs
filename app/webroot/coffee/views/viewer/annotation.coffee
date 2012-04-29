@@ -51,6 +51,7 @@ class arcs.views.Annotation extends Backbone.View
         @openAnnotator()
 
   removeAnnotation: (e) ->
+    e.stopPropagation() # Don't trigger the parent anchor.
     $hotspot = $(e.target).parent()
     $hotspot.popover 'hide'
     anno = @collection.get $hotspot.data 'id'
@@ -58,6 +59,7 @@ class arcs.views.Annotation extends Backbone.View
     arcs.confirm 'Are you sure?', 
       "This #{anno.getType()} will be deleted.", =>
         anno.destroy()
+    false
 
   openAnnotator: ->
     return if @annotator?.isOpen()

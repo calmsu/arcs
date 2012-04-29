@@ -76,13 +76,15 @@
     Annotation.prototype.removeAnnotation = function(e) {
       var $hotspot, anno,
         _this = this;
+      e.stopPropagation();
       $hotspot = $(e.target).parent();
       $hotspot.popover('hide');
       anno = this.collection.get($hotspot.data('id'));
       if (!anno) return;
-      return arcs.confirm('Are you sure?', "This " + (anno.getType()) + " will be deleted.", function() {
+      arcs.confirm('Are you sure?', "This " + (anno.getType()) + " will be deleted.", function() {
         return anno.destroy();
       });
+      return false;
     };
 
     Annotation.prototype.openAnnotator = function() {
