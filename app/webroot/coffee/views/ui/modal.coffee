@@ -119,6 +119,9 @@ class arcs.views.Modal extends Backbone.View
   show: -> 
     @$el.modal 'show'
 
+  isOpen: ->
+    @$el.is ':visible'
+
   # Returns true if each input validates (according to the configured
   # validation). Otherwise, it returns false and displays the error.
   validate: ->

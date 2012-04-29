@@ -1,7 +1,7 @@
 <div class="tab-pane" id="flagged-tab">
 <?php if(!isset($user_info['Flags']) || empty($user_info['Flags'])): ?>
     <h4>No Flags</h4>
-<?php elseif(isset($user_info['Hotspot'])): ?>
+<?php elseif(isset($user_info['Annotation'])): ?>
     <label class="radio">
     <input type="radio" name="optionsRadios" 
         id="optionsRadios1" value="option1" checked=""> Discussion items
@@ -23,7 +23,7 @@
             </tr>
         </thead>
         <tbody>
-        <?php foreach($user_info['Hotspot'] as $flag): ?> 
+        <?php foreach($user_info['Annotation'] as $flag): ?> 
             <tr>
                 <td><?php echo $flag['type'] ?></td> <!-- type -->
                 <td><?php echo $flag['title'] ?></td> <!-- title -->
