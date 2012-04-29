@@ -71,7 +71,11 @@ class MetaResourcesController extends AppController {
      */
     public function delete($id) {
         $model = $this->modelClass;
-        if (!$this->$model->findById($id)) throw new NotFoundException();
+        $this->$model->flatten = true;
+        $result = $this->$model->findById($id);
+        if (!$result) throw new NotFoundException();
+        if (!($this->Access->isSrResearcher() || $this->Access->isCreator($result)))
+            throw new ForbiddenException();
         if (!$this->$model->delete($id)) throw new InternalErrorException();
         $this->json(204);
     }
