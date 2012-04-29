@@ -20,7 +20,7 @@ class PagesController extends AppController {
 
     public function search() {
         $this->set('footer', false);
-        return $this->set('title_for_layout', 'Search');
+        return $this->set('title_for_layout', 'ARCS | Search');
     }
 
     /**
@@ -45,7 +45,7 @@ class PagesController extends AppController {
 			$subpage = $path[1];
 		}
 		if (!empty($path[$count - 1])) {
-			$title_for_layout = Inflector::humanize($path[$count - 1]);
+			$title_for_layout = 'ARCS | ' . Inflector::humanize($path[$count - 1]);
 		}
 		$this->set(compact('page', 'subpage', 'title_for_layout'));
 		$this->render(implode('/', $path));
