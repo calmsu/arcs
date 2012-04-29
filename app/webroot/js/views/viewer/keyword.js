@@ -17,7 +17,7 @@
     Keyword.prototype.initialize = function() {
       var _this = this;
       this.collection = new arcs.collections.KeywordList;
-      arcs.on('arcs:indexChange', function() {
+      arcs.bus.on('indexChange', function() {
         return _this.collection.fetch();
       });
       this.collection.on('add remove reset', this.render, this);

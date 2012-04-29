@@ -33,8 +33,8 @@ class arcs.views.search.Search extends Backbone.View
     @search.run() unless @router.searched
 
     # Set up some event bindings.
-    @search.results.on 'remove', @render, @
-    arcs.on 'arcs:selection', @afterSelection, @
+    @search.results.on 'change remove', @render, @
+    arcs.bus.on 'selection', @afterSelection, @
 
     # <ctrl>-a to select all
     arcs.keys.map @,
@@ -148,11 +148,11 @@ class arcs.views.search.Search extends Backbone.View
 
   unselectAll: (trigger=true) -> 
     @$('.result').removeClass('selected')
-    arcs.trigger 'arcs:selection' if trigger
+    arcs.bus.trigger 'selection' if trigger
 
   selectAll: (trigger=true) -> 
     @$('.result').addClass('selected')
-    arcs.trigger 'arcs:selection' if trigger
+    arcs.bus.trigger 'selection' if trigger
   
   # Select a result and unselect everything else, unless a modifier key
   # is pressed.n
@@ -161,7 +161,7 @@ class arcs.views.search.Search extends Backbone.View
     if not (e.ctrlKey or e.shiftKey or e.metaKey)
       @unselectAll false
     $(e.currentTarget).parents('.result').toggleClass('selected')
-    arcs.trigger 'arcs:selection'
+    arcs.bus.trigger 'selection'
 
   # Unselect all results unless a modifier key is held down, or
   # the target isn't right.

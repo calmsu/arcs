@@ -16,7 +16,7 @@ class User extends AppModel {
         'Keyword', 
         'Comment',
         'Bookmark',
-        'Hotspot',
+        'Annotation',
         'Collection'
     );
 
@@ -59,9 +59,17 @@ class User extends AppModel {
     }
 
     /**
-     * Hash the password before saving it.
+     * Return a UUID suitable for account activation and reset tokens.
      */
-    function beforeSave() {
+    function getToken() {
+        App::uses('String', 'Utility');
+        return String::uuid();
+    }
+
+    /**
+     * On create, we need to hash the user's password.
+     */
+    function beforeSave($created) {
         if (isset($this->data['User']['password'])) {
             $this->data['User']['password'] = AuthComponent::password(
                 $this->data['User']['password']

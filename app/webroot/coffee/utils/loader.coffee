@@ -2,8 +2,8 @@
 # -------------
 arcs.loader = arcs.utils.loader = 
   show: ->
-    unless $('#arcs-loader').length
+    unless $('.loading').length
       $('body').append arcs.tmpl 'ui/loader'
-    $('#arcs-loader').show()
+    $('.loading').show()
   hide: ->
-    $('#arcs-loader').hide()
+    $('.loading').hide()

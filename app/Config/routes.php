@@ -57,7 +57,7 @@
         array('controller' => 'uploads', 'action' => 'batch')
     );
 
-    # Resource, collection, and user singular aliases
+    # Resource, collection and user singular aliases
     Router::connect('/resource/*', 
         array('controller' => 'resources', 'action' => 'viewer')
     );
@@ -68,13 +68,14 @@
         array('controller' => 'users', 'action' => 'profile')
     );
 
-    # Search
+    # Search 
+    # (we're using the greedy pattern so that we can match urls with slashes, 
+    # e.g. 'search/filetype:application/pdf')
     Router::connect('/search/**', 
         array('controller' => 'pages', 'action' => 'search')
     );
 
-    # Search must have a trailing slash, for the client-side code's
-    # sanity. IMO it shouldn't be optional to begin with.
+    # Search must have a trailing slash, for the client-side code's sanity. 
     Router::redirect('/search', '/search/');
 
     # Configuration status
@@ -95,12 +96,12 @@
         array('controller' => 'help', 'action' => 'display')
     );
 
-    # Map resources for the ajax-only controllers
+    # Map resources for the API controllers
     Router::mapResources(array(
         'resources',
         'comments',
         'keywords',
-        'hotspots',
+        'annotations',
         'bookmarks',
         'users',
         'flags',

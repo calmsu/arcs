@@ -133,7 +133,7 @@ class arcs.utils.Search
     offset = (options.page - 1) * options.n
     params = "?related&n=#{options.n}&offset=#{offset}&order=#{options.order}"
 
-    arcs.utils.loader.show() if @options.loader
+    arcs.loader.show() if @options.loader
 
     @results.fetch
       add: options.add
@@ -143,10 +143,10 @@ class arcs.utils.Search
       contentType: 'application/json'
       success: =>
         options.success()
-        arcs.utils.loader.hide() if @options.loader
+        arcs.loader.hide() if @options.loader
       error: =>
         options.error()
-        arcs.utils.loader.hide() if @options.loader
+        arcs.loader.hide() if @options.loader
 
     @query = @vs.searchBox.value()
 

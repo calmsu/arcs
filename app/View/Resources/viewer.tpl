@@ -2,7 +2,7 @@
   {{ html.link(resource.Resource.title, '/resource/' ~ resource.Resource.id, 
     {'class': 'title subtle'}) }} 
   <button id="full-screen-btn" class="btn toolbar-btn" rel="tooltip"
-    data-original-title="Enter full screen"><i class="icon-resize-full"></i></button>
+    data-original-title="Fullscreen"><i class="icon-resize-full"></i></button>
   <div id="export-buttons" class="btn-group toolbar-btn">
     <button id="export-btn" class="btn dropdown-toggle" rel="tooltip"
       data-toggle="dropdown" data-original-title="Export this resource">
@@ -38,15 +38,18 @@
 
 <div id="viewer" class="row">
   <div id="standalone" class="viewer-well">
-    <div id="hotspots-wrapper"></div>
-    <div id="resource"></div>
+    <div id="wrapping">
+      <div id="hotspots-wrapper"></div>
+      <div id="resource">
+      </div>
+    </div>
   </div>
   <div class="viewer-tabs tabbable">
     <ul class="nav nav-pills">
-      <li class="active" id="primary">
+      <li class="active" id="#information-btn">
         <a data-toggle="tab" href="#information">Info</a>
       </li>
-      <li id="secondary">
+      <li id="discussion-btn">
         <a data-toggle="tab" href="#discussion">Discussion</a>
       </li>
     </ul>

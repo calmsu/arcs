@@ -15,6 +15,10 @@
 
   arcs.templates = {};
 
+  arcs.bus = {};
+
+  _.extend(arcs.bus, Backbone.Events);
+
   arcs.mode = CAKE_DEBUG;
 
   arcs.debug = arcs.mode > 0;
@@ -61,7 +65,5 @@
       success: success
     });
   };
-
-  _.extend(arcs, Backbone.Events);
 
 }).call(this);

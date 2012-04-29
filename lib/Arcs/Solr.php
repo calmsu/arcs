@@ -106,7 +106,7 @@ class SolrIndexer extends SolrService {
             'modified'   => $this->_formatDate($resource['Resource']['modified']),
             'created'    => $this->_formatDate($resource['Resource']['created']),
             'comment'    => \_\pluck($resource['Comment'], 'content'),
-            'annotation' => \_\pluck($resource['Hotspot'], 'caption'),
+            'annotation' => \_\pluck($resource['Annotation'], 'caption'),
             'keyword'    => \_\pluck($resource['Keyword'], 'keyword'),
             'collection' => $resource['Collection'] ?: array()
         );

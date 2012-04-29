@@ -65,6 +65,10 @@
       return this.$el.modal('show');
     };
 
+    Modal.prototype.isOpen = function() {
+      return this.$el.is(':visible');
+    };
+
     Modal.prototype.validate = function() {
       var name, options, required, values, _i, _len, _ref;
       this.$('#validation-error').hide();

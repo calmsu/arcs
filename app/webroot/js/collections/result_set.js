@@ -58,7 +58,9 @@
 
     ResultSet.prototype.unselectAll = function() {
       return this.each(function(result) {
-        return result.set('selected', false);
+        return result.set('selected', false, {
+          silent: true
+        });
       });
     };
 
@@ -70,7 +72,9 @@
         id = result[_i];
         model = this.get(id);
         if (!model) continue;
-        _results.push(model.set('selected', func(model)));
+        _results.push(model.set('selected', func(model), {
+          silent: true
+        }));
       }
       return _results;
     };

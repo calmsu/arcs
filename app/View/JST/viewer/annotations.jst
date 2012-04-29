@@ -1,5 +1,17 @@
-<% _.each(hotspots, function(h) { %>
-<a class="annotation"><%= h.type %></a>
-<div class="annotation-caption"><%- h.caption %></div>
-<br>
+<ul class="annotations">
+<% _.each(annotations, function(a) { %>
+  <li class="annotation" data-id="<%= a.id %>">
+  <% if (a.relation) { %>
+    <i class="icon-magnet"></i>
+    <a href="<%= arcs.url('resource', a.relation.id) %>"
+      class="subtle"><%= a.relation.title %></a>
+  <% } else if (a.transcript) { %>
+    <i class="icon-align-justify"></i>
+    <%= arcs.inflector.truncate(a.transcript, 200) %>
+  <% } else if (a.url) { %>
+    <i class="icon-share"></i>
+    <a class="subtle" href="<%= a.url %>"><%= a.url %></a>
+  <% } %>
+  </li>
 <% }) %>
+</ul>

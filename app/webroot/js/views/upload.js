@@ -80,6 +80,9 @@
           data.submit();
           return _this.pending += 1;
         },
+        fail: function(e, data) {
+          if (data.errorThrown === 'Forbidden') return arcs.needsLogin();
+        },
         progress: function(e, data) {
           var f, model, progress, _i, _len, _ref;
           progress = parseInt(data.loaded / data.total * 100, 10);

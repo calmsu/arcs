@@ -30,6 +30,17 @@ class AccessComponent extends Component {
     public function is($role) {
         $roleVal = $this->roles[$role];
         if (is_null($this->Auth->user())) return false;
-        return $this->Auth->user('role') == $roleVal;
+        return $this->Auth->user('role') <= $roleVal;
+    }
+
+    public function isCreator($object, $key=null) {
+        if ($key) {
+            $id = $object[$key];
+        } else if (isset($object['user_id'])) {
+            $id = $object['user_id'];
+        } else {
+            return false;
+        }
+        return $this->Auth->user('id') == $id;
     }
 }

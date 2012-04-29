@@ -11,7 +11,7 @@ class arcs.views.Keyword extends Backbone.View
   initialize: ->
     @collection = new arcs.collections.KeywordList
 
-    arcs.on 'arcs:indexChange', => @collection.fetch()
+    arcs.bus.on 'indexChange', => @collection.fetch()
     @collection.on 'add remove reset', @render, @
 
     arcs.utils.autocomplete 

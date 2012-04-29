@@ -1,5 +1,5 @@
 <div class="tab-pane" id="annotations-tab">        		
-<?php if(empty($user_info['Hotspot'])): ?>
+<?php if(empty($user_info['Annotation'])): ?>
     <h4>No Annotations</h4>
 <?php else: ?>
     <table class="table table-striped">
@@ -12,24 +12,6 @@
             </tr>
         </thead>
         <tbody>
-        <?php foreach($user_info['Hotspot'] as $annotation): ?>
-            <tr>
-                <td>
-                    <?php if(isset($annotation['type'])) echo $annotation['type'] ?>
-                </td> <!-- type -->
-                <td> 
-                    <?php echo $annotation['title'] ?>
-                </td> <!-- title -->
-                <td>
-                    <?php echo $this->Html->link(
-                        $annotation['resource_id'], 
-                        '/resource/' . $annotation['resource_id']) ?>
-                </td><!-- for -->
-                <td>
-                    <?php if(isset($annotation['created'])) echo $annotation['created'] ?>
-                </td><!-- date -->
-            </tr>
-        <?php endforeach; ?>
         </tbody>
     </table>
 <?php endif ?>

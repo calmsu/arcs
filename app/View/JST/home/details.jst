@@ -1,6 +1,6 @@
 <ul class="resource-thumbs">
 <% _.each(resources, function(r, i) { %>
-  <li>
+  <li class="resource-thumb">
     <a href="<%= arcs.baseURL + 'resource/' + r.id %>">
       <img src="<%= r.thumb %>" alt="resource" />
     </a>
@@ -12,7 +12,7 @@
     <i class="icon-exclamation-sign"></i> No Results Found
   </li>
 <% } else { %>
-  <li>
+  <li class="resource-thumb">
     <a href='<%= arcs.baseURL + 'search/type:"' + resources[0].type + '"' %>'>
       <i class="icon-share-alt"></i> Show all
     </a>

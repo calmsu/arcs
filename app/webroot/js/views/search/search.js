@@ -37,8 +37,8 @@
         root: this.options.url
       });
       if (!this.router.searched) this.search.run();
-      this.search.results.on('remove', this.render, this);
-      arcs.on('arcs:selection', this.afterSelection, this);
+      this.search.results.on('change remove', this.render, this);
+      arcs.bus.on('selection', this.afterSelection, this);
       return arcs.keys.map(this, {
         'ctrl+a': this.selectAll,
         t: this.scrollTop
@@ -168,19 +168,19 @@
     Search.prototype.unselectAll = function(trigger) {
       if (trigger == null) trigger = true;
       this.$('.result').removeClass('selected');
-      if (trigger) return arcs.trigger('arcs:selection');
+      if (trigger) return arcs.bus.trigger('selection');
     };
 
     Search.prototype.selectAll = function(trigger) {
       if (trigger == null) trigger = true;
       this.$('.result').addClass('selected');
-      if (trigger) return arcs.trigger('arcs:selection');
+      if (trigger) return arcs.bus.trigger('selection');
     };
 
     Search.prototype.toggle = function(e) {
       if (!(e.ctrlKey || e.shiftKey || e.metaKey)) this.unselectAll(false);
       $(e.currentTarget).parents('.result').toggleClass('selected');
-      return arcs.trigger('arcs:selection');
+      return arcs.bus.trigger('selection');
     };
 
     Search.prototype.maybeUnselectAll = function(e) {

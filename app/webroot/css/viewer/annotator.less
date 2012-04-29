@@ -1,0 +1,39 @@
+// annotator.less
+// ------------------
+
+.annotator {
+  .modal-body {
+    height: 450px;
+  }
+  .annotator-tabs {
+    .tab-pane {
+      padding: 20px;
+    }
+    #relation-tab {
+      padding: 10px;
+      height: 290px;
+      .mini-search {
+      }
+      .mini-search-results {
+        max-height: 360px;
+        overflow: auto;
+        .result {
+          width: 120px;
+          font-size: 85%;
+        }
+      }
+    }
+    #transcription-tab {
+      .transcription {
+        width: 95%;
+        height: 250px;
+      }
+    }
+    #url-tab {
+      #url {
+        width: 80%;
+        margin: 0 0 0 -5px;
+      }
+    }
+  }
+}

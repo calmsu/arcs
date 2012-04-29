@@ -17,7 +17,7 @@
     };
 
     Viewer.prototype.noIndex = function(id) {
-      return arcs.trigger('arcs:indexChange', 0, {
+      return arcs.bus.trigger('indexChange', 0, {
         noNavigate: true,
         replace: true
       });
@@ -25,7 +25,7 @@
 
     Viewer.prototype.indexChange = function(id, index) {
       if (_.isNumeric(index)) index -= 1;
-      return arcs.trigger('arcs:indexChange', index, {
+      return arcs.bus.trigger('indexChange', index, {
         noNavigate: true
       });
     };

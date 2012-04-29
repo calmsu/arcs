@@ -59,6 +59,9 @@ class arcs.views.Upload extends Backbone.View
         data.submit()
         @pending += 1
 
+      fail: (e, data)  =>
+        arcs.needsLogin() if data.errorThrown is 'Forbidden'
+
       progress: (e, data) =>
         progress = parseInt(data.loaded / data.total * 100, 10)
         for f in data.files

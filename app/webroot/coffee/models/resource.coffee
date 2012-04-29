@@ -6,7 +6,7 @@ class arcs.models.Resource extends Backbone.Model
   defaults:
     title: ''
     keywords: []
-    hotspots: []
+    annotations: []
     comments: []
     metadata: {}
     mime_type: "unknown"
@@ -44,9 +44,9 @@ class arcs.models.Resource extends Backbone.Model
         r.memberships = {}
         r.memberships[m.collection_id] = parseInt(m.page) for m in r.Membership
         delete r.Membership
-      if r.Hotspot?
-        r.hotspots = r.Hotspot
-        delete r.Hotspot
+      if r.Annotation?
+        r.annotations = r.Annotation
+        delete r.Annotation
       if r.Metadatum?
         r.metadata = new arcs.models.MetadataContainer
         r.metadata.id = r.id
@@ -56,10 +56,6 @@ class arcs.models.Resource extends Backbone.Model
 
     # If modified == created, it wasn't modified.
     r.modified = false if r.modified is r.created
-
-    # Make the file_size readable.
-    # TODO: Do this in the templates.
-    r.file_size = arcs.utils.convertBytes r.file_size
 
     # All done.
     return r

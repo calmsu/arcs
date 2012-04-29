@@ -81,9 +81,13 @@ class AppModel extends Model {
     }
 
     /**
-     * 
+     * Convenience method for calling Model->read, Model->set and Model->save
+     * a little more concisely.
      */
-    public function touch($id) {
+    public function saveById($id, $fields) {
+        if (!$this->read(null, $id)) return false;
+        $this->set($fields);
+        $this->save();
     }
     
     /**

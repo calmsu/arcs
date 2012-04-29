@@ -42,7 +42,7 @@ class arcs.collections.ResultSet extends Backbone.Collection
   
   unselectAll: ->
     @each (result) ->
-      result.set 'selected', false
+      result.set 'selected', false, {silent: true}
 
   # Given one or more result ids, set the `selected` property of each
   # of the resolved results to the return of the given function, which 
@@ -52,7 +52,7 @@ class arcs.collections.ResultSet extends Backbone.Collection
     for id in result
       model = @get(id)
       continue unless model
-      model.set 'selected', func(model)
+      model.set 'selected', func(model), {silent: true}
 
   parse: (response) ->
     @metadata = response

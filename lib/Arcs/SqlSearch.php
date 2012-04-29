@@ -99,13 +99,13 @@ class SqlSearch {
             ),
             'comparison' => 'match'
         ),
-        'caption' => array(
-            'model' => 'Hotspot',
+        'transcription' => array(
+            'model' => 'Annotation',
             'field' => 'description',
             'joins' => array(
                 'hotspots' => array(
                     'Resource' => 'id', 
-                    'Hotspot' => 'resource_id'
+                    'Annotation' => 'resource_id'
                 )
             ),
             'comparison' => 'match'

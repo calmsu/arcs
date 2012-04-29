@@ -1,7 +1,7 @@
 <?php
 App::uses('MetaResourcesController', 'Controller');
 /**
- * Hotspots controller.
+ * Annotations controller.
  *
  * This controller will only respond to ajax requests.
  *
@@ -10,6 +10,6 @@ App::uses('MetaResourcesController', 'Controller');
  * @copyright  Copyright 2012, Michigan State University Board of Trustees
  * @license    BSD License (http://www.opensource.org/licenses/bsd-license.php)
  */
-class HotspotsController extends MetaResourcesController {
-    public $name = 'Hotspots';
+class AnnotationsController extends MetaResourcesController {
+    public $name = 'Annotations';
 }

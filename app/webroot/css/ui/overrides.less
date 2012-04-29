@@ -41,12 +41,25 @@ textarea {
   }
 }
 
+.alert-info-dark {
+  .gradient(#3071af, #214f7a);
+  color: #eee;
+  .text-shadow(#444);
+  border: 1px solid #1a3d5f;
+  font-weight: 200;
+  a:not(.close) {
+    color: #eee;
+    font-weight: 500;
+  }
+}
+
 // Thinner headings
 h2, 
-h3 {
+h3,
+h4 {
   .text-shadow(#fff);
   color: #555;
-  font-weight: normal;
+  font-weight: 200;
 }
 
 // Evented, sans-href anchors need a pointer.
@@ -69,6 +82,18 @@ h3 {
 .popover,
 .ui-autocomplete {
   z-index: 1051 !important;
+}
+
+.popover.right {
+  .arrow {
+    border-right: 5px solid #333;
+  }
+  .popover-inner {
+    padding: 2px;
+  }
+  .popover-content {
+    text-align: center;
+  }
 }
 
 .ui-menu-item {
