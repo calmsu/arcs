@@ -94,6 +94,10 @@ class CollectionsController extends AppController {
      * @param id
      */
     public function delete($id=null) {
+        if (!$this->request->is('delete')) throw new MethodNotAllowedException();
+        if (!$this->Access->isAdmin()) throw new ForbiddenException();
+        if (!$this->Collection->delete($id)) throw new NotFoundException();
+        $this->json(204);
     }
 
     public function complete() {
