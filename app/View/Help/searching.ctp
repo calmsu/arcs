@@ -169,5 +169,3 @@ query that will find everything that John uploaded yesterday.</p>
 <h2>Auto-completion</h2>
 <p>Facet values will be auto-completed when possible. For certain facets,
 like <code>user</code>, we'll only auto-complete the values if you're logged in.</p>
-<h2>Boolean Logic</h2>
-<p>stub</p>

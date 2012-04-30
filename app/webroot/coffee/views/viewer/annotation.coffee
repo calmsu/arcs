@@ -37,7 +37,7 @@ class arcs.views.Annotation extends Backbone.View
     $el = $(e.target)
     anno = @collection.get $el.data 'id'
     $el.popover
-      title: anno.getType()
+      title: arcs.tmpl('viewer/popover_title', {type: anno.getType()})
       content: arcs.tmpl 'viewer/popover', anno.toJSON()
     $el.popover 'show'
 
