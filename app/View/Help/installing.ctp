@@ -1,16 +1,15 @@
 <h1>Installing ARCS</h1>
-<p>(This document is a work-in-progress.)</p>
-<h2>Requires</h2>
+<h2>Install Guide</h2>
+<p>We'll be setting ARCS up on a fresh installation of Ubuntu 11.10 Server, using
+Nginx and PHP5-FPM.</p>
+<h3>Dependencies</h3>
 <p><a href="http://php.net">PHP 5.3+</a>
 <a href="http://imagemagick.org">ImageMagick</a>
 and the <a href="http://php.net/manual/en/book.imagick.php">Imagick</a> PECL extension<br />
 <a href="http://www.ghostscript.com">Ghostscript</a> <br />
 <a href="http://mysql.com">MySQL</a><br />
 </p>
-<h2>Development Install</h2>
-<p>We'll be setting ARCS up on a fresh installation of Ubuntu 11.10 Server, using
-Nginx and PHP5-FPM.</p>
-<h3>Get the dependencies</h3>
+<h3>Getting the dependencies</h3>
 <p>We can get nearly everything we need using Debian's aptitude package
 manager.</p>
 <pre><code>$ sudo apt-get install mysql-server nginx php5-dev php-pear php5-cgi
@@ -62,7 +61,7 @@ $ chown www-data uploads
 <p>Configure ARCS (set uploads path and url).</p>
 <pre><code>$ vi app/Config/arcs.ini
 </code></pre>
-<h3>SOLR</h3>
+<h3>Setting up SOLR</h3>
 <p>Install OpenJDK 6 and the solr-jetty package. The solr-jetty package includes 
 SOLR and the Java servlet container, Jetty.</p>
 <pre><code>sudo apt-get install openjdk-6-jdk solr-jetty

@@ -22,6 +22,7 @@ class HelpController extends AppController {
         $this->set('docs', array(
             'Help' => null,
             'Getting Started' => '',
+            'FAQ' => 'faq',
             'Resources' => 'about-resources',
             'Collections' => 'about-collections',
             'Uploading Resources' => 'uploading',
