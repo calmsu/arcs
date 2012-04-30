@@ -1,5 +1,5 @@
-<h1>Upload</h1>
-<p>You can upload your resources into ARCS in two ways as described below:</p>
+<h1>Uploading</h1>
+<p>You can upload new resources into ARCS in two ways as described below:</p>
 <h2>Using the batch uploader</h2>
 <p>The batch uploader is a special function of ARCS. It is the default mode for
 uploading resources in ARCS and allows you to upload several resources. However

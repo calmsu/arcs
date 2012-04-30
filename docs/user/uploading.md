@@ -1,7 +1,6 @@
-Upload
-======
-
-You can upload your resources into ARCS in two ways as described below:
+Uploading
+=========
+You can upload new resources into ARCS in two ways as described below:
 
 Using the batch uploader
 ------------------------

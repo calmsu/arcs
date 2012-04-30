@@ -29,14 +29,13 @@ collective view as shown below:
 Adding Resources 
 ---------------- 
 Any form of resource can be added into ARCS by uploading them through the Upload
-tab. You can look into [Uploading](uploading) section for more details.
+tab. See our [uploading](uploading) documentation for more details.
 
 Updating Resources 
 ------------------ 
-A resource can be updated or edited in two
-ways:
+A resource can be updated or edited in two ways:
 
-#### Flagging {#flagging}
+#### Flagging
 
 A resource can be flagged by a Researcher, Senior Researcher or the
 Administrator. However, you should select a reason from the drop down for the

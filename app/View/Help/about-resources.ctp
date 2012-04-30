@@ -16,11 +16,10 @@ collective view as shown below:</p>
 <p><img alt="resources4" src="../img/docs/resources-4.png" /></p>
 <h2>Adding Resources</h2>
 <p>Any form of resource can be added into ARCS by uploading them through the Upload
-tab. You can look into <a href="uploading">Uploading</a> section for more details.</p>
+tab. See our <a href="uploading">uploading</a> documentation for more details.</p>
 <h2>Updating Resources</h2>
-<p>A resource can be updated or edited in two
-ways:</p>
-<h4>Flagging {#flagging}</h4>
+<p>A resource can be updated or edited in two ways:</p>
+<h4>Flagging</h4>
 <p>A resource can be flagged by a Researcher, Senior Researcher or the
 Administrator. However, you should select a reason from the drop down for the
 flagging and also explain the reason as follows:</p>
