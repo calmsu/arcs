@@ -10,7 +10,6 @@
         <meta name="apple-mobile-web-app-capable" content="yes" />
         <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
         <script>window.CAKE_DEBUG = <?php echo Configure::read('debug') ?>;</script>
-        <script>window.CAKE_USER = <?php echo json_encode($user) ?>;</script>
         <?php 
         echo $this->Assets->stylesheets();
         echo $this->Assets->scripts();
