@@ -1,6 +1,10 @@
 <!doctype html>
-<html>
+<!--[if lt IE 7]> <html class="no-js lt-ie9 lt-ie8 lt-ie7" lang="en"> <![endif]-->
+<!--[if IE 7]>    <html class="no-js lt-ie9 lt-ie8" lang="en"> <![endif]-->
+<!--[if IE 8]>    <html class="no-js lt-ie9" lang="en"> <![endif]-->
+<!--[if gt IE 8]><!--> <html lang="en"> <!--<![endif]-->
     <head>
+      <meta charset="utf-8">
         <title><?php echo $title_for_layout; ?></title>
         <link rel="shortcut icon" 
             href="<?php echo $this->Html->url('/favicon.ico') ?>" 
@@ -11,7 +15,8 @@
         <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
         <script>window.CAKE_DEBUG = <?php echo Configure::read('debug') ?>;</script>
         <?php 
-        echo $this->Assets->stylesheets();
+        #echo $this->Assets->stylesheets();
+        echo $this->Html->css('app');
         echo $this->Assets->scripts();
         ?>
         <script>arcs.user = new arcs.models.User(<?php echo json_encode($user) ?>);</script>

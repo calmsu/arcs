@@ -5838,16 +5838,17 @@ ul.annotations li.annotation:hover {
   top: 7px;
 }
 #batch-upload div.controls div#fileupload-wrapper {
-  width: 65px;
+  width: 95px;
   height: 20px;
-  cursor: pointer;
+  cursor: pointer !important;
 }
 #batch-upload div.controls div#fileupload-wrapper span {
-  float: left;
+  display: inline-block;
   top: 5px;
-}
-#batch-upload div.controls div#fileupload-wrapper input#fileupload {
   cursor: pointer;
+}
+#batch-upload div.controls div#fileupload-wrapper input {
+  cursor: pointer !important;
   float: left;
   opacity: 0;
   filter: alpha(opacity=0);
@@ -6080,6 +6081,34 @@ ul.resource-thumbs li.resource-thumb:hover {
 }
 ul.resource-thumbs li.resource-thumb:hover a {
   text-decoration: underline;
+}
+#intro_para {
+  background-color: #696969;
+  padding: 20px 0;
+  text-align: center;
+}
+.feature {
+  padding: 30px;
+  position: relative;
+  clear: right;
+  display: block;
+}
+.feature.left {
+  border-left: 24px solid #c3c3c3;
+  border-image-bottom: url('img/h1.png') 61px;
+}
+.feature.left .number {
+  position: absolute;
+  left: -42px !important;
+  top: 30px;
+}
+.feature.right {
+  border-right: 24px solid #c3c3c3;
+}
+.feature.right .number {
+  position: absolute;
+  right: -42px !important;
+  top: 30px;
 }
 .doc {
   height: 100%;
