@@ -4330,6 +4330,9 @@ h4 {
 .popover.right .popover-content {
   text-align: center;
 }
+.popover.right i {
+  margin-top: 4px;
+}
 .ui-menu-item {
   width: 100% !important;
   margin-bottom: 1px !important;
@@ -6121,6 +6124,9 @@ ul.resource-thumbs li.resource-thumb:hover a {
 }
 .doc img {
   box-shadow: 2px 2px 2px #bbb;
+  display: block;
+  margin: 30px auto;
+  max-width: 100%;
 }
 .doc h1,
 .doc h2,

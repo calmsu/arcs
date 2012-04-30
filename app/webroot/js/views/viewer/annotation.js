@@ -53,7 +53,9 @@
       $el = $(e.target);
       anno = this.collection.get($el.data('id'));
       $el.popover({
-        title: anno.getType(),
+        title: arcs.tmpl('viewer/popover_title', {
+          type: anno.getType()
+        }),
         content: arcs.tmpl('viewer/popover', anno.toJSON())
       });
       return $el.popover('show');
