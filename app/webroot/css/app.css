@@ -4106,6 +4106,18 @@ a.thumbnail:hover {
   -webkit-border-radius: 0px !important;
   -moz-border-radius: 0px !important;
 }
+.opaque {
+  opacity: 0.5;
+  filter: alpha(opacity=50);
+  filter: alpha(opacity=30);
+  -moz-opacity: 0.5;
+  -khtml-opacity: 0.5;
+  opacity: 0.5;
+  filter: alpha(opacity=30);
+  -moz-opacity: 0.5;
+  -khtml-opacity: 0.5;
+  opacity: 0.5;
+}
 .centered {
   margin-left: auto;
   margin-right: auto;
@@ -4652,6 +4664,18 @@ footer#credits #quick-links ul li:last-child {
   border-radius: 0px !important;
   -webkit-border-radius: 0px !important;
   -moz-border-radius: 0px !important;
+}
+.opaque {
+  opacity: 0.5;
+  filter: alpha(opacity=50);
+  filter: alpha(opacity=30);
+  -moz-opacity: 0.5;
+  -khtml-opacity: 0.5;
+  opacity: 0.5;
+  filter: alpha(opacity=30);
+  -moz-opacity: 0.5;
+  -khtml-opacity: 0.5;
+  opacity: 0.5;
 }
 .centered {
   margin-left: auto;
@@ -5841,17 +5865,17 @@ ul.annotations li.annotation:hover {
   top: 7px;
 }
 #batch-upload div.controls div#fileupload-wrapper {
-  width: 95px;
+  width: 65px;
   height: 20px;
-  cursor: pointer !important;
 }
 #batch-upload div.controls div#fileupload-wrapper span {
+  float: left;
   display: inline-block;
-  top: 5px;
+  position: relative;
+  top: 1px;
   cursor: pointer;
 }
 #batch-upload div.controls div#fileupload-wrapper input {
-  cursor: pointer !important;
   float: left;
   opacity: 0;
   filter: alpha(opacity=0);
@@ -6123,10 +6147,11 @@ ul.resource-thumbs li.resource-thumb:hover a {
   margin-bottom: 50px;
 }
 .doc img {
-  box-shadow: 2px 2px 2px #bbb;
-  display: block;
-  margin: 30px auto;
-  max-width: 100%;
+  box-shadow: rgba(0, 0, 0, 0.796875) 0px 0px 9px;
+  border-radius: 2px;
+  margin: 30px;
+  max-width: 600px;
+  max-height: 500px;
 }
 .doc h1,
 .doc h2,
@@ -6184,4 +6209,31 @@ ul.resource-thumbs li.resource-thumb:hover a {
 }
 .doc-nav {
   background-color: #fcfcfc;
+}
+.doc-nav .sub-nav {
+  list-style: none;
+  background: #bbb;
+  margin: 0 -15px;
+}
+.doc-nav .sub-nav li {
+  border-bottom: 1px solid #999;
+  border-top: 1px solid #ddd;
+  font-size: 85%;
+  text-shadow: 0 1px 1px #ffffff;
+  text-shadow: 0 1px 1px #ffffff;
+}
+.doc-nav .sub-nav li:first-child {
+  border-top-color: #006699;
+}
+.doc-nav .sub-nav li:hover {
+  background: #ccc;
+}
+.doc-nav .sub-nav li a {
+  padding: 3px;
+  padding-left: 25px;
+  color: #333;
+  display: block;
+}
+.doc-nav .sub-nav li a:hover {
+  text-decoration: none;
 }
