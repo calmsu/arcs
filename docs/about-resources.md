@@ -9,37 +9,37 @@ inventory cards, maps, artifacts, reports etc. Each resource is associated with
 a title, type of file, a link of the location of the file and a unique
 identifier as shown below:
 
-![resources1](../img/docs/resources-1.png)
+![resources1](../img/docs/viewer.png)
 
 The resources can be seen as a grid pattern or can be enlisted as shown below:
 
 #### Grid
 
-![resources2](../img/docs/resources-2.png)
+![resources2](../img/docs/grid.png)
 
 #### List
 
-![resources3](../img/docs/resources-3.png)
+![resources3](../img/docs/list.png)
 
 While working on a resource, you can also view the other resources in a
 collective view as shown below:
 
 ![resources4](../img/docs/resources-4.png)
 
-Adding Resources 
----------------- 
-Any form of resource can be added into ARCS by uploading them through the Upload
-tab. See our [uploading](uploading) documentation for more details.
+Uploading Resources 
+------------------- 
+Add new resources to ARCS by using the uploader. For more on that, see our
+[uploading](uploading) documentation.
 
-Updating Resources 
------------------- 
-A resource can be updated or edited in two ways:
+Editing Resources 
+----------------- 
+A resource can be edited in two ways:
 
 #### Flagging
 
-A resource can be flagged by a Researcher, Senior Researcher or the
-Administrator. However, you should select a reason from the drop down for the
-flagging and also explain the reason as follows:
+A resource can be flagged by a Researcher, Sr. Researcher or the Administrator.
+You should select a reason from the drop down for the flagging and also explain
+the reason as follows:
 
 ![resources5](../img/docs/resources-5.png)
 

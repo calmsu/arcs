@@ -7,7 +7,7 @@ Say you know that John Doe uploaded an image, and you know that he
 uploaded it yesterday, but not much else. We can construct a search 
 query that will find everything that John uploaded yesterday.
 
-![example](http://arcs.dev.cal.msu.edu/img/docs/search-example.png)
+![searching](../img/docs/search-1.png)
 
 Facets
 ------

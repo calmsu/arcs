@@ -1,0 +1,66 @@
+{
+  "Help": {
+    "Getting Started": {
+      "link": ""
+    },
+    "FAQ": {
+      "link": "faq",
+      "nav": {
+      }
+    },
+    "Your Account": {
+      "link": "account",
+      "nav": {
+        "Account Types": "#account-types",
+        "Getting an Account": "#getting-an-account",
+        "Your Profile": "#your-profile"
+      }
+    },
+    "Resources": {
+      "link": "about-resources",
+      "nav": {
+        "Understanding": "#understanding-resources",
+        "Editing": "#editing-resources"
+      }
+    },
+    "Collections": {
+      "link": "about-collections",
+      "nav": {
+        "Understanding": "#understanding-resources",
+        "Creating": "#creating-resources"
+      }
+    },
+    "Uploading": {
+      "link": "uploading",
+      "nav": {
+        "Using the Uploader": "#using-the-uploader",
+        "Troubleshooting": "#troubleshooting"
+      }
+    },
+    "Searching": {
+      "link": "searching",
+      "nav": {
+      }
+    },
+    "Bulk Actions": {
+      "link": "bulk-actions",
+      "nav": {
+        "Selection": "#selection",
+        "Flagging": "#flagging-resources",
+        "Keywording": "#keywording-resources",
+        "Editing": "#editing-resources",
+        "Exporting": "#exporting-resources",
+        "Other Actions": "#other-actions"
+      }
+    },
+    "Annotating": {
+      "link": "annotating",
+      "nav": {
+      }
+    }
+  },
+  "Developer": {
+    "Installing ARCS": "installing",
+    "API Reference": "developer-api"
+  }
+}

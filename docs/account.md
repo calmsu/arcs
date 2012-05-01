@@ -5,16 +5,16 @@ Account Types
 -------------
 There are a few different types of user accounts:
 
-* Most users are **Researchers**.  A Researcher may upload, annotate, keyword 
-and flag resources. Researchers can edit resources they've uploaded and delete
-annotations they've personally made.
+* **Researchers** may upload, annotate, keyword and flag resources. Researchers
+  can edit resources they've uploaded and delete annotations they've personally
+  made.
 
-* A **Sr. Researcher** is a Researcher that can delete any user's annotations
-and freely edit any resource.
+* **Sr. Researchers** are researchers that can delete any user's annotations and
+  freely edit any resource.
 
-* At least one person in your organization will be an **Administrator**. The
-Administrator can invite new users to ARCS and change the account type of 
-existing users.
+* **Administrators** can invite new users to ARCS, permanently delete
+  resources, and change the account type of other users. There should be at
+  least one administrator in your organization.
 
 Getting an Account
 ------------------
@@ -27,7 +27,7 @@ If not, ARCS is an open-source software project that can be freely downloaded at
 When you receive an invitation email, follow the link to the registration page
 and create your account.
 
-![accounts1](../img/docs/accounts-1.png)
+![accounts1](../img/docs/registration.png)
 
 Your Profile
 ------------
@@ -42,7 +42,7 @@ to use the same email address you used for signing up for ARCS.
 You can change your password at any time by navigating to your profile page and
 clicking `Edit Account`. Fill in a new password and click `Save`.
 
-![accounts2](../img/docs/accounts-2.png)
+![accounts2](../img/docs/editing-account.png)
 
 ### Deleting Account
 You cannot delete your own account in ARCS because your contributions are

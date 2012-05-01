@@ -7,9 +7,6 @@ use ARCS to submit their resources which can be later retrieved and updated.
 You can also acquire details regarding specific features of ARCS through its
 different segments as mentioned in the table of contents.
 
-You can find brief explanations regarding the specific terms used throughout
-ARCS as follows:
-
 Resources 
 --------- 
 A resource can be any form of digital data related to a research that a
@@ -19,6 +16,7 @@ details at the [Resources](about-resources) section.
 
 Annotation 
 ---------- 
+Annotations are boxes that 
 An annotation is a short explanatory note made by any researcher and they can
 be added by researchers to any resource when they are open to them. You can
 learn more details at the [Annotation](annotating) section.
@@ -31,10 +29,6 @@ details at the [Collections](about-collections) section.
 
 Uploading 
 --------- 
-Resources can be uploaded in ARCS in two ways, either through the standard
-uploader for uploading a single file or through the batch uploader for
-uploading a number of files. You can learn more details in the
-[Upload](uploading) section.
 
 Searching 
 --------- 
