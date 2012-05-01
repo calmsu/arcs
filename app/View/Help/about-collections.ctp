@@ -1,21 +1,21 @@
-<h1>Collections</h1>
-<h2>Understanding Collections</h2>
+<h1 id="collections">Collections</h1>
+<h2 id="understanding-collections">Understanding Collections</h2>
 <p>A collection can be defined as a combination of a number of resources like
 photographs and documents specific to a segment of the research. A researcher
 can create any number of collections for a particular research study. They are
 a medium to correlate the different resources under specific segments of the
 research.</p>
-<h3>Notebook</h3>
+<h3 id="notebook">Notebook</h3>
 <p>A notebook is a special form of collection. It is idiosyncratic and has a
 structural characteristic particular to an individual user or a group of users.</p>
-<h2>Creating Collections</h2>
+<h2 id="creating-collections">Creating Collections</h2>
 <p>A collection can be created by selecting a set of resources as shown below: You
 can also add resources to your collection by selecting the ‘Add to existing
 collection’ in the drop down.</p>
 <p>A collection can be created by selecting a set of resources as shown below: You
 can also add resources to your collection by selecting the ‘Add to existing
 collection’ in the drop down.</p>
-<h3>Bookmark</h3>
+<h3 id="bookmark">Bookmark</h3>
 <p>A bookmark is a special form of collection which does not necessarily be a part
 of a research study. It can be a set of resources which you would want to study
 and use it in some form in the future. You can select any number of resources

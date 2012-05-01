@@ -1,65 +1,56 @@
-<h1>Uploading</h1>
-<p>You can upload new resources into ARCS in two ways as described below:</p>
-<h2>Using the batch uploader</h2>
-<p>The batch uploader is a special function of ARCS. It is the default mode for
-uploading resources in ARCS and allows you to upload several resources. However
-you are required to use a newer browser version of Google Chrome or Mozilla
-Firefox since ARCS relies on the features of the newer web browsers.</p>
-<p>You can upload multiple resources in ARCS by following a few very simple steps
-as follows:</p>
-<ul>
-<li>Click on the Batch button as shown below:</li>
-</ul>
-<p><img alt="uploading1" src="../img/docs/uploading-1.png" /></p>
-<ul>
-<li>
-<p>You can either click on ‘Add files’ and select files saved on your system or
-  you can drag and drop multiple files into the uploader.</p>
-</li>
-<li>
-<p>When you select multiple files, each resource will have a progress bar that
-  shows the upload progress and then marks as ‘Done’ when they are uploaded.</p>
-</li>
-</ul>
-<p><img alt="uploading2" src="../img/docs/uploading-2.png" /></p>
-<ul>
-<li>
-<p>You can now enter the title, identifier and choose the type of the resource
-  into their respective fields. Other details should be entered in the search
-  view.</p>
-</li>
-<li>
-<p>When all the resources are uploaded, the ‘Upload &amp; Fill in Metadata’ button
-  will be enabled. On clicking it, you will be redirected to the search page
-  and you can continue entering the other metadata associated with the
-  resources.</p>
-</li>
-</ul>
+<h1 id="uploading">Uploading</h1>
+<p>ARCS makes it easy to get your research in the cloud. Navigate to the uploader
+from anywhere in ARCS by clicking <code>Upload</code> in the top-right corner.</p>
+<h2 id="using-the-uploader">Using the uploader</h2>
+<p>To start uploading, drag one or more files into the uploader, or choose some
+with the file browser by clicking <code>Add files...</code>. </p>
+<p><img alt="uploading" src="../img/docs/uploading.png" /></p>
+<blockquote>
+<p>ARCS supports most image and document formats. You can upload JPEGs, PNGs,
+TIFFs, PDFs, Word Documents, RTFs and several other formats. Video and audio
+files are not currently supported.</p>
+</blockquote>
+<p>After you've selected your files, they'll appear in the uploader and begin 
+uploading immediately. Each upload's progress is shown in a blue bar. This
+will change to <code>Done</code> when the file is finished uploading. You can remove a file
+at any time by clicking the <strong>&times;</strong> next to it.</p>
+<p>Each upload has a title, identifier and type field that can be filled in. You
+should at least provide a title for each upload, but you can add the rest later.</p>
+<p><img alt="uploader" src="../img/docs/uploader.png" /></p>
+<p>When everything has finished uploading, the total progress changes to <code>All
+Done</code> and the <code>Upload &amp; Fill in Metadata</code> button is enabled. Although the files
+have already been uploaded, they are not resources just yet. That happens when
+you click <code>Upload &amp; Fill in Metadata</code>. After clicking, you'll be redirected to
+the search page, where you can apply additional metadata to the newly uploaded
+resources using the batch editing tools.</p>
 <p><img alt="uploading3" src="../img/docs/uploading-3.png" /></p>
-<h2>Using the basic uploader</h2>
-<p>The basic uploader is the standard form of uploader which should be used if the
-batch uploader does not allow you to upload multiple resources. The basic
-uploader allows you to add a single file. You should select the file and add
-the following metadata regarding the resource you are uploading as follows and
-then click ‘Upload’. The type of the file can be any form of resources
-mentioned in the <a href="resources">Resources</a> section. </p>
+<h2 id="using-the-basic-uploader">Using the basic uploader</h2>
+<p>If your browser has trouble with the batch uploader, you can also try our basic
+uploader, which allows you to upload files one at time. It's not very fancy,
+but it provides a way for users unable to upgrade their browser to upload
+resources. Navigate to the basic uploader by clicking <code>Basic</code> on the uploading
+page.</p>
 <p><img alt="uploading4" src="../img/docs/uploading-4.png" /></p>
-<p><img alt="uploading5" src="../img/docs/uploading-5.png" /></p>
-<h2>Troubleshooting</h2>
-<p>Sometimes you can face a certain issues while uploading resources. The most
-common issues are enlisted below:</p>
-<h4>Upload failed</h4>
-<p>Sometimes uploads can get lost in transit. In this case, you can refresh the
-page and try again.</p>
-<h4>Upload timed out</h4>
-<p>Each upload may take a maximum of 6 minutes. If you're trying to upload an
-especially large file, try splitting the file into parts and upload them to the
-same collection.</p>
-<h4>File size too large</h4>
-<p>Each upload can be up to 100 megabytes in size. You can try splitting up larger
-files and upload them in pieces.</p>
-<h4>Missing thumbnails or pages of a split PDF</h4>
+<h2 id="troubleshooting">Troubleshooting</h2>
+<p>If you have trouble uploading, here's what you can do:</p>
+<h4 id="upload-failed">Upload failed</h4>
+<p>Sometimes uploads can get lost in transit, or the server fails to process your
+request. In this case, just refresh the page and try again. If the problem 
+persists, let us know.</p>
+<h4 id="file-size-too-large">File size too large</h4>
+<p>Each upload can be up to 100 megabytes in size. If a file is larger than that, 
+you'll see an error message. Often, these large files are high resolution PDFs. 
+When that's the case, here are two solutions:</p>
+<ul>
+<li>Reduce the file size using Acrobat (or Preview, on a Mac).</li>
+<li>If you'd rather not reduce the image quality, you can also upload the PDF in
+  pieces, and use <code>Add to collection...</code> to put the pieces back together. </li>
+</ul>
+<h4 id="upload-timed-out">Upload timed out</h4>
+<p>Each upload may take a maximum of 6 minutes. If your internet connection is 
+slow and the file is especially large, it may timeout.</p>
+<h4 id="missing-thumbnails-or-pages-of-a-split-pdf">Missing thumbnails or pages of a split PDF</h4>
 <p>Sometimes our image processor will fail to make a thumbnail or will skip a page
 of a PDF. You can ask it to try again, through the reprocess dialog on every
 resource page.</p>
-<p>If the problem persists, let us know at help@cal.msu.edu and we'll try to help.</p>
+<p>Have a different problem? Let us know at help@cal.msu.edu and we'll try to help.</p>

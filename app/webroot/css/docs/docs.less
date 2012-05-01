@@ -11,10 +11,11 @@
   margin-bottom:50px;
 
   img {
-    box-shadow: 2px 2px 2px #bbb;
-    display: block;
-    margin: 30px auto;
-    max-width: 100%;
+    box-shadow: rgba(0, 0, 0, 0.796875) 0px 0px 9px;
+    border-radius: 2px;
+    margin: 30px;
+    max-width: 600px;
+    max-height: 500px;
   }
 
   h1, h2, h3, h4 {
@@ -84,4 +85,30 @@
 
 .doc-nav {
   background-color:#fcfcfc;
+  .sub-nav {
+    list-style: none;
+    background: #bbb;
+    margin: 0 -15px;
+    li {
+      border-bottom: 1px solid #999;
+      border-top: 1px solid #ddd;
+      font-size: 85%;
+      .text-shadow(#fff);
+      &:first-child {
+        border-top-color: darken(#08c, 10%);
+      }
+      &:hover {
+        background: #ccc;
+      }
+      a {
+        padding: 3px;
+        padding-left: 25px;
+        color: #333;
+        display: block;
+        &:hover {
+          text-decoration: none;
+        }
+      }
+    }
+  }
 }

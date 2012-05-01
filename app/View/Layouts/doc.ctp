@@ -10,7 +10,6 @@
         <meta name="apple-mobile-web-app-capable" content="yes" />
         <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
         <script>window.CAKE_DEBUG = <?php echo Configure::read('debug') ?>;</script>
-        <script>window.CAKE_USER = <?php echo json_encode($user) ?>;</script>
         <?php 
         echo $this->Assets->stylesheets();
         echo $this->Html->css('docs');
@@ -25,13 +24,11 @@
                 <?php echo $this->Session->flash('auth') ?>
                 <div class="row">
                     <div class="span3">
-                    <?php echo $this->element('doc_sidebar', array(
-                        'docs' => $docs,
-                        'active' => $active
-                    )) ?>
+                        <?php echo $this->element('doc_sidebar', 
+                            compact($sidebar, $active)) ?>
                     </div>
                     <div class="span9 doc">
-                    <?php echo $this->fetch('content'); ?>
+                        <?php echo $this->fetch('content'); ?>
                     </div>
                 </div>
             </div>

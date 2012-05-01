@@ -1,11 +1,11 @@
-<h1>Searching ARCS</h1>
+<h1 id="searching-arcs">Searching ARCS</h1>
 <p>We've tried to make it easy to find resources in ARCS, even when you
 know very little about them. </p>
 <p>Say you know that John Doe uploaded an image, and you know that he 
 uploaded it yesterday, but not much else. We can construct a search 
 query that will find everything that John uploaded yesterday.</p>
-<p><img alt="example" src="http://arcs.dev.cal.msu.edu/img/docs/search-example.png" /></p>
-<h2>Facets</h2>
+<p><img alt="searching" src="../img/docs/search-1.png" /></p>
+<h2 id="facets">Facets</h2>
 <table>
 <thead>
 <tr>
@@ -166,6 +166,6 @@ query that will find everything that John uploaded yesterday.</p>
 </table>
 <hr />
 <p>* Not implemented.</p>
-<h2>Auto-completion</h2>
+<h2 id="auto-completion">Auto-completion</h2>
 <p>Facet values will be auto-completed when possible. For certain facets,
 like <code>user</code>, we'll only auto-complete the values if you're logged in.</p>

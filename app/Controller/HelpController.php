@@ -19,21 +19,8 @@ class HelpController extends AppController {
         $this->set('toolbar', array(
             'logo' => true
         ));
-        $this->set('docs', array(
-            'Help' => null,
-            'Getting Started' => '',
-            'FAQ' => 'faq',
-            'Your Account' => 'account',
-            'Resources' => 'about-resources',
-            'Collections' => 'about-collections',
-            'Uploading Resources' => 'uploading',
-            'Searching' => 'searching',
-            'Bulk Actions' => 'bulk-actions',
-            'Annotating' => 'annotating',
-            'Developer' => null,
-            'Installing ARCS' => 'installing',
-            'API Reference' => 'developer-api',
-        ));
+        $structure = file_get_contents(ROOT . DS . 'docs' . DS . 'sidebar.json');
+        $this->set('sidebar', json_decode($structure, true));
         $this->layout = 'doc';
     }
 
