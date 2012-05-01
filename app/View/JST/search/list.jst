@@ -29,7 +29,7 @@
         Uploaded
         <%= relativeDate(new Date(r.created)) %>
         by
-        <a class="subtle" href="<%= arcs.url('user', r.user.name) %>"><%= r.user.name %></a> 
+        <a class="subtle" href="<%= arcs.url('user', r.user.username) %>"><%= r.user.name %></a> 
       </div>
       <div>
         <% _.each(r.keywords, function(k) { %>

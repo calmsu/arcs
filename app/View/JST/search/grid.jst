@@ -10,11 +10,9 @@
     </strong>
   </div>
   <% } %>
-  <div>
-    <a class="subtle" href="<%= arcs.baseURL + 'user/' + r.user.username %>">
-      <%= r.user.name %>
-    </a>
-  </div>
+  <% if (r.metadata) { %>
+  <div><%= r.metadata.get('identifier') %></div>
+  <% } %>
   <div>
     <% if (r.comments.length) { %>
       <%= r.comments.length %> <i class="icon-comment"></i>
