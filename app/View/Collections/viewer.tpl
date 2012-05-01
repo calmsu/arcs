@@ -8,6 +8,9 @@
     <i class="icon-th-large"></i></button>
   <button id="full-screen-btn" class="btn toolbar-btn" rel="tooltip" title="Fullscreen"
     data-placement="bottom"><i class="icon-resize-full"></i></button>
+  <button id="annotation-vis-btn" class="btn toolbar-btn" rel="tooltip" 
+    title="Annotations are visible"
+    data-placement="bottom"><i class="icon-map-marker"></i></button>
   <div class="page-nav toolbar-btn input-append input-prepend">
     <button id="mini-prev-btn" class="btn"><i class="icon-arrow-left"></i></button>
     <input type="text" class="span2" />

@@ -8,6 +8,9 @@ class arcs.views.Annotation extends Backbone.View
     arcs.bus.on 'resourceLoaded', @onLoad, @
     arcs.bus.on 'resourceResize', @render, @
     arcs.bus.on 'indexChange', @clear, @
+    @visible = true
+    $('#annotation-vis-btn').on 'click', (e) =>
+      @toggleVisibility(e)
 
   events:
     'mouseenter .annotation' : 'annoMouseenter'
@@ -50,6 +53,14 @@ class arcs.views.Annotation extends Backbone.View
         return arcs.needsLogin() unless arcs.user.get 'loggedIn'
         @openAnnotator()
 
+  toggleVisibility: (e) ->
+    @visible = !@visible
+    msg = "Annotations are #{if @visible then 'visible' else 'hidden'}"
+    $btn = $('#annotation-vis-btn')
+    $btn.toggleClass('opaque').attr('data-original-title', msg).tooltip 'show'
+    return @collection.fetch() if @visible
+    $('#hotspots-wrapper').html ''
+
   removeAnnotation: (e) ->
     e.stopPropagation() # Don't trigger the parent anchor.
     $hotspot = $(e.target).parent()
@@ -57,7 +68,7 @@ class arcs.views.Annotation extends Backbone.View
     anno = @collection.get $hotspot.data 'id'
     return unless anno
     arcs.confirm 'Are you sure?', 
-      "This #{anno.getType()} will be deleted.", =>
+      "This <b>#{anno.getType().toLowerCase()}</b> will be deleted.", =>
         anno.destroy()
     false
 
@@ -133,5 +144,6 @@ class arcs.views.Annotation extends Backbone.View
         _.extend m.toJSON(), m.scaleTo(@img.height(), @img.width())
       offset: $('#resource img').offset().left - $('#resource').offset().left
     $('#annotations-wrapper').html arcs.tmpl 'viewer/annotations', annos
-    $('#hotspots-wrapper').html arcs.tmpl 'viewer/hotspots', annos
+    if @visible
+      $('#hotspots-wrapper').html arcs.tmpl 'viewer/hotspots', annos
     @

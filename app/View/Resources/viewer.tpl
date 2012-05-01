@@ -3,6 +3,9 @@
     {'class': 'title subtle'}) }} 
   <button id="full-screen-btn" class="btn toolbar-btn" rel="tooltip"
     data-original-title="Fullscreen"><i class="icon-resize-full"></i></button>
+  <button id="annotation-vis-btn" class="btn toolbar-btn" rel="tooltip" 
+    title="Annotations are visible"
+    data-placement="bottom"><i class="icon-map-marker"></i></button>
   <div id="export-buttons" class="btn-group toolbar-btn">
     <button id="export-btn" class="btn dropdown-toggle" rel="tooltip"
       data-toggle="dropdown" data-original-title="Export this resource">

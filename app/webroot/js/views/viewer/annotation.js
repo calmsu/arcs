@@ -11,11 +11,16 @@
     }
 
     Annotation.prototype.initialize = function() {
+      var _this = this;
       this.collection = new arcs.collections.AnnotationList;
       this.collection.on('add sync reset remove', this.render, this);
       arcs.bus.on('resourceLoaded', this.onLoad, this);
       arcs.bus.on('resourceResize', this.render, this);
-      return arcs.bus.on('indexChange', this.clear, this);
+      arcs.bus.on('indexChange', this.clear, this);
+      this.visible = true;
+      return $('#annotation-vis-btn').on('click', function(e) {
+        return _this.toggleVisibility(e);
+      });
     };
 
     Annotation.prototype.events = {
@@ -75,6 +80,16 @@
       });
     };
 
+    Annotation.prototype.toggleVisibility = function(e) {
+      var $btn, msg;
+      this.visible = !this.visible;
+      msg = "Annotations are " + (this.visible ? 'visible' : 'hidden');
+      $btn = $('#annotation-vis-btn');
+      $btn.toggleClass('opaque').attr('data-original-title', msg).tooltip('show');
+      if (this.visible) return this.collection.fetch();
+      return $('#hotspots-wrapper').html('');
+    };
+
     Annotation.prototype.removeAnnotation = function(e) {
       var $hotspot, anno,
         _this = this;
@@ -83,7 +98,7 @@
       $hotspot.popover('hide');
       anno = this.collection.get($hotspot.data('id'));
       if (!anno) return;
-      arcs.confirm('Are you sure?', "This " + (anno.getType()) + " will be deleted.", function() {
+      arcs.confirm('Are you sure?', "This <b>" + (anno.getType().toLowerCase()) + "</b> will be deleted.", function() {
         return anno.destroy();
       });
       return false;
@@ -180,7 +195,9 @@
         offset: $('#resource img').offset().left - $('#resource').offset().left
       };
       $('#annotations-wrapper').html(arcs.tmpl('viewer/annotations', annos));
-      $('#hotspots-wrapper').html(arcs.tmpl('viewer/hotspots', annos));
+      if (this.visible) {
+        $('#hotspots-wrapper').html(arcs.tmpl('viewer/hotspots', annos));
+      }
       return this;
     };
 
