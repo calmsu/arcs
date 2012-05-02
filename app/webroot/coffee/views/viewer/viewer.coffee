@@ -23,6 +23,7 @@ class arcs.views.Viewer extends Backbone.View
     arcs.keys.map @,
       left: @prev
       right: @next
+      '?': @showHotkeys
 
     # Init sub-views
     @actions = new arcs.views.ViewerActions
@@ -149,6 +150,9 @@ class arcs.views.Viewer extends Backbone.View
           callback: =>
             $.post arcs.baseURL + 'resources/split_pdf/' + @model.id
         no: ->
+
+  showHotkeys: ->
+    new arcs.views.Hotkeys template: 'viewer/hotkeys'
 
   # We've used CSS where possible, now we need to finish the job.
   resize: ->

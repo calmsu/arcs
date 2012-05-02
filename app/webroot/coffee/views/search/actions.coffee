@@ -68,7 +68,7 @@ class arcs.views.search.Actions extends arcs.views.BaseActions
       inputs:
         keyword:
           label: false
-          complete: arcs.utils.complete.keyword
+          complete: arcs.complete 'keywords/complete'
           focused: true
           required: true
       buttons: 

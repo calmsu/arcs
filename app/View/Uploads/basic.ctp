@@ -28,7 +28,7 @@
         arcs.utils.autocomplete({
             sel: '#ResourceKeywords',
             multiple: true,
-            source: arcs.utils.complete.keyword()
+            source: arcs.complete('keywords/complete')
         });
     });
 </script>

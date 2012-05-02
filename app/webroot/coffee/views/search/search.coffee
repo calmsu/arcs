@@ -6,14 +6,15 @@ class arcs.views.search.Search extends Backbone.View
 
   options:
     sort: 'modified'
+    sortDir: 'desc'
     grid: true
     url: arcs.baseURL + 'search/'
-    numResults: 30
 
   ### Initialize and define events ###
 
   initialize: ->
-    @setupSelect() and @setupSearch()
+    @setupSelect()
+    @setupSearch()
 
     # Init our sub-view for actions.
     @actions = new arcs.views.search.Actions
@@ -39,6 +40,7 @@ class arcs.views.search.Search extends Backbone.View
     # <ctrl>-a to select all
     arcs.keys.map @,
       'ctrl+a': @selectAll
+      '?': @showHotkeys
       t: @scrollTop
 
   events:
@@ -49,6 +51,7 @@ class arcs.views.search.Search extends Backbone.View
     'click #list-btn'        : 'toggleView'
     'click #top-btn'         : 'scrollTop'
     'click .sort-btn'        : 'setSort'
+    'click .dir-btn'         : 'setSortDir'
 
   ### More involved setups run by the initialize method ###
 
@@ -75,7 +78,6 @@ class arcs.views.search.Search extends Backbone.View
 
   # Make an instance of our Search utility and setup endless scrolling.
   setupSearch: ->
-    @searchPage = 1
     @scrollReady = false
     @search = new arcs.utils.Search 
       container: $('.search-wrapper')
@@ -85,7 +87,6 @@ class arcs.views.search.Search extends Backbone.View
       # This callback will be fired each time a search is done.
       success: =>
         @router.navigate encodeURIComponent @search.query
-        @searchPage = 1
         # Setup the endless scroll unless it's already been done.
         @setupScroll() and @scrollReady = true unless @scrollReady
         @render()
@@ -93,8 +94,7 @@ class arcs.views.search.Search extends Backbone.View
   # Setup the endless scroll. This is called after we've received our first set
   # of results. 
   setupScroll: ->
-    $actions = @$('#search-actions')
-    $results = @$('#search-results')
+    [$actions, $results] = [@$('#search-actions'), @$('#search-results')]
     $window = $(window)
     pos = $actions.offset().top - 10
 
@@ -109,13 +109,12 @@ class arcs.views.search.Search extends Backbone.View
 
       # If the scroll position is at the bottom, get the more results.
       if $window.scrollTop() == $(document).height() - $window.height()
-        # When the modulus is non-zero, it means the last search returned
-        # fewer results than allowed, and we don't need to search again.
-        return unless @search.results.length % @options.numResults == 0
+        return unless @search.results.length < @search.results.metadata.total
         @search.run null,
           add: true
-          page: @searchPage += 1
+          page: @search.page += 1
           order: @options.sort
+          direction: @options.sortDir
           success: => @append()
 
     # Fix the toolbar width on resizes. 
@@ -138,13 +137,22 @@ class arcs.views.search.Search extends Backbone.View
   # Set the search sort (a.k.a. order). This triggers a new search
   # and subsequent render.
   setSort: (e) ->
-    id = e.currentTarget.id
     @options.sort = e.target.id.match(/sort-(\w+)-btn/)[1]
     @$('.sort-btn .icon-ok').remove()
-    @$(e.currentTarget).append @make 'i', class: 'icon-ok'
+    @$(e.target).append @make 'i', class: 'icon-ok'
     @$('#sort-btn span#sort-by').html @options.sort
     @search.run null,
       order: @options.sort
+      direction: @options.sortDir
+
+  # Set the search sort direction--either 'asc' or 'desc'.
+  setSortDir: (e) ->
+    @options.sortDir = e.target.id.match(/dir-(\w+)-btn/)[1]
+    @$('.dir-btn .icon-ok').remove()
+    @$(e.target).append @make 'i', class: 'icon-ok'
+    @search.run null,
+      order: @options.sort
+      direction: @options.sortDir
 
   unselectAll: (trigger=true) -> 
     @$('.result').removeClass('selected')
@@ -174,6 +182,9 @@ class arcs.views.search.Search extends Backbone.View
     return false if $(e.target).attr 'src'
     @unselectAll()
 
+  showHotkeys: ->
+    new arcs.views.Hotkeys template: 'search/hotkeys'
+
   ### Render the search results ###
   
   # Syncs selection states between the ResultSet and the DOM elements that
@@ -193,12 +204,12 @@ class arcs.views.search.Search extends Backbone.View
 
   # Append more results. 
   #
-  # We do this instead of a full render to stop the scrollbar from 
-  # jumping in certain browsers.
+  # We do this instead of a full render to stop the scrollbar from jumping in
+  # certain browsers.
   append: ->
-    return unless @search.results.length > @options.numResults
+    return unless @search.results.length > @search.options.n
     # Get new results after the ones already displayed.
-    rest = @search.results.rest @search.results.length - @options.numResults
+    rest = @search.results.rest @search.results.length - @search.options.n
     results = new arcs.collections.ResultSet rest
     @_render results: results.toJSON(), true
 
@@ -211,10 +222,6 @@ class arcs.views.search.Search extends Backbone.View
   _render: (results, append=false) ->
     $results = $('#search-results')
     template = if @options.grid then 'search/grid' else 'search/list'
-    content = arcs.tmpl template, results
-    if append
-      $results.append content
-    else
-      $results.html content
+    $results[if append then 'append' else 'html'] arcs.tmpl template, results
     unless @search.results.length
       $results.html @make 'div', id:'no-results', 'No Results'
