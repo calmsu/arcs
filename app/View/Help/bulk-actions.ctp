@@ -47,7 +47,7 @@ very similar.</p>
 <li>
 <p>A checkbox next to each field determines whether or not that field will
   saved. When <code>Save</code> is clicked, fields that are unchecked will not be saved.
-  This means you can safely set the <code>Location</code> of several resources of
+  This means you can safely bulk edit the <code>Location</code> of several resources with
   different types--just leave the <code>Type</code> field unchecked.</p>
 </li>
 <li>
@@ -56,7 +56,7 @@ very similar.</p>
   the same <code>Subject</code>, that field will be filled in automatically. </p>
 </li>
 <li>
-<p>When you click <code>Save</code>, are will compute the differences and update the 
+<p>When you click <code>Save</code>, ARCS will compute the differences and update the 
   resources to reflect your changes.</p>
 </li>
 </ul>

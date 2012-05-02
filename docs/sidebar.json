@@ -60,7 +60,24 @@
     }
   },
   "Developer": {
-    "Installing ARCS": "installing",
-    "API Reference": "developer-api"
+    "Installing ARCS": {
+      "link": "installing",
+      "nav": {
+        "Dependencies": "#dependencies",
+        "Getting the Dependencies": "#getting-the-dependencies",
+        "Setting things up": "#setting-things-up",
+        "SOLR": "#setting-up-solr"
+      }
+    },
+    "API Reference": {
+      "link": "developer-api",
+      "nav": {
+        "Schema": "#schema",
+        "Resources": "#resources",
+        "Metadata": "#metadata",
+        "Comments": "#comments",
+        "Keywords": "#keywords"
+      }
+    }
   }
 }

@@ -69,14 +69,14 @@ very similar.
 
 - A checkbox next to each field determines whether or not that field will
   saved. When `Save` is clicked, fields that are unchecked will not be saved.
-  This means you can safely set the `Location` of several resources of
+  This means you can safely bulk edit the `Location` of several resources with
   different types--just leave the `Type` field unchecked.
 
 - When all of the selected resources share the same value for a field, the
   field will be pre-filled and checked. For example, when two resources have
   the same `Subject`, that field will be filled in automatically. 
 
-- When you click `Save`, are will compute the differences and update the 
+- When you click `Save`, ARCS will compute the differences and update the 
   resources to reflect your changes.
 
 ![bulkaction5](../img/docs/editing.png)

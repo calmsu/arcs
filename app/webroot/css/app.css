@@ -6211,7 +6211,7 @@ ul.resource-thumbs li.resource-thumb:hover a {
 .doc h4 {
   text-shadow: 0 1px 1px #fff;
   color: #444;
-  font-weight: 300;
+  font-weight: 200;
   margin: 20px;
   margin-left: 0px;
 }
@@ -6220,13 +6220,17 @@ ul.resource-thumbs li.resource-thumb:hover a {
 }
 .doc h2 {
   font-size: 160%;
-  text-decoration: underline;
+  font-weight: normal;
 }
 .doc h3 {
   font-size: 150%;
 }
 .doc h4 {
   font-size: 140%;
+}
+.doc a.para,
+.doc a.para:hover {
+  text-decoration: none;
 }
 .doc code {
   color: #333;
