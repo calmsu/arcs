@@ -9,8 +9,10 @@ class arcs.views.Annotation extends Backbone.View
     arcs.bus.on 'resourceResize', @render, @
     arcs.bus.on 'indexChange', @clear, @
     @visible = true
-    $('#annotation-vis-btn').on 'click', (e) =>
-      @toggleVisibility(e)
+    $('#annotation-vis-btn').on 'click', =>
+      @toggleVisibility()
+    arcs.keys.map @,
+      a: @toggleVisibility
 
   events:
     'mouseenter .annotation' : 'annoMouseenter'
@@ -53,11 +55,12 @@ class arcs.views.Annotation extends Backbone.View
         return arcs.needsLogin() unless arcs.user.get 'loggedIn'
         @openAnnotator()
 
-  toggleVisibility: (e) ->
+  toggleVisibility: ->
     @visible = !@visible
     msg = "Annotations are #{if @visible then 'visible' else 'hidden'}"
     $btn = $('#annotation-vis-btn')
     $btn.toggleClass('opaque').attr('data-original-title', msg).tooltip 'show'
+    _.delay (=> $btn.tooltip 'hide'), 1000
     return @collection.fetch() if @visible
     $('#hotspots-wrapper').html ''
 

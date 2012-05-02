@@ -18,8 +18,11 @@
       arcs.bus.on('resourceResize', this.render, this);
       arcs.bus.on('indexChange', this.clear, this);
       this.visible = true;
-      return $('#annotation-vis-btn').on('click', function(e) {
-        return _this.toggleVisibility(e);
+      $('#annotation-vis-btn').on('click', function() {
+        return _this.toggleVisibility();
+      });
+      return arcs.keys.map(this, {
+        a: this.toggleVisibility
       });
     };
 
@@ -80,12 +83,16 @@
       });
     };
 
-    Annotation.prototype.toggleVisibility = function(e) {
-      var $btn, msg;
+    Annotation.prototype.toggleVisibility = function() {
+      var $btn, msg,
+        _this = this;
       this.visible = !this.visible;
       msg = "Annotations are " + (this.visible ? 'visible' : 'hidden');
       $btn = $('#annotation-vis-btn');
       $btn.toggleClass('opaque').attr('data-original-title', msg).tooltip('show');
+      _.delay((function() {
+        return $btn.tooltip('hide');
+      }), 1000);
       if (this.visible) return this.collection.fetch();
       return $('#hotspots-wrapper').html('');
     };
