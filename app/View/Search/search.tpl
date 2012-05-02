@@ -71,6 +71,10 @@
         <li><a class="sort-btn" id="sort-modified-btn">modified&nbsp;
           <i class="icon-ok"></i></a></li>
         <li><a class="sort-btn" id="sort-created-btn">created&nbsp;</a></li>
+        <li class="divider"></li>
+        <li><a class="dir-btn" id="dir-asc-btn">ascending&nbsp;</a></li>
+        <li><a class="dir-btn" id="dir-desc-btn">descending&nbsp;
+          <i class="icon-ok"></i></a></li>
       </ul>
     </div>
     <div id="open-buttons" class="btn-group actions-right">

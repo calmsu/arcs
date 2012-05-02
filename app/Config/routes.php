@@ -72,9 +72,12 @@
     # (we're using the greedy pattern so that we can match urls with slashes, 
     # e.g. 'search/filetype:application/pdf')
     Router::connect('/search/**', 
-        array('controller' => 'pages', 'action' => 'search')
+        array('controller' => 'search', 'action' => 'search')
     );
-
+    # We can access the JSON search through either /api/search or this:
+    Router::connect('/resources/search', 
+        array('controller' => 'search', 'action' => 'resources')
+    );
     # Search must have a trailing slash, for the client-side code's sanity. 
     Router::redirect('/search', '/search/');
 
@@ -96,8 +99,21 @@
         array('controller' => 'help', 'action' => 'display')
     );
 
-    # Map resources for the API controllers
-    Router::mapResources(array(
+    # Non-RESTful API routes 
+    Router::connect('/api/search',
+        array('controller' => 'search', 'action' => 'resources')
+    );
+    Router::connect('/api/metadata',
+        array('controller' => 'resources', 'action' => 'metadata')
+    );
+    Router::connect('/api/resources/keywords/*',
+        array('controller' => 'resources', 'action' => 'keywords')
+    );
+    Router::connect('/api/resources/comments/*',
+        array('controller' => 'resources', 'action' => 'keywords')
+    );
+
+    $restful = array(
         'resources',
         'comments',
         'keywords',
@@ -107,7 +123,9 @@
         'flags',
         'jobs',
         'metadata'
-    ));
+    );
+    Router::mapResources($restful);
+    Router::mapResources($restful, array('prefix' => '/api/'));
     Router::parseExtensions();
 
 	CakePlugin::routes();

@@ -46,6 +46,49 @@ class ResourcesController extends AppController {
     }
 
     /**
+     * Edit the resource.
+     *
+     * @param string $id    resource id
+     */
+    public function edit($id=null) {
+        if (!($this->request->is('post') || $this->request->is('put'))) 
+            throw new MethodNotAllowedException();
+        $resource = $this->Resource->findById($id);
+        if (!$resource) throw new NotFoundException();
+        if ($this->Resource->add($this->request->data)) return $this->json(200);
+        throw new InternalErrorException();
+    }
+
+    /**
+     * Return resource info.
+     *
+     * @param string $id    resource id
+     */
+    public function view($id=null) {
+        if (!$this->request->is('get')) throw new MethodNotAllowedException();
+        if (!$id) throw new BadRequestException();
+        $resource = $this->Resource->findById($id);
+        if (!$resource) throw new NotFoundException();
+        $public = $this->Resource->flatten ? $resource['public'] : 
+            $resource['Resource']['public'];
+        $allowed = $public || $this->Auth->loggedIn();
+        if (!$allowed) throw new ForbiddenException();
+        $this->json(200, $resource);
+    }
+
+    /**
+     * Delete the resource, if authorized.
+     *
+     * @param string $id    resource id
+     */
+    public function delete($id=null) {
+        if (!$this->request->is('delete')) throw new MethodNotAllowedException();
+        if (!$this->Auth->loggedIn()) throw new UnauthorizedException();
+        if (!$this->Resource->delete($id)) throw new InternalErrorException();
+        $this->json(204);
+    }
+
+    /**
      * Creates a task to split a PDF into individual resources. Note it doesn't
      * actually do any splitting within the Request-Response loop.
      * 
@@ -76,20 +119,6 @@ class ResourcesController extends AppController {
             'type' => 'Notebook Page'
         ));
         $this->json(202);
-    }
-
-    /**
-     * Edit the resource.
-     *
-     * @param string $id    resource id
-     */
-    public function edit($id=null) {
-        if (!($this->request->is('post') || $this->request->is('put'))) 
-            throw new MethodNotAllowedException();
-        $resource = $this->Resource->findById($id);
-        if (!$resource) throw new NotFoundException();
-        if ($this->Resource->add($this->request->data)) return $this->json(200);
-        throw new InternalErrorException();
     }
 
     /**
@@ -140,109 +169,6 @@ class ResourcesController extends AppController {
         # $resource var.)
         if ($resource['Resource']['first_req']) 
             $this->Resource->firstRequest($resource['Resource']['id']);
-    }
-
-    /**
-     * Return resource info.
-     *
-     * @param string $id    resource id
-     */
-    public function view($id=null) {
-        if (!$this->request->is('get')) throw new MethodNotAllowedException();
-        if (!$id) throw new BadRequestException();
-        $resource = $this->Resource->findById($id);
-        if (!$resource) throw new NotFoundException();
-        $public = $resource['Resource']['public'];
-        $allowed = $public || $this->Auth->loggedIn();
-        if (!$allowed) throw new ForbiddenException();
-        $this->json(200, $resource);
-    }
-
-    /**
-     * Delete the resource, if authorized.
-     *
-     * @param string $id    resource id
-     */
-    public function delete($id=null) {
-        if (!$this->request->is('delete')) throw new MethodNotAllowedException();
-        if (!$this->Auth->loggedIn()) throw new UnauthorizedException();
-        if (!$this->Resource->delete($id)) throw new InternalErrorException();
-        $this->json(204);
-    }
-
-    /**
-     * Search resources.
-     */
-    public function search() {
-        $public = !$this->Auth->loggedIn();
-        # Get the request parameters.
-        $params = $this->request->query;
-        $limit = isset($params['n']) ? $params['n'] : 30;
-        $offset = isset($params['offset']) ? $params['offset'] : 0;
-
-        $order = 'modified';
-        if (isset($params['order'])) {
-            $orderables = array('modified', 'created', 'title');
-            if (in_array($params['order'], $orderables)) 
-                $order = $params['order'];
-        }
-
-        if ($this->request->data) {
-            # Instantiate our Search object with the db config and facets.
-            $searcher = $this->_getSearcher();
-            if ($this->Auth->loggedIn())
-                $searcher->publicFilter = false;
-
-            # Get the result ids.
-            $response = $searcher->search($this->request->data, $limit, $offset);
-            $response['results'] = $this->Resource->find('all', array(
-                'conditions' => array(
-                    'Resource.id' => $response['results']
-                ),
-                'order' => "Resource.$order DESC"
-            ));
-            if (!$this->Access->isAdmin()) {
-                unset($response['raw_query']);
-                unset($response['mode']);
-            }
-            return $this->json(200, $response);
-        }
-
-        # No facets provided. Give them back some recent resources.
-        $resources = $this->Resource->find('all', array(
-            'conditions' => $public ? array('Resource.public' => 1) : null,
-            'limit' => $limit,
-            'offset' => $offset,
-            'order' => "Resource.$order DESC"
-        ));
-        $this->json(200, array(
-            'results' => $resources,
-            'num_results' => count($resources),
-            'limit' => $limit,
-            'offset' => $offset,
-            'total' => $this->Resource->find('count')
-        ));
-    }
-
-    /**
-     * Return an instance of a search class. SolrSearch if available, otherwise
-     * SqlSearch. This depends on the `arcs.ini` configuration file.
-     *
-     * @return object
-     */
-    private function _getSearcher() {
-        if (Configure::read('solr.uses')) {
-            require_once(LIB . 'Arcs' . DS . 'Solr.php');
-            return new \Arcs\SolrSearch(
-                Configure::read('solr.host'),
-                Configure::read('solr.port'),
-                Configure::read('solr.webapp')
-            );
-        }
-        require_once(LIB . 'Arcs' . DS . 'SqlSearch.php');
-        $dbo = $this->Resource->getDataSource('default');
-        $config = $dbo->config;
-        return new \Arcs\SqlSearch($config);
     }
 
     /**
@@ -424,10 +350,10 @@ class ResourcesController extends AppController {
                 $values = $this->Resource->complete('Resource.title');
                 break;
             case 'created':
-                $values = $this->Resource->complete('Resource.created');
+                $values = $this->Resource->complete('Resource.created', null, true);
                 break;
             case 'modified':
-                $values = $this->Resource->complete('Resource.modified');
+                $values = $this->Resource->complete('Resource.modified', null, true);
                 break;
             case 'type':
                 $values = Configure::read('resources.types');

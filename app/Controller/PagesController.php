@@ -18,11 +18,6 @@ class PagesController extends AppController {
         $this->Auth->allow('display', 'search');
     }
 
-    public function search() {
-        $this->set('footer', false);
-        return $this->set('title_for_layout', 'ARCS | Search');
-    }
-
     /**
      * Displays a view
      *

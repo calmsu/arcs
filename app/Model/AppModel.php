@@ -94,19 +94,21 @@ class AppModel extends Model {
      * Convenience method for generating autocompletion arrays.
      *
      * @param string $field      e.g. Resource.title
-     * @param array $conditions  an array of conditions that will be passed along
-     *                           to the find method.
+     * @param array $conditions  an array of conditions that will be passed 
+     *                           along to the find method.
+     * @param bool $date         group by a date field's day.
      */
-    public function complete($field, $conditions=array()) {
+    public function complete($field, $conditions=array(), $date=false) {
         $_flatten = $this->flatten;
         $this->flatten = false;
         $values = $this->find('list', array(
-            'fields' => array($field),
+            'fields' => $field,
             'conditions' => $conditions,
+            'group' => $date ? "DAY($field)" : $field,
             'limit' => 100
         ));
         $this->flatten = $_flatten;
-        return array_unique(array_values($values));
+        return array_values($values);
     }
 
     /**
@@ -131,9 +133,13 @@ class AppModel extends Model {
      * MySQL's FIELD() function.
      */
     public function findAllFromIds($ids) {
-        $this->find('all', array(
-            'conditions' => array('id' => $ids)
-            # TODO
+        $order = sprintf("FIELD(%s.id, %s) DESC",
+            $this->name,
+            implode(', ', array_map(function($id) { return "'$id'"; }, $ids))
+        );
+        return $this->find('all', array(
+            'conditions' => array("{$this->name}.id" => $ids),
+            'order' => $order
         ));
     }
 
