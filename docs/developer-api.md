@@ -31,7 +31,7 @@ create a new comment for the authenticated user:
     curl -X POST \
       -H "Content-Type: application/json" \
       -d '{"content": "Some comment", "resource_id": "4f7351c..."}' \
-      http://arcs.cal.msu.edu/comments
+      http://arcs.cal.msu.edu/api/comments
 
 ### Responses
 
@@ -93,7 +93,7 @@ Resources
 
 ### Getting a resource by id
 
-    GET /resources/:id
+    GET /api/resources/:id
 
 **Response**   
 `200 Ok`
@@ -115,7 +115,7 @@ Resources
 
 ### Creating a new resource
 
-    POST /resources
+    POST /api/resources
 
 **Input**
 
@@ -131,7 +131,7 @@ Key      | Value
 
 ### Searching resources with a simple query
 
-    GET /resources/search/:query
+    GET /api/search/:query
 
 **Response**    
 `200 Ok`
@@ -168,7 +168,7 @@ Key      | Value
 
 ### Searching resources with a faceted query
 
-    POST /resources/search
+    POST /api/search
 
 **Input**
 
@@ -225,7 +225,7 @@ Provide an array of facet objects. For example:
 
 ### Deleting a resource by id
 
-    DELETE /resources/:id
+    DELETE /api/resources/:id
 
 **Response**    
 `204 Deleted`
@@ -236,7 +236,7 @@ Metadata
 
 ### Getting metadata for a resource
 
-    GET /resources/metadata/:id
+    GET /api/metadata/:id
 
 **Response**  
 `200 Ok`
@@ -251,7 +251,7 @@ Metadata
 
 ### Setting metadata for a resource
 
-    POST /resources/metadata/:id
+    POST /api/metadata/:id
 
 **Input**
 
@@ -270,7 +270,7 @@ Comments
 
 ### Getting a comment by id
 
-    GET /comments/:id
+    GET /api/comments/:id
 
 **Response**    
 `200 Ok`
@@ -286,7 +286,7 @@ Comments
 
 ### Creating a new comment
 
-    POST /comments
+    POST /api/comments
 
 **Input**
 
@@ -308,7 +308,7 @@ For example:
 
 ### Deleting a comment
 
-    DELETE /comments/:id 
+    DELETE /api/comments/:id 
 
 **Response**     
 `204 Deleted`
@@ -319,7 +319,7 @@ Keywords
 
 ### Getting a keyword by id
 
-    GET /keywords/:id 
+    GET /api/keywords/:id 
 
 **Response**     
 `200 Ok`
@@ -329,7 +329,7 @@ Keywords
 
 ### Getting keywords for a resource
 
-    GET /resource/keywords/:id
+    GET /api/resources/keywords/:id
 
 **Response**
 `200 Ok`
@@ -340,7 +340,7 @@ Keywords
 
 ### Creating a new keyword
 
-    POST /keywords
+    POST /api/keywords
 
 **Input**
 
@@ -363,7 +363,7 @@ For example:
 
 ### Updating a keyword
 
-    POST|PUT /keywords/:id
+    POST|PUT /api/keywords/:id
 
 **Input**
     
@@ -383,7 +383,7 @@ For example:
 
 ### Deleting a keyword
 
-    DELETE /keywords/:id
+    DELETE /api/keywords/:id
 
 **Response**    
 `204 Deleted`
