@@ -16,7 +16,7 @@ class arcs.views.Keyword extends Backbone.View
 
     arcs.utils.autocomplete 
       sel: '#keyword-btn'
-      source: arcs.utils.complete.keyword()
+      source: arcs.complete 'keywords/complete'
 
     @collection.fetch()
 

@@ -1,66 +1,27 @@
 # completion.coffee
 # -----------------
-# Helpers for completing input fields.
 
-# The complete object provides methods for retrieving completion values
-# from the server.
-arcs.utils.complete =
+arcs.complete = (url) ->
+  result = []
+  $.ajax
+    url: arcs.baseURL + url
+    async: false
+    dataType: 'json'
+    success: (data) ->
+      result = _.compact _.uniq _.values(data)
+  result
 
-  user: ->
-    @_get 'users/complete'
-
-  keyword: ->
-    @_get 'keywords/complete'
-
-  title: ->
-    @_get 'resources/complete/title'
-
-  created: ->
-    @_date 'resources/complete/created'
-
-  modified: ->
-    @_date 'resources/complete/modified'
-
-  collection: ->
-    @_get 'collections/complete'
-
-  # We'll store completion values by url and timestamp them.
-  # The _get method may choose to use the cache or not.
-  _cache: {}
-
-  # Get a url from the server (synchronously), and clean up the results.
-  _get: (url, fresh=false) ->
-
-    if _.has(@_cache, url)
-      [data, ts] = @_cache[url]
-      return data unless fresh or (Date.now() - ts > 10000)
-
-    result = []
-    $.ajax
-      url: arcs.baseURL + url
-      async: false
-      dataType: 'json'
-      success: (data) ->
-        result = _.without(_.uniq(_.values(data)), null)
-
-    @_cache[url] = [result, Date.now()]
-    return result
-
-  # Get an array of dates from the server, reformat them, and add a few
-  # aliases. Helper method for date-type facets.
-  _date: (url) ->
-    raw_dates = @_get url
-    fmt = 'MM-DD-YYYY'
-    parse_fmt = 'YYYY-MM-DD HH:mm:ss'
-    dates = (moment(d, parse_fmt).format(fmt) for d in raw_dates)
-    aliases = [
-      {label:'today', value: moment().format(fmt)},
-      {label:'yesterday', value: moment().subtract('days', 1).format(fmt)}
-    ]
-    _.uniq _.union dates, aliases
-
-_.bindAll(arcs.utils.complete)
-
+# Get an array of dates from the server, reformat them, and add a few
+# aliases. Helper method for date-type facets.
+arcs.completeDate = (url) ->
+  raw = arcs.complete url
+  [fmt, parseFmt] = ['DD-MM-YYYY', 'YYYY-MM-DD HH:mm:ss']
+  dates = (moment(d, parseFmt).format(fmt) for d in raw)
+  aliases = [
+    {label:'today', value: moment().format(fmt)},
+    {label:'yesterday', value: moment().subtract('days', 1).format(fmt)}
+  ]
+  _.union dates, aliases
 
 # The autocomplete method wraps jQueryUI's autocomplete and ensures
 # that the input field remains in focus. It can also handle multiple

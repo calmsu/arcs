@@ -23,7 +23,7 @@
       this.collection.on('add remove reset', this.render, this);
       arcs.utils.autocomplete({
         sel: '#keyword-btn',
-        source: arcs.utils.complete.keyword()
+        source: arcs.complete('keywords/complete')
       });
       return this.collection.fetch();
     };
