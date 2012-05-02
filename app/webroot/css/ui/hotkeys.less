@@ -1,0 +1,37 @@
+.hotkeys-modal {
+  font-family: 'Pontano Sans', sans-serif;
+  .modal-header {
+    background: transparent;
+    box-shadow: none;
+    h3 { 
+      color: #ddd; 
+      font-weight: bold;
+      .text-shadow(#000);
+    }
+    .hotkeys-close {
+      color: #ddd;
+      border: 1px solid #ddd;
+      padding: 4px;
+      .rounded-corners(5px);
+      cursor: pointer;
+      &:hover {
+        text-decoration: none;
+      }
+    }
+  }
+  .modal-body table {
+    width: 100%;
+    font-weight: 200;
+    td,
+    th {
+      text-align: left;
+      padding: 10px;
+      padding-top: 5px;
+    }
+    th {
+      font-weight: bold;
+    }
+  }
+  background: rgba(0, 0, 0, 0.90);
+  color: #ddd; 
+}
