@@ -35,5 +35,18 @@
             <div class="push"></div>
         </div>
         <?php if ($footer) echo $this->element('footer') ?>
+        <script>
+            // Quick hack to add paragraph markers to doc headings.
+            $(function() {
+                $('h2,h3,h4,h5').hover(function() {
+                    var html = $(this).html(),
+                        para = " <a href='#" + this.id + "' class='para'>&para;</a>";
+                    $(this).data('original', html);
+                    $(this).html(html + para);
+                }, function() {
+                    $(this).html($(this).data('original'));
+                });
+            });
+        </script>
     </body>
 </html>
