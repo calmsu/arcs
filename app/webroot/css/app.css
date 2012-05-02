@@ -5129,6 +5129,9 @@ div#search-results-wrapper div#search-results {
   padding: 10px;
   overflow: auto;
 }
+div#search-results-wrapper div#search-results table {
+  border-collapse: separate;
+}
 div#search-results-wrapper div#search-actions {
   padding-left: 0px;
   padding-right: 0px;
@@ -5181,6 +5184,10 @@ div#search-results-wrapper .toolbar-fixed {
   margin-left: auto;
   margin-right: auto;
 }
+.result {
+  border-collapse: separate;
+  border-spacing: 1px;
+}
 .result.grid {
   text-align: center;
   font-size: 85%;
@@ -5200,11 +5207,13 @@ div#search-results-wrapper .toolbar-fixed {
 .result.grid .img-wrapper img {
   vertical-align: middle;
 }
-.result.list {
-  border-bottom: 1px solid #888;
-}
 .result.list td {
   padding: 0 10px;
+  border-top: 1px solid #ddd;
+  border-bottom: 1px solid #999;
+}
+.result.list:first-child td {
+  border-top: none;
 }
 .result.list td.img-wrapper {
   width: 100px;

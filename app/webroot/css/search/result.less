@@ -23,10 +23,16 @@
     margin: 20px;
   }
 
+  border-collapse: separate;
+  border-spacing: 1px;
   &.list {
-    border-bottom: 1px solid #888;
     td {
       padding: 0 10px;
+      border-top: 1px solid #ddd;
+      border-bottom: 1px solid #999;
+    }
+    &:first-child td {
+      border-top: none;
     }
     td.img-wrapper {
       width: 100px;
