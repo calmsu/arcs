@@ -61,6 +61,9 @@ class arcs.utils.Search extends Backbone.View
     modified   : -> arcs.completeDate 'resources/complete/modified'
     type       : -> _.compact _.keys arcs.config.types
 
+  getLast: ->
+    @results.rest (@results.length % @options.n or @options.n)
+
   # Fetch the given query, or, if none is given, the current query in the
   # Visual Search box. Pass an options hash to override the the object's
   # options.

@@ -347,7 +347,7 @@
       data = {
         resources: _.pluck(this.results.selected(), 'id')
       };
-      return $.postJSON(arcs.baseURL + 'resources/zipped', data, function(response) {
+      $.postJSON(arcs.baseURL + 'resources/zipped', data, function(response) {
         var iframe;
         if (response.url != null) {
           iframe = _this.make('iframe', {
@@ -357,6 +357,7 @@
           return iframe.src = response.url;
         }
       });
+      return arcs.notify("Hold tight. We're building your zipfile. " + "Your download will start in a moment", 'success');
     };
 
     Actions.prototype.bookmarkSelected = function() {

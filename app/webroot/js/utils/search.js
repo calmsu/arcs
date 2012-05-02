@@ -105,6 +105,10 @@
       }
     };
 
+    Search.prototype.getLast = function() {
+      return this.results.rest(this.results.length % this.options.n || this.options.n);
+    };
+
     Search.prototype.run = function(query, options) {
       var params, q, _i, _len,
         _this = this;

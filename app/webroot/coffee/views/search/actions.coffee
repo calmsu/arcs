@@ -249,6 +249,8 @@ class arcs.views.search.Actions extends arcs.views.BaseActions
           style: 'display:none'
         $('body').append(iframe)
         iframe.src = response.url
+    arcs.notify "Hold tight. We're building your zipfile. " +
+      "Your download will start in a moment", 'success'
 
   # Call bookmarkResource on all selected results.
   bookmarkSelected: ->

@@ -208,9 +208,7 @@ class arcs.views.search.Search extends Backbone.View
   # certain browsers.
   append: ->
     return unless @search.results.length > @search.options.n
-    # Get new results after the ones already displayed.
-    rest = @search.results.rest @search.results.length - @search.options.n
-    results = new arcs.collections.ResultSet rest
+    results = new arcs.collections.ResultSet @search.getLast()
     @_render results: results.toJSON(), true
 
   # Render the results.

@@ -232,10 +232,9 @@
     };
 
     Search.prototype.append = function() {
-      var rest, results;
+      var results;
       if (!(this.search.results.length > this.search.options.n)) return;
-      rest = this.search.results.rest(this.search.results.length - this.search.options.n);
-      results = new arcs.collections.ResultSet(rest);
+      results = new arcs.collections.ResultSet(this.search.getLast());
       return this._render({
         results: results.toJSON()
       }, true);
