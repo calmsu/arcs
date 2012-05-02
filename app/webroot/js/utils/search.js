@@ -106,7 +106,7 @@
     };
 
     Search.prototype.getLast = function() {
-      return this.results.rest(this.results.length % this.options.n || this.options.n);
+      return this.results.last(this.results.length % this.options.n || this.options.n);
     };
 
     Search.prototype.run = function(query, options) {
