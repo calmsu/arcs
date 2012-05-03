@@ -157,10 +157,13 @@ class ResourcesController extends AppController {
                 'Collection.title !=' => 'Temporary Collection'
             )
         )));
-        $this->set('resource', $resource);
-        $this->set('toolbar', array('actions' => true));
-        $this->set('footer', false);
-        $this->set('body_class', 'viewer standalone');
+        $this->set(array(
+            'resource' => $resource,
+            'toolbar' => array('actions' => true),
+            'footer' => false,
+            'body_class' => 'viewer standalone',
+            'title_for_layout' => $resource['Resource']['title']
+        ));
 
         # On the first request of a particular resource (usually directly 
         # after upload), we might prompt the user for additional 

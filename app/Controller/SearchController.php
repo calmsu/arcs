@@ -23,9 +23,11 @@ class SearchController extends AppController {
     /**
      * Display the search page
      */
-    public function search() {
+    public function search($query='') {
         $this->set('footer', false);
-        $this->set('title_for_layout', 'ARCS | Search');
+        $title = 'Search';
+        if ($query) $title .= ' - ' . urldecode($query);
+        $this->set('title_for_layout', $title);
     }
 
     /**

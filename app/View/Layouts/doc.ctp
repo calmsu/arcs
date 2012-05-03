@@ -1,7 +1,7 @@
 <!doctype html>
 <html>
     <head>
-        <title><?php echo $title_for_layout; ?></title>
+        <title><?php echo $title_for_layout; ?> - ARCS</title>
         <link rel="shortcut icon" 
             href="<?php echo $this->Html->url('/favicon.ico') ?>" 
             type="image/x-icon" />
