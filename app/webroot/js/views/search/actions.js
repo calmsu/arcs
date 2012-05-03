@@ -38,6 +38,7 @@
       'click #open-btn': 'openSelected',
       'click #open-colview-btn': 'collectionFromSelected',
       'click #collection-btn': 'namedCollectionFromSelected',
+      'click #collection-add-btn': 'addToCollection',
       'click #attribute-btn': 'editSelected',
       'click #flag-btn': 'flagSelected',
       'click #delete-btn': 'deleteSelected',
@@ -313,6 +314,12 @@
         error: function() {
           return arcs.notify('An error occurred.', 'error');
         }
+      });
+    };
+
+    Actions.prototype.addToCollection = function() {
+      return new arcs.views.Modal({
+        title: 'Add to existing collection'
       });
     };
 

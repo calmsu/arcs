@@ -21,22 +21,23 @@ class arcs.views.search.Actions extends arcs.views.BaseActions
       space: @previewSelected
 
   events:
-    'dblclick img'           : 'openResource'
-    'click #open-btn'        : 'openSelected'
-    'click #open-colview-btn': 'collectionFromSelected'
-    'click #collection-btn'  : 'namedCollectionFromSelected'
-    'click #attribute-btn'   : 'editSelected'
-    'click #flag-btn'        : 'flagSelected'
-    'click #delete-btn'      : 'deleteSelected'
-    'click #bookmark-btn'    : 'bookmarkSelected'
-    'click #keyword-btn'     : 'keywordSelected'
-    'click #download-btn'    : 'downloadSelected'
-    'click #zipped-btn'      : 'zippedDownloadSelected'
-    'click #rethumb-btn'     : 'rethumbSelected'
-    'click #repreview-btn'   : 'repreviewSelected'
-    'click #split-btn'       : 'splitSelected'
-    'click #access-btn'      : 'setAccessForSelected'
-    'click #solr-btn'        : 'indexSelected'
+    'dblclick img'              : 'openResource'
+    'click #open-btn'           : 'openSelected'
+    'click #open-colview-btn'   : 'collectionFromSelected'
+    'click #collection-btn'     : 'namedCollectionFromSelected'
+    'click #collection-add-btn' : 'addToCollection'
+    'click #attribute-btn'      : 'editSelected'
+    'click #flag-btn'           : 'flagSelected'
+    'click #delete-btn'         : 'deleteSelected'
+    'click #bookmark-btn'       : 'bookmarkSelected'
+    'click #keyword-btn'        : 'keywordSelected'
+    'click #download-btn'       : 'downloadSelected'
+    'click #zipped-btn'         : 'zippedDownloadSelected'
+    'click #rethumb-btn'        : 'rethumbSelected'
+    'click #repreview-btn'      : 'repreviewSelected'
+    'click #split-btn'          : 'splitSelected'
+    'click #access-btn'         : 'setAccessForSelected'
+    'click #solr-btn'           : 'indexSelected'
 
   # Delete the selected results, by calling Resource.destroy() on each model.
   deleteSelected: ->
@@ -221,6 +222,10 @@ class arcs.views.search.Actions extends arcs.views.BaseActions
         window.open arcs.url('collection', newCol.id)
       error: =>
         arcs.notify 'An error occurred.', 'error'
+
+  addToCollection: ->
+    new arcs.views.Modal
+      title: 'Add to existing collection'
 
   previewSelected: ->
     return unless @results.anySelected()

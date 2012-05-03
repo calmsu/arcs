@@ -179,7 +179,6 @@
       margin = $('body').hasClass('standalone') ? STANDALONE : COLLECTION;
       height = $(window).height() - margin;
       this.$('.viewer-well').height(height);
-      this.$('#resource img').height(height);
       return this.$('.tab-content').height(height - TAB_MARGIN);
     };
 
