@@ -82,12 +82,10 @@ class UploadsController extends AppController {
 
             # Set a flash message, redirect to the resource view.
             $this->Session->setFlash('Resource created.', 'flash_success');
-            /*
             $this->redirect(array(
                 'controller' => 'resources', 
                 'action' => 'viewer', $this->Resource->id
             ));
-             */
         }
     }
 

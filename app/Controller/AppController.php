@@ -23,6 +23,9 @@ class AppController extends Controller {
     );
 
     public function beforeFilter() {
+        # Use Basic Auth for API requests.
+        if (substr($this->request->url, 0, 3) == 'api')
+            $this->Auth->authenticate = array('Basic');
         $this->set(array(
             'user' => array(
                 'loggedIn' => $this->Auth->loggedIn(),

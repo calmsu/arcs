@@ -22,7 +22,7 @@ class ResourcesController extends AppController {
         # Read-only actions, such as viewing resources and associated comments
         # are allowed by default.
         $this->Auth->allow(
-            'index', 'view', 'viewer', 'search', 'comments', 'annotations', 
+            'view', 'viewer', 'search', 'comments', 'annotations', 
             'keywords', 'complete', 'zipped', 'download'
         );
 
@@ -35,13 +35,27 @@ class ResourcesController extends AppController {
     /**
      * Create a resource.
      *
-     * This is not currently implemented. The Uploads controller handles file
-     * uploading (and subsequent resource creation). This action will likely
-     * handle API requests.
+     * This is the API version, see the Uploads controller for the form-based
+     * uploader.
      */
     public function add() {
-        # TODO
         if (!$this->request->is('post')) throw new MethodNotAllowedException();
+        $this->request->data['user_id'] = $this->Auth->user('id');
+        # Process requests with a download url later.
+        if (isset($this->request->data['url'])) {
+            $this->Job->enqueue('download_file', $this->request->data);
+            return $this->json(202);
+        }
+        if (empty($_FILES)) throw new BadRequestException();
+        reset($_FILES);
+        $this->Resource->fromFile($_FILES[key($_FILES)], $this->request->data);
+        $this->json(201, $this->Resource->id);
+    }
+
+    /**
+     * We don't have an index.
+     */
+    public function index() {
         $this->json(501);
     }
 
