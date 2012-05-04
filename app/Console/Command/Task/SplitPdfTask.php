@@ -27,7 +27,8 @@ class SplitPdfTask extends AppShell {
 
             # The name is just the PDF file name plus "-pX.jpeg"
             $basename = str_ireplace('.pdf', '', $resource['file_name']);
-            $fname = $basename . "-p$page.jpeg";
+            $padded_page = str_pad($page, 3, '0', STR_PAD_LEFT);
+            $fname = $basename . "-p{$padded_page}.jpeg";
             # Create the resource file.
             $sha = $this->Resource->createFile($tmp_file, array(
                 'filename' => $fname, 
@@ -38,7 +39,7 @@ class SplitPdfTask extends AppShell {
             # Save the resource.
             $this->Resource->add(array(
                 'sha' => $sha,
-                'title' => $resource['title'] . "-p$page",
+                'title' => $resource['title'] . "-p{$padded_page}",
                 'public' => $resource['public'],
                 'context' => $collection_id,
                 'file_name' => $fname,
