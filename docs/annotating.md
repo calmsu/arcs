@@ -25,7 +25,7 @@ As soon as you box over, the annotation dialogue is revealed as follows:
 ![relation](../img/docs/relation.png)
 
 You can select the resource which has the same image from the resources which
-you can see in the annotation dialogue and click on ‘Save’ to relate the two
+you can see in the annotation dialogue and click on `Save` to relate the two
 resources.
 
 When you hover over an annotation, you can view its type and preview in a
@@ -38,7 +38,7 @@ thumbnail.
 Often it is very difficult to read and correctly decipher the handwritten text
 in a resource. ARCS allows you to select the region of the text of the resource
 and re-write the corresponding text in the transcription tab as shown below and
-then click on ‘Save’:
+then click on `Save`:
 
 ![annotations4](../img/docs/annotations-4.png)
 
@@ -53,7 +53,7 @@ corresponding resource which has the text.
 They are external links which are useful in creating a link between the
 selected region in the resource and the content in another application. You can
 select the region in the resource and add a URL to connect it to the content on
-the application and click on ‘Save’:
+the application and click on `Save`:
 
 ![annotations7](../img/docs/annotations-7.png)
 

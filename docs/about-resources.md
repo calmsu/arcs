@@ -33,23 +33,40 @@ Add new resources to ARCS by using the uploader. For more on that, see our
 
 Editing Resources 
 ----------------- 
-A resource can be edited in two ways:
+A resource can be edited in the following ways:
 
 #### Flagging
 
+Flagging is a way of reporting an issue with a resource when you don't have the
+permissions, information, or time to fix it yourself but which according to you
+requires attention and needs to be fixed.
+
 A resource can be flagged by a Researcher, Sr. Researcher or the Administrator.
-You should select a reason from the drop down for the flagging and also explain
+You should select a reason for flagging from the drop down and also explain
 the reason as follows:
 
 ![resources5](../img/docs/resources-5.png)
 
-Annotating resources: Any resource can be annotated by a Senior Researcher/
-Administrator any time. However, if you are a Researcher, you can annotate your
-own resource or flag another user’s annotation by selecting it and flagging it
-with a valid reason as explained above.
+#### Keywording
+
+Keywords (aka labels or tags) signify shared characteristics about  resources.
+They can be assigned either to a resource or a group of resources.
+
+You can assign keywords by selecting a resource or multiple resources and then
+clicking on `Keyword`. You will see the following dialogue where you can enter
+the keyword:
+
+![resources](../img/docs/keyword.png)
+
+#### Annotating 
+
+Any resource can be annotated by a Senior Researcher/ Administrator any time.
+However, if you are a Researcher, you can annotate your own resource or flag
+another user’s annotation by selecting it and flagging it with a valid reason
+as explained above.
 
 If you have to edit any information regarding your own resource, you can do by
-just selecting the resource and going into the Edit tab and edit the information
-regarding your resource as follows and save it.
+just selecting the resource and going into the Edit tab and edit the
+information regarding your resource as follows and save it.
 
 ![resources6](../img/docs/resources-6.png)

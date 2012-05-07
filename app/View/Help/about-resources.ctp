@@ -18,17 +18,28 @@ collective view as shown below:</p>
 <p>Add new resources to ARCS by using the uploader. For more on that, see our
 <a href="uploading">uploading</a> documentation.</p>
 <h2 id="editing-resources">Editing Resources</h2>
-<p>A resource can be edited in two ways:</p>
+<p>A resource can be edited in the following ways:</p>
 <h4 id="flagging">Flagging</h4>
+<p>Flagging is a way of reporting an issue with a resource when you don't have the
+permissions, information, or time to fix it yourself but which according to you
+requires attention and needs to be fixed.</p>
 <p>A resource can be flagged by a Researcher, Sr. Researcher or the Administrator.
-You should select a reason from the drop down for the flagging and also explain
+You should select a reason for flagging from the drop down and also explain
 the reason as follows:</p>
 <p><img alt="resources5" src="../img/docs/resources-5.png" /></p>
-<p>Annotating resources: Any resource can be annotated by a Senior Researcher/
-Administrator any time. However, if you are a Researcher, you can annotate your
-own resource or flag another user’s annotation by selecting it and flagging it
-with a valid reason as explained above.</p>
+<h4 id="keywording">Keywording</h4>
+<p>Keywords (aka labels or tags) signify shared characteristics about  resources.
+They can be assigned either to a resource or a group of resources.</p>
+<p>You can assign keywords by selecting a resource or multiple resources and then
+clicking on <code>Keyword</code>. You will see the following dialogue where you can enter
+the keyword:</p>
+<p><img alt="resources" src="../img/docs/keyword.png" /></p>
+<h4 id="annotating">Annotating</h4>
+<p>Any resource can be annotated by a Senior Researcher/ Administrator any time.
+However, if you are a Researcher, you can annotate your own resource or flag
+another user’s annotation by selecting it and flagging it with a valid reason
+as explained above.</p>
 <p>If you have to edit any information regarding your own resource, you can do by
-just selecting the resource and going into the Edit tab and edit the information
-regarding your resource as follows and save it.</p>
+just selecting the resource and going into the Edit tab and edit the
+information regarding your resource as follows and save it.</p>
 <p><img alt="resources6" src="../img/docs/resources-6.png" /></p>

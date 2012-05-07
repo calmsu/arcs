@@ -40,16 +40,16 @@ previews for a group of resources.
 
 Flagging Resources
 ------------------
-Flagging is a way of reporting an issue with a resource when you don't have the
-permissions, information, or time to fix it yourself.
+You can flag multiple resources through ARCS. To flag the selected resources,
+click `Flag`, then select a reason and provide an explanation of the issue. For
+more details check the [Resources](about-resources#flagging) section.
 
-To flag the selected resources, click `Flag`, then select a reason and provide 
-an explanation of the issue.
 
 Keywording Resources
 --------------------
-In addition to building collections, you can use keywords (a.k.a. labels and 
-tags) to group resources in ARCS by shared characteristics.
+In addition to building collections, you can use keywords to group multiple
+resources in ARCS by shared characteristics. For more details check the
+[Resources](about-resources#keywording) section.
 
 Editing Resources
 -----------------
@@ -85,10 +85,10 @@ Exporting Resources
 -------------------
 Sometimes you just need to get things out of ARCS. 
 
-1. Click "Export > Download" to download each of selected resources
+1. Click `Export` > `Download` to download each of selected resources
    individually. Your browser may ask you if it's ok to let ARCS download
    multiple files.
-2. Click "Export > Download as zipfile" to download each of the
+2. Click `Export` > `Download as zipfile` to download each of the
    selected resources as a single zip archive. This might be helpful to keep
    things organized.
 
@@ -98,9 +98,9 @@ The easiest way to open a single resource is to double-click on it.
 
 To open a group of resources, we provide two options:
 
-1. Click "Open > In separate windows" to open the resources in separate 
+1. Click `Open` > `In separate windows` to open the resources in separate 
    tabs (or windows, depending on your browser).
-2. Click "Open > In a collection view" to open the selected resources 
+2. Click `Open` > `In a collection view` to open the selected resources 
    together in a single resource viewer.
 
 Other Actions

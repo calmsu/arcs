@@ -26,13 +26,13 @@ the context menu. This can be useful when you want a better look at a resource,
 but don't want to open it in the viewer. Use the arrow keys to flip through
 previews for a group of resources.</p>
 <h2 id="flagging-resources">Flagging Resources</h2>
-<p>Flagging is a way of reporting an issue with a resource when you don't have the
-permissions, information, or time to fix it yourself.</p>
-<p>To flag the selected resources, click <code>Flag</code>, then select a reason and provide 
-an explanation of the issue.</p>
+<p>You can flag multiple resources through ARCS. To flag the selected resources,
+click <code>Flag</code>, then select a reason and provide an explanation of the issue. For
+more details check the <a href="about-resources#flagging">Resources</a> section.</p>
 <h2 id="keywording-resources">Keywording Resources</h2>
-<p>In addition to building collections, you can use keywords (a.k.a. labels and 
-tags) to group resources in ARCS by shared characteristics.</p>
+<p>In addition to building collections, you can use keywords to group multiple
+resources in ARCS by shared characteristics. For more details check the
+<a href="about-resources#keywording">Resources</a> section.</p>
 <h2 id="editing-resources">Editing Resources</h2>
 <p>You can edit resource attributes and metadata through the <code>Edit</code> dialog.</p>
 <h4 id="single-resource">Single Resource</h4>
@@ -64,10 +64,10 @@ very similar.</p>
 <h2 id="exporting-resources">Exporting Resources</h2>
 <p>Sometimes you just need to get things out of ARCS. </p>
 <ol>
-<li>Click "Export &gt; Download" to download each of selected resources
+<li>Click <code>Export</code> &gt; <code>Download</code> to download each of selected resources
    individually. Your browser may ask you if it's ok to let ARCS download
    multiple files.</li>
-<li>Click "Export &gt; Download as zipfile" to download each of the
+<li>Click <code>Export</code> &gt; <code>Download as zipfile</code> to download each of the
    selected resources as a single zip archive. This might be helpful to keep
    things organized.</li>
 </ol>
@@ -75,9 +75,9 @@ very similar.</p>
 <p>The easiest way to open a single resource is to double-click on it. </p>
 <p>To open a group of resources, we provide two options:</p>
 <ol>
-<li>Click "Open &gt; In separate windows" to open the resources in separate 
+<li>Click <code>Open</code> &gt; <code>In separate windows</code> to open the resources in separate 
    tabs (or windows, depending on your browser).</li>
-<li>Click "Open &gt; In a collection view" to open the selected resources 
+<li>Click <code>Open</code> &gt; <code>In a collection view</code> to open the selected resources 
    together in a single resource viewer.</li>
 </ol>
 <h2 id="other-actions">Other Actions</h2>

@@ -15,7 +15,7 @@ dragging the cursor over it and mark it as a boxed region as follows:</p>
 <p>As soon as you box over, the annotation dialogue is revealed as follows:</p>
 <p><img alt="relation" src="../img/docs/relation.png" /></p>
 <p>You can select the resource which has the same image from the resources which
-you can see in the annotation dialogue and click on ‘Save’ to relate the two
+you can see in the annotation dialogue and click on <code>Save</code> to relate the two
 resources.</p>
 <p>When you hover over an annotation, you can view its type and preview in a
 popover as shown below. This content is the relation resource’s title, type and
@@ -25,7 +25,7 @@ thumbnail.</p>
 <p>Often it is very difficult to read and correctly decipher the handwritten text
 in a resource. ARCS allows you to select the region of the text of the resource
 and re-write the corresponding text in the transcription tab as shown below and
-then click on ‘Save’:</p>
+then click on <code>Save</code>:</p>
 <p><img alt="annotations4" src="../img/docs/annotations-4.png" /></p>
 <p><img alt="annotations5" src="../img/docs/annotations-5.png" /></p>
 <p><img alt="annotations6" src="../img/docs/annotations-6.png" /></p>
@@ -35,7 +35,7 @@ corresponding resource which has the text.</p>
 <p>They are external links which are useful in creating a link between the
 selected region in the resource and the content in another application. You can
 select the region in the resource and add a URL to connect it to the content on
-the application and click on ‘Save’:</p>
+the application and click on <code>Save</code>:</p>
 <p><img alt="annotations7" src="../img/docs/annotations-7.png" /></p>
 <p><img alt="annotations8" src="../img/docs/annotations-8.png" /></p>
 <p>A summary of all the annotations corresponding to a resource can be seen in the
