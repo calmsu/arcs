@@ -11,6 +11,32 @@ class Keyword extends AppModel {
     public $name = 'Keyword';
     public $belongsTo = array('User', 'Resource');
     public $whitelist = array('keyword', 'resource_id');
+    /*
+    public $validate = array(
+        'keyword' => array(
+            'uniqueToResource' => array(
+                'rule' => 'uniqueToResource'
+            ),
+            'notEmpty' => array(
+                'rule' => 'notEmpty'
+            )
+        )
+    );
+     */
+
+    /**
+     * Verify that a keyword is unique to the resource.
+     *
+     * @param string $check
+     * @return bool
+     */
+    public function uniqueToResource($check) {
+        return !!$this->find('all', array(
+            'conditions' => array(
+                'resource_id' => $this->data['Keyword']['resource_id'],
+                'keyword' => $check['keyword']
+        )));
+    }
 
     /**
      * Given a string of comma-separated values, split the values and save each

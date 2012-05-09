@@ -57,7 +57,7 @@ class AppModel extends Model {
     /**
      * Temporarily permit a field for saving, by adding it to the whitelist.
      *
-     * @param string $field  one or more fields as arguments.
+     * @param string $field   one or more fields as arguments.
      * @return void
      */
     public function permit($field) {
@@ -68,21 +68,22 @@ class AppModel extends Model {
     }
 
     /**
-     * Complement to `permit`. Temporarily forbid a field for saving.
+     * Complement to `permit`. Temporarily forbid a field from saving.
      *
-     * @param string $field  one or more fields as arguments.
+     * @param string $field    one or more fields as arguments.
      * @return void
      */
     public function forbid($field) {
         $fields = func_get_args();
-        foreach ($fields as $f) {
-            unset($this->whitelist[$f]);
-        }
+        foreach ($fields as $f) unset($this->whitelist[$f]);
     }
 
     /**
      * Convenience method for calling Model->read, Model->set and Model->save
      * a little more concisely.
+     *
+     * @param string $id
+     * @param array $fields
      */
     public function saveById($id, $fields) {
         if (!$this->read(null, $id)) return false;
@@ -130,7 +131,10 @@ class AppModel extends Model {
     /**
      * Returns results where Model.id is in $ids. The important bit is that it 
      * will also return the results in the order of the given ids, by using 
-     * MySQL's FIELD() function.
+     * MySQL's FIELD() function. We use this to maintain SOLR's relevance 
+     * sorting.
+     *
+     * @param array $ids
      */
     public function findAllFromIds($ids) {
         $order = sprintf("FIELD(%s.id, %s) DESC",
@@ -160,8 +164,8 @@ class AppModel extends Model {
      *                         pass it the normalized result and use the return 
      *                         value to reset the result.
      * @param object $context  pass an object (such as $this) in, and you can 
-     *                         use it within the function, through the second 
-     *                         parameter.
+     *                         use it within the function, given as the second 
+     *                         parameter to your callable.
      */
     public function resultsMap($results, $func, $context=null) {
         if (isset($results[0][$this->name])) {
