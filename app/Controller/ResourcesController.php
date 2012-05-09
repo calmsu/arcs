@@ -11,7 +11,7 @@
  */
 class ResourcesController extends AppController {
     public $name = 'Resources';
-    public $uses = array('Resource', 'Job', 'Collection');
+    public $uses = array('Resource', 'Collection');
 
     public function beforeFilter() {
         # The App Controller will set some common view variables (namely a 
@@ -25,7 +25,6 @@ class ResourcesController extends AppController {
             'view', 'viewer', 'search', 'comments', 'annotations', 
             'keywords', 'complete', 'zipped', 'download'
         );
-
         if (!isset($this->request->query['related'])) {
             $this->Resource->recursive = -1;
             $this->Resource->flatten = true;
@@ -47,8 +46,7 @@ class ResourcesController extends AppController {
             return $this->json(202);
         }
         if (empty($_FILES)) throw new BadRequestException();
-        reset($_FILES);
-        $this->Resource->fromFile($_FILES[key($_FILES)], $this->request->data);
+        $this->Resource->fromFile(array_shift($_FILES), $this->request->data);
         $this->json(201, $this->Resource->id);
     }
 
@@ -56,7 +54,7 @@ class ResourcesController extends AppController {
      * We don't have an index.
      */
     public function index() {
-        $this->json(501);
+        throw new NotImplementedException();
     }
 
     /**
@@ -69,8 +67,9 @@ class ResourcesController extends AppController {
             throw new MethodNotAllowedException();
         $resource = $this->Resource->findById($id);
         if (!$resource) throw new NotFoundException();
-        if ($this->Resource->add($this->request->data)) return $this->json(200);
-        throw new InternalErrorException();
+        if (!$this->Resource->add($this->request->data)) 
+            throw new InternalErrorException();
+        $this->json(200, $this->Resource->findById($id));
     }
 
     /**
@@ -85,8 +84,7 @@ class ResourcesController extends AppController {
         if (!$resource) throw new NotFoundException();
         $public = $this->Resource->flatten ? $resource['public'] : 
             $resource['Resource']['public'];
-        $allowed = $public || $this->Auth->loggedIn();
-        if (!$allowed) throw new ForbiddenException();
+        if (!($public || $this->Auth->loggedIn())) throw new UnauthorizedException();
         $this->json(200, $resource);
     }
 
@@ -98,6 +96,7 @@ class ResourcesController extends AppController {
     public function delete($id=null) {
         if (!$this->request->is('delete')) throw new MethodNotAllowedException();
         if (!$this->Auth->loggedIn()) throw new UnauthorizedException();
+        if (!$this->Access->isAdmin()) throw new ForbiddenException();
         if (!$this->Resource->delete($id)) throw new InternalErrorException();
         $this->json(204);
     }
@@ -115,7 +114,6 @@ class ResourcesController extends AppController {
         if (!$resource) throw new NotFoundException();
         if (!$resource['mime_type'] == 'application/pdf') 
             throw new BadRequestException();
-
         # Create a new collection for the split.
         $this->Collection->permit('user_id');
         $this->Collection->add(array(
@@ -125,7 +123,6 @@ class ResourcesController extends AppController {
             'user_id' => $this->Auth->user('id'),
             'pdf' => $id
         ));
-
         # Make a new task to split the PDF.
         $this->Job->enqueue('split_pdf', array(
             'resource_id' => $id, 
@@ -153,7 +150,8 @@ class ResourcesController extends AppController {
 
         if (!$resource) return $this->redirect('/404');
         if (!$allowed) {
-            $this->Session->setFlash("Oops. You'll need to login to view that.", 'flash_error');
+            $this->Session->setFlash("Oops. You'll need to login to view that.", 
+                'flash_error');
             $this->Session->write('redirect', '/resource/' . $id);
             return $this->redirect($this->Auth->redirect('/users/login'));
         }
@@ -231,9 +229,7 @@ class ResourcesController extends AppController {
             (count($files) - 1) . '-' .
             (count($files) > 2 ? 'others' : 'other');
         $sha = $this->Resource->makeZipfile($files, $name);
-        $this->json(200, array(
-            'url' => $this->Resource->url($sha, $name . '.zip')
-        ));
+        $this->json(200, array('url' => $this->Resource->url($sha, $name . '.zip')));
     }
 
     /**
@@ -248,9 +244,7 @@ class ResourcesController extends AppController {
         if (!$this->Auth->loggedIn()) throw new UnauthorizedException();
         $resource = $this->Resource->findById($id);
         if (!$resource) throw new NotFoundException();
-        $this->Job->enqueue('thumb', array(
-            'resource_id' => $resource['id']
-        ));
+        $this->Job->enqueue('thumb', array('resource_id' => $resource['id']));
         $this->json(202);
     }
 
@@ -264,9 +258,7 @@ class ResourcesController extends AppController {
         if (!$this->Auth->loggedIn()) throw new UnauthorizedException();
         $resource = $this->Resource->findById($id);
         if (!$resource) throw new NotFoundException();
-        $this->Job->enqueue('preview', array(
-            'resource_id' => $resource['id']
-        ));
+        $this->Job->enqueue('preview', array('resource_id' => $resource['id']));
         $this->json(202);
     }
 
@@ -280,9 +272,7 @@ class ResourcesController extends AppController {
         if (!$this->Auth->loggedIn()) throw new UnauthorizedException();
         $resource = $this->Resource->findById($id);
         if (!$resource) throw new NotFoundException();
-        $this->Job->enqueue('solr_index', array(
-            'resource_id' => $resource['id']
-        ));
+        $this->Job->enqueue('solr_index', array('resource_id' => $resource['id']));
         $this->json(202);
     }
 
@@ -340,19 +330,19 @@ class ResourcesController extends AppController {
     public function annotations($id=null) {
         if (!$this->request->is('get') || !$id) throw new BadRequestException();
         $this->Resource->Annotation->flatten = true;
-        $respo = array();
-        $resp['annotations'] = $this->Resource->Annotation->find('all', array(
+        $res = array();
+        $res['annotations'] = $this->Resource->Annotation->find('all', array(
             'conditions' => array('Resource.id' => $id)
         ));
         $relations = array_filter(array_map(function($a) {
             return isset($a['relation']) ?  $a['relation'] : null;
-        }, $resp['annotations']));
+        }, $res['annotations']));
         if ($relations) {
-            $resp['relations'] = $this->Resource->find('all', array(
+            $res['relations'] = $this->Resource->find('all', array(
                 'conditions' => array('Resource.id' => $relations)
             ));
         }
-        $this->json(200, $resp);
+        $this->json(200, $res);
     }
 
     /**
@@ -371,9 +361,6 @@ class ResourcesController extends AppController {
                 break;
             case 'modified':
                 $values = $this->Resource->complete('Resource.modified', null, true);
-                break;
-            case 'type':
-                $values = Configure::read('resources.types');
                 break;
             default:
                 $values = array();

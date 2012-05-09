@@ -19,6 +19,8 @@ class UsersController extends AppController {
 
     /**
      * Display a user's bookmarks.
+     *
+     * @param string $ref
      */
     public function bookmarks($ref) {
         $user = $this->User->findByRef($ref);
@@ -51,17 +53,17 @@ class UsersController extends AppController {
      */
     public function edit($id=null) {
         if (!($this->request->is('put') || $this->request->is('post'))) 
-            return $this->json(405);
-        if (!$this->request->data || !$id) return $this->json(400);
+            throw new MethodNotAllowedException();
+        if (!$this->request->data || !$id) throw new BadRequestException();
         $user = $this->User->read(null, $id);
-        if (!$user) return $this->json(404);
+        if (!$user) throw new NotFoundException();
         # Must be editing own account, or an admin.
         if (!($this->User->id == $this->Auth->user('id') || $this->Access->isAdmin()))
-            return $this->json(403);
+            throw new ForbiddenException();
         # Only admins can change user roles.
         if ($this->Access->isAdmin()) 
             $this->User->permit('role');
-        if (!$this->User->add($this->request->data)) return $this->json(500);
+        if (!$this->User->add($this->request->data)) throw new InternalErrorException();
         # Update the Auth Session var, if necessary.
         if ($id == $this->Auth->user('id'))
             $this->Session->write('Auth.User', $this->User->findById($id));
@@ -141,6 +143,8 @@ class UsersController extends AppController {
 
     /**
      * Change the password.
+     *
+     * @param string $token   a valid password reset token
      */
     public function reset_password($token=null) {
         if (!$token) throw new BadRequestException();
@@ -196,9 +200,14 @@ class UsersController extends AppController {
         $this->json(202);
     }
 
-    public function register($activation) {
+    /**
+     * Register a user with an invite.
+     *
+     * @param string $token    a valid activation token
+     */
+    public function register($token) {
         if (!$activation) throw new BadRequestException();
-        $user = $this->User->findByActivation($activation);
+        $user = $this->User->findByActivation($token);
         if (!$user) throw new NotFoundException();
         if ($this->request->is('post')) {
             $this->User->read(null, $user['id']);
@@ -239,9 +248,7 @@ class UsersController extends AppController {
                 'Comment'    => array('limit' => 30)
             )
         ));
-        if (!$user) {
-            $this->redirect('404');
-        }
+        if (!$user) throw new NotFoundException();
         $this->set('user_info', $user);
     }
 
@@ -250,7 +257,7 @@ class UsersController extends AppController {
      * autocompletion purposes. Responds only to ajax requests.
      */
     public function complete() {
-        if (!$this->request->is('get')) return $this->json(405);
+        if (!$this->request->is('get')) throw new MethodNotAllowedException();
         return $this->json(200, $this->User->complete('User.name'));
     }
 }

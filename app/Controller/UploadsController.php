@@ -9,13 +9,12 @@
  */
 class UploadsController extends AppController {
     public $name = 'Uploads';
-    public $uses = array('Resource', 'Job');
+    public $uses = array('Resource');
 
     /**
-     * Upload files without creating Resources. Responds with a JSON
-     * array that will contain the SHA1s of the created resources. This
-     * is used in tandem with `batch_upload`, which will create the
-     * resources, given SHA1s.
+     * Upload files without creating Resources. Responds with a JSON array that 
+     * will contain the SHA1s of the created resources. This is used in tandem 
+     * with `batch_upload`, which will create the resources, given SHA1s.
      */
     public function add_files() {
         $files = array();
@@ -41,80 +40,49 @@ class UploadsController extends AppController {
     }
 
     public function basic() {
-        if ($this->request->is('post') && $this->data) {
-            # Read the file data from the request. Normally, we'd just save
-            # $this->data, but some table fields need to be calculated first.
-           
-            # Convenience variable for the Resource key of the data prop array.
-            $data = $this->data['Resource'];
-            $fname = $data['file']['name'];
-            $tmp   = $data['file']['tmp_name'];
-            $mime  = $data['file']['type'];
-
-            # Create the resource file.
-            $sha = $this->Resource->createFile($tmp, array(
-                'filename' => $fname,
-                'thumb' => true,
-                'preview' => true
-            ));
-            if (!$sha) return $this->redirect('/500');
-
-            # Temporarily whitelist a few fields.
-            $this->Resource->permit('sha', 'file_name', 'file_size', 'user_id');
-            # Save a DB record.
-            $this->Resource->add(array(
-                'sha' => $sha,
-                'title' => $data['title'],
-                'type' => $data['type'],
-                'public' => $data['public'],
-                'file_name' => $fname,
-                'file_size' => $data['file']['size'],
-                'mime_type' => $mime,
+        if (!$this->request->is('post')) return;
+        if (!$this->data) throw new BadRequestException();
+        $data = $this->data['Resource'];
+        $data['user_id'] = $this->Auth->user('id');
+        $this->Resource->fromFile($data['file'], $data);
+        # Save any keywords.
+        if ($data['keywords'])
+            $this->Resource->Keyword->saveFromString($data['keywords'], array(
+                'resource_id' => $this->Resource->id,
                 'user_id' => $this->Auth->user('id')
             ));
-
-            # Save any keywords.
-            if ($data['keywords'])
-                $this->Resource->Keyword->saveFromString($data['keywords'], array(
-                    'resource_id' => $this->Resource->id,
-                    'user_id' => $this->Auth->user('id')
-                ));
-
-            # Set a flash message, redirect to the resource view.
-            $this->Session->setFlash('Resource created.', 'flash_success');
-            $this->redirect(array(
-                'controller' => 'resources', 
-                'action' => 'viewer', $this->Resource->id
-            ));
-        }
+        # Set a flash message, redirect to the viewer.
+        $this->Session->setFlash('Resource created.', 'flash_success');
+        $this->redirect('/resource/' . $this->Resource->id);
     }
 
+    /**
+     * Display the batch uploader on GET, and accept uploads on POST.
+     */
     public function batch() {
-        if ($this->request->is('ajax') && $this->request->data) {
-            foreach($this->request->data as $upload) {
-                # Temporarily whitelist a few fields.
-                $this->Resource->permit(
-                    'sha', 'file_name', 'file_size', 'user_id'
+        if (!$this->request->is('post')) return;
+        if (!$this->request->data) throw new BadRequestException();
+        foreach($this->request->data as $upload) {
+            # Temporarily whitelist a few fields.
+            $this->Resource->permit('sha', 'file_name', 'file_size', 'user_id');
+            $this->Resource->add(array(
+                'sha'       => $upload['sha'],
+                'file_name' => $upload['name'],
+                'file_size' => $upload['size'],
+                'title'     => $upload['title'],
+                'mime_type' => $upload['type'],
+                'type'      => $upload['rtype'],
+                'user_id'   => $this->Auth->user('id'),
+                'public'    => false
+            ));
+            if ($upload['identifier']) {
+                $this->Resource->Metadatum->store(
+                    $this->Resource->id, 'identifier', $upload['identifier']
                 );
-                $this->Resource->add(array(
-                    'sha'       => $upload['sha'],
-                    'file_name' => $upload['name'],
-                    'file_size' => $upload['size'],
-                    'title'     => $upload['title'],
-                    'mime_type' => $upload['type'],
-                    'type'      => $upload['rtype'],
-                    'user_id'   => $this->Auth->user('id'),
-                    'public'    => false
-                ));
-                if ($upload['identifier']) {
-                    $this->Resource->Metadatum->store(
-                        $this->Resource->id, 'identifier', $upload['identifier']
-                    );
-                    $this->Resource->Metadatum->create();
-                }
-                $this->Resource->create();
+                $this->Resource->Metadatum->create();
             }
-            return $this->json(201);
+            $this->Resource->create();
         }
+        return $this->json(201);
     }
 }

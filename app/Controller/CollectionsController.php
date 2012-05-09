@@ -12,7 +12,7 @@ class CollectionsController extends AppController {
 
     public function beforeFilter() {
         parent::beforeFilter();
-        $this->Auth->allow('view', 'viewer', 'create', 'complete');
+        $this->Auth->allow('viewer', 'create', 'complete');
     }
 
     /**
@@ -25,53 +25,46 @@ class CollectionsController extends AppController {
 
     /**
      * Create a new collection.
-     * 
-     * POST the collection data and optionally an array of member
-     * resource ids.
      */
     public function create() {
-        if ($this->request->is('post') && $this->data) {
-            # Save the collection.
-            $data = array('Collection' => $this->data);
-            $this->Collection->permit('user_id');
-            $data['Collection']['user_id'] = $this->Auth->user('id');
-            $this->Collection->save($data);
-
-            # The 'Members' key may be given as a list of resource 
-            # id's that will be saved as Memberships.
-            if ($this->data['members']) {
-                $members = array();
-                foreach ($this->data['members'] as $member) {
-                    array_push($members, array(
-                        'collection_id' => $this->Collection->id,
-                        'resource_id' => $member
-                    ));
-                }
-                $this->Collection->Membership->saveMany($members);
-            }
-            if ($this->request->is('ajax')) {
-                $this->json(201, array('id' => $this->Collection->id));
-            } else {
-                $this->redirect('/collection/' . $this->Collection->id);
-            }
+        if (!$this->request->is('post')) throw new MethodNotAllowedException();
+        if (!$this->request->data) throw new BadRequestException();
+        # Save the collection.
+        $this->request->data['user_id'] = $this->Auth->user('id');
+        $this->Collection->permit('user_id');
+        $this->Collection->add($this->request->data);
+        # The 'Members' key may be given as a list of resource 
+        # id's that will be saved as Memberships.
+        if ($this->request->data['members']) {
+            $members = array_map(function($m) { 
+                return array(
+                    'collection_id' => $this->Collection->id,
+                    'resource_id' => $m
+                );
+            }, $this->request->data['members']);
+            $this->Collection->Membership->saveMany($members);
         }
+        $this->json(201, $this->Collection->findById($this->Collection->id));
     }
 
     /**
      * Update the collection.
      *
-     * @param id
+     * @param string $id
      */
     public function update($id=null) {
+        $this->json(501);
     }
 
     /**
      * View a collection.
      *
-     * @param id
+     * @param string $id
      */
     public function viewer($id=null) {
+        if (!$id) throw new BadRequestException();
         $collection = $this->Collection->findById($id);
+        if (!$collection) throw new NotFoundException();
         $this->set('title_for_layout', $collection['Collection']['title']);
         $this->set('body_class', 'viewer');
         $this->set('footer', false);
@@ -91,7 +84,7 @@ class CollectionsController extends AppController {
     /**
      * Delete a collection.
      *
-     * @param id
+     * @param string id
      */
     public function delete($id=null) {
         if (!$this->request->is('delete')) throw new MethodNotAllowedException();
@@ -100,13 +93,15 @@ class CollectionsController extends AppController {
         $this->json(204);
     }
 
+    /**
+     * Complete collection titles.
+     */
     public function complete() {
-        if ($this->request->is('ajax')) {
-            return $this->json(200, $this->Collection->complete(
-                'Collection.title', array(
-                    'Collection.title !=' => 'Temporary Collection'
-                )
-            ));
-        }
+        if (!$this->request->is('get')) throw new MethodNotAllowedException();
+        return $this->json(200, $this->Collection->complete(
+            'Collection.title', array(
+                'Collection.title !=' => 'Temporary Collection'
+            )
+        ));
     }
 }

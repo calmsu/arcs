@@ -36,10 +36,8 @@ class SearchController extends AppController {
     public function resources() {
         $options = $this->parseParams();
         if (!$this->request->data) return $this->emptySearch($options);
-
         $searcher = $this->getSearcher();
         if ($this->Auth->loggedIn()) $searcher->publicFilter = false;
-
         # Get the result ids.
         $response = $searcher->search($this->request->data, $options);
         if ($response['order'] == 'relevance') {
