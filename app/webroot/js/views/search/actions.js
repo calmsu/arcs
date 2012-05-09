@@ -318,9 +318,51 @@
     };
 
     Actions.prototype.addToCollection = function() {
+      var n,
+        _this = this;
+      n = this.results.numSelected();
       return new arcs.views.Modal({
-        title: 'Add to existing collection'
+        title: 'Add to existing collection',
+        subtitle: "" + n + " " + (arcs.inflector.pluralize('resource', n)) + " will be added        to the selected collection.",
+        inputs: {
+          collection: {
+            type: 'select',
+            options: this.getCollections()
+          }
+        },
+        buttons: {
+          add: {
+            "class": 'btn btn-success',
+            callback: function(vals) {
+              var data, url;
+              url = arcs.url('collections/append/', vals.collection);
+              data = {
+                members: _.map(_this.results.selected(), function(r) {
+                  return r.get('id');
+                })
+              };
+              return $.postJSON(url, data, function() {
+                return _this._notify('added');
+              });
+            }
+          },
+          cancel: function() {}
+        }
       });
+    };
+
+    Actions.prototype.getCollections = function() {
+      var result;
+      result = [];
+      $.ajax({
+        url: arcs.baseURL + 'collections/titles',
+        async: false,
+        dataType: 'json',
+        success: function(data) {
+          return result = data;
+        }
+      });
+      return _.inverse(result);
     };
 
     Actions.prototype.previewSelected = function() {

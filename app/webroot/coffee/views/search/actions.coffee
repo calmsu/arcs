@@ -224,8 +224,34 @@ class arcs.views.search.Actions extends arcs.views.BaseActions
         arcs.notify 'An error occurred.', 'error'
 
   addToCollection: ->
+    n = @results.numSelected()
     new arcs.views.Modal
       title: 'Add to existing collection'
+      subtitle: "#{n} #{arcs.inflector.pluralize('resource', n)} will be added
+        to the selected collection."
+      inputs:
+        collection:
+          type: 'select'
+          options: @getCollections()
+      buttons:
+        add:
+          class: 'btn btn-success'
+          callback: (vals) =>
+            url = arcs.url 'collections/append/', vals.collection
+            data = members: _.map(@results.selected(), (r) -> r.get('id'))
+            $.postJSON url, data, =>
+              @_notify 'added'
+        cancel: ->
+
+  getCollections: ->
+    result = []
+    $.ajax
+      url: arcs.baseURL + 'collections/titles'
+      async: false
+      dataType: 'json'
+      success: (data) ->
+        result = data
+    _.inverse result
 
   previewSelected: ->
     return unless @results.anySelected()

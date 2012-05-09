@@ -180,7 +180,7 @@ class UsersController extends AppController {
         if (!$this->Access->isAdmin()) throw new ForbiddenException();
         if (!$this->request->is('post')) throw new MethodNotAllowedException();
         $data = $this->request->data;
-        if (!($data && $data['email'] && $data['role'])) 
+        if (!($data && $data['email'] && !is_null($data['role'])))
             throw new BadRequestException();
         $token = $this->User->getToken();
         $this->User->permit('activation', 'role');

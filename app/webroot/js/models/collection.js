@@ -18,7 +18,7 @@
       members: []
     };
 
-    Collection.prototype.urlRoot = arcs.baseURL + 'collections/create';
+    Collection.prototype.urlRoot = arcs.baseURL + 'collections/add';
 
     return Collection;
 

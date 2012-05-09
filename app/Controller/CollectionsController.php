@@ -26,7 +26,7 @@ class CollectionsController extends AppController {
     /**
      * Create a new collection.
      */
-    public function create() {
+    public function add() {
         if (!$this->request->is('post')) throw new MethodNotAllowedException();
         if (!$this->request->data) throw new BadRequestException();
         # Save the collection.
@@ -57,6 +57,33 @@ class CollectionsController extends AppController {
     }
 
     /**
+     * Delete a collection.
+     *
+     * @param string id
+     */
+    public function delete($id=null) {
+        if (!$this->request->is('delete')) throw new MethodNotAllowedException();
+        if (!$this->Access->isAdmin()) throw new ForbiddenException();
+        if (!$this->Collection->delete($id)) throw new NotFoundException();
+        $this->json(204);
+    }
+
+    /**
+     * Add members to an existing collection.
+     */
+    public function append($id) {
+        $collection = $this->Collection->findById($id);
+        if (!$collection) throw new NotFoundException();
+        if (!is_array($this->request->data['members']))
+            throw new BadRequestException();
+        foreach($this->request->data['members'] as $m) {
+            $this->Collection->Membership->pair($m, $id);
+            $this->Collection->Membership->create();
+        }
+        $this->json(201);
+    }
+
+    /**
      * View a collection.
      *
      * @param string $id
@@ -82,15 +109,14 @@ class CollectionsController extends AppController {
     }
 
     /**
-     * Delete a collection.
-     *
-     * @param string id
+     * Return an array of (id, title) pairs. Similar to `complete`, but includes
+     * the ids.
      */
-    public function delete($id=null) {
-        if (!$this->request->is('delete')) throw new MethodNotAllowedException();
-        if (!$this->Access->isAdmin()) throw new ForbiddenException();
-        if (!$this->Collection->delete($id)) throw new NotFoundException();
-        $this->json(204);
+    public function titles() {
+        if (!$this->request->is('get')) throw new MethodNotAllowedException();
+        return $this->json(200, $this->Collection->find('list', array(
+            'fields' => 'Collection.title'
+        )));
     }
 
     /**

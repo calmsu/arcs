@@ -12,4 +12,4 @@ class arcs.models.Collection extends Backbone.Model
     members: []
 
   # TODO: fix base url
-  urlRoot: arcs.baseURL + 'collections/create'
+  urlRoot: arcs.baseURL + 'collections/add'
