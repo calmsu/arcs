@@ -11,16 +11,11 @@ class HelpController extends AppController {
 
 	public $name = 'Help';
 
-	public $uses = array();
-
     public function beforeFilter() {
         parent::beforeFilter();
         $this->Auth->allow('display');
-        $this->set('toolbar', array(
-            'logo' => true
-        ));
-        $structure = file_get_contents(ROOT . DS . 'docs' . DS . 'sidebar.json');
-        $this->set('sidebar', json_decode($structure, true));
+        $sidebar = file_get_contents(ROOT . DS . 'docs' . DS . 'sidebar.json');
+        $this->set('sidebar', json_decode($sidebar, true));
         $this->layout = 'doc';
     }
 
@@ -31,9 +26,11 @@ class HelpController extends AppController {
      * @return void
      */
 	public function display($doc) {
-        $title_for_layout = 'ARCS Help';
-        $active = $doc == 'index' ? '' : $doc;
-        $this->set('active', $active);
+        $this->set(array(
+            'title_for_layout' => $doc == 'index' ? 
+                'Getting Started' : Inflector::humanize($doc),
+            'active' => $doc == 'index' ? '' : $doc
+        ));
 		$this->render($doc);
 	}
 }

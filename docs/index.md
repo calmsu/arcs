@@ -16,7 +16,6 @@ details at the [Resources](about-resources) section.
 
 Annotation 
 ---------- 
-Annotations are boxes that 
 An annotation is a short explanatory note made by any researcher and they can
 be added by researchers to any resource when they are open to them. You can
 learn more details at the [Annotation](annotating) section.
