@@ -206,7 +206,7 @@ class UsersController extends AppController {
      * @param string $token    a valid activation token
      */
     public function register($token) {
-        if (!$activation) throw new BadRequestException();
+        if (!$token) throw new BadRequestException();
         $user = $this->User->findByActivation($token);
         if (!$user) throw new NotFoundException();
         if ($this->request->is('post')) {
