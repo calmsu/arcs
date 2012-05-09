@@ -5113,7 +5113,7 @@ div#toolbar .toolbar-btn {
   margin-right: auto;
 }
 div#search-results-wrapper {
-  background-color: #e5e5e5;
+  background: #ddd;
   border: 1px solid #bbb;
   padding: 20px;
   padding-top: 10px;
@@ -5162,10 +5162,9 @@ div#search-results-wrapper .search-toolbar {
   margin-right: auto;
   padding: 10px;
   height: 28px;
-  background-color: #e5e5e5;
+  background-color: #ddd;
   z-index: 1001;
 }
-div#search-results-wrapper .search-toolbar-fixed,
 div#search-results-wrapper .toolbar-fixed {
   border-bottom: 1px solid #999;
   box-shadow: 0 4px 3px -3px #888888;
@@ -5174,15 +5173,11 @@ div#search-results-wrapper .toolbar-fixed {
   width: 100%;
 }
 #no-results {
+  margin: 20% auto;
   width: 100px;
-  margin-top: 20%;
   font-size: 120%;
   text-shadow: 0 2px 2px #ffffff;
   text-shadow: 0 2px 2px #ffffff;
-  margin-left: auto;
-  margin-right: auto;
-  margin-left: auto;
-  margin-right: auto;
 }
 .result {
   border-collapse: separate;

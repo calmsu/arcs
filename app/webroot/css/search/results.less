@@ -2,7 +2,7 @@
 // ------------
 
 div#search-results-wrapper {
-  background-color: #e5e5e5;
+  background: #ddd;
   border: 1px solid #bbb;
   padding: 20px;
   padding-top: 10px;
@@ -17,7 +17,6 @@ div#search-results-wrapper {
     text-align: left;
     padding: 10px;
     overflow: auto;
-
     table {
       border-collapse: separate;
     }
@@ -54,11 +53,11 @@ div#search-results-wrapper {
     .centered();
     padding: 10px;
     height: 28px;
-    background-color: #e5e5e5;
+    background-color: #ddd;
     z-index: 1001;
   }
 
-  .search-toolbar-fixed, .toolbar-fixed {
+  .toolbar-fixed {
     border-bottom: 1px solid #999;
     box-shadow: 0 4px 3px -3px #888;
     position: fixed;
@@ -68,9 +67,8 @@ div#search-results-wrapper {
 }
 
 #no-results {
+  margin: 20% auto;
   width: 100px;
-  margin-top: 20%;
   font-size: 120%;
   .text-shadow(#fff, 2px);
-  .centered();
 }
