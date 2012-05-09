@@ -11,8 +11,7 @@ researcher is working on. It can be photographs, page spreads, inventory cards,
 maps, artifacts, reports, word documents, notebooks etc. You can learn more
 details at the <a href="about-resources">Resources</a> section. </p>
 <h2 id="annotation">Annotation</h2>
-<p>Annotations are boxes that 
-An annotation is a short explanatory note made by any researcher and they can
+<p>An annotation is a short explanatory note made by any researcher and they can
 be added by researchers to any resource when they are open to them. You can
 learn more details at the <a href="annotating">Annotation</a> section.</p>
 <h2 id="collections">Collections</h2>
