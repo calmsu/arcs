@@ -36,14 +36,16 @@ class CollectionsController extends AppController {
         # The 'Members' key may be given as a list of resource 
         # id's that will be saved as Memberships.
         if ($this->request->data['members']) {
-            $members = array_map(function($m) { 
+            $ci = $this;
+            $members = array_map(function($m) use ($ci) { 
                 return array(
-                    'collection_id' => $this->Collection->id,
+                    'collection_id' => $ci->Collection->id,
                     'resource_id' => $m
                 );
             }, $this->request->data['members']);
             $this->Collection->Membership->saveMany($members);
         }
+        $this->Collection->flatten = true;
         $this->json(201, $this->Collection->findById($this->Collection->id));
     }
 
