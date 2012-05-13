@@ -23,14 +23,16 @@ have already been uploaded, they are not resources just yet. That happens when
 you click <code>Upload &amp; Fill in Metadata</code>. After clicking, you'll be redirected to
 the search page, where you can apply additional metadata to the newly uploaded
 resources using the batch editing tools.</p>
-<p><img alt="uploading3" src="../img/docs/uploading-3.png" /></p>
+<p><img alt="uploaded-resources" src="../img/docs/uploaded-resources.png" /></p>
 <h2 id="using-the-basic-uploader">Using the basic uploader</h2>
 <p>If your browser has trouble with the batch uploader, you can also try our basic
 uploader, which allows you to upload files one at time. It's not very fancy,
 but it provides a way for users unable to upgrade their browser to upload
 resources. Navigate to the basic uploader by clicking <code>Basic</code> on the uploading
 page.</p>
-<p><img alt="uploading4" src="../img/docs/uploading-4.png" /></p>
+<p><img alt="basic-uploader" src="../img/docs/basic-uploader.png" /></p>
+<p>You can then enter the title and the keyword associated with the resource and select  the type of the resource from the drop down as shown below:</p>
+<p><img alt="basic-details" src="../img/docs/basic-details.png" /> </p>
 <h2 id="troubleshooting">Troubleshooting</h2>
 <p>If you have trouble uploading, here's what you can do:</p>
 <h4 id="upload-failed">Upload failed</h4>

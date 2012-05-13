@@ -15,9 +15,8 @@ further study. A resource can be part of any number of collections.
 #### How do I make a collection?  
 You can create a collection on the [Search](searching) by selecting a group of
 resources, and clicking `Collection` > `Create a New Collection`. You will then
-be prompted to provide a [Title](about-collections#title) and a brief
-[Description](about-collections#description) about the collection. You can
-learn more in the [Collections](about-collections) section.
+be prompted to provide a [Title](about-collections#title) and a brief [Description](about-collections#description) about the
+collection. You can learn more in the [Collections](about-collections) section.
 
 #### What is a bookmark?  
 A bookmark is a special collection of resources that you might want to revisit
@@ -25,8 +24,7 @@ later, but don’t necessarily know if it is relevant for a specific research
 collection.
 
 #### How do I make a bookmark?  
-You can select the resources which you would want to view later and then click
-on `Collection` > `Add to bookmarks` on the search page. You can view the
+You can select the resources which you would want to view later and then click on `Collection` > `Add to bookmarks` on the search page. You can view the
 [Collections](about-collections) section for more information.
 
 #### What is the difference between a bookmark and a collection?  
@@ -53,11 +51,11 @@ No. You can only annotate your own resources or flag someone else’s annotation
 
 #### Why can’t I just edit annotations?  
 To avoid erratic changes in the data for resources, only Senior Researchers and
-Admins can change [Keywords](about-resources#keywording) or
-[Annotations](annotating). This ensures that the standard of academic validity
-of your research data is maintained. If you think something should be changed,
-and are not a Senior Researcher, feel free to flag the resource. Learn more
-about [Flagging Resources](about-resources#flagging) .
+Admins can change [Keywords](about-resources#keywording) or [Annotations](annotating). This ensures that
+the standard of academic validity of your research data is maintained. If you
+think something should be changed, and are not a Senior Researcher, feel free
+to flag the resource. Learn more about 
+[Flagging Resources](about-resources#flagging) .
 
 #### What is keywording?  
 Keywords are a very useful way to tag related resources and quickly tell a user

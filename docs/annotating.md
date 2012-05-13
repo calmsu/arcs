@@ -74,4 +74,4 @@ do this by clicking the X that appears in the left corner when hovering over an
 annotation in your resource, and then confirming the deletion.  If you don't
 see an X while hovering on an annotation, you're not allowed to delete it.
 
-![editing](../img/docs/editing.png)
+![deleting-annotation](../img/docs/deleting-annotation.png)

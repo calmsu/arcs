@@ -15,7 +15,7 @@ maps, artifacts, reports, word documents, notebooks etc. You can learn more
 details at the [Resources](about-resources) section. 
 
 Annotation 
----------- 
+----------  
 An annotation is a short explanatory note made by any researcher and they can
 be added by researchers to any resource when they are open to them. You can
 learn more details at the [Annotation](annotating) section.
@@ -28,6 +28,8 @@ details at the [Collections](about-collections) section.
 
 Uploading 
 --------- 
+Resources can be uploaded in ARCS in a very user-friendly manner. A researcher can upload multiple files of different formats at a time. You 
+can learn more details at the [Uploading](Uploading) section.
 
 Searching 
 --------- 

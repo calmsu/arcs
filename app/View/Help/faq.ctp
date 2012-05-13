@@ -12,16 +12,14 @@ further study. A resource can be part of any number of collections.</p>
 <h4 id="how-do-i-make-a-collection">How do I make a collection?</h4>
 <p>You can create a collection on the <a href="searching">Search</a> by selecting a group of
 resources, and clicking <code>Collection</code> &gt; <code>Create a New Collection</code>. You will then
-be prompted to provide a <a href="about-collections#title">Title</a> and a brief
-<a href="about-collections#description">Description</a> about the collection. You can
-learn more in the <a href="about-collections">Collections</a> section.</p>
+be prompted to provide a <a href="about-collections#title">Title</a> and a brief <a href="about-collections#description">Description</a> about the
+collection. You can learn more in the <a href="about-collections">Collections</a> section.</p>
 <h4 id="what-is-a-bookmark">What is a bookmark?</h4>
 <p>A bookmark is a special collection of resources that you might want to revisit
 later, but don’t necessarily know if it is relevant for a specific research
 collection.</p>
 <h4 id="how-do-i-make-a-bookmark">How do I make a bookmark?</h4>
-<p>You can select the resources which you would want to view later and then click
-on <code>Collection</code> &gt; <code>Add to bookmarks</code> on the search page. You can view the
+<p>You can select the resources which you would want to view later and then click on <code>Collection</code> &gt; <code>Add to bookmarks</code> on the search page. You can view the
 <a href="about-collections">Collections</a> section for more information.</p>
 <h4 id="what-is-the-difference-between-a-bookmark-and-a-collection">What is the difference between a bookmark and a collection?</h4>
 <p>A collection is a set of resources which are associated to a particular area of
@@ -43,11 +41,11 @@ Annotations section for more details.</p>
 <p>No. You can only annotate your own resources or flag someone else’s annotation.</p>
 <h4 id="why-cant-i-just-edit-annotations">Why can’t I just edit annotations?</h4>
 <p>To avoid erratic changes in the data for resources, only Senior Researchers and
-Admins can change <a href="about-resources#keywording">Keywords</a> or
-<a href="annotating">Annotations</a>. This ensures that the standard of academic validity
-of your research data is maintained. If you think something should be changed,
-and are not a Senior Researcher, feel free to flag the resource. Learn more
-about <a href="about-resources#flagging">Flagging Resources</a> .</p>
+Admins can change <a href="about-resources#keywording">Keywords</a> or <a href="annotating">Annotations</a>. This ensures that
+the standard of academic validity of your research data is maintained. If you
+think something should be changed, and are not a Senior Researcher, feel free
+to flag the resource. Learn more about 
+<a href="about-resources#flagging">Flagging Resources</a> .</p>
 <h4 id="what-is-keywording">What is keywording?</h4>
 <p>Keywords are a very useful way to tag related resources and quickly tell a user
 about the resources. Keywords make it easier for users to search for a

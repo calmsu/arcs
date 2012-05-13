@@ -49,4 +49,4 @@ researcher’s annotation by selecting it and flagging it with a valid. You can
 do this by clicking the X that appears in the left corner when hovering over an
 annotation in your resource, and then confirming the deletion.  If you don't
 see an X while hovering on an annotation, you're not allowed to delete it.</p>
-<p><img alt="editing" src="../img/docs/editing.png" /></p>
+<p><img alt="deleting-annotation" src="../img/docs/deleting-annotation.png" /></p>

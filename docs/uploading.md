@@ -31,7 +31,7 @@ you click `Upload & Fill in Metadata`. After clicking, you'll be redirected to
 the search page, where you can apply additional metadata to the newly uploaded
 resources using the batch editing tools.
 
-![uploading3](../img/docs/uploading-3.png)
+![uploaded-resources](../img/docs/uploaded-resources.png)
 
 Using the basic uploader
 ------------------------
@@ -41,7 +41,11 @@ but it provides a way for users unable to upgrade their browser to upload
 resources. Navigate to the basic uploader by clicking `Basic` on the uploading
 page.
 
-![uploading4](../img/docs/uploading-4.png)
+![basic-uploader](../img/docs/basic-uploader.png)
+
+You can then enter the title and the keyword associated with the resource and select  the type of the resource from the drop down as shown below:
+
+![basic-details](../img/docs/basic-details.png) 
 
 Troubleshooting
 ---------------

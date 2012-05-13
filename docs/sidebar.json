@@ -26,8 +26,8 @@
     "Collections": {
       "link": "about-collections",
       "nav": {
-        "Understanding": "#understanding-resources",
-        "Creating": "#creating-resources"
+        "Understanding": "#understanding-collections",
+        "Creating": "#creating-collections"
       }
     },
     "Uploading": {
@@ -56,6 +56,9 @@
     "Annotating": {
       "link": "annotating",
       "nav": {
+		"Understanding": "#understanding-annotations",
+        "Creating": "#creating-annotations",
+		"Editing/Deleting": "#editing-deleting-annotations"
       }
     }
   },

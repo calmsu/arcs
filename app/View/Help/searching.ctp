@@ -1,16 +1,10 @@
 <h1 id="searching-arcs">Searching ARCS</h1>
-<p>Searching a resource, collection or notebook has been implemented in a faceted
-fashion in ARCS so that it is easier for you to find a specific resource even
-when you do not know all the details about the same.</p>
+<p>Searching a resource, collection or notebook has been implemented in a faceted fashion in ARCS so that it is easier for you to find a specific resource even when you do not know all the details about the same.</p>
 <h2 id="facets">Facets</h2>
-<p>A facet can be defined as a particular aspect of the resource such as the user,
-or the date of creation of the resource etc.</p>
-<p>For example, you know that John Doe uploaded an image, and you know that he
-uploaded it yesterday, but you do not know anything else. You can construct a
-search query that will find everything that John uploaded yesterday.</p>
-<p><img alt="searching" src="../img/docs/search-1.png" /></p>
-<p>The following table gives the description of the different facets that can be
-used to search a resource in ARCS:</p>
+<p>A facet can be defined as a particular aspect of the resource such as the user, or the date of creation of the resource etc.</p>
+<p>For example, you know that John Doe uploaded an image, and you know that he uploaded it yesterday, but you do not know anything else. You can construct a search query that will find everything that John uploaded yesterday.</p>
+<p><img alt="searching" src="../img/docs/searching.png" /></p>
+<p>The following table gives the description of the different facets that can be used to search a resource in ARCS:</p>
 <table>
 <thead>
 <tr>
@@ -172,5 +166,5 @@ used to search a resource in ARCS:</p>
 <h2 id="boolean-logic">Boolean Logic</h2>
 <p>* Not implemented.</p>
 <h2 id="auto-completion">Auto-completion</h2>
-<p>Facet values will be auto-completed when possible. For certain facets, like
-<code>user</code>, we'll only auto-complete the values if you're logged in.</p>
+<p>Facet values will be auto-completed when possible. For certain facets,
+like <code>user</code>, we'll only auto-complete the values if you're logged in.</p>

@@ -19,6 +19,8 @@ learn more details at the <a href="annotating">Annotation</a> section.</p>
 resources relevant to a particular segment of a research. You can learn more
 details at the <a href="about-collections">Collections</a> section.</p>
 <h2 id="uploading">Uploading</h2>
+<p>Resources can be uploaded in ARCS in a very user-friendly manner. A researcher can upload multiple files of different formats at a time. You 
+can learn more details at the <a href="Uploading">Uploading</a> section.</p>
 <h2 id="searching">Searching</h2>
 <p>Searching any resource, collection or notebook has been made easier through a
 number of facets like user, filename, file type, keyword, title etc. You can

@@ -1,22 +1,16 @@
 Searching ARCS
 ==============
-Searching a resource, collection or notebook has been implemented in a faceted
-fashion in ARCS so that it is easier for you to find a specific resource even
-when you do not know all the details about the same.
+Searching a resource, collection or notebook has been implemented in a faceted fashion in ARCS so that it is easier for you to find a specific resource even when you do not know all the details about the same.
  
 Facets
 ------
-A facet can be defined as a particular aspect of the resource such as the user,
-or the date of creation of the resource etc.
+A facet can be defined as a particular aspect of the resource such as the user, or the date of creation of the resource etc.
 
-For example, you know that John Doe uploaded an image, and you know that he
-uploaded it yesterday, but you do not know anything else. You can construct a
-search query that will find everything that John uploaded yesterday.
+For example, you know that John Doe uploaded an image, and you know that he uploaded it yesterday, but you do not know anything else. You can construct a search query that will find everything that John uploaded yesterday.
 
-![searching](../img/docs/search-1.png)
+![searching](../img/docs/searching.png)
 
-The following table gives the description of the different facets that can be
-used to search a resource in ARCS:
+The following table gives the description of the different facets that can be used to search a resource in ARCS:
 
 
 Facet         | Description
@@ -65,5 +59,5 @@ Boolean Logic
 
 Auto-completion
 ---------------
-Facet values will be auto-completed when possible. For certain facets, like
-`user`, we'll only auto-complete the values if you're logged in.
+Facet values will be auto-completed when possible. For certain facets,
+like `user`, we'll only auto-complete the values if you're logged in.
