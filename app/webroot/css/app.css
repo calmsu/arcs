@@ -6156,33 +6156,86 @@ ul.resource-thumbs li.resource-thumb:hover {
 ul.resource-thumbs li.resource-thumb:hover a {
   text-decoration: underline;
 }
-#intro_para {
-  background-color: #696969;
+.about {
+  background: #eee;
+}
+.about .about-intro {
+  background: #c3c3c3;
+  text-align: center;
   padding: 20px 0;
+  margin: 0 -10px;
+  border-bottom: 1px solid #999;
+}
+.about .about-intro h1 a {
+  font-weight: 300;
+  text-shadow: 0 1px 1px #fff;
+  color: #555;
+}
+.about .about-intro h1 a:hover {
+  text-decoration: none;
+}
+.about .about-intro h1 img {
+  position: relative;
+  bottom: 5px;
+}
+.about .about-features {
+  width: 800px;
+  margin: 0 auto;
+  background: #eee;
+  border-top: 1px solid #fff;
+  padding-right: 50px;
   text-align: center;
 }
-.feature {
+.about .about-features .spacer {
+  height: 60px;
+  margin-right: -54px;
+  background-repeat: no-repeat;
+}
+.about .about-features .spacer.spacer-left {
+  background: url('img/about/h1.png');
+}
+.about .about-features .spacer.spacer-right {
+  background: url('img/about/h2.png');
+}
+.about .about-features .feature {
+  font-family: 'Pontano Sans', sans-serif;
   padding: 30px;
   position: relative;
-  clear: right;
-  display: block;
+  width: 770px;
+  clear: both;
+  background-repeat: no-repeat;
+  background-position: 100px;
 }
-.feature.left {
-  border-left: 24px solid #c3c3c3;
-  border-image-bottom: url('img/h1.png') 61px;
+.about .about-features .feature h2 {
+  font-size: 30px;
+  font-weight: 400;
+  margin: 5px;
 }
-.feature.left .number {
+.about .about-features .feature p {
+  font-family: 'Pontano Sans', sans-serif;
+  font-size: 20px;
+}
+.about .about-features .feature img {
+  margin: 10px;
+}
+.about .about-features .feature img.shadow {
+  box-shadow: rgba(0, 0, 0, 0.8) 0px 0px 9px;
+}
+.about .about-features .feature .number {
   position: absolute;
-  left: -42px !important;
   top: 30px;
 }
-.feature.right {
+.about .about-features .feature.feature-left {
+  border-left: 24px solid #c3c3c3;
+}
+.about .about-features .feature.feature-left .number {
+  left: -52px !important;
+}
+.about .about-features .feature.feature-right {
   border-right: 24px solid #c3c3c3;
 }
-.feature.right .number {
-  position: absolute;
-  right: -42px !important;
-  top: 30px;
+.about .about-features .feature.feature-right .number {
+  right: -52px !important;
 }
 .doc {
   height: 100%;
