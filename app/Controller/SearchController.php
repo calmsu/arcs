@@ -1,6 +1,6 @@
 <?php
 /**
- * Search controller.
+ * Search controller
  *
  * @package    ARCS
  * @link       http://github.com/calmsu/arcs

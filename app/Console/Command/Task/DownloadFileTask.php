@@ -1,7 +1,16 @@
 <?php
-
 include_once(LIB . 'Relic' . DS . 'Library' . DS . 'Mime.php');
-
+/**
+ * DownloadFile Task 
+ *
+ * Downloads a file from a URL and creates a resource with it and any supplied
+ * information. This is used to implement POST /api/resource when given a `url`.
+ * 
+ * @package    ARCS
+ * @link       http://github.com/calmsu/arcs
+ * @copyright  Copyright 2012, Michigan State University Board of Trustees
+ * @license    BSD License (http://www.opensource.org/licenses/bsd-license.php)
+ */
 class DownloadFileTask extends AppShell {
 
     public $uses = array('Resource');

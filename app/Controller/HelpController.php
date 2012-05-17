@@ -1,6 +1,6 @@
 <?php
 /**
- * Docs Controller
+ * Help Controller
  * 
  * @package    ARCS
  * @link       http://github.com/calmsu/arcs
@@ -20,7 +20,7 @@ class HelpController extends AppController {
     }
 
     /**
-     * Displays a document
+     * Displays a help document
      *
      * @param doc
      * @return void

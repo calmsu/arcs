@@ -1,7 +1,15 @@
 <?php
-
 include_once(LIB . 'Relic' . DS . 'Library' . DS . 'PDF.php');
-
+/**
+ * SplitPdf Task
+ *
+ * Split a PDF resource into multiple pages.
+ * 
+ * @package    ARCS
+ * @link       http://github.com/calmsu/arcs
+ * @copyright  Copyright 2012, Michigan State University Board of Trustees
+ * @license    BSD License (http://www.opensource.org/licenses/bsd-license.php)
+ */
 class SplitPdfTask extends AppShell {
     public $uses = array('Resource', 'Membership');
 

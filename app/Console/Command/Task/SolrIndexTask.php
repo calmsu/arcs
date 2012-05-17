@@ -1,6 +1,15 @@
 <?php
 require_once(LIB . 'Arcs' . DS . 'Solr.php');
-
+/**
+ * SolrIndex Task
+ *
+ * Index a resource with the SOLR service.
+ * 
+ * @package    ARCS
+ * @link       http://github.com/calmsu/arcs
+ * @copyright  Copyright 2012, Michigan State University Board of Trustees
+ * @license    BSD License (http://www.opensource.org/licenses/bsd-license.php)
+ */
 class SolrIndexTask extends AppShell {
     public $uses = array('Resource', 'Collection');
 
