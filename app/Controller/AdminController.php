@@ -13,6 +13,7 @@ App::uses('ConnectionManager', 'Model');
  */
 class AdminController extends AppController {
     public $name = 'Admin';
+    public $uses = array('User', 'Job');
 
     public function beforeFilter() {
         parent::beforeFilter();
@@ -61,7 +62,6 @@ class AdminController extends AppController {
      * Add, edit, and delete users.
      */
     public function users() {
-        $this->loadModel('User');
         $this->User->recursive = -1;
         $this->User->flatten = true;
         $this->set('users', $this->User->find('all', array(
@@ -73,7 +73,6 @@ class AdminController extends AppController {
      * View and re-run jobs.
      */
     public function jobs() {
-        $this->loadModel('Job');
         $this->set('jobs', $this->Job->find('all', array(
             'order' => 'Job.created DESC'
         )));

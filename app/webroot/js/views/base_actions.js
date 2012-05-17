@@ -88,6 +88,12 @@
       });
     };
 
+    BaseActions.prototype.repreviewResource = function(resource) {
+      return $.post(arcs.baseURL + 'resources/repreview/' + resource.id, function() {
+        return arcs.notify('Resource successfully queued for re-preview.');
+      });
+    };
+
     BaseActions.prototype.indexResource = function(resource) {
       return $.post(arcs.baseURL + 'resources/solr/' + resource.id, function() {
         return arcs.notify('Resource successfully queued for SOLR index.');

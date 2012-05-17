@@ -18,11 +18,6 @@ class PagesController extends AppController {
         $this->Auth->allow('display', 'search');
     }
 
-    public function search() {
-        $this->set('footer', false);
-        return $this->set('title_for_layout', 'Search');
-    }
-
     /**
      * Displays a view
      *
@@ -47,6 +42,9 @@ class PagesController extends AppController {
 		if (!empty($path[$count - 1])) {
 			$title_for_layout = Inflector::humanize($path[$count - 1]);
 		}
+        if ($title_for_layout == 'About') {
+            $this->set('toolbar', false);
+        }
 		$this->set(compact('page', 'subpage', 'title_for_layout'));
 		$this->render(implode('/', $path));
 	}

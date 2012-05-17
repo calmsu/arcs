@@ -7,33 +7,35 @@ class arcs.views.Viewer extends Backbone.View
 
     @orderCollection()
 
-    # Set the resource on the `arcs:indexChange` event.
+    # Set the resource on the `indexChange` event.
     # This may be triggered by the router or the Carousel view.
-    arcs.on 'arcs:indexChange', @set, @
+    arcs.bus.on 'indexChange', @set, @
+    arcs.bus.on 'all', (name) -> arcs.log name
 
     @collection.on 'add change remove', @render, @
     @model.on 'add change remove', @render, @
 
     @throttledResize = _.throttle(@resize, 500)
-    $(window).resize => arcs.trigger 'arcs:resourceResize'
-    arcs.on 'arcs:resourceResize', @throttledResize, @
+    $(window).resize => arcs.bus.trigger 'resourceResize'
+    arcs.bus.on 'resourceResize', @throttledResize, @
 
     # Add our hotkeys
     arcs.keys.map @,
       left: @prev
       right: @next
+      '?': @showHotkeys
 
     # Init sub-views
     @actions = new arcs.views.ViewerActions
       el: $('#viewer-controls')
       collection: @collection
       viewer: @
-    @discussion = new arcs.views.Discussion
+    @discussion = new arcs.views.DiscussionTab
       el: $('#discussion')
     @keywords = new arcs.views.Keyword
       el: $('#information')
-    @hotspots = new arcs.views.Hotspot
-      el: $('#resource')
+    @hotspots = new arcs.views.Annotation
+      el: $('#viewer')
     @carousel = new arcs.views.Carousel
       el: $('#carousel-wrapper')
       collection: @collection
@@ -50,12 +52,12 @@ class arcs.views.Viewer extends Backbone.View
     @splitPrompt() if @model.get 'first_req'
 
     @index ?= 0
-    @resize() and @hotspots.reRender()
+    @resize()
 
   events:
-    'dblclick img'      : 'openFull'
-    'click #next-btn'   : 'next'
-    'click #prev-btn'   : 'prev'
+    'dblclick #resource img' : 'openFull'
+    'click #next-btn'        : 'next'
+    'click #prev-btn'        : 'prev'
 
   orderCollection: ->
     return unless @collectionModel?.id?
@@ -96,7 +98,7 @@ class arcs.views.Viewer extends Backbone.View
     [@model, arcs.resource, @index] = [model, model, index]
 
     # Trigger indexChange if the trigger opt was set.
-    arcs.trigger('arcs:indexChange', index, noSet: true) if options.trigger
+    arcs.bus.trigger('indexChange', index, noSet: true) if options.trigger
     @render() unless options.noRender
     # Update the location
     route = "#{arcs.collectionModel?.id ? @model.id}/#{@index + 1}"
@@ -149,12 +151,19 @@ class arcs.views.Viewer extends Backbone.View
             $.post arcs.baseURL + 'resources/split_pdf/' + @model.id
         no: ->
 
+  showHotkeys: ->
+    new arcs.views.Hotkeys template: 'viewer/hotkeys'
+
+  # We've used CSS where possible, now we need to finish the job.
   resize: ->
-    margin = if $('body').hasClass 'standalone' then 168 else 195
-    well_height = $(window).height() - margin
-    @$('.viewer-well').height well_height
-    @$('.tab-content').height well_height - 75
-    @hotspots.render()
+    STANDALONE = 128
+    COLLECTION = 204
+    TAB_MARGIN = 75
+    margin = if $('body').hasClass 'standalone' then STANDALONE else COLLECTION
+    height = $(window).height() - margin
+    @$('.viewer-well').height height
+    #@$('#resource img').height height
+    @$('.tab-content').height height - TAB_MARGIN
   
   # Render the resource.
   render: ->
@@ -168,7 +177,8 @@ class arcs.views.Viewer extends Backbone.View
     @$('#resource').html arcs.tmpl template, @model.toJSON()
 
     # Trigger the resourceloaded event.
-    arcs.trigger 'arcs:resourceLoaded'
+    @$('#resource img').load ->
+      arcs.bus.trigger 'resourceLoaded'
 
     # Render the resource (and collection) info tables.
     @$('#resource-details').html arcs.tmpl 'viewer/table', 

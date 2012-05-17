@@ -68,3 +68,8 @@ arcs.inflector =
     id = string.replace(/(\s|-)/g, '_').replace(/\W/g, '').toLowerCase()
     id = '_' + id if id.match /^\d/
     @_identifiers[string] = _.uniqueId id + '_'
+
+  # Occasionally useful in javascript template files when escaping gets weird.
+  enquote: (string, single=true) ->
+    quote = if single then "'" else '"'
+    quote + string + quote

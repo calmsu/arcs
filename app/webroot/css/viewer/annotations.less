@@ -1,32 +1,44 @@
 // annotations.less
 // ----------------
 
-.annotation, 
-.annotation-caption,
-.keyword {
-  font-size: 13px;
-  line-height: 14px;
-  margin: 5px 20px 0;
-  &:hover {
-    cursor: pointer;
+ul.annotations {
+  margin-left: 0px;
+  li.annotation {
+    list-style: none;
+    font-size: 13px;
+    line-height: 14px;
+    margin: 5px 20px 0;
+    &:hover {
+      cursor: pointer;
+    }
   }
-}
-
-.annotation-caption {
-  margin: 0 30px;
 }
 
 .hotspot {
   position: absolute;
-  background: #222;
-  border: 2px dashed #000;
-  .opacity(20);
+  background: rgba(25, 25, 25, 0.2); 
+  border: 1px solid #888;
+  display: block;
   &:hover {
-    .opacity(30);
+    background: rgba(25, 25, 25, 0.3); 
+    .remove-btn { display: block }
   }
   &.active {
-    background: #08c;
-    border: 1px solid darken(#08c, 10%);
+    background: rgba(25, 25, 25, 0.3); 
+    border: 1px solid #333;
+  }
+  .remove-btn {
+    z-index: 1051;
+    display: none;
+    float: left;
+  }
+}
+
+.keyword-list {
+  list-style: none;
+  margin: 5px 10px 0;
+  li { 
+    line-height: 22px; 
   }
 }
 

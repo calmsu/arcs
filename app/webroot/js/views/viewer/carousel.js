@@ -17,13 +17,13 @@
 
     Carousel.prototype.initialize = function() {
       var _this = this;
-      arcs.on('arcs:indexChange', this.slideTo, this);
-      arcs.on('arcs:indexChange', this.setSelected, this);
+      arcs.bus.on('indexChange', this.slideTo, this);
+      arcs.bus.on('indexChange', this.setSelected, this);
       this.render();
       this.$el.elastislide({
         imageW: 100,
         onClick: function($item) {
-          return arcs.trigger('arcs:indexChange', $item.index(), {
+          return arcs.bus.trigger('indexChange', $item.index(), {
             noSlide: true
           });
         },
@@ -41,7 +41,7 @@
     };
 
     Carousel.prototype.onClick = function(e) {
-      return arcs.trigger('arcs:indexChange', $(e.target).parent().index(), {
+      return arcs.bus.trigger('indexChange', $(e.target).parent().index(), {
         noSlide: true
       });
     };

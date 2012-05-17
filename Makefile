@@ -22,7 +22,7 @@ ASSETS=app/webroot/assets
 SCRIPTS=$(shell bin/get-assets --js)
 STYLESHEETS=$(shell bin/get-assets --css)
 
-DOCS=$(wildcard docs/user/*)
+DOCS=$(wildcard docs/*.md)
 
 # ARCS version and license header
 VERSION=$(shell cat VERSION)
@@ -54,7 +54,7 @@ css: less
 
 # Convert user documentation from Markdown and put it in the View directory.
 doc: 
-	$(foreach doc, $(DOCS), markdown_py -x tables $(doc) > \
+	$(foreach doc, $(DOCS), markdown_py -x tables -x headerid $(doc) > \
 		app/View/Help/$(notdir $(basename $(doc))).ctp;)
 
 # Make everything.

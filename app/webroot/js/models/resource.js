@@ -9,7 +9,7 @@
     Resource.prototype.defaults = {
       title: '',
       keywords: [],
-      hotspots: [],
+      annotations: [],
       comments: [],
       metadata: {},
       mime_type: "unknown",
@@ -71,9 +71,9 @@
           }
           delete r.Membership;
         }
-        if (r.Hotspot != null) {
-          r.hotspots = r.Hotspot;
-          delete r.Hotspot;
+        if (r.Annotation != null) {
+          r.annotations = r.Annotation;
+          delete r.Annotation;
         }
         if (r.Metadatum != null) {
           r.metadata = new arcs.models.MetadataContainer;
@@ -88,7 +88,6 @@
         delete r.Resource;
       }
       if (r.modified === r.created) r.modified = false;
-      r.file_size = arcs.utils.convertBytes(r.file_size);
       return r;
     };
 

@@ -15,31 +15,35 @@
         _this = this;
       this.collectionModel = this.options.collectionModel;
       this.orderCollection();
-      arcs.on('arcs:indexChange', this.set, this);
+      arcs.bus.on('indexChange', this.set, this);
+      arcs.bus.on('all', function(name) {
+        return arcs.log(name);
+      });
       this.collection.on('add change remove', this.render, this);
       this.model.on('add change remove', this.render, this);
       this.throttledResize = _.throttle(this.resize, 500);
       $(window).resize(function() {
-        return arcs.trigger('arcs:resourceResize');
+        return arcs.bus.trigger('resourceResize');
       });
-      arcs.on('arcs:resourceResize', this.throttledResize, this);
+      arcs.bus.on('resourceResize', this.throttledResize, this);
       arcs.keys.map(this, {
         left: this.prev,
-        right: this.next
+        right: this.next,
+        '?': this.showHotkeys
       });
       this.actions = new arcs.views.ViewerActions({
         el: $('#viewer-controls'),
         collection: this.collection,
         viewer: this
       });
-      this.discussion = new arcs.views.Discussion({
+      this.discussion = new arcs.views.DiscussionTab({
         el: $('#discussion')
       });
       this.keywords = new arcs.views.Keyword({
         el: $('#information')
       });
-      this.hotspots = new arcs.views.Hotspot({
-        el: $('#resource')
+      this.hotspots = new arcs.views.Annotation({
+        el: $('#viewer')
       });
       this.carousel = new arcs.views.Carousel({
         el: $('#carousel-wrapper'),
@@ -53,11 +57,11 @@
       });
       if (this.model.get('first_req')) this.splitPrompt();
       if (this.index == null) this.index = 0;
-      return this.resize() && this.hotspots.reRender();
+      return this.resize();
     };
 
     Viewer.prototype.events = {
-      'dblclick img': 'openFull',
+      'dblclick #resource img': 'openFull',
       'click #next-btn': 'next',
       'click #prev-btn': 'prev'
     };
@@ -90,7 +94,7 @@
       if (!(model && index >= 0)) return false;
       _ref = [model, model, index], this.model = _ref[0], arcs.resource = _ref[1], this.index = _ref[2];
       if (options.trigger) {
-        arcs.trigger('arcs:indexChange', index, {
+        arcs.bus.trigger('indexChange', index, {
           noSet: true
         });
       }
@@ -161,13 +165,21 @@
       });
     };
 
+    Viewer.prototype.showHotkeys = function() {
+      return new arcs.views.Hotkeys({
+        template: 'viewer/hotkeys'
+      });
+    };
+
     Viewer.prototype.resize = function() {
-      var margin, well_height;
-      margin = $('body').hasClass('standalone') ? 168 : 195;
-      well_height = $(window).height() - margin;
-      this.$('.viewer-well').height(well_height);
-      this.$('.tab-content').height(well_height - 75);
-      return this.hotspots.render();
+      var COLLECTION, STANDALONE, TAB_MARGIN, height, margin;
+      STANDALONE = 128;
+      COLLECTION = 204;
+      TAB_MARGIN = 75;
+      margin = $('body').hasClass('standalone') ? STANDALONE : COLLECTION;
+      height = $(window).height() - margin;
+      this.$('.viewer-well').height(height);
+      return this.$('.tab-content').height(height - TAB_MARGIN);
     };
 
     Viewer.prototype.render = function() {
@@ -187,7 +199,9 @@
           template = 'viewer/unknown';
       }
       this.$('#resource').html(arcs.tmpl(template, this.model.toJSON()));
-      arcs.trigger('arcs:resourceLoaded');
+      this.$('#resource img').load(function() {
+        return arcs.bus.trigger('resourceLoaded');
+      });
       this.$('#resource-details').html(arcs.tmpl('viewer/table', this.model.toJSON()));
       if (this.collectionModel != null) {
         this.$('#collection-details').html(arcs.tmpl('viewer/collection_table', this.collectionModel.toJSON()));

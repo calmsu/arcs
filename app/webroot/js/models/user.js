@@ -20,7 +20,7 @@
     User.prototype.urlRoot = arcs.baseURL + 'users';
 
     User.prototype.is = function(role) {
-      return this.get('role') === this.ROLES[role];
+      return this.get('role') <= this.ROLES[role];
     };
 
     User.prototype.isLoggedIn = function() {

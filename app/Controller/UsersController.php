@@ -19,6 +19,8 @@ class UsersController extends AppController {
 
     /**
      * Display a user's bookmarks.
+     *
+     * @param string $ref
      */
     public function bookmarks($ref) {
         $user = $this->User->findByRef($ref);
@@ -32,6 +34,9 @@ class UsersController extends AppController {
         ))));
     }
 
+    /**
+     * Add a new user.
+     */
     public function add() {
         if (!($this->request->is('post') && $this->request->data))
             return $this->json(400);
@@ -48,23 +53,30 @@ class UsersController extends AppController {
      */
     public function edit($id=null) {
         if (!($this->request->is('put') || $this->request->is('post'))) 
-            return $this->json(405);
-        if (!$this->request->data || !$id) return $this->json(400);
+            throw new MethodNotAllowedException();
+        if (!$this->request->data || !$id) throw new BadRequestException();
         $user = $this->User->read(null, $id);
-        if (!$user) return $this->json(404);
+        if (!$user) throw new NotFoundException();
         # Must be editing own account, or an admin.
         if (!($this->User->id == $this->Auth->user('id') || $this->Access->isAdmin()))
-            return $this->json(403);
+            throw new ForbiddenException();
         # Only admins can change user roles.
         if ($this->Access->isAdmin()) 
             $this->User->permit('role');
-        if (!$this->User->add($this->request->data)) return $this->json(500);
+        if (!$this->User->add($this->request->data)) throw new InternalErrorException();
         # Update the Auth Session var, if necessary.
         if ($id == $this->Auth->user('id'))
             $this->Session->write('Auth.User', $this->User->findById($id));
         $this->json(200, $this->User->findById($id));
     }
 
+    /**
+     * Delete a user by id.
+     *
+     * Only an admin can delete users.
+     *
+     * @param string $id   user id
+     */
     public function delete($id=null) {
         if (!$this->request->is('delete')) return $this->json(405);
         if (!$this->Access->isAdmin()) return $this->json(403);
@@ -79,8 +91,7 @@ class UsersController extends AppController {
      * @param string $id   user id
      */
     public function login() {
-        $this->set('toolbar', false);
-        $this->set('footer', false);
+        $this->set(array('toolbar' => false, 'footer' => false));
         $this->User->flatten = false;
         $redirect = $this->Session->read('redirect');
         if ($redirect) {
@@ -88,12 +99,70 @@ class UsersController extends AppController {
             $this->Session->delete('redirect');
         }
         if ($this->request->is('post')) {
+            if ($this->request->data['User']['forgot_password'])
+                return $this->send_reset($this->request->data['User']['username']);
             if ($this->Auth->login()) {
                 return $this->redirect($this->Auth->redirect());
             } else {
                 $this->Session->setFlash('Incorrect username/password combination',
                                          'flash_error');
             }
+        }
+    }
+
+    /**
+     * Create a reset password link and queue an email to the user.
+     *
+     * @param string $email
+     */
+    public function send_reset($email) {
+        $user = $this->User->findByEmail($email);
+        if (!$user) { 
+            $this->Session->setFlash("Sorry, we couldn't find an account with that " . 
+                "email address.", 'flash_error');
+        } else {
+            $token = $this->User->getToken();
+            $this->User->permit('reset');
+            $this->User->saveById($user['User']['id'], array(
+                'reset' => $token
+            ));
+            $this->Job->enqueue('email', array(
+                'to' => $email,
+                'subject' => 'Reset Password',
+                'template' => 'reset_password',
+                'vars' => array(
+                    'name' => array_shift(explode(' ', $user['User']['name'])),
+                    'reset' => $this->baseURL() . '/users/reset_password/' . $token
+                )
+            ));
+            $this->Session->setFlash("We've sent an email to $email. It contains a special " .
+               "link to reset your password.", 'flash_success');
+        }
+        $this->redirect('/login');
+    }
+
+    /**
+     * Change the password.
+     *
+     * @param string $token   a valid password reset token
+     */
+    public function reset_password($token=null) {
+        if (!$token) throw new BadRequestException();
+        $this->set(array('toolbar' => false, 'footer' => false));
+        $user = $this->User->findByReset($token);
+        if (!$user || is_null($token)) {
+            $this->Session->setFlash("Invalid token.", 'flash_error');
+            return $this->redirect('/login');
+        }
+        if (isset($this->data['User']['password'])) {
+            $this->User->permit('password');
+            $this->User->saveById($user['id'], array(
+                'password' => $this->data['User']['password'],
+                'reset' => null
+            ));
+            $this->Session->setFlash("Your password has been changed. You may now login.", 
+                'flash_success');
+            $this->redirect('/login');
         }
     }
 
@@ -111,10 +180,9 @@ class UsersController extends AppController {
         if (!$this->Access->isAdmin()) throw new ForbiddenException();
         if (!$this->request->is('post')) throw new MethodNotAllowedException();
         $data = $this->request->data;
-        if (!($data && $data['email'] && $data['role'])) 
+        if (!($data && $data['email'] && !is_null($data['role'])))
             throw new BadRequestException();
-        App::uses('String', 'Utility');
-        $token = String::uuid();
+        $token = $this->User->getToken();
         $this->User->permit('activation', 'role');
         $this->User->add(array(
             'email' => $data['email'],
@@ -132,9 +200,14 @@ class UsersController extends AppController {
         $this->json(202);
     }
 
-    public function register($activation) {
-        if (!$activation) throw new BadRequestException();
-        $user = $this->User->findByActivation($activation);
+    /**
+     * Register a user with an invite.
+     *
+     * @param string $token    a valid activation token
+     */
+    public function register($token) {
+        if (!$token) throw new BadRequestException();
+        $user = $this->User->findByActivation($token);
         if (!$user) throw new NotFoundException();
         if ($this->request->is('post')) {
             $this->User->read(null, $user['id']);
@@ -169,23 +242,13 @@ class UsersController extends AppController {
                 'OR' => array('User.username' => $ref, 'User.id' => $ref)
             ),
             'contain' => array(
-                'Resource' => array(
-                    'limit' => 30
-                ),
-                'Hotspot' => array(
-                    'limit' => 30
-                ),
-                'Collection' => array(
-                    'limit' => 30
-                ),
-                'Comment' => array(
-                    'limit' => 30
-                )
+                'Resource'   => array('limit' => 30),
+                'Annotation' => array('limit' => 30),
+                'Collection' => array('limit' => 30),
+                'Comment'    => array('limit' => 30)
             )
         ));
-        if (!$user) {
-            $this->redirect('404');
-        }
+        if (!$user) throw new NotFoundException();
         $this->set('user_info', $user);
     }
 
@@ -194,13 +257,7 @@ class UsersController extends AppController {
      * autocompletion purposes. Responds only to ajax requests.
      */
     public function complete() {
-        if (!$this->request->is('get')) return $this->json(405);
+        if (!$this->request->is('get')) throw new MethodNotAllowedException();
         return $this->json(200, $this->User->complete('User.name'));
-    }
-
-    public function email_test() {
-        $this->autoRender = false;
-        $email = new CakeEmail('default');
-        $email->to('ndreynolds@gmail.com')->subject('Hello')->send('Hi Nick.');
     }
 }

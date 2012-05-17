@@ -32,14 +32,6 @@ CREATE TABLE IF NOT EXISTS metadata (
     FULLTEXT(value)
 );
 
--- uploads
-CREATE TABLE IF NOT EXISTS uploads (
-    id CHAR(36) PRIMARY KEY,
-    file_name VARCHAR(200),
-    tmp_name VARCHAR(40),
-    created DATETIME DEFAULT NULL
-);
-
 -- collections
 CREATE TABLE IF NOT EXISTS collections (
     id CHAR(36) PRIMARY KEY,
@@ -72,17 +64,9 @@ CREATE TABLE IF NOT EXISTS users (
     password VARCHAR(100),
     role INT(1),
     activation CHAR(36),
+    reset CHAR(36),
     created DATETIME DEFAULT NULL,
     modified DATETIME DEFAULT NULL
-);
-
--- collaborators
-CREATE TABLE IF NOT EXISTS collaborators (
-    id CHAR(36) PRIMARY KEY,
-    user_id CHAR(36),
-    resource_id CHAR(36),
-    role INT(1),
-    created DATETIME DEFAULT NULL
 );
 
 -- jobs
@@ -121,22 +105,21 @@ CREATE TABLE IF NOT EXISTS comments (
     FULLTEXT(content)
 );
 
--- hotspots
-CREATE TABLE IF NOT EXISTS hotspots (
+-- annotations
+CREATE TABLE IF NOT EXISTS annotations (
     id CHAR(36) PRIMARY KEY,
     resource_id CHAR(36),
     user_id CHAR(36),
+    relation CHAR(36),
+    transcript TEXT,
+    url TEXT,
     x1 FLOAT,
     y1 FLOAT,
     x2 FLOAT,
     y2 FLOAT,
-    type VARCHAR(40),
-    caption TEXT,
-    title VARCHAR(200),
-    link VARCHAR(400),
     created DATETIME DEFAULT NULL,
     modified DATETIME DEFAULT NULL,
-    FULLTEXT(caption, title)
+    FULLTEXT(transcript)
 );
 
 -- bookmarks

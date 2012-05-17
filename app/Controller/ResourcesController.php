@@ -11,7 +11,7 @@
  */
 class ResourcesController extends AppController {
     public $name = 'Resources';
-    public $uses = array('Resource', 'Job', 'Collection');
+    public $uses = array('Resource', 'Collection');
 
     public function beforeFilter() {
         # The App Controller will set some common view variables (namely a 
@@ -22,10 +22,9 @@ class ResourcesController extends AppController {
         # Read-only actions, such as viewing resources and associated comments
         # are allowed by default.
         $this->Auth->allow(
-            'index', 'view', 'viewer', 'search', 'comments', 'hotspots', 
+            'view', 'viewer', 'search', 'comments', 'annotations', 
             'keywords', 'complete', 'zipped', 'download'
         );
-
         if (!isset($this->request->query['related'])) {
             $this->Resource->recursive = -1;
             $this->Resource->flatten = true;
@@ -35,14 +34,71 @@ class ResourcesController extends AppController {
     /**
      * Create a resource.
      *
-     * This is not currently implemented. The Uploads controller handles file
-     * uploading (and subsequent resource creation). This action will likely
-     * handle API requests.
+     * This is the API version, see the Uploads controller for the form-based
+     * uploader.
      */
     public function add() {
-        # TODO
         if (!$this->request->is('post')) throw new MethodNotAllowedException();
-        $this->json(501);
+        $this->request->data['user_id'] = $this->Auth->user('id');
+        # Process requests with a download url later.
+        if (isset($this->request->data['url'])) {
+            $this->Job->enqueue('download_file', $this->request->data);
+            return $this->json(202);
+        }
+        if (empty($_FILES)) throw new BadRequestException();
+        $this->Resource->fromFile(array_shift($_FILES), $this->request->data);
+        $this->json(201, $this->Resource->id);
+    }
+
+    /**
+     * We don't have an index.
+     */
+    public function index() {
+        throw new NotImplementedException();
+    }
+
+    /**
+     * Edit the resource.
+     *
+     * @param string $id    resource id
+     */
+    public function edit($id=null) {
+        if (!($this->request->is('post') || $this->request->is('put'))) 
+            throw new MethodNotAllowedException();
+        $resource = $this->Resource->findById($id);
+        if (!$resource) throw new NotFoundException();
+        if (!$this->Resource->add($this->request->data)) 
+            throw new InternalErrorException();
+        $this->json(200, $this->Resource->findById($id));
+    }
+
+    /**
+     * Return resource info.
+     *
+     * @param string $id    resource id
+     */
+    public function view($id=null) {
+        if (!$this->request->is('get')) throw new MethodNotAllowedException();
+        if (!$id) throw new BadRequestException();
+        $resource = $this->Resource->findById($id);
+        if (!$resource) throw new NotFoundException();
+        $public = $this->Resource->flatten ? $resource['public'] : 
+            $resource['Resource']['public'];
+        if (!($public || $this->Auth->loggedIn())) throw new UnauthorizedException();
+        $this->json(200, $resource);
+    }
+
+    /**
+     * Delete the resource, if authorized.
+     *
+     * @param string $id    resource id
+     */
+    public function delete($id=null) {
+        if (!$this->request->is('delete')) throw new MethodNotAllowedException();
+        if (!$this->Auth->loggedIn()) throw new UnauthorizedException();
+        if (!$this->Access->isAdmin()) throw new ForbiddenException();
+        if (!$this->Resource->delete($id)) throw new InternalErrorException();
+        $this->json(204);
     }
 
     /**
@@ -58,7 +114,6 @@ class ResourcesController extends AppController {
         if (!$resource) throw new NotFoundException();
         if (!$resource['mime_type'] == 'application/pdf') 
             throw new BadRequestException();
-
         # Create a new collection for the split.
         $this->Collection->permit('user_id');
         $this->Collection->add(array(
@@ -68,7 +123,6 @@ class ResourcesController extends AppController {
             'user_id' => $this->Auth->user('id'),
             'pdf' => $id
         ));
-
         # Make a new task to split the PDF.
         $this->Job->enqueue('split_pdf', array(
             'resource_id' => $id, 
@@ -76,20 +130,6 @@ class ResourcesController extends AppController {
             'type' => 'Notebook Page'
         ));
         $this->json(202);
-    }
-
-    /**
-     * Edit the resource.
-     *
-     * @param string $id    resource id
-     */
-    public function edit($id=null) {
-        if (!($this->request->is('post') || $this->request->is('put'))) 
-            throw new MethodNotAllowedException();
-        $resource = $this->Resource->findById($id);
-        if (!$resource) throw new NotFoundException();
-        if ($this->Resource->add($this->request->data)) return $this->json(200);
-        throw new InternalErrorException();
     }
 
     /**
@@ -110,7 +150,8 @@ class ResourcesController extends AppController {
 
         if (!$resource) return $this->redirect('/404');
         if (!$allowed) {
-            $this->Session->setFlash("Oops. You'll need to login to view that.", 'flash_error');
+            $this->Session->setFlash("Oops. You'll need to login to view that.", 
+                'flash_error');
             $this->Session->write('redirect', '/resource/' . $id);
             return $this->redirect($this->Auth->redirect('/users/login'));
         }
@@ -123,12 +164,18 @@ class ResourcesController extends AppController {
         }
 
         $this->set('memberships', $this->Resource->Membership->find('all', array(
-            'conditions' => array('Membership.resource_id' => $id)
+            'conditions' => array(
+                'Membership.resource_id' => $id,
+                'Collection.title !=' => 'Temporary Collection'
+            )
         )));
-        $this->set('resource', $resource);
-        $this->set('toolbar', array('actions' => true));
-        $this->set('footer', false);
-        $this->set('body_class', 'viewer standalone');
+        $this->set(array(
+            'resource' => $resource,
+            'toolbar' => array('actions' => true),
+            'footer' => false,
+            'body_class' => 'viewer standalone',
+            'title_for_layout' => $resource['Resource']['title']
+        ));
 
         # On the first request of a particular resource (usually directly 
         # after upload), we might prompt the user for additional 
@@ -137,109 +184,6 @@ class ResourcesController extends AppController {
         # $resource var.)
         if ($resource['Resource']['first_req']) 
             $this->Resource->firstRequest($resource['Resource']['id']);
-    }
-
-    /**
-     * Return resource info.
-     *
-     * @param string $id    resource id
-     */
-    public function view($id=null) {
-        if (!$this->request->is('get')) throw new MethodNotAllowedException();
-        if (!$id) throw new BadRequestException();
-        $resource = $this->Resource->findById($id);
-        if (!$resource) throw new NotFoundException();
-        $public = $resource['Resource']['public'];
-        $allowed = $public || $this->Auth->loggedIn();
-        if (!$allowed) throw new ForbiddenException();
-        $this->json(200, $resource);
-    }
-
-    /**
-     * Delete the resource, if authorized.
-     *
-     * @param string $id    resource id
-     */
-    public function delete($id=null) {
-        if (!$this->request->is('delete')) throw new MethodNotAllowedException();
-        if (!$this->Auth->loggedIn()) throw new UnauthorizedException();
-        if (!$this->Resource->delete($id)) throw new InternalErrorException();
-        $this->json(204);
-    }
-
-    /**
-     * Search resources.
-     */
-    public function search() {
-        $public = !$this->Auth->loggedIn();
-        # Get the request parameters.
-        $params = $this->request->query;
-        $limit = isset($params['n']) ? $params['n'] : 30;
-        $offset = isset($params['offset']) ? $params['offset'] : 0;
-
-        $order = 'modified';
-        if (isset($params['order'])) {
-            $orderables = array('modified', 'created', 'title');
-            if (in_array($params['order'], $orderables)) 
-                $order = $params['order'];
-        }
-
-        if ($this->request->data) {
-            # Instantiate our Search object with the db config and facets.
-            $searcher = $this->_getSearcher();
-            if ($this->Auth->loggedIn())
-                $searcher->publicFilter = false;
-
-            # Get the result ids.
-            $response = $searcher->search($this->request->data, $limit, $offset);
-            $response['results'] = $this->Resource->find('all', array(
-                'conditions' => array(
-                    'Resource.id' => $response['results']
-                ),
-                'order' => "Resource.$order DESC"
-            ));
-            if (!$this->Access->isAdmin()) {
-                unset($response['raw_query']);
-                unset($response['mode']);
-            }
-            return $this->json(200, $response);
-        }
-
-        # No facets provided. Give them back some recent resources.
-        $resources = $this->Resource->find('all', array(
-            'conditions' => $public ? array('Resource.public' => 1) : null,
-            'limit' => $limit,
-            'offset' => $offset,
-            'order' => "Resource.$order DESC"
-        ));
-        $this->json(200, array(
-            'results' => $resources,
-            'num_results' => count($resources),
-            'limit' => $limit,
-            'offset' => $offset,
-            'total' => $this->Resource->find('count')
-        ));
-    }
-
-    /**
-     * Return an instance of a search class. SolrSearch if available, otherwise
-     * SqlSearch. This depends on the `arcs.ini` configuration file.
-     *
-     * @return object
-     */
-    private function _getSearcher() {
-        if (Configure::read('solr.uses')) {
-            require_once(LIB . 'Arcs' . DS . 'Solr.php');
-            return new \Arcs\SolrSearch(
-                Configure::read('solr.host'),
-                Configure::read('solr.port'),
-                Configure::read('solr.webapp')
-            );
-        }
-        require_once(LIB . 'Arcs' . DS . 'SqlSearch.php');
-        $dbo = $this->Resource->getDataSource('default');
-        $config = $dbo->config;
-        return new \Arcs\SqlSearch($config);
     }
 
     /**
@@ -285,9 +229,7 @@ class ResourcesController extends AppController {
             (count($files) - 1) . '-' .
             (count($files) > 2 ? 'others' : 'other');
         $sha = $this->Resource->makeZipfile($files, $name);
-        $this->json(200, array(
-            'url' => $this->Resource->url($sha, $name . '.zip')
-        ));
+        $this->json(200, array('url' => $this->Resource->url($sha, $name . '.zip')));
     }
 
     /**
@@ -302,9 +244,7 @@ class ResourcesController extends AppController {
         if (!$this->Auth->loggedIn()) throw new UnauthorizedException();
         $resource = $this->Resource->findById($id);
         if (!$resource) throw new NotFoundException();
-        $this->Job->enqueue('thumb', array(
-            'resource_id' => $resource['id']
-        ));
+        $this->Job->enqueue('thumb', array('resource_id' => $resource['id']));
         $this->json(202);
     }
 
@@ -318,9 +258,7 @@ class ResourcesController extends AppController {
         if (!$this->Auth->loggedIn()) throw new UnauthorizedException();
         $resource = $this->Resource->findById($id);
         if (!$resource) throw new NotFoundException();
-        $this->Job->enqueue('preview', array(
-            'resource_id' => $resource['id']
-        ));
+        $this->Job->enqueue('preview', array('resource_id' => $resource['id']));
         $this->json(202);
     }
 
@@ -334,9 +272,7 @@ class ResourcesController extends AppController {
         if (!$this->Auth->loggedIn()) throw new UnauthorizedException();
         $resource = $this->Resource->findById($id);
         if (!$resource) throw new NotFoundException();
-        $this->Job->enqueue('solr_index', array(
-            'resource_id' => $resource['id']
-        ));
+        $this->Job->enqueue('solr_index', array('resource_id' => $resource['id']));
         $this->json(202);
     }
 
@@ -391,11 +327,22 @@ class ResourcesController extends AppController {
      *
      * @param string $id    resource id
      */
-    public function hotspots($id=null) {
+    public function annotations($id=null) {
         if (!$this->request->is('get') || !$id) throw new BadRequestException();
-        $this->json(200, $this->Resource->Hotspot->find('all',
-            array('conditions' => array('Resource.id' => $id))
+        $this->Resource->Annotation->flatten = true;
+        $res = array();
+        $res['annotations'] = $this->Resource->Annotation->find('all', array(
+            'conditions' => array('Resource.id' => $id)
         ));
+        $relations = array_filter(array_map(function($a) {
+            return isset($a['relation']) ?  $a['relation'] : null;
+        }, $res['annotations']));
+        if ($relations) {
+            $res['relations'] = $this->Resource->find('all', array(
+                'conditions' => array('Resource.id' => $relations)
+            ));
+        }
+        $this->json(200, $res);
     }
 
     /**
@@ -410,13 +357,10 @@ class ResourcesController extends AppController {
                 $values = $this->Resource->complete('Resource.title');
                 break;
             case 'created':
-                $values = $this->Resource->complete('Resource.created');
+                $values = $this->Resource->complete('Resource.created', null, true);
                 break;
             case 'modified':
-                $values = $this->Resource->complete('Resource.modified');
-                break;
-            case 'type':
-                $values = Configure::read('resources.types');
+                $values = $this->Resource->complete('Resource.modified', null, true);
                 break;
             default:
                 $values = array();

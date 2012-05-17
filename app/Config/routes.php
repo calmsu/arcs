@@ -57,7 +57,7 @@
         array('controller' => 'uploads', 'action' => 'batch')
     );
 
-    # Resource, collection, and user singular aliases
+    # Resource, collection and user singular aliases
     Router::connect('/resource/*', 
         array('controller' => 'resources', 'action' => 'viewer')
     );
@@ -68,13 +68,17 @@
         array('controller' => 'users', 'action' => 'profile')
     );
 
-    # Search
+    # Search 
+    # (we're using the greedy pattern so that we can match urls with slashes, 
+    # e.g. 'search/filetype:application/pdf')
     Router::connect('/search/**', 
-        array('controller' => 'pages', 'action' => 'search')
+        array('controller' => 'search', 'action' => 'search')
     );
-
-    # Search must have a trailing slash, for the client-side code's
-    # sanity. IMO it shouldn't be optional to begin with.
+    # We can access the JSON search through either /api/search or this:
+    Router::connect('/resources/search', 
+        array('controller' => 'search', 'action' => 'resources')
+    );
+    # Search must have a trailing slash, for the client-side code's sanity. 
     Router::redirect('/search', '/search/');
 
     # Configuration status
@@ -95,18 +99,33 @@
         array('controller' => 'help', 'action' => 'display')
     );
 
-    # Map resources for the ajax-only controllers
-    Router::mapResources(array(
+    # Non-RESTful API routes 
+    Router::connect('/api/search',
+        array('controller' => 'search', 'action' => 'resources')
+    );
+    Router::connect('/api/metadata',
+        array('controller' => 'resources', 'action' => 'metadata')
+    );
+    Router::connect('/api/resources/keywords/*',
+        array('controller' => 'resources', 'action' => 'keywords')
+    );
+    Router::connect('/api/resources/comments/*',
+        array('controller' => 'resources', 'action' => 'keywords')
+    );
+
+    $restful = array(
         'resources',
         'comments',
         'keywords',
-        'hotspots',
+        'annotations',
         'bookmarks',
         'users',
         'flags',
         'jobs',
         'metadata'
-    ));
+    );
+    Router::mapResources($restful);
+    Router::mapResources($restful, array('prefix' => '/api/'));
     Router::parseExtensions();
 
 	CakePlugin::routes();

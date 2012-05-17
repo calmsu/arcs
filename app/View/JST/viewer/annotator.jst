@@ -1,0 +1,32 @@
+<div class="annotator-tabs tabbable">
+  <ul class="nav nav-tabs">
+    <li class="active">
+      <a href="#relation-tab" data-toggle="tab">Relation</a>
+    </li>
+    <li>
+      <a href="#transcription-tab" data-toggle="tab">Transcription</a>
+    </li>
+    <li>
+      <a href="#url-tab" data-toggle="tab">URL</a>
+    </li>
+  </ul>
+  <div class="tab-content">
+    <div id="relation-tab" class="tab-pane active">
+      <div class="mini-search"></div>
+      <div class="mini-search-results">
+        <div class="loading-squares" style="margin-top:40px"></div>
+      </div>
+    </div>
+    <div id="transcription-tab" class="tab-pane">
+      <textarea class="transcription" id="transcript" 
+        placeholder="Transcribe text within the resource..."></textarea>
+    </div>
+    <div id="url-tab" class="tab-pane">
+      <div class="input-prepend">
+        <span class="add-on">http://</span>
+        <input id="url" class="span2" type="text" 
+          placeholder="google.com"/>
+      </div>
+    </div>
+  </div>
+</div>

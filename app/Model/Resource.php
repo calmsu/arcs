@@ -21,7 +21,7 @@ class Resource extends AppModel {
         'Membership',
         'Comment',
         'Keyword',
-        'Hotspot',
+        'Annotation',
         'Flag',
         'Metadatum'
     );
@@ -76,6 +76,28 @@ class Resource extends AppModel {
         $job->enqueue('solr_delete', array(
             'resource_id' => $this->id
         ));
+    }
+
+    /**
+     * Convenience method for creating a resource given a $_FILES member.
+     *
+     * @param array $file
+     * @param array $data
+     */
+    public function fromFile($file, $data) {
+        $sha = $this->createFile($file['tmp_name'], array(
+            'filename' => $file['name'],
+            'thumb' => true
+        ));
+        if (!$sha) return false;
+        $data = array_merge($data, array(
+            'file_name' => $file['name'],
+            'file_size' => $file['size'],
+            'mime_type' => $file['type'],
+            'sha' => $sha
+        ));
+        $this->permit('sha', 'file_name', 'file_size', 'user_id');
+        return $this->add($data);
     }
 
     /**

@@ -1,0 +1,18 @@
+<% if (relation) { %>
+  <h3>
+  <% if (arcs.mime.isImage(relation.mime_type)) { %>
+    <i class="icon-picture"></i>
+  <% } else if (arcs.mime.isVideo(relation.mime_type)) { %>
+    <i class="icon-film"></i>
+  <% } else { %>
+    <i class="icon-file"></i>
+  <% } %>
+  <%= relation.title %>
+  </h3>
+  <h4><%= relation.type %></h4>
+  <br><img class="thumb" src="<%= relation.thumb %>"/>
+<% } else if (transcript) { %>
+  <p><%= arcs.inflector.truncate(transcript, 500) %></p>
+<% } else { %>
+  <a href="<%= url %>"><%= url %></a>
+<% } %>

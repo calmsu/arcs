@@ -3,8 +3,6 @@ App::uses('MetaResourcesController', 'Controller');
 /**
  * Flags controller.
  *
- * This controller will only respond to ajax requests.
- *
  * @package    ARCS
  * @link       http://github.com/calmsu/arcs
  * @copyright  Copyright 2012, Michigan State University Board of Trustees

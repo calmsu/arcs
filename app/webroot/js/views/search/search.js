@@ -15,16 +15,17 @@
 
     Search.prototype.options = {
       sort: 'modified',
+      sortDir: 'desc',
       grid: true,
-      url: arcs.baseURL + 'search/',
-      numResults: 30
+      url: arcs.baseURL + 'search/'
     };
 
     /* Initialize and define events
     */
 
     Search.prototype.initialize = function() {
-      this.setupSelect() && this.setupSearch();
+      this.setupSelect();
+      this.setupSearch();
       this.actions = new arcs.views.search.Actions({
         el: this.$el,
         collection: this.search.results
@@ -37,10 +38,11 @@
         root: this.options.url
       });
       if (!this.router.searched) this.search.run();
-      this.search.results.on('remove', this.render, this);
-      arcs.on('arcs:selection', this.afterSelection, this);
+      this.search.results.on('change remove', this.render, this);
+      arcs.bus.on('selection', this.afterSelection, this);
       return arcs.keys.map(this, {
         'ctrl+a': this.selectAll,
+        '?': this.showHotkeys,
         t: this.scrollTop
       });
     };
@@ -52,7 +54,8 @@
       'click #grid-btn': 'toggleView',
       'click #list-btn': 'toggleView',
       'click #top-btn': 'scrollTop',
-      'click .sort-btn': 'setSort'
+      'click .sort-btn': 'setSort',
+      'click .dir-btn': 'setSortDir'
     };
 
     /* More involved setups run by the initialize method
@@ -84,7 +87,6 @@
 
     Search.prototype.setupSearch = function() {
       var _this = this;
-      this.searchPage = 1;
       this.scrollReady = false;
       return this.search = new arcs.utils.Search({
         container: $('.search-wrapper'),
@@ -93,7 +95,6 @@
         loader: true,
         success: function() {
           _this.router.navigate(encodeURIComponent(_this.search.query));
-          _this.searchPage = 1;
           if (!_this.scrollReady) {
             _this.setupScroll() && (_this.scrollReady = true);
           }
@@ -103,10 +104,9 @@
     };
 
     Search.prototype.setupScroll = function() {
-      var $actions, $results, $window, pos,
+      var $actions, $results, $window, pos, _ref,
         _this = this;
-      $actions = this.$('#search-actions');
-      $results = this.$('#search-results');
+      _ref = [this.$('#search-actions'), this.$('#search-results')], $actions = _ref[0], $results = _ref[1];
       $window = $(window);
       pos = $actions.offset().top - 10;
       $window.scroll(function() {
@@ -118,11 +118,14 @@
           _this.$('#top-btn').hide();
         }
         if ($window.scrollTop() === $(document).height() - $window.height()) {
-          if (_this.search.results.length % _this.options.numResults !== 0) return;
+          if (!(_this.search.results.length < _this.search.results.metadata.total)) {
+            return;
+          }
           return _this.search.run(null, {
             add: true,
-            page: _this.searchPage += 1,
+            page: _this.search.page += 1,
             order: _this.options.sort,
+            direction: _this.options.sortDir,
             success: function() {
               return _this.append();
             }
@@ -152,35 +155,46 @@
     };
 
     Search.prototype.setSort = function(e) {
-      var id;
-      id = e.currentTarget.id;
       this.options.sort = e.target.id.match(/sort-(\w+)-btn/)[1];
       this.$('.sort-btn .icon-ok').remove();
-      this.$(e.currentTarget).append(this.make('i', {
+      this.$(e.target).append(this.make('i', {
         "class": 'icon-ok'
       }));
       this.$('#sort-btn span#sort-by').html(this.options.sort);
       return this.search.run(null, {
-        order: this.options.sort
+        order: this.options.sort,
+        direction: this.options.sortDir
+      });
+    };
+
+    Search.prototype.setSortDir = function(e) {
+      this.options.sortDir = e.target.id.match(/dir-(\w+)-btn/)[1];
+      this.$('.dir-btn .icon-ok').remove();
+      this.$(e.target).append(this.make('i', {
+        "class": 'icon-ok'
+      }));
+      return this.search.run(null, {
+        order: this.options.sort,
+        direction: this.options.sortDir
       });
     };
 
     Search.prototype.unselectAll = function(trigger) {
       if (trigger == null) trigger = true;
       this.$('.result').removeClass('selected');
-      if (trigger) return arcs.trigger('arcs:selection');
+      if (trigger) return arcs.bus.trigger('selection');
     };
 
     Search.prototype.selectAll = function(trigger) {
       if (trigger == null) trigger = true;
       this.$('.result').addClass('selected');
-      if (trigger) return arcs.trigger('arcs:selection');
+      if (trigger) return arcs.bus.trigger('selection');
     };
 
     Search.prototype.toggle = function(e) {
       if (!(e.ctrlKey || e.shiftKey || e.metaKey)) this.unselectAll(false);
       $(e.currentTarget).parents('.result').toggleClass('selected');
-      return arcs.trigger('arcs:selection');
+      return arcs.bus.trigger('selection');
     };
 
     Search.prototype.maybeUnselectAll = function(e) {
@@ -188,6 +202,12 @@
       if (e.metaKey || e.ctrlKey || e.shiftKey) return false;
       if ($(e.target).attr('src')) return false;
       return this.unselectAll();
+    };
+
+    Search.prototype.showHotkeys = function() {
+      return new arcs.views.Hotkeys({
+        template: 'search/hotkeys'
+      });
     };
 
     /* Render the search results
@@ -212,10 +232,9 @@
     };
 
     Search.prototype.append = function() {
-      var rest, results;
-      if (!(this.search.results.length > this.options.numResults)) return;
-      rest = this.search.results.rest(this.search.results.length - this.options.numResults);
-      results = new arcs.collections.ResultSet(rest);
+      var results;
+      if (!(this.search.results.length > this.search.options.n)) return;
+      results = new arcs.collections.ResultSet(this.search.getLast());
       return this._render({
         results: results.toJSON()
       }, true);
@@ -228,16 +247,11 @@
     };
 
     Search.prototype._render = function(results, append) {
-      var $results, content, template;
+      var $results, template;
       if (append == null) append = false;
       $results = $('#search-results');
       template = this.options.grid ? 'search/grid' : 'search/list';
-      content = arcs.tmpl(template, results);
-      if (append) {
-        $results.append(content);
-      } else {
-        $results.html(content);
-      }
+      $results[append ? 'append' : 'html'](arcs.tmpl(template, results));
       if (!this.search.results.length) {
         return $results.html(this.make('div', {
           id: 'no-results'

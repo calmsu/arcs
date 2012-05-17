@@ -1,72 +1,43 @@
 (function() {
 
-  arcs.utils.complete = {
-    user: function() {
-      return this._get('users/complete');
-    },
-    keyword: function() {
-      return this._get('keywords/complete');
-    },
-    title: function() {
-      return this._get('resources/complete/title');
-    },
-    created: function() {
-      return this._date('resources/complete/created');
-    },
-    modified: function() {
-      return this._date('resources/complete/modified');
-    },
-    collection: function() {
-      return this._get('collections/complete');
-    },
-    _cache: {},
-    _get: function(url, fresh) {
-      var data, result, ts, _ref;
-      if (fresh == null) fresh = false;
-      if (_.has(this._cache, url)) {
-        _ref = this._cache[url], data = _ref[0], ts = _ref[1];
-        if (!(fresh || (Date.now() - ts > 10000))) return data;
+  arcs.complete = function(url) {
+    var result;
+    result = [];
+    $.ajax({
+      url: arcs.baseURL + url,
+      async: false,
+      dataType: 'json',
+      success: function(data) {
+        return result = _.compact(_.uniq(_.values(data)));
       }
-      result = [];
-      $.ajax({
-        url: arcs.baseURL + url,
-        async: false,
-        dataType: 'json',
-        success: function(data) {
-          return result = _.without(_.uniq(_.values(data)), null);
-        }
-      });
-      this._cache[url] = [result, Date.now()];
-      return result;
-    },
-    _date: function(url) {
-      var aliases, d, dates, fmt, parse_fmt, raw_dates;
-      raw_dates = this._get(url);
-      fmt = 'MM-DD-YYYY';
-      parse_fmt = 'YYYY-MM-DD HH:mm:ss';
-      dates = (function() {
-        var _i, _len, _results;
-        _results = [];
-        for (_i = 0, _len = raw_dates.length; _i < _len; _i++) {
-          d = raw_dates[_i];
-          _results.push(moment(d, parse_fmt).format(fmt));
-        }
-        return _results;
-      })();
-      aliases = [
-        {
-          label: 'today',
-          value: moment().format(fmt)
-        }, {
-          label: 'yesterday',
-          value: moment().subtract('days', 1).format(fmt)
-        }
-      ];
-      return _.uniq(_.union(dates, aliases));
-    }
+    });
+    return result;
   };
 
-  _.bindAll(arcs.utils.complete);
+  arcs.completeDate = function(url) {
+    var aliases, d, dates, fmt, parseFmt, raw, _ref;
+    raw = arcs.complete(url);
+    _ref = ['DD-MM-YYYY', 'YYYY-MM-DD HH:mm:ss'], fmt = _ref[0], parseFmt = _ref[1];
+    dates = (function() {
+      var _i, _len, _results;
+      _results = [];
+      for (_i = 0, _len = raw.length; _i < _len; _i++) {
+        d = raw[_i];
+        _results.push(moment(d, parseFmt).format(fmt));
+      }
+      return _results;
+    })();
+    aliases = [
+      {
+        label: 'today',
+        value: moment().format(fmt)
+      }, {
+        label: 'yesterday',
+        value: moment().subtract('days', 1).format(fmt)
+      }
+    ];
+    return _.union(dates, aliases);
+  };
 
   arcs.utils.autocomplete = function(opts) {
     var $el, addTerm, defaults, focus, getLast, options, select, split, _ref;

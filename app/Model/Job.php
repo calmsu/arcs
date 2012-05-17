@@ -14,11 +14,8 @@ App::uses('Sanitize', 'Utility');
 class Job extends AppModel {
 
     public $name      = 'Job';
-
     public $flatten   = true;
-
     public $recursive = -1;
-
     public $whitelist = array(
         'name', 'data', 'status', 'locked_at', 'locked_by', 'error',
         'failed_at', 'attempts'

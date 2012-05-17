@@ -34,6 +34,11 @@
 
     Search.prototype.doSearch = function(query) {
       if (query == null) query = '';
+      if (query === 'search') {
+        return this.navigate('/', {
+          replace: true
+        });
+      }
       this.search.setQuery(query);
       this.search.run();
       this.navigate(encodeURIComponent(this.search.query));

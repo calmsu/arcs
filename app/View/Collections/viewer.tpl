@@ -6,8 +6,10 @@
   <button id="thumbs-btn" class="btn toolbar-btn" rel="tooltip"
     title="View this collection in the search" data-placement="bottom">
     <i class="icon-th-large"></i></button>
-  <button id="full-screen-btn" class="btn toolbar-btn" rel="tooltip" title="Enter full screen"
+  <button id="full-screen-btn" class="btn toolbar-btn" rel="tooltip" title="Fullscreen"
     data-placement="bottom"><i class="icon-resize-full"></i></button>
+  <button id="annotation-vis-btn" class="btn toolbar-btn" rel="tooltip" 
+    data-placement="bottom"><i class="icon-map-marker"></i></button>
   <div class="page-nav toolbar-btn input-append input-prepend">
     <button id="mini-prev-btn" class="btn"><i class="icon-arrow-left"></i></button>
     <input type="text" class="span2" />
@@ -37,7 +39,9 @@
         <li><a id="rethumb-btn">Re-thumbnail</a></li>
         <li><a id="split-btn">Split PDF</a></li>
         {% if user.role == 0 %}
-        <li><a id="delete-btn">Delete</a></li>
+        <li class="divider"></li>
+        <li><a id="delete-btn">Delete this resource...</a></li>
+        <li><a id="delete-col-btn">Delete collection...</a></li>
         {% endif %}
       </ul>
     </div>
@@ -51,15 +55,16 @@
     <div id="next-btn" class="viewer-nav"></div>
     <div id="wrapping">
       <div id="hotspots-wrapper"></div>
-      <div id="resource"></div>
+      <div id="resource">
+      </div>
     </div>
   </div>
   <div class="viewer-tabs tabbable">
     <ul class="nav nav-pills">
-      <li class="active" id="primary">
+      <li class="active" id="information-btn">
         <a data-toggle="tab" href="#information">Info</a>
       </li>
-      <li id="secondary">
+      <li id="discussion-btn">
         <a data-toggle="tab" href="#discussion">Discussion</a>
       </li>
     </ul>

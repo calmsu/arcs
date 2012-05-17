@@ -1,4 +1,4 @@
-<h1>API v1 Reference</h1>
+<h1 id="api-v1-reference">API v1 Reference</h1>
 <p>We provide a REST API that lets you interact with ARCS using anything that can
 send an HTTP request. This makes it easy to write custom import and export
 scripts.</p>
@@ -7,10 +7,10 @@ scripts.</p>
 functionality. When this happens, we'll let you know, and update the changes 
 here.</p>
 </blockquote>
-<h2>Schema</h2>
+<h2 id="schema">Schema</h2>
 <p>All request/response data is sent and received as JSON. We've tried to adhere
 to the HTTP specification defined in <a href="http://www.w3.org/Protocols/rfc2616/rfc2616.html">RFC 2616</a>.</p>
-<h3>Requests</h3>
+<h3 id="requests">Requests</h3>
 <p>You can make API requests using a number of programming languages. PHP, 
 Python, Ruby, JavaScript, and many others, have libraries for making 
 HTTP requests.</p>
@@ -23,9 +23,9 @@ create a new comment for the authenticated user:</p>
 <pre><code>curl -X POST \
   -H "Content-Type: application/json" \
   -d '{"content": "Some comment", "resource_id": "4f7351c..."}' \
-  http://arcs.cal.msu.edu/comments
+  http://arcs.cal.msu.edu/api/comments
 </code></pre>
-<h3>Responses</h3>
+<h3 id="responses">Responses</h3>
 <p>All responses will contain a JSON object. In most non-<code>GET</code> requests, this
 object will be empty. An example response to a <code>GET</code> request is below:</p>
 <pre><code>{
@@ -42,7 +42,7 @@ object will be empty. An example response to a <code>GET</code> request is below
   "thumb": "http://arcs.cal.msu.edu/arcs-data/9/.../thumb.png"}
 }
 </code></pre>
-<h3>Authentication</h3>
+<h3 id="authentication">Authentication</h3>
 <p>To access private resources, or make edits or deletions, you'll need to 
 authenticate your request. </p>
 <p>You can do this by sending a <code>POST</code> to the login action, as shown below:</p>
@@ -54,7 +54,7 @@ authenticate your request. </p>
 <blockquote>
 <p>We plan to support authentication using OAuth2 in a later release.</p>
 </blockquote>
-<h3>Status Codes</h3>
+<h3 id="status-codes">Status Codes</h3>
 <p>Each response is accompanied by an HTTP status code that indicates the result
 of the requested action. You can read about these in detail in <a href="http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10">RFC 2616</a>.
 The ones we've used frequently are also explained below:</p>
@@ -120,9 +120,9 @@ The ones we've used frequently are also explained below:</p>
 </tr>
 </tbody>
 </table>
-<h2>Resources</h2>
-<h3>Getting a resource by id</h3>
-<pre><code>GET /resources/:id
+<h2 id="resources">Resources</h2>
+<h3 id="getting-a-resource-by-id">Getting a resource by id</h3>
+<pre><code>GET /api/resources/:id
 </code></pre>
 <p><strong>Response</strong> <br />
 <code>200 Ok</code></p>
@@ -141,8 +141,8 @@ The ones we've used frequently are also explained below:</p>
 }
 </code></pre>
 <hr />
-<h3>Creating a new resource</h3>
-<pre><code>POST /resources
+<h3 id="creating-a-new-resource">Creating a new resource</h3>
+<pre><code>POST /api/resources
 </code></pre>
 <p><strong>Input</strong></p>
 <table>
@@ -170,8 +170,8 @@ The ones we've used frequently are also explained below:</p>
 <p><strong>Response</strong> <br />
 <code>200 Ok</code></p>
 <hr />
-<h3>Searching resources with a simple query</h3>
-<pre><code>GET /resources/search/:query
+<h3 id="searching-resources-with-a-simple-query">Searching resources with a simple query</h3>
+<pre><code>GET /api/search/:query
 </code></pre>
 <p><strong>Response</strong>  <br />
 <code>200 Ok</code></p>
@@ -205,8 +205,8 @@ The ones we've used frequently are also explained below:</p>
 ]
 </code></pre>
 <hr />
-<h3>Searching resources with a faceted query</h3>
-<pre><code>POST /resources/search
+<h3 id="searching-resources-with-a-faceted-query">Searching resources with a faceted query</h3>
+<pre><code>POST /api/search
 </code></pre>
 <p><strong>Input</strong></p>
 <table>
@@ -271,15 +271,15 @@ The ones we've used frequently are also explained below:</p>
 ]
 </code></pre>
 <hr />
-<h3>Deleting a resource by id</h3>
-<pre><code>DELETE /resources/:id
+<h3 id="deleting-a-resource-by-id">Deleting a resource by id</h3>
+<pre><code>DELETE /api/resources/:id
 </code></pre>
 <p><strong>Response</strong>  <br />
 <code>204 Deleted</code></p>
 <hr />
-<h2>Metadata</h2>
-<h3>Getting metadata for a resource</h3>
-<pre><code>GET /resources/metadata/:id
+<h2 id="metadata">Metadata</h2>
+<h3 id="getting-metadata-for-a-resource">Getting metadata for a resource</h3>
+<pre><code>GET /api/metadata/:id
 </code></pre>
 <p><strong>Response</strong><br />
 <code>200 Ok</code></p>
@@ -291,8 +291,8 @@ The ones we've used frequently are also explained below:</p>
 }
 </code></pre>
 <hr />
-<h3>Setting metadata for a resource</h3>
-<pre><code>POST /resources/metadata/:id
+<h3 id="setting-metadata-for-a-resource">Setting metadata for a resource</h3>
+<pre><code>POST /api/metadata/:id
 </code></pre>
 <p><strong>Input</strong></p>
 <pre><code>{
@@ -304,9 +304,9 @@ The ones we've used frequently are also explained below:</p>
 <p><strong>Response</strong><br />
 <code>201 Created</code></p>
 <hr />
-<h2>Comments</h2>
-<h3>Getting a comment by id</h3>
-<pre><code>GET /comments/:id
+<h2 id="comments">Comments</h2>
+<h3 id="getting-a-comment-by-id">Getting a comment by id</h3>
+<pre><code>GET /api/comments/:id
 </code></pre>
 <p><strong>Response</strong>  <br />
 <code>200 Ok</code></p>
@@ -319,8 +319,8 @@ The ones we've used frequently are also explained below:</p>
 }
 </code></pre>
 <hr />
-<h3>Creating a new comment</h3>
-<pre><code>POST /comments
+<h3 id="creating-a-new-comment">Creating a new comment</h3>
+<pre><code>POST /api/comments
 </code></pre>
 <p><strong>Input</strong></p>
 <table>
@@ -350,31 +350,31 @@ The ones we've used frequently are also explained below:</p>
 <p><strong>Response</strong>  <br />
 <code>201 Created</code></p>
 <hr />
-<h3>Deleting a comment</h3>
-<pre><code>DELETE /comments/:id
+<h3 id="deleting-a-comment">Deleting a comment</h3>
+<pre><code>DELETE /api/comments/:id
 </code></pre>
 <p><strong>Response</strong>   <br />
 <code>204 Deleted</code></p>
 <hr />
-<h2>Keywords</h2>
-<h3>Getting a keyword by id</h3>
-<pre><code>GET /keywords/:id
+<h2 id="keywords">Keywords</h2>
+<h3 id="getting-a-keyword-by-id">Getting a keyword by id</h3>
+<pre><code>GET /api/keywords/:id
 </code></pre>
 <p><strong>Response</strong>   <br />
 <code>200 Ok</code></p>
 <pre><code>STUB
 </code></pre>
 <hr />
-<h3>Getting keywords for a resource</h3>
-<pre><code>GET /resource/keywords/:id
+<h3 id="getting-keywords-for-a-resource">Getting keywords for a resource</h3>
+<pre><code>GET /api/resources/keywords/:id
 </code></pre>
 <p><strong>Response</strong>
 <code>200 Ok</code></p>
 <pre><code>STUB
 </code></pre>
 <hr />
-<h3>Creating a new keyword</h3>
-<pre><code>POST /keywords
+<h3 id="creating-a-new-keyword">Creating a new keyword</h3>
+<pre><code>POST /api/keywords
 </code></pre>
 <p><strong>Input</strong></p>
 <table>
@@ -408,8 +408,8 @@ The ones we've used frequently are also explained below:</p>
 <p><strong>Response</strong>   <br />
 <code>201 Created</code></p>
 <hr />
-<h3>Updating a keyword</h3>
-<pre><code>POST|PUT /keywords/:id
+<h3 id="updating-a-keyword">Updating a keyword</h3>
+<pre><code>POST|PUT /api/keywords/:id
 </code></pre>
 <p><strong>Input</strong></p>
 <table>
@@ -434,8 +434,8 @@ The ones we've used frequently are also explained below:</p>
 <p><strong>Response</strong> <br />
 <code>200 Ok</code></p>
 <hr />
-<h3>Deleting a keyword</h3>
-<pre><code>DELETE /keywords/:id
+<h3 id="deleting-a-keyword">Deleting a keyword</h3>
+<pre><code>DELETE /api/keywords/:id
 </code></pre>
 <p><strong>Response</strong>  <br />
 <code>204 Deleted</code></p>

@@ -43,7 +43,7 @@
             <i class="icon-white icon-search"></i> Search
         </a>
         <a class="btn btn-dark"
-            href="<?php echo $this->Html->url('/help')?>">
+            href="<?php echo $this->Html->url('/help/')?>">
             <i class="icon-white icon-book"></i> Help
         </a>
     </div>

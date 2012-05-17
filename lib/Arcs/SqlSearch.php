@@ -55,7 +55,7 @@ class SqlSearch {
      *              on BOOL fields. If a translation is not found, the value will 
      *              remain unchanged.
      */
-    public $MAPPINGS = array(
+    public $mappings = array(
         'keyword' => array(
             'model' => 'Keyword',
             'field' => 'keyword',
@@ -99,13 +99,13 @@ class SqlSearch {
             ),
             'comparison' => 'match'
         ),
-        'caption' => array(
-            'model' => 'Hotspot',
+        'transcription' => array(
+            'model' => 'Annotation',
             'field' => 'description',
             'joins' => array(
                 'hotspots' => array(
                     'Resource' => 'id', 
-                    'Hotspot' => 'resource_id'
+                    'Annotation' => 'resource_id'
                 )
             ),
             'comparison' => 'match'
@@ -152,31 +152,36 @@ class SqlSearch {
     );
 
     /**
-     * The limit and offset properties may be reassigned on an instance any 
-     * time. The change will take effect the next time a search is made.
      */
-    public $LIMIT = 30;
-    public $OFFSET = 0;
+    public $options = array(
+        'limit' => 30,
+        'offset' => 0,
+        'order' => 'modified',
+        'direction' => 'DESC'
+    );
 
     /**
      * Normally, results must match all of the supplied facets--the conditions
-     * are conjunctive. In some cases, this is undesirable. Set the disjunctive 
-     * property to true, and conditions will be joined with 'OR'.
+     * are conjunctive. In some cases, this is undesirable. Set the operator to
+     * 'OR' for a disjunctive query.
      */
-    public $DISJUNCTIVE = false;
+    public $operator = 'AND';
 
+    /**
+     *
+     */
     public $publicFilter = true;
 
     /**
      * The table and model values must be configured here.
      */
-    private $TABLE      = 'resources';
-    private $MODEL      = 'Resource';
+    protected $table      = 'resources';
+    protected $model      = 'Resource';
 
-    private $values     = array();
-    private $joins      = array();
-    private $joined     = array();
-    private $conditions = array();
+    protected $values     = array();
+    protected $joins      = array();
+    protected $joined     = array();
+    protected $conditions = array();
 
     /**
      * Constructor
@@ -268,15 +273,15 @@ class SqlSearch {
     public function addFacet($category, $value) {
 
         # We can't add facets that we don't know about.
-        if (!array_key_exists($category, $this->MAPPINGS)) {
+        if (!array_key_exists($category, $this->mappings)) {
             if ($category == 'text') return $this->_all($value);
             return false;
         }
 
         # Look up the mapping.
-        $map = $this->MAPPINGS[$category];
+        $map = $this->mappings[$category];
 
-        $model = isset($map['model']) ? $map['model'] : $this->MODEL;
+        $model = isset($map['model']) ? $map['model'] : $this->model;
         $comp = isset($map['comparison']) ? $map['comparison'] : 'equality';
         $field = $map['field'];
 
@@ -302,33 +307,25 @@ class SqlSearch {
      *
      * @return array     id of each result
      */
-    public function search($query=null, $limit=null, $offset=null) {
+    public function search($query=null, $options=array()) {
+        $options = array_merge($this->options, $options);
         if (is_array($query)) $this->_addFacets($query);
-        if (!is_null($limit)) $this->LIMIT = $limit;
-        if (!is_null($offset)) $this->OFFSET = $offset;
-        $sql = $this->_buildStatement();
+        $sql = $this->_buildStatement(false, $options);
         $count_sql = $this->_buildStatement(true);
         $rows = $this->_execute($sql, $this->values);
         $count = $this->_execute($count_sql, $this->values);
         return array(
             'total' => $count[0][0],
-            'limit' => $this->LIMIT,
-            'offset' => $this->OFFSET,
+            'limit' => $options['limit'],
+            'offset' => $options['offset'],
+            'order' => $options['order'],
+            'direction' => $options['direction'],
             'mode' => 'sql',
             'query' => $query,
-            'raw_query' => $this->getSQL(),
+            'raw_query' => $sql,
             'results' => \_\pluck($rows, 'id'),
             'num_results' => count($rows)
         );
-    }
-
-    /**
-     * Builds and returns the SQL statement for debugging.
-     *
-     * @return string    SQL statement
-     */
-    public function getSQL() {
-        return $this->_buildStatement();
     }
 
     public function getValues() {
@@ -355,8 +352,8 @@ class SqlSearch {
     }
 
     private function _all($value) {
-        $this->DISJUNCTIVE = true;
-        foreach ($this->MAPPINGS as $facet => $map) {
+        $this->operator = 'OR';
+        foreach ($this->mappings as $facet => $map) {
             if ($facet == 'access') continue;
             if (!isset($map['comparison']) ||  $map['comparison'] == 'equality')
                 $this->addFacet($facet, $value);
@@ -402,7 +399,7 @@ class SqlSearch {
                 $cond = " `$model`.`$field` = ':$name'";
                 break;
             case "date":
-                $date = \DateTime::createFromFormat('m-d-Y', $value);
+                $date = \DateTime::createFromFormat('d-m-Y', $value);
                 $value = $date->format('Y-m-d');
                 $cond = " DATE(`$model`.`$field`) = DATE(:$name)";
                 break;
@@ -455,20 +452,19 @@ class SqlSearch {
      *
      * @return string SQL statement
      */
-    private function _buildStatement($count=false) {
-        $lop = $this->DISJUNCTIVE ? 'OR' : 'AND';
-
+    private function _buildStatement($count=false, $options=array()) {
+        $options = array_merge($this->options, $options);
         if ($count)
-            $sql = "SELECT COUNT(`{$this->MODEL}`.`id`) FROM ";
+            $sql = "SELECT COUNT(`{$this->model}`.`id`) FROM ";
         else
-            $sql = "SELECT `{$this->MODEL}`.`id` FROM ";
+            $sql = "SELECT `{$this->model}`.`id` FROM ";
 
-        $sql .= "`{$this->database}`.`{$this->TABLE}` ";
-        $sql .= "AS `{$this->MODEL}`";
+        $sql .= "`{$this->database}`.`{$this->table}` ";
+        $sql .= "AS `{$this->model}`";
         foreach($this->joins as $j)
             $sql .= $j;
         if ($this->conditions)
-            $sql .= " WHERE " . implode(" $lop ", $this->conditions);
+            $sql .= " WHERE " . implode(" {$this->operator} ", $this->conditions);
         if ($this->publicFilter) {
             $where = $this->conditions ? " " : " WHERE ";
             $sql .= "$where  AND  `Resource`.`public` = 1 ";
@@ -476,8 +472,9 @@ class SqlSearch {
 
         if ($count) return $sql;
 
-        $sql .= " LIMIT {$this->LIMIT}";
-        $sql .= " OFFSET {$this->OFFSET}";
+        $sql .= " ORDER BY `{$this->model}`.`{$options['order']}` {$options['direction']}";
+        $sql .= " LIMIT {$options['limit']}";
+        $sql .= " OFFSET {$options['offset']}";
 
         return $sql;
     }

@@ -1,7 +1,8 @@
 <!doctype html>
-<html>
+<html lang="en">
     <head>
-        <title><?php echo $title_for_layout; ?></title>
+      <meta charset="utf-8">
+        <title><?php echo $title_for_layout; ?> - ARCS</title>
         <link rel="shortcut icon" 
             href="<?php echo $this->Html->url('/favicon.ico') ?>" 
             type="image/x-icon" />
@@ -10,7 +11,6 @@
         <meta name="apple-mobile-web-app-capable" content="yes" />
         <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
         <script>window.CAKE_DEBUG = <?php echo Configure::read('debug') ?>;</script>
-        <script>window.CAKE_USER = <?php echo json_encode($user) ?>;</script>
         <?php 
         echo $this->Assets->stylesheets();
         echo $this->Assets->scripts();
@@ -34,6 +34,7 @@
         </div>
         <?php if ($footer) echo $this->element('footer') ?>
         <?php if ($user['role'] == 0 && Configure::read('debug') == 2) echo $this->element('sql') ?> 
+        <!-- user voice -->
         <script type="text/javascript">
             var uvOptions = {};
             (function() {

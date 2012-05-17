@@ -12,7 +12,7 @@ class arcs.views.search.Actions extends arcs.views.BaseActions
       options: @_getContextOptions()
       onShow: (e) ->
         $(e.currentTarget).parents('.result').addClass 'selected'
-        arcs.trigger 'arcs:selection'
+        arcs.bus.trigger 'selection'
       context: @
 
     arcs.keys.map @,
@@ -21,21 +21,23 @@ class arcs.views.search.Actions extends arcs.views.BaseActions
       space: @previewSelected
 
   events:
-    'dblclick img'           : 'openResource'
-    'click #open-btn'        : 'openSelected'
-    'click #open-colview-btn': 'collectionFromSelected'
-    'click #collection-btn'  : 'namedCollectionFromSelected'
-    'click #attribute-btn'   : 'editSelected'
-    'click #flag-btn'        : 'flagSelected'
-    'click #delete-btn'      : 'deleteSelected'
-    'click #bookmark-btn'    : 'bookmarkSelected'
-    'click #keyword-btn'     : 'keywordSelected'
-    'click #download-btn'    : 'downloadSelected'
-    'click #zipped-btn'      : 'zippedDownloadSelected'
-    'click #rethumb-btn'     : 'rethumbSelected'
-    'click #split-btn'       : 'splitSelected'
-    'click #access-btn'      : 'setAccessForSelected'
-    'click #solr-btn'        : 'indexSelected'
+    'dblclick img'              : 'openResource'
+    'click #open-btn'           : 'openSelected'
+    'click #open-colview-btn'   : 'collectionFromSelected'
+    'click #collection-btn'     : 'namedCollectionFromSelected'
+    'click #collection-add-btn' : 'addToCollection'
+    'click #attribute-btn'      : 'editSelected'
+    'click #flag-btn'           : 'flagSelected'
+    'click #delete-btn'         : 'deleteSelected'
+    'click #bookmark-btn'       : 'bookmarkSelected'
+    'click #keyword-btn'        : 'keywordSelected'
+    'click #download-btn'       : 'downloadSelected'
+    'click #zipped-btn'         : 'zippedDownloadSelected'
+    'click #rethumb-btn'        : 'rethumbSelected'
+    'click #repreview-btn'      : 'repreviewSelected'
+    'click #split-btn'          : 'splitSelected'
+    'click #access-btn'         : 'setAccessForSelected'
+    'click #solr-btn'           : 'indexSelected'
 
   # Delete the selected results, by calling Resource.destroy() on each model.
   deleteSelected: ->
@@ -67,7 +69,7 @@ class arcs.views.search.Actions extends arcs.views.BaseActions
       inputs:
         keyword:
           label: false
-          complete: arcs.utils.complete.keyword
+          complete: arcs.complete 'keywords/complete'
           focused: true
           required: true
       buttons: 
@@ -221,6 +223,36 @@ class arcs.views.search.Actions extends arcs.views.BaseActions
       error: =>
         arcs.notify 'An error occurred.', 'error'
 
+  addToCollection: ->
+    n = @results.numSelected()
+    new arcs.views.Modal
+      title: 'Add to existing collection'
+      subtitle: "#{n} #{arcs.inflector.pluralize('resource', n)} will be added
+        to the selected collection."
+      inputs:
+        collection:
+          type: 'select'
+          options: @getCollections()
+      buttons:
+        add:
+          class: 'btn btn-success'
+          callback: (vals) =>
+            url = arcs.url 'collections/append/', vals.collection
+            data = members: _.map(@results.selected(), (r) -> r.get('id'))
+            $.postJSON url, data, =>
+              @_notify 'added'
+        cancel: ->
+
+  getCollections: ->
+    result = []
+    $.ajax
+      url: arcs.baseURL + 'collections/titles'
+      async: false
+      dataType: 'json'
+      success: (data) ->
+        result = data
+    _.inverse result
+
   previewSelected: ->
     return unless @results.anySelected()
     # The method doubles as a toggle. If a preview is already open, we'll close
@@ -248,6 +280,8 @@ class arcs.views.search.Actions extends arcs.views.BaseActions
           style: 'display:none'
         $('body').append(iframe)
         iframe.src = response.url
+    arcs.notify "Hold tight. We're building your zipfile. " +
+      "Your download will start in a moment", 'success'
 
   # Call bookmarkResource on all selected results.
   bookmarkSelected: ->
@@ -287,6 +321,9 @@ class arcs.views.search.Actions extends arcs.views.BaseActions
 
   indexSelected: ->
     @indexResource(result) for result in @results.selected()
+
+  repreviewSelected: ->
+    @repreviewResource(result) for result in @results.selected()
 
   # Displays a success notification given a past-tense verb.
   # We have a lot of "12 resources were tagged"-style notifications. This 

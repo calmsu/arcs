@@ -4,10 +4,13 @@ class arcs.views.ViewerActions extends arcs.views.BaseActions
 
   initialize: ->
     @viewer = @options.viewer
-    arcs.on 'arcs:indexChange', =>
+    arcs.bus.on 'indexChange', =>
       @updateNav arguments[0]
       @checkNav()
     @onNavKeyup = _.debounce @setNav, 1000
+    arcs.keys.map @,
+      'ctrl+e': @edit
+      p: @onNavClick
 
   events:
     'click .page-nav input'      : 'onNavClick'
@@ -21,6 +24,7 @@ class arcs.views.ViewerActions extends arcs.views.BaseActions
     'click #flag-btn'            : 'flag'
     'click #full-screen-btn'     : 'fullScreen'
     'click #delete-btn'          : 'delete'
+    'click #delete-col-btn'      : 'deleteCollection'
     'click #split-btn'           : 'split'
     'click #rethumb-btn'         : 'rethumb'
     'click #download-btn'        : 'download'
@@ -119,7 +123,22 @@ class arcs.views.ViewerActions extends arcs.views.BaseActions
 
   # Delete the current resource.
   delete: ->
-    @viewer.model.destroy()
+    arcs.confirm "Are you sure you want to delete this resource?",
+      "<b>#{@viewer.model.get 'title'}</b> will be permanently deleted.", =>
+        @viewer.model.destroy()
+
+  deleteCollection: ->
+    arcs.confirm "Are you sure you want to delete this collection?",
+      "<p>Collection <b>#{@viewer.collectionModel.get('title')}</b> will be " +
+      "deleted. <p><b>N.B.</b> Resources within the collection will not be " +
+      "deleted. They may still be accessed from other collections to which they " +
+      "belong.", =>
+        arcs.loader.show()
+        $.ajax
+          url: arcs.url 'collections', 'delete', @viewer.collectionModel.id
+          type: 'DELETE'
+          success: ->
+            location.href = arcs.baseURL
 
   rethumb: ->
     @rethumbResource @viewer.model

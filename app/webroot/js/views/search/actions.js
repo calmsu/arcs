@@ -22,7 +22,7 @@
         options: this._getContextOptions(),
         onShow: function(e) {
           $(e.currentTarget).parents('.result').addClass('selected');
-          return arcs.trigger('arcs:selection');
+          return arcs.bus.trigger('selection');
         },
         context: this
       });
@@ -38,6 +38,7 @@
       'click #open-btn': 'openSelected',
       'click #open-colview-btn': 'collectionFromSelected',
       'click #collection-btn': 'namedCollectionFromSelected',
+      'click #collection-add-btn': 'addToCollection',
       'click #attribute-btn': 'editSelected',
       'click #flag-btn': 'flagSelected',
       'click #delete-btn': 'deleteSelected',
@@ -46,6 +47,7 @@
       'click #download-btn': 'downloadSelected',
       'click #zipped-btn': 'zippedDownloadSelected',
       'click #rethumb-btn': 'rethumbSelected',
+      'click #repreview-btn': 'repreviewSelected',
       'click #split-btn': 'splitSelected',
       'click #access-btn': 'setAccessForSelected',
       'click #solr-btn': 'indexSelected'
@@ -89,7 +91,7 @@
         inputs: {
           keyword: {
             label: false,
-            complete: arcs.utils.complete.keyword,
+            complete: arcs.complete('keywords/complete'),
             focused: true,
             required: true
           }
@@ -315,6 +317,54 @@
       });
     };
 
+    Actions.prototype.addToCollection = function() {
+      var n,
+        _this = this;
+      n = this.results.numSelected();
+      return new arcs.views.Modal({
+        title: 'Add to existing collection',
+        subtitle: "" + n + " " + (arcs.inflector.pluralize('resource', n)) + " will be added        to the selected collection.",
+        inputs: {
+          collection: {
+            type: 'select',
+            options: this.getCollections()
+          }
+        },
+        buttons: {
+          add: {
+            "class": 'btn btn-success',
+            callback: function(vals) {
+              var data, url;
+              url = arcs.url('collections/append/', vals.collection);
+              data = {
+                members: _.map(_this.results.selected(), function(r) {
+                  return r.get('id');
+                })
+              };
+              return $.postJSON(url, data, function() {
+                return _this._notify('added');
+              });
+            }
+          },
+          cancel: function() {}
+        }
+      });
+    };
+
+    Actions.prototype.getCollections = function() {
+      var result;
+      result = [];
+      $.ajax({
+        url: arcs.baseURL + 'collections/titles',
+        async: false,
+        dataType: 'json',
+        success: function(data) {
+          return result = data;
+        }
+      });
+      return _.inverse(result);
+    };
+
     Actions.prototype.previewSelected = function() {
       if (!this.results.anySelected()) return;
       if ((this.preview != null) && $('#modal').is(':visible')) {
@@ -346,7 +396,7 @@
       data = {
         resources: _.pluck(this.results.selected(), 'id')
       };
-      return $.postJSON(arcs.baseURL + 'resources/zipped', data, function(response) {
+      $.postJSON(arcs.baseURL + 'resources/zipped', data, function(response) {
         var iframe;
         if (response.url != null) {
           iframe = _this.make('iframe', {
@@ -356,6 +406,7 @@
           return iframe.src = response.url;
         }
       });
+      return arcs.notify("Hold tight. We're building your zipfile. " + "Your download will start in a moment", 'success');
     };
 
     Actions.prototype.bookmarkSelected = function() {
@@ -428,6 +479,17 @@
       for (_i = 0, _len = _ref.length; _i < _len; _i++) {
         result = _ref[_i];
         _results.push(this.indexResource(result));
+      }
+      return _results;
+    };
+
+    Actions.prototype.repreviewSelected = function() {
+      var result, _i, _len, _ref, _results;
+      _ref = this.results.selected();
+      _results = [];
+      for (_i = 0, _len = _ref.length; _i < _len; _i++) {
+        result = _ref[_i];
+        _results.push(this.repreviewResource(result));
       }
       return _results;
     };

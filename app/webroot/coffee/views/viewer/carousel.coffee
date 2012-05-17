@@ -15,8 +15,8 @@ class arcs.views.Carousel extends Backbone.View
 
   initialize: ->
     # Bind to the indexChange event.
-    arcs.on 'arcs:indexChange', @slideTo, @
-    arcs.on 'arcs:indexChange', @setSelected, @
+    arcs.bus.on 'indexChange', @slideTo, @
+    arcs.bus.on 'indexChange', @setSelected, @
 
     @render()
 
@@ -24,7 +24,7 @@ class arcs.views.Carousel extends Backbone.View
     @$el.elastislide
       imageW: 100
       onClick: ($item) ->
-        arcs.trigger 'arcs:indexChange', $item.index(), noSlide: true
+        arcs.bus.trigger 'indexChange', $item.index(), noSlide: true
       onSlide: (first, last) =>
         unless _.isNaN(last)
           if last > @options.nthumbs - 10
@@ -36,7 +36,7 @@ class arcs.views.Carousel extends Backbone.View
     'click li': 'onClick'
 
   onClick: (e) ->
-    arcs.trigger 'arcs:indexChange', $(e.target).parent().index(), noSlide: true
+    arcs.bus.trigger 'indexChange', $(e.target).parent().index(), noSlide: true
 
   slideTo: (index, options={}) ->
     if @$('li').length < index

@@ -62,6 +62,12 @@
       id = string.replace(/(\s|-)/g, '_').replace(/\W/g, '').toLowerCase();
       if (id.match(/^\d/)) id = '_' + id;
       return this._identifiers[string] = _.uniqueId(id + '_');
+    },
+    enquote: function(string, single) {
+      var quote;
+      if (single == null) single = true;
+      quote = single ? "'" : '"';
+      return quote + string + quote;
     }
   };
 

@@ -117,6 +117,7 @@ class arcs.utils.Keys
     40: "down" 
     107: "+"
     109: "-"
+    191: "?"
 
 # Fire it up an instance.
 arcs.keys = arcs.utils.keys = new arcs.utils.Keys
