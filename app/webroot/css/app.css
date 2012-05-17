@@ -6197,6 +6197,9 @@ ul.resource-thumbs li.resource-thumb:hover a {
 .about .about-features .spacer.spacer-right {
   background: url('img/about/h2.png');
 }
+.about .about-features:last-child {
+  margin-bottom: -8px;
+}
 .about .about-features .feature {
   font-family: 'Pontano Sans', sans-serif;
   padding: 30px;
@@ -6207,13 +6210,13 @@ ul.resource-thumbs li.resource-thumb:hover a {
   background-position: 100px;
 }
 .about .about-features .feature h2 {
-  font-size: 30px;
-  font-weight: 400;
   margin: 5px;
+  font-size: 27px;
 }
 .about .about-features .feature p {
   font-family: 'Pontano Sans', sans-serif;
-  font-size: 20px;
+  font-size: 18px;
+  font-weight: 200;
 }
 .about .about-features .feature img {
   margin: 10px;
