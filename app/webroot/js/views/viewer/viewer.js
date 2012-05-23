@@ -172,14 +172,16 @@
     };
 
     Viewer.prototype.resize = function() {
-      var COLLECTION, STANDALONE, TAB_MARGIN, height, margin;
+      var $resource, COLLECTION, STANDALONE, TAB_MARGIN, height, margin;
       STANDALONE = 128;
       COLLECTION = 204;
       TAB_MARGIN = 75;
+      $resource = this.$('#resource img');
       margin = $('body').hasClass('standalone') ? STANDALONE : COLLECTION;
       height = $(window).height() - margin;
       this.$('.viewer-well').height(height);
-      this.$('#resource img').height(height);
+      $resource.height(height * $resource.data('zoom'));
+      this.$('#wrapping').height(height);
       return this.$('.tab-content').height(height - TAB_MARGIN);
     };
 

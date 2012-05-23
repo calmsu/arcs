@@ -10,6 +10,10 @@
     data-placement="bottom"><i class="icon-resize-full"></i></button>
   <button id="annotation-vis-btn" class="btn toolbar-btn" rel="tooltip" 
     data-placement="bottom"><i class="icon-map-marker"></i></button>
+  <div id="zoom-buttons" class="btn-group toolbar-btn">
+    <button id="zoom-in-btn" class="btn"><i class="icon-zoom-in"></i></button>
+    <button id="zoom-out-btn" class="btn disabled"><i class="icon-zoom-out"></i></button>
+  </div>
   <div class="page-nav toolbar-btn input-append input-prepend">
     <button id="mini-prev-btn" class="btn"><i class="icon-arrow-left"></i></button>
     <input type="text" class="span2" />

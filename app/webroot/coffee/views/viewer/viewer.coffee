@@ -159,10 +159,13 @@ class arcs.views.Viewer extends Backbone.View
     STANDALONE = 128
     COLLECTION = 204
     TAB_MARGIN = 75
+    $resource = @$('#resource img')
     margin = if $('body').hasClass 'standalone' then STANDALONE else COLLECTION
     height = $(window).height() - margin
+
     @$('.viewer-well').height height
-    @$('#resource img').height height
+    $resource.height (height * $resource.data 'zoom')
+    @$('#wrapping').height height
     @$('.tab-content').height height - TAB_MARGIN
   
   # Render the resource.

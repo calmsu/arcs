@@ -4183,6 +4183,7 @@ div ::-webkit-scrollbar {
 div ::-webkit-scrollbar-track {
   -webkit-box-shadow: inset 0 0 2px rgba(0, 0, 0, 0.3);
   border-radius: 3px;
+  background: #eee;
 }
 div ::-webkit-scrollbar-thumb {
   border-radius: 3px;
@@ -5257,20 +5258,19 @@ body.viewer.standalone #viewer .viewer-well {
   height: 100%;
   float: left;
   position: relative;
-  overflow: hidden;
 }
 #viewer .viewer-well #wrapping {
   display: block;
   width: 90%;
   margin: 0 auto;
   left: 0;
+  overflow: auto;
 }
 #viewer .viewer-well #wrapping #resource {
   display: block;
   margin: 0 auto;
 }
 #viewer .viewer-well #wrapping #resource img {
-  max-height: 100%;
   -moz-user-select: none;
   -khtml-user-select: none;
   -webkit-user-select: none;

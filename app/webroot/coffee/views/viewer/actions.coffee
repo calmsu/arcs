@@ -28,6 +28,8 @@ class arcs.views.ViewerActions extends arcs.views.BaseActions
     'click #split-btn'           : 'split'
     'click #rethumb-btn'         : 'rethumb'
     'click #download-btn'        : 'download'
+    'click #zoom-in-btn'         : 'zoomIn'
+    'click #zoom-out-btn'        : 'zoomOut'
 
   onNavClick: ->
     @$('.page-nav input').select()
@@ -175,3 +177,21 @@ class arcs.views.ViewerActions extends arcs.views.BaseActions
           "Chrome or Mozilla Firefox."
     @$('#full-screen-btn i').toggleClass('icon-resize-full')
       .toggleClass 'icon-resize-small'
+
+  zoomIn: ->
+    current = $('#resource img').data 'zoom'
+    if current < 4
+      $('#resource img').data 'zoom', current + 1
+    @$('#zoom-in-btn').addClass 'disabled' if current == 3
+    @$('#zoom-out-btn').removeClass 'disabled'
+    @viewer.resize()
+    arcs.bus.trigger 'resourceLoaded'
+
+  zoomOut: ->
+    current = $('#resource img').data 'zoom'
+    if current > 1
+      $('#resource img').data 'zoom', current - 1
+    @$('#zoom-out-btn').addClass 'disabled' if current == 2
+    @$('#zoom-in-btn').removeClass 'disabled'
+    @viewer.resize()
+    arcs.bus.trigger 'resourceLoaded'
