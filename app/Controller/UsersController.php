@@ -101,6 +101,11 @@ class UsersController extends AppController {
         if ($this->request->is('post')) {
             if ($this->request->data['User']['forgot_password'])
                 return $this->send_reset($this->request->data['User']['username']);
+            # This is unfortunately a bit of a hack as this is tricky to do 
+            # through the Auth component.
+            $userByEmail = $this->User->findByEmail($this->request->data['User']['username']);
+            if ($userByEmail)
+                $this->request->data['User']['username'] = $userByEmail['User']['username'];
             if ($this->Auth->login()) {
                 return $this->redirect($this->Auth->redirect());
             } else {
