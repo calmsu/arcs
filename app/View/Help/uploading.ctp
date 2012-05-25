@@ -14,8 +14,8 @@ files are not currently supported.</p>
 uploading immediately. Each upload's progress is shown in a blue bar. This
 will change to <code>Done</code> when the file is finished uploading. You can remove a file
 at any time by clicking the <strong>&times;</strong> next to it.</p>
-<p>Each upload has a title, identifier and type field that can be filled in. You
-should at least provide a title for each upload, but you can add the rest later.</p>
+<p>Each upload has a title, identifier and type field that can be filled in. A title is a more colloquial name for an object and the identifier is a unique name for a resource that could have information stored in the name. You
+should at least provide a title and type for each upload, but you can add the rest later.</p>
 <p><img alt="uploader" src="../img/docs/uploader.png" /></p>
 <p>When everything has finished uploading, the total progress changes to <code>All
 Done</code> and the <code>Upload &amp; Fill in Metadata</code> button is enabled. Although the files
@@ -30,9 +30,8 @@ uploader, which allows you to upload files one at time. It's not very fancy,
 but it provides a way for users unable to upgrade their browser to upload
 resources. Navigate to the basic uploader by clicking <code>Basic</code> on the uploading
 page.</p>
-<p><img alt="basic-uploader" src="../img/docs/basic-uploader.png" /></p>
 <p>You can then enter the title and the keyword associated with the resource and select  the type of the resource from the drop down as shown below:</p>
-<p><img alt="basic-details" src="../img/docs/basic-details.png" /> </p>
+<p><img alt="basic-uploader" src="../img/docs/basic-uploader.png" /></p>
 <h2 id="troubleshooting">Troubleshooting</h2>
 <p>If you have trouble uploading, here's what you can do:</p>
 <h4 id="upload-failed">Upload failed</h4>

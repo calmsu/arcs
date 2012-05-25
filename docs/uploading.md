@@ -19,8 +19,8 @@ uploading immediately. Each upload's progress is shown in a blue bar. This
 will change to `Done` when the file is finished uploading. You can remove a file
 at any time by clicking the **&times;** next to it.
 
-Each upload has a title, identifier and type field that can be filled in. You
-should at least provide a title for each upload, but you can add the rest later.
+Each upload has a title, identifier and type field that can be filled in. A title is a more colloquial name for an object and the identifier is a unique name for a resource that could have information stored in the name. You
+should at least provide a title and type for each upload, but you can add the rest later.
 
 ![uploader](../img/docs/uploader.png)
 
@@ -41,11 +41,9 @@ but it provides a way for users unable to upgrade their browser to upload
 resources. Navigate to the basic uploader by clicking `Basic` on the uploading
 page.
 
-![basic-uploader](../img/docs/basic-uploader.png)
-
 You can then enter the title and the keyword associated with the resource and select  the type of the resource from the drop down as shown below:
 
-![basic-details](../img/docs/basic-details.png) 
+![basic-uploader](../img/docs/basic-uploader.png)
 
 Troubleshooting
 ---------------

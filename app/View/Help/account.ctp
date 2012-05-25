@@ -31,6 +31,8 @@ and create your account.</p>
 <a href="http://en.gravatar.com/">here</a>.  If you already have a Gravatar, we'll automatically display it. If
 not, and you'd like one, you can sign up <a href="http://en.gravatar.com/">here</a>; however you have to be sure
 to use the same email address you used for signing up for ARCS.</p>
+<h3 id="checking-your-profile-page">Checking your profile page</h3>
+<p>You can see your profile page by clicking on your name. Here, you can view, and edit the information ARCS has for you, as well as the resources you’ve uploaded, annotations you have created, resources you have flagged as problematic, discussions items you have made, and your collections.</p>
 <h3 id="changing-your-password">Changing your password</h3>
 <p>You can change your password at any time by navigating to your profile page and
 clicking <code>Edit Account</code>. Fill in a new password and click <code>Save</code>.</p>

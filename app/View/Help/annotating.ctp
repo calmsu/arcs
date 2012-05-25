@@ -1,11 +1,12 @@
 <h1 id="annotating">Annotating</h1>
 <h2 id="understanding-annotations">Understanding Annotations</h2>
+<p>Annotating a resource is an integral aspect of ARCS. It allows you to define relationships between resources, and make the sometimes messy handwriting of researchers searchable.</p>
 <p>An annotation is a special class of resource metadata that marks a boxed region
 of a resource image. They are simply a way to relate different resources in
 ARCS. You can also link your new annotation to any other resource which
 according to you can be associated with that particular annotation. </p>
 <h2 id="creating-annotations">Creating Annotations</h2>
-<p>Annotations can be created in three different ways as described below:</p>
+<p>Annotations can be created in three different ways in the viewer. You can create a hotspot by boxing over a given area of a resource. This will create a hotspot. You will then be prompted to define the annotation as a relation with another resource, a transcription, or a link to an outside source. as described below:</p>
 <h4 id="relations">Relations</h4>
 <p>Relations are a simple link to another resource in ARCS. You can select a
 resource and open it by double-clicking on it. It will open in a new window.
@@ -46,7 +47,7 @@ sidebar.</p>
 Administrators to avoid any erratic changes in the data of the resources. If
 you are a researcher, you can delete only your own annotations or flag another
 researcher’s annotation by selecting it and flagging it with a valid. You can
-do this by clicking the X that appears in the left corner when hovering over an
+do this by clicking the <strong>&times;</strong> that appears in the left corner when hovering over an
 annotation in your resource, and then confirming the deletion.  If you don't
-see an X while hovering on an annotation, you're not allowed to delete it.</p>
+see an <strong>&times;</strong> while hovering on an annotation, you're not allowed to delete it.</p>
 <p><img alt="deleting-annotation" src="../img/docs/deleting-annotation.png" /></p>

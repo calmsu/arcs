@@ -1,11 +1,11 @@
 Getting Started 
 =============== 
-ARCS is a dynamic and interactive ecosystem which builds physical relationships
-between the data resources. Using ARCS, you can retrieve resources using the
-search facility with the use of simplified facets. Registered researchers can
-use ARCS to submit their resources which can be later retrieved and updated.
-You can also acquire details regarding specific features of ARCS through its
-different segments as mentioned in the table of contents.
+ARCS, or Archaeological Resource Cataloguing System, is a dynamic and interactive ecosystem, which highlights both archival data and the physical relationships between resources. 
+
+ARCS is an open-source web platform that enables individuals to collaborate in creating and relating digitized primary evidence when conducting research in the humanities. While ARCS certainly excels at storing and archiving data, it’s real strength lies in its attention to the relationships your resources share between themselves—and the people that created those resources. The other main highlight of ARCS lies in its crowd-based model of data input and data validation.
+
+Using ARCS, you can retrieve resources using the
+search facility with the use of simplified facets. Registered users of ARCS can interact with your research collection in a number of different ways. They can create new resources, curate targeted research collections, add resource annotations, review detailed information about a resource or certain types of collections, and flag data they deem to be problematic.
 
 Resources 
 --------- 
