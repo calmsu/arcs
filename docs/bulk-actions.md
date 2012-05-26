@@ -40,15 +40,15 @@ previews for a group of resources.
 
 Flagging Resources
 ------------------
-
-You can flag multiple resources through ARCS. To flag the selected resources, click `Flag`, then select a reason and provide 
-an explanation of the issue. For more details check the [Resources](about-resources#flagging) section.
-
+You can flag multiple resources through ARCS. To flag the selected resources,
+click `Flag`, then select a reason and provide an explanation of the issue. For
+more details check the [Resources](about-resources#flagging) section.
 
 Keywording Resources
 --------------------
-
-In addition to building collections, you can use keywords to group multiple resources in ARCS by shared characteristics. For more details check the [Resources](about-resources#keywording) section.
+In addition to building collections, you can use keywords to group multiple
+resources in ARCS by shared characteristics. For more details check the
+[Resources](about-resources#keywording) section.
 
 Editing Resources
 -----------------

@@ -26,10 +26,13 @@ the context menu. This can be useful when you want a better look at a resource,
 but don't want to open it in the viewer. Use the arrow keys to flip through
 previews for a group of resources.</p>
 <h2 id="flagging-resources">Flagging Resources</h2>
-<p>You can flag multiple resources through ARCS. To flag the selected resources, click <code>Flag</code>, then select a reason and provide 
-an explanation of the issue. For more details check the <a href="about-resources#flagging">Resources</a> section.</p>
+<p>You can flag multiple resources through ARCS. To flag the selected resources,
+click <code>Flag</code>, then select a reason and provide an explanation of the issue. For
+more details check the <a href="about-resources#flagging">Resources</a> section.</p>
 <h2 id="keywording-resources">Keywording Resources</h2>
-<p>In addition to building collections, you can use keywords to group multiple resources in ARCS by shared characteristics. For more details check the <a href="about-resources#keywording">Resources</a> section.</p>
+<p>In addition to building collections, you can use keywords to group multiple
+resources in ARCS by shared characteristics. For more details check the
+<a href="about-resources#keywording">Resources</a> section.</p>
 <h2 id="editing-resources">Editing Resources</h2>
 <p>You can edit resource attributes and metadata through the <code>Edit</code> dialog.</p>
 <h4 id="single-resource">Single Resource</h4>

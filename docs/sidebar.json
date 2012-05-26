@@ -4,9 +4,7 @@
       "link": ""
     },
     "FAQ": {
-      "link": "faq",
-      "nav": {
-      }
+      "link": "faq"
     },
     "Your Account": {
       "link": "account",
@@ -20,7 +18,10 @@
       "link": "about-resources",
       "nav": {
         "Understanding": "#understanding-resources",
-        "Editing": "#editing-resources"
+		"Working": "#working-with-resources",
+		"Uploading": "#uploading-resources",
+        "Editing": "#editing-resources",
+		"Annotating": "#annotating-resources"
       }
     },
     "Collections": {
@@ -38,9 +39,7 @@
       }
     },
     "Searching": {
-      "link": "searching",
-      "nav": {
-      }
+      "link": "searching"
     },
     "Bulk Actions": {
       "link": "bulk-actions",
@@ -60,11 +59,14 @@
         "Creating": "#creating-annotations",
 		"Editing/Deleting": "#editing-deleting-annotations"
       }
+    },
+	"Reorting Issues": {
+      "link": "reporting-issues"
     }
   },
   "Developer": {
     "Installing ARCS": {
-      "link": "installing",
+      "link": "developer-installing",
       "nav": {
         "Dependencies": "#dependencies",
         "Getting the Dependencies": "#getting-the-dependencies",
@@ -81,6 +83,9 @@
         "Comments": "#comments",
         "Keywords": "#keywords"
       }
+    },
+    "Reporting Bugs": {
+      "link": "developer-bugs"
     }
   }
 }

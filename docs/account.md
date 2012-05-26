@@ -38,6 +38,12 @@ ARCS uses [Gravatar][1] for profile images, which can read more about
 not, and you'd like one, you can sign up [here][1]; however you have to be sure
 to use the same email address you used for signing up for ARCS.
 
+### Checking your profile page
+You can see your profile page by clicking on your name. Here, you can view, and
+edit the information ARCS has for you, as well as the resources you’ve
+uploaded, annotations you have created, resources you have flagged as
+problematic, discussions items you have made, and your collections.
+
 ### Changing your password
 You can change your password at any time by navigating to your profile page and
 clicking `Edit Account`. Fill in a new password and click `Save`.

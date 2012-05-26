@@ -3,6 +3,10 @@ Annotating
 
 Understanding Annotations
 -------------------------
+Annotating a resource is an integral aspect of ARCS. It allows you to define
+relationships between resources, and make the sometimes messy handwriting of
+researchers searchable.
+
 An annotation is a special class of resource metadata that marks a boxed region
 of a resource image. They are simply a way to relate different resources in
 ARCS. You can also link your new annotation to any other resource which
@@ -10,7 +14,11 @@ according to you can be associated with that particular annotation.
 
 Creating Annotations
 --------------------
-Annotations can be created in three different ways as described below:
+Annotations can be created in three different ways in the viewer. You can
+create a hotspot by boxing over a given area of a resource. This will create a
+hotspot. You will then be prompted to define the annotation as a relation with
+another resource, a transcription, or a link to an outside source. as described
+below:
 
 #### Relations 
 Relations are a simple link to another resource in ARCS. You can select a
@@ -70,8 +78,9 @@ Annotations can be edited or deleted only by Senior Researchers and
 Administrators to avoid any erratic changes in the data of the resources. If
 you are a researcher, you can delete only your own annotations or flag another
 researcher’s annotation by selecting it and flagging it with a valid. You can
-do this by clicking the X that appears in the left corner when hovering over an
-annotation in your resource, and then confirming the deletion.  If you don't
-see an X while hovering on an annotation, you're not allowed to delete it.
+do this by clicking the **&times;** that appears in the left corner when
+hovering over an annotation in your resource, and then confirming the deletion.
+If you don't see an **&times;** while hovering on an annotation, you're not
+allowed to delete it.
 
 ![deleting-annotation](../img/docs/deleting-annotation.png)

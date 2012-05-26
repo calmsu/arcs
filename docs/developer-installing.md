@@ -36,7 +36,7 @@ Clone the git repository into `/var/www/arcs` (or somewhere else).
     $ git clone --recursive https://github.com/calmsu/arcs.git
      
 Create a database. Make sure you have a database user with appropriate
-permissions (i.e. `SELECT`, `INSERT`, `UPDATE`, `DELETE`, but *not* `DROP`, on 
+permissions (i.e. `SELECT`, `INSERT`, `UPDATE`, `DELETE`, but *not* `DROP`, on
 the arcs database). You can also run the `www-user.sql` script to do this.
     
     $ mysqladmin -u root -p create arcs
@@ -57,8 +57,8 @@ this and replace values as necessary.
      
 > You'll want to be sure Nginx's `client_max_body_size` directive and
 PHP's `post_max_size` and `upload_max_size` directives are large enough for the
-files that will be uploaded. `post_max_size` should be slightly larger than 
-`upload_max_size`. (The relevant PHP directives should be in 
+files that will be uploaded. `post_max_size` should be slightly larger than
+`upload_max_size`. (The relevant PHP directives should be in
 `/etc/php5/cgi/php.ini`.)
 
 Change ownership of `app/tmp/`.

@@ -1,7 +1,7 @@
-API v1 Reference
-================
-We provide a REST API that lets you interact with ARCS using anything that can
-send an HTTP request. This makes it easy to write custom import and export
+API Reference
+=============
+We provide a RESTful API that lets you interact with ARCS using anything that
+can send an HTTP request. This makes it easy to write custom import and export
 scripts.
 
 >As we continue to develop ARCS and our API, we'll sometimes need to break old
