@@ -42,7 +42,7 @@
       this.keywords = new arcs.views.Keyword({
         el: $('#information')
       });
-      this.hotspots = new arcs.views.Annotation({
+      this.annotations = new arcs.views.Annotation({
         el: $('#viewer')
       });
       this.carousel = new arcs.views.Carousel({

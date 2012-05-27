@@ -34,7 +34,7 @@ class arcs.views.Viewer extends Backbone.View
       el: $('#discussion')
     @keywords = new arcs.views.Keyword
       el: $('#information')
-    @hotspots = new arcs.views.Annotation
+    @annotations = new arcs.views.Annotation
       el: $('#viewer')
     @carousel = new arcs.views.Carousel
       el: $('#carousel-wrapper')

@@ -39,7 +39,8 @@
       'click #delete-col-btn': 'deleteCollection',
       'click #split-btn': 'split',
       'click #rethumb-btn': 'rethumb',
-      'click #download-btn': 'download'
+      'click #download-btn': 'download',
+      'click #annotate-btn': 'annotate'
     };
 
     ViewerActions.prototype.onNavClick = function() {
@@ -201,6 +202,10 @@
 
     ViewerActions.prototype.download = function() {
       return this.downloadResource(this.viewer.model);
+    };
+
+    ViewerActions.prototype.annotate = function() {
+      return arcs.bus.trigger('annotate');
     };
 
     ViewerActions.prototype.fullScreen = function() {

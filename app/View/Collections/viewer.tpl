@@ -26,6 +26,8 @@
   </div>
   {% if user.loggedIn %}
   <div id="action-buttons" class="btn-group toolbar-btn">
+    <button id="annotate-btn" class="btn" rel="tooltip" title="Annotate this resource"
+      data-placement="bottom"><i class="icon-screenshot"></i> Annotate</button>
     <button id="edit-btn" class="btn" rel="tooltip" title="Edit this resource's info"
       data-placement="bottom"><i class="icon-pencil"></i> Edit</button>
     <button id="flag-btn" class="btn" rel="tooltip"
@@ -55,7 +57,15 @@
     <div id="next-btn" class="viewer-nav"></div>
     <div id="wrapping">
       <div id="hotspots-wrapper"></div>
-      <div id="resource">
+      <div id="resource"></div>
+      <div class="annotate-controls">
+        <span>Click and drag to annotate</span>
+        <button id="annotate-done-btn">
+          <i class="icon-white icon-ok"></i> Done
+        </button>
+        <button id="annotate-new-btn">
+          <i class="icon-white icon-map-marker"></i> New Annotation
+        </button>
       </div>
     </div>
   </div>

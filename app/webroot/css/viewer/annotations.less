@@ -1,6 +1,41 @@
 // annotations.less
 // ----------------
 
+.annotate-controls {
+  background: rgba(0, 0, 0, 0.7);
+  height: 40px;
+  width: 100%;
+  position: absolute;
+  bottom: 0px;
+  color: white;
+  text-align: left;
+  z-index: 1;
+  display: none;
+
+  span {
+    position: relative;
+    top: 10px;
+    left: 30px;
+    font-weight: 200;
+  }
+
+  button {
+    color: white;
+    border: 1px solid white;
+    .rounded-corners(7px);
+    padding: 5px;
+    background-color: transparent;
+    float: right;
+    position: relative;
+    margin-right: 15px;
+    top: 5px;
+  }
+
+  #annotate-done-btn {
+    margin-right: 50px;
+  }
+}
+
 ul.annotations {
   margin-left: 0px;
   li.annotation {
@@ -21,7 +56,6 @@ ul.annotations {
   display: block;
   &:hover {
     background: rgba(25, 25, 25, 0.3); 
-    .remove-btn { display: block }
   }
   &.active {
     background: rgba(25, 25, 25, 0.3); 

@@ -17,7 +17,9 @@
       arcs.bus.on('resourceLoaded', this.onLoad, this);
       arcs.bus.on('resourceResize', this.render, this);
       arcs.bus.on('indexChange', this.clear, this);
+      arcs.bus.on('annotate', this.toggleState, this);
       this.visible = true;
+      this.active = false;
       $('#annotation-vis-btn').on('click', function() {
         return _this.toggleVisibility();
       });
@@ -27,20 +29,46 @@
     };
 
     Annotation.prototype.events = {
-      'mouseenter .annotation': 'annoMouseenter',
-      'mouseleave .annotation': 'annoMouseleave',
-      'mouseenter .hotspot': 'hotMouseenter',
-      'hover .annotation a': 'annoMouseenter',
+      'click #annotate-new-btn': 'newAnnotation',
+      'click #annotate-done-btn': 'exit',
+      'mouseenter .annotation': 'onSummaryMouseenter',
+      'mouseleave .annotation': 'onSummaryMouseleave',
+      'mouseenter .hotspot': 'onBoxMouseenter',
+      'hover .annotation a': 'onSummaryMouseenter',
       'click .remove-btn': 'removeAnnotation'
     };
 
     Annotation.prototype.onLoad = function() {
       this.img = $('#resource img');
-      this.setupSelection();
+      if (this.active) this.setupSelection();
       return this.collection.fetch();
     };
 
-    Annotation.prototype.annoMouseenter = function(e) {
+    Annotation.prototype.toggleState = function() {
+      if (this.active) {
+        return this.exit();
+      } else {
+        return this.enter();
+      }
+    };
+
+    Annotation.prototype.enter = function() {
+      this.$('.annotate-controls').show();
+      $('#annotate-btn').addClass('disabled');
+      $('.hotspot i').show();
+      this.setupSelection();
+      return this.active = true;
+    };
+
+    Annotation.prototype.exit = function() {
+      this.$('.annotate-controls').hide();
+      $('#annotate-btn').removeClass('disabled');
+      $('.hotspot i').hide();
+      this.removeIas();
+      return this.active = false;
+    };
+
+    Annotation.prototype.onSummaryMouseenter = function(e) {
       var $li, id;
       if (e.target.tagName === 'A') {
         $li = $(e.target).parent();
@@ -52,11 +80,11 @@
       return $(".hotspot[data-id='" + id + "']").addClass('active');
     };
 
-    Annotation.prototype.annoMouseleave = function() {
+    Annotation.prototype.onSummaryMouseleave = function() {
       return $('.hotspot').removeClass('active');
     };
 
-    Annotation.prototype.hotMouseenter = function(e) {
+    Annotation.prototype.onBoxMouseenter = function(e) {
       var $el, anno;
       $el = $(e.target);
       anno = this.collection.get($el.data('id'));
@@ -72,15 +100,24 @@
     Annotation.prototype.setupSelection = function(coords) {
       var _this = this;
       if (coords == null) coords = null;
-      if (this.ias != null) this.ias.remove();
+      this.removeIas();
       return this.ias = this.img.imgAreaSelect({
         instance: true,
         handles: true,
+        fadeSpeed: 250,
         onSelectEnd: function(img, sel) {
           if (!arcs.user.get('loggedIn')) return arcs.needsLogin();
           return _this.openAnnotator();
         }
       });
+    };
+
+    Annotation.prototype.removeIas = function() {
+      this.img.removeData('imgAreaSelect');
+      if (this.ias != null) {
+        this.ias.remove();
+        return this.ias = null;
+      }
     };
 
     Annotation.prototype.toggleVisibility = function() {
@@ -109,6 +146,18 @@
         return anno.destroy();
       });
       return false;
+    };
+
+    Annotation.prototype.newAnnotation = function() {
+      var height, width, xMid, yMid, _ref;
+      _ref = [this.img.width(), this.img.height()], width = _ref[0], height = _ref[1];
+      xMid = Math.floor(width / 2);
+      yMid = Math.floor(height / 2);
+      this.ias.setOptions({
+        show: true
+      });
+      this.ias.setSelection(xMid - 50, yMid - 50, xMid + 50, yMid + 50);
+      return this.ias.update();
     };
 
     Annotation.prototype.openAnnotator = function() {
@@ -185,7 +234,8 @@
 
     Annotation.prototype.clear = function() {
       $('#annotations-wrapper').html('');
-      return $('#hotspots-wrapper').html('');
+      $('#hotspots-wrapper').html('');
+      return $('.popover').remove();
     };
 
     Annotation.prototype.render = function() {
@@ -205,6 +255,7 @@
       if (this.visible) {
         $('#hotspots-wrapper').html(arcs.tmpl('viewer/hotspots', annos));
       }
+      if (this.active) $('.hotspot i').show();
       return this;
     };
 

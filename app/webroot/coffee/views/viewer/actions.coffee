@@ -28,6 +28,7 @@ class arcs.views.ViewerActions extends arcs.views.BaseActions
     'click #split-btn'           : 'split'
     'click #rethumb-btn'         : 'rethumb'
     'click #download-btn'        : 'download'
+    'click #annotate-btn'        : 'annotate'
 
   onNavClick: ->
     @$('.page-nav input').select()
@@ -148,6 +149,9 @@ class arcs.views.ViewerActions extends arcs.views.BaseActions
 
   download: ->
     @downloadResource @viewer.model
+
+  annotate: ->
+    arcs.bus.trigger 'annotate'
 
   # Try to use the full-screen API to toggle the browser's full-screen mode.
   # This is Chrome 15+ and Firefox 9.0+.

@@ -5,28 +5,52 @@ class arcs.views.Annotation extends Backbone.View
   initialize: ->
     @collection = new arcs.collections.AnnotationList
     @collection.on 'add sync reset remove', @render, @
+
     arcs.bus.on 'resourceLoaded', @onLoad, @
     arcs.bus.on 'resourceResize', @render, @
     arcs.bus.on 'indexChange', @clear, @
+    arcs.bus.on 'annotate', @toggleState, @
+
     @visible = true
+    @active = false
+
     $('#annotation-vis-btn').on 'click', =>
       @toggleVisibility()
     arcs.keys.map @,
       a: @toggleVisibility
 
   events:
-    'mouseenter .annotation' : 'annoMouseenter'
-    'mouseleave .annotation' : 'annoMouseleave'
-    'mouseenter .hotspot'    : 'hotMouseenter'
-    'hover .annotation a'    : 'annoMouseenter'
-    'click .remove-btn'      : 'removeAnnotation'
+    'click #annotate-new-btn'  : 'newAnnotation'
+    'click #annotate-done-btn' : 'exit'
+    'mouseenter .annotation'   : 'onSummaryMouseenter'
+    'mouseleave .annotation'   : 'onSummaryMouseleave'
+    'mouseenter .hotspot'      : 'onBoxMouseenter'
+    'hover .annotation a'      : 'onSummaryMouseenter'
+    'click .remove-btn'        : 'removeAnnotation'
 
   onLoad: ->
     @img = $('#resource img')
-    @setupSelection()
+    @setupSelection() if @active
     @collection.fetch()
 
-  annoMouseenter: (e) ->
+  toggleState: ->
+    if @active then @exit() else @enter()
+
+  enter: ->
+    @$('.annotate-controls').show()
+    $('#annotate-btn').addClass 'disabled'
+    $('.hotspot i').show()
+    @setupSelection()
+    @active = true
+
+  exit: ->
+    @$('.annotate-controls').hide()
+    $('#annotate-btn').removeClass 'disabled'
+    $('.hotspot i').hide()
+    @removeIas()
+    @active = false
+
+  onSummaryMouseenter: (e) ->
     if e.target.tagName == 'A'
       $li = $(e.target).parent()
     else
@@ -35,10 +59,10 @@ class arcs.views.Annotation extends Backbone.View
     $('.hotspot').removeClass 'active'
     $(".hotspot[data-id='#{id}']").addClass 'active'
 
-  annoMouseleave: ->
+  onSummaryMouseleave: ->
     $('.hotspot').removeClass 'active'
 
-  hotMouseenter: (e) ->
+  onBoxMouseenter: (e) ->
     $el = $(e.target)
     anno = @collection.get $el.data 'id'
     $el.popover
@@ -47,13 +71,21 @@ class arcs.views.Annotation extends Backbone.View
     $el.popover 'show'
 
   setupSelection: (coords=null) ->
-    @ias.remove() if @ias?
+    @removeIas()
     @ias = @img.imgAreaSelect
       instance: true
       handles: true
+      fadeSpeed: 250
       onSelectEnd: (img, sel) =>
         return arcs.needsLogin() unless arcs.user.get 'loggedIn'
         @openAnnotator()
+
+  # Help ImgAreaSelect clean up after itself.
+  removeIas: ->
+    @img.removeData 'imgAreaSelect'
+    if @ias?
+      @ias.remove()
+      @ias = null
 
   toggleVisibility: ->
     @visible = !@visible
@@ -74,6 +106,14 @@ class arcs.views.Annotation extends Backbone.View
       "This <b>#{anno.getType().toLowerCase()}</b> will be deleted.", =>
         anno.destroy()
     false
+
+  newAnnotation: ->
+    [width, height] = [@img.width(), @img.height()]
+    xMid = Math.floor width / 2
+    yMid = Math.floor height / 2
+    @ias.setOptions show: true
+    @ias.setSelection(xMid - 50, yMid - 50, xMid + 50, yMid + 50)
+    @ias.update()
 
   openAnnotator: ->
     return if @annotator?.isOpen()
@@ -134,6 +174,8 @@ class arcs.views.Annotation extends Backbone.View
   clear: ->
     $('#annotations-wrapper').html ''
     $('#hotspots-wrapper').html ''
+    # Remove any stray popovers.
+    $('.popover').remove()
 
   # Render annotations and hotspots.
   render: ->
@@ -149,4 +191,6 @@ class arcs.views.Annotation extends Backbone.View
     $('#annotations-wrapper').html arcs.tmpl 'viewer/annotations', annos
     if @visible
       $('#hotspots-wrapper').html arcs.tmpl 'viewer/hotspots', annos
+    if @active
+      $('.hotspot i').show()
     @
