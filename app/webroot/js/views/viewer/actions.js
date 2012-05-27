@@ -20,6 +20,8 @@
       this.onNavKeyup = _.debounce(this.setNav, 1000);
       return arcs.keys.map(this, {
         'ctrl+e': this.edit,
+        '-': this.zoomOut,
+        '+': this.zoomIn,
         p: this.onNavClick
       });
     };
@@ -40,7 +42,9 @@
       'click #split-btn': 'split',
       'click #rethumb-btn': 'rethumb',
       'click #download-btn': 'download',
-      'click #annotate-btn': 'annotate'
+      'click #annotate-btn': 'annotate',
+      'click #zoom-in-btn': 'zoomIn',
+      'click #zoom-out-btn': 'zoomOut'
     };
 
     ViewerActions.prototype.onNavClick = function() {
@@ -231,6 +235,33 @@
         }
       }
       return this.$('#full-screen-btn i').toggleClass('icon-resize-full').toggleClass('icon-resize-small');
+    };
+
+    ViewerActions.prototype.zoomIn = function() {
+      var current;
+      current = $('#resource img').data('zoom');
+      if (current < 2) $('#resource img').data('zoom', current + 0.25);
+      this.viewer.resize();
+      this._checkZoom();
+      return arcs.bus.trigger('resourceReloaded');
+    };
+
+    ViewerActions.prototype.zoomOut = function() {
+      var current;
+      current = $('#resource img').data('zoom');
+      if (current > 1) $('#resource img').data('zoom', current - 0.25);
+      this.viewer.resize();
+      this._checkZoom();
+      return arcs.bus.trigger('resourceReloaded');
+    };
+
+    ViewerActions.prototype._checkZoom = function() {
+      var zoom;
+      zoom = $('#resource img').data('zoom');
+      if (zoom === 1) this.$('#zoom-out-btn').addClass('disabled');
+      if (zoom === 2) this.$('#zoom-in-btn').addClass('disabled');
+      if (zoom > 1) this.$('#zoom-out-btn').removeClass('disabled');
+      if (zoom < 2) return this.$('#zoom-in-btn').removeClass('disabled');
     };
 
     return ViewerActions;

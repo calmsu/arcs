@@ -10,6 +10,8 @@ class arcs.views.ViewerActions extends arcs.views.BaseActions
     @onNavKeyup = _.debounce @setNav, 1000
     arcs.keys.map @,
       'ctrl+e': @edit
+      '-': @zoomOut
+      '+': @zoomIn
       p: @onNavClick
 
   events:
@@ -29,6 +31,8 @@ class arcs.views.ViewerActions extends arcs.views.BaseActions
     'click #rethumb-btn'         : 'rethumb'
     'click #download-btn'        : 'download'
     'click #annotate-btn'        : 'annotate'
+    'click #zoom-in-btn'         : 'zoomIn'
+    'click #zoom-out-btn'        : 'zoomOut'
 
   onNavClick: ->
     @$('.page-nav input').select()
@@ -179,3 +183,30 @@ class arcs.views.ViewerActions extends arcs.views.BaseActions
           "Chrome or Mozilla Firefox."
     @$('#full-screen-btn i').toggleClass('icon-resize-full')
       .toggleClass 'icon-resize-small'
+
+  zoomIn: ->
+    current = $('#resource img').data 'zoom'
+    if current < 2
+      $('#resource img').data 'zoom', current + 0.25
+    @viewer.resize()
+    @_checkZoom()
+    arcs.bus.trigger 'resourceReloaded'
+
+  zoomOut: ->
+    current = $('#resource img').data 'zoom'
+    if current > 1
+      $('#resource img').data 'zoom', current - 0.25
+    @viewer.resize()
+    @_checkZoom()
+    arcs.bus.trigger 'resourceReloaded'
+
+  _checkZoom: ->
+    zoom = $('#resource img').data 'zoom'
+    if zoom == 1
+      @$('#zoom-out-btn').addClass 'disabled'
+    if zoom == 2
+      @$('#zoom-in-btn').addClass 'disabled'
+    if zoom > 1
+      @$('#zoom-out-btn').removeClass 'disabled'
+    if zoom < 2
+      @$('#zoom-in-btn').removeClass 'disabled'

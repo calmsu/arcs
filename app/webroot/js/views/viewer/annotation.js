@@ -15,6 +15,7 @@
       this.collection = new arcs.collections.AnnotationList;
       this.collection.on('add sync reset remove', this.render, this);
       arcs.bus.on('resourceLoaded', this.onLoad, this);
+      arcs.bus.on('resourceReloaded', this.render, this);
       arcs.bus.on('resourceResize', this.render, this);
       arcs.bus.on('indexChange', this.clear, this);
       arcs.bus.on('annotate', this.toggleState, this);
@@ -56,6 +57,7 @@
       this.$('.annotate-controls').show();
       $('#annotate-btn').addClass('disabled');
       $('.hotspot i').show();
+      $('#wrapping').css('cursor', 'default');
       this.setupSelection();
       return this.active = true;
     };
@@ -92,9 +94,28 @@
         title: arcs.tmpl('viewer/popover_title', {
           type: anno.getType()
         }),
-        content: arcs.tmpl('viewer/popover', anno.toJSON())
+        content: arcs.tmpl('viewer/popover', anno.toJSON()),
+        placement: this._placePopover($el)
       });
       return $el.popover('show');
+    };
+
+    Annotation.prototype._placePopover = function($el) {
+      var best, choice, k, maxHeight, maxWidth, offsets, _ref, _ref2;
+      _ref = [$(window).width(), $(window).height()], maxWidth = _ref[0], maxHeight = _ref[1];
+      offsets = {
+        left: $el.offset().left,
+        top: $el.offset().top,
+        right: maxWidth - ($el.offset().left + $el.width()),
+        bottom: maxHeight - ($el.offset().top + $el.height())
+      };
+      _ref2 = ['right', offsets.right], choice = _ref2[0], best = _ref2[1];
+      for (k in offsets) {
+        if (offsets[k] > best) best = offsets[(choice = k)];
+      }
+      if (offsets.bottom < 0) choice = 'top';
+      if (offsets.top < 0) choice = 'bottom';
+      return choice;
     };
 
     Annotation.prototype.setupSelection = function(coords) {
@@ -105,6 +126,7 @@
         instance: true,
         handles: true,
         fadeSpeed: 250,
+        parent: this.$('.viewer-well'),
         onSelectEnd: function(img, sel) {
           if (!arcs.user.get('loggedIn')) return arcs.needsLogin();
           return _this.openAnnotator();
@@ -241,6 +263,7 @@
     Annotation.prototype.render = function() {
       var annos,
         _this = this;
+      this.clear();
       annos = {
         annotations: this.collection.map(function(m) {
           var rid, _ref, _ref2;

@@ -183,6 +183,7 @@ class arcs.views.search.Search extends Backbone.View
     @unselectAll()
 
   showHotkeys: ->
+    return $('.hotkeys-modal').remove() if $('.hotkeys-modal').length
     new arcs.views.Hotkeys template: 'search/hotkeys'
 
   ### Render the search results ###

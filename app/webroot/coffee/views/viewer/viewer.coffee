@@ -152,6 +152,7 @@ class arcs.views.Viewer extends Backbone.View
         no: ->
 
   showHotkeys: ->
+    return $('.hotkeys-modal').remove() if $('.hotkeys-modal').length
     new arcs.views.Hotkeys template: 'viewer/hotkeys'
 
   # We've used CSS where possible, now we need to finish the job.
@@ -159,11 +160,18 @@ class arcs.views.Viewer extends Backbone.View
     STANDALONE = 128
     COLLECTION = 204
     TAB_MARGIN = 75
+    $resource = @$('#resource img')
     margin = if $('body').hasClass 'standalone' then STANDALONE else COLLECTION
     height = $(window).height() - margin
+    zoomLevel = $resource.data 'zoom'
+
     @$('.viewer-well').height height
-    @$('#resource img').height height
+    $resource.height (height * zoomLevel)
+    @$('#wrapping').height(height).width @$('.viewer-well').width() - 36
     @$('.tab-content').height height - TAB_MARGIN
+    if @$('#wrapping').data().kineticSettings?
+      @$('#wrapping').kinetic 'detach'
+    @$('#wrapping').kinetic() if zoomLevel > 1
   
   # Render the resource.
   render: ->
@@ -181,8 +189,7 @@ class arcs.views.Viewer extends Backbone.View
       arcs.bus.trigger 'resourceLoaded'
 
     # Render the resource (and collection) info tables.
-    @$('#resource-details').html arcs.tmpl 'viewer/table', 
-      @model.toJSON()
+    @$('#resource-details').html arcs.tmpl 'viewer/table', @model.toJSON()
     if @collectionModel?
       @$('#collection-details').html arcs.tmpl 'viewer/collection_table', 
         @collectionModel.toJSON()

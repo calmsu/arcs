@@ -166,21 +166,29 @@
     };
 
     Viewer.prototype.showHotkeys = function() {
+      if ($('.hotkeys-modal').length) return $('.hotkeys-modal').remove();
       return new arcs.views.Hotkeys({
         template: 'viewer/hotkeys'
       });
     };
 
     Viewer.prototype.resize = function() {
-      var COLLECTION, STANDALONE, TAB_MARGIN, height, margin;
+      var $resource, COLLECTION, STANDALONE, TAB_MARGIN, height, margin, zoomLevel;
       STANDALONE = 128;
       COLLECTION = 204;
       TAB_MARGIN = 75;
+      $resource = this.$('#resource img');
       margin = $('body').hasClass('standalone') ? STANDALONE : COLLECTION;
       height = $(window).height() - margin;
+      zoomLevel = $resource.data('zoom');
       this.$('.viewer-well').height(height);
-      this.$('#resource img').height(height);
-      return this.$('.tab-content').height(height - TAB_MARGIN);
+      $resource.height(height * zoomLevel);
+      this.$('#wrapping').height(height).width(this.$('.viewer-well').width() - 36);
+      this.$('.tab-content').height(height - TAB_MARGIN);
+      if (this.$('#wrapping').data().kineticSettings != null) {
+        this.$('#wrapping').kinetic('detach');
+      }
+      if (zoomLevel > 1) return this.$('#wrapping').kinetic();
     };
 
     Viewer.prototype.render = function() {

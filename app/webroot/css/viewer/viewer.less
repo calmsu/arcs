@@ -15,6 +15,9 @@ body.viewer.standalone {
       #wrapping {
         padding-left: 0px;
         padding-right: 0px;
+        .annotate-controls {
+          right: 0px;
+        }
       }
     }
   }
@@ -41,12 +44,13 @@ body.viewer.standalone {
       padding-left: 18px;
       padding-right: 18px;
       left: 0;
+      z-index: 2;
+      overflow: hidden;
 
       #resource {
         display: block;
         margin: 0 auto;
         img {
-          max-height:100%;
           .unselectable();
         }
       }

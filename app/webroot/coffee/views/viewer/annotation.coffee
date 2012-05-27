@@ -7,6 +7,7 @@ class arcs.views.Annotation extends Backbone.View
     @collection.on 'add sync reset remove', @render, @
 
     arcs.bus.on 'resourceLoaded', @onLoad, @
+    arcs.bus.on 'resourceReloaded', @render, @
     arcs.bus.on 'resourceResize', @render, @
     arcs.bus.on 'indexChange', @clear, @
     arcs.bus.on 'annotate', @toggleState, @
@@ -14,10 +15,8 @@ class arcs.views.Annotation extends Backbone.View
     @visible = true
     @active = false
 
-    $('#annotation-vis-btn').on 'click', =>
-      @toggleVisibility()
-    arcs.keys.map @,
-      a: @toggleVisibility
+    $('#annotation-vis-btn').on 'click', => @toggleVisibility()
+    arcs.keys.map @, a: @toggleVisibility
 
   events:
     'click #annotate-new-btn'  : 'newAnnotation'
@@ -40,6 +39,7 @@ class arcs.views.Annotation extends Backbone.View
     @$('.annotate-controls').show()
     $('#annotate-btn').addClass 'disabled'
     $('.hotspot i').show()
+    $('#wrapping').css 'cursor', 'default'
     @setupSelection()
     @active = true
 
@@ -68,7 +68,22 @@ class arcs.views.Annotation extends Backbone.View
     $el.popover
       title: arcs.tmpl('viewer/popover_title', {type: anno.getType()})
       content: arcs.tmpl 'viewer/popover', anno.toJSON()
+      placement: @_placePopover($el)
     $el.popover 'show'
+
+  # When initializing a popover, choose the side with the most room.
+  _placePopover: ($el) ->
+    [maxWidth, maxHeight] = [$(window).width(), $(window).height()]
+    offsets = 
+      left: $el.offset().left
+      top: $el.offset().top
+      right: maxWidth - ($el.offset().left + $el.width())
+      bottom: maxHeight - ($el.offset().top + $el.height())
+    [choice, best] = ['right', offsets.right]
+    (best = offsets[(choice = k)] if offsets[k] > best) for k of offsets 
+    choice = 'top' if offsets.bottom < 0
+    choice = 'bottom' if offsets.top < 0
+    choice
 
   setupSelection: (coords=null) ->
     @removeIas()
@@ -76,6 +91,7 @@ class arcs.views.Annotation extends Backbone.View
       instance: true
       handles: true
       fadeSpeed: 250
+      parent: @$('.viewer-well')
       onSelectEnd: (img, sel) =>
         return arcs.needsLogin() unless arcs.user.get 'loggedIn'
         @openAnnotator()
@@ -179,6 +195,7 @@ class arcs.views.Annotation extends Backbone.View
 
   # Render annotations and hotspots.
   render: ->
+    @clear()
     annos = 
       annotations: @collection.map (m) =>
         if rid = m.get 'relation'

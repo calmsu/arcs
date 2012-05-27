@@ -1,3 +1,5 @@
+# hotkeys.coffee
+# --------------
 class arcs.views.Hotkeys extends Backbone.View
 
   initialize: ->

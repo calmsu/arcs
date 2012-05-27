@@ -4183,6 +4183,7 @@ div ::-webkit-scrollbar {
 div ::-webkit-scrollbar-track {
   -webkit-box-shadow: inset 0 0 2px rgba(0, 0, 0, 0.3);
   border-radius: 3px;
+  background: #eee;
 }
 div ::-webkit-scrollbar-thumb {
   border-radius: 3px;
@@ -4336,13 +4337,13 @@ h4 {
 .popover.right .arrow {
   border-right: 5px solid #333;
 }
-.popover.right .popover-inner {
+.popover .popover-inner {
   padding: 2px;
 }
-.popover.right .popover-content {
+.popover .popover-content {
   text-align: center;
 }
-.popover.right i {
+.popover i {
   margin-top: 4px;
 }
 .ui-menu-item {
@@ -5246,6 +5247,9 @@ body.viewer.standalone #viewer .viewer-well #wrapping {
   padding-left: 0px;
   padding-right: 0px;
 }
+body.viewer.standalone #viewer .viewer-well #wrapping .annotate-controls {
+  right: 0px;
+}
 #viewer {
   margin: 0 -3px -1px -10px;
 }
@@ -5269,13 +5273,14 @@ body.viewer.standalone #viewer .viewer-well #wrapping {
   padding-left: 18px;
   padding-right: 18px;
   left: 0;
+  z-index: 2;
+  overflow: hidden;
 }
 #viewer .viewer-well #wrapping #resource {
   display: block;
   margin: 0 auto;
 }
 #viewer .viewer-well #wrapping #resource img {
-  max-height: 100%;
   -moz-user-select: none;
   -khtml-user-select: none;
   -webkit-user-select: none;
@@ -5370,6 +5375,7 @@ body.viewer.standalone #viewer .viewer-well #wrapping {
   margin-left: -10px;
   margin-right: -10px;
   margin-bottom: 0px;
+  z-index: 1;
   border-radius: 0px !important;
   -webkit-border-radius: 0px !important;
   -moz-border-radius: 0px !important;
@@ -5579,6 +5585,7 @@ textarea#content {
   width: 100%;
   position: absolute;
   bottom: 0px;
+  right: 18px;
   color: white;
   text-align: left;
   z-index: 1;
@@ -5587,7 +5594,7 @@ textarea#content {
 .annotate-controls span {
   position: relative;
   top: 10px;
-  left: 30px;
+  left: 50px;
   font-weight: 200;
 }
 .annotate-controls button {
@@ -5605,9 +5612,6 @@ textarea#content {
   position: relative;
   margin-right: 15px;
   top: 5px;
-}
-.annotate-controls #annotate-done-btn {
-  margin-right: 50px;
 }
 ul.annotations {
   margin-left: 0px;

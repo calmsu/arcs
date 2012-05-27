@@ -205,6 +205,7 @@
     };
 
     Search.prototype.showHotkeys = function() {
+      if ($('.hotkeys-modal').length) return $('.hotkeys-modal').remove();
       return new arcs.views.Hotkeys({
         template: 'search/hotkeys'
       });

@@ -115,8 +115,8 @@ class arcs.utils.Keys
     38: "up"
     39: "right"
     40: "down" 
-    107: "+"
-    109: "-"
+    187: "+"
+    189: "-"
     191: "?"
 
 # Fire it up an instance.
