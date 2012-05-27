@@ -1,6 +1,6 @@
-<h1 id="api-v1-reference">API v1 Reference</h1>
-<p>We provide a REST API that lets you interact with ARCS using anything that can
-send an HTTP request. This makes it easy to write custom import and export
+<h1 id="api-reference">API Reference</h1>
+<p>We provide a RESTful API that lets you interact with ARCS using anything that
+can send an HTTP request. This makes it easy to write custom import and export
 scripts.</p>
 <blockquote>
 <p>As we continue to develop ARCS and our API, we'll sometimes need to break old

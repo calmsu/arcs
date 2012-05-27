@@ -124,7 +124,7 @@
       var _this = this;
       return new arcs.views.Modal({
         title: 'Invite someone to ARCS',
-        subtitle: "Provide an email address and an optional message, and we'll" + " send them a link that will allow them to create an account.",
+        subtitle: "Provide an email address and we'll send them a link that will " + "allow them to create an account.",
         inputs: {
           email: {
             focused: true
@@ -138,6 +138,7 @@
           send: {
             "class": 'btn btn-success',
             callback: function(vals) {
+              vals.email = $.trim(vals.email);
               return $.postJSON(arcs.baseURL + 'users/invite', vals, function() {
                 return _this.collection.add(vals);
               });

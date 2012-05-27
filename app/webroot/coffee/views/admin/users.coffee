@@ -81,8 +81,8 @@ class arcs.views.admin.Users extends Backbone.View
   sendInvite: ->
     new arcs.views.Modal
       title: 'Invite someone to ARCS'
-      subtitle: "Provide an email address and an optional message, and we'll" +
-        " send them a link that will allow them to create an account."
+      subtitle: "Provide an email address and we'll send them a link that will " +
+        "allow them to create an account."
       inputs:
         email: 
           focused: true
@@ -93,6 +93,7 @@ class arcs.views.admin.Users extends Backbone.View
         send:
           class: 'btn btn-success'
           callback: (vals) =>
+            vals.email = $.trim vals.email
             $.postJSON arcs.baseURL + 'users/invite', vals, =>
               @collection.add vals
         cancel: ->
