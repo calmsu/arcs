@@ -10,6 +10,7 @@
         <!-- ios devices go full screen! -->
         <meta name="apple-mobile-web-app-capable" content="yes" />
         <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+        <link href='http://fonts.googleapis.com/css?family=Pontano+Sans' rel='stylesheet' type='text/css'>
         <script>window.CAKE_DEBUG = <?php echo Configure::read('debug') ?>;</script>
         <?php 
         echo $this->Assets->stylesheets();
