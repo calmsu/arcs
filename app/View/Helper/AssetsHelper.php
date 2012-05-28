@@ -97,7 +97,7 @@ class AssetsHelper extends AppHelper {
             $contents = str_replace("\n", '', $contents);
             $name = str_replace($base, '', $p);
             $name = str_replace('.jst', '', $name);
-            $jst = $namespace . "[\"$name\"] = \"$contents\"\n";
+            $jst = $namespace . "[\"$name\"] = \"$contents\";\n";
             fwrite($fhandle, $jst);
         }
         fclose($fhandle);

@@ -26,9 +26,12 @@ DOCS=$(wildcard docs/*.md)
 
 # ARCS version and license header
 VERSION=$(shell cat VERSION)
+BUILT_ON=$(shell date)
+BUILT_WITH=$(shell git log -1 --format="%h")
 HEADER="/**\n\
   * ARCS\n\
   * $(VERSION)\n\
+  * Generated on $(BUILT_ON) with $(BUILT_WITH)\n\
   *\n\
   * Copyright 2012, Michigan State University Board of Trustees\n\
   */\n"
