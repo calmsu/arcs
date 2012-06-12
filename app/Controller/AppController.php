@@ -79,6 +79,11 @@ class AppController extends Controller {
         $this->autoRender = false;
         $this->response->statusCode($status);
         $this->RequestHandler->respondAs('json');
-        $this->response->body(json_encode((array)$data, JSON_NUMERIC_CHECK));
+        # JSON_NUMERIC_CHECK was added in 5.3.3. It ensures numbers are encoded 
+        # as numbers. We use it if available.
+        if (defined('JSON_NUMERIC_CHECK')) 
+            $this->response->body(json_encode((array)$data, JSON_NUMERIC_CHECK));
+        else
+            $this->response->body(json_encode((array)$data));
     }
 }

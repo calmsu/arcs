@@ -218,6 +218,15 @@ class Mime {
     );
 
     /**
+     * Constructor
+     */
+    public function __construct() {
+        # This is a work-around to issues in earlier versions of PHP
+        # that assume a method of the same name as the class is its
+        # constructor (i.e. Mime::mime) in C fashion.
+    }
+
+    /**
      * Get the MIME type. Uses Fileinfo if available, falling back
      * to `mime_content_type` when it's not.
      *
