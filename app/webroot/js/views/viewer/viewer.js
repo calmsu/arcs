@@ -173,22 +173,22 @@
     };
 
     Viewer.prototype.resize = function() {
-      var $resource, COLLECTION, STANDALONE, TAB_MARGIN, height, margin, zoomLevel;
+      var $resource, $well, $wrapping, COLLECTION, STANDALONE, TAB_MARGIN, height, margin, zoomLevel;
       STANDALONE = 128;
       COLLECTION = 204;
       TAB_MARGIN = 75;
       $resource = this.$('#resource img');
+      $wrapping = this.$('#wrapping');
+      $well = this.$('.viewer-well');
       margin = $('body').hasClass('standalone') ? STANDALONE : COLLECTION;
       height = $(window).height() - margin;
       zoomLevel = $resource.data('zoom');
-      this.$('.viewer-well').height(height);
+      $well.height(height);
       $resource.height(height * zoomLevel);
-      this.$('#wrapping').height(height).width(this.$('.viewer-well').width() - 36);
+      $wrapping.height(height).width($well.width() - 36);
       this.$('.tab-content').height(height - TAB_MARGIN);
-      if (this.$('#wrapping').data().kineticSettings != null) {
-        this.$('#wrapping').kinetic('detach');
-      }
-      if (zoomLevel > 1) return this.$('#wrapping').kinetic();
+      if ($wrapping.data().kineticSettings != null) $wrapping.kinetic('detach');
+      if (zoomLevel > 1) return $wrapping.kinetic();
     };
 
     Viewer.prototype.render = function() {

@@ -18,12 +18,15 @@
         return _this.checkNav();
       });
       this.onNavKeyup = _.debounce(this.setNav, 1000);
-      return arcs.keys.map(this, {
+      arcs.keys.map(this, {
         'ctrl+e': this.edit,
         '-': this.zoomOut,
         '+': this.zoomIn,
         p: this.onNavClick
       });
+      if (screenfull) {
+        return screenfull.onchange = _.bind(this.onFullScreenChange, this);
+      }
     };
 
     ViewerActions.prototype.events = {
@@ -213,28 +216,22 @@
     };
 
     ViewerActions.prototype.fullScreen = function() {
-      var docEl;
-      if (this.$('#full-screen-btn i').hasClass('icon-resize-small')) {
-        if (document.cancelFullScreen) {
-          document.cancelFullScreen();
-        } else if (document.mozCancelFullScreen) {
-          document.mozCancelFullScreen();
-        } else if (document.webkitCancelFullScreen) {
-          document.webkitCancelFullScreen();
-        }
+      if (screenfull) {
+        return screenfull.toggle();
       } else {
-        docEl = document.documentElement;
-        if (docEl.requestFullScreen) {
-          docEl.requestFullScreen();
-        } else if (docEl.mozRequestFullScreen) {
-          docEl.mozRequestFullScreen();
-        } else if (docEl.webkitRequestFullScreen) {
-          docEl.webkitRequestFullScreen();
-        } else {
-          return arcs.notify("We're unable to open screen for you. You can either " + "open it manually, or install the latest version of either Google " + "Chrome or Mozilla Firefox.");
-        }
+        return arcs.notify("Your browser does not support the full-screen API." + "You'll need to open fullscreen manually, or upgrade your browser.");
       }
-      return this.$('#full-screen-btn i').toggleClass('icon-resize-full').toggleClass('icon-resize-small');
+    };
+
+    ViewerActions.prototype.onFullScreenChange = function() {
+      if (screenfull.isFullscreen) {
+        this.$('#full-screen-btn i').removeClass('icon-resize-full').addClass('icon-resize-small');
+      } else {
+        this.$('#full-screen-btn i').addClass('icon-resize-full').removeClass('icon-resize-small');
+      }
+      return setTimeout(function() {
+        return arcs.bus.trigger('resourceResize');
+      }, 1000);
     };
 
     ViewerActions.prototype.zoomIn = function() {

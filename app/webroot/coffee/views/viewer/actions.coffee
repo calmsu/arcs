@@ -13,6 +13,8 @@ class arcs.views.ViewerActions extends arcs.views.BaseActions
       '-': @zoomOut
       '+': @zoomIn
       p: @onNavClick
+    if screenfull
+      screenfull.onchange = _.bind(@onFullScreenChange, @)
 
   events:
     'click .page-nav input'      : 'onNavClick'
@@ -157,32 +159,21 @@ class arcs.views.ViewerActions extends arcs.views.BaseActions
   annotate: ->
     arcs.bus.trigger 'annotate'
 
-  # Try to use the full-screen API to toggle the browser's full-screen mode.
-  # This is Chrome 15+ and Firefox 9.0+.
   fullScreen: ->
-    # Just store the state in the icon class. Host object fullScreen attributes
-    # are too non-standard atm.
-    if @$('#full-screen-btn i').hasClass 'icon-resize-small'
-      if document.cancelFullScreen
-        document.cancelFullScreen()
-      else if document.mozCancelFullScreen
-        document.mozCancelFullScreen()
-      else if document.webkitCancelFullScreen
-        document.webkitCancelFullScreen()
+    if screenfull
+      screenfull.toggle()
     else
-      docEl = document.documentElement
-      if docEl.requestFullScreen
-        docEl.requestFullScreen()
-      else if docEl.mozRequestFullScreen
-        docEl.mozRequestFullScreen()
-      else if docEl.webkitRequestFullScreen
-        docEl.webkitRequestFullScreen()
-      else
-        return arcs.notify "We're unable to open screen for you. You can either " + 
-          "open it manually, or install the latest version of either Google " +
-          "Chrome or Mozilla Firefox."
-    @$('#full-screen-btn i').toggleClass('icon-resize-full')
-      .toggleClass 'icon-resize-small'
+      arcs.notify "Your browser does not support the full-screen API." +
+        "You'll need to open fullscreen manually, or upgrade your browser."
+
+  onFullScreenChange: ->
+    if screenfull.isFullscreen
+      @$('#full-screen-btn i').removeClass('icon-resize-full').addClass('icon-resize-small')
+    else
+      @$('#full-screen-btn i').addClass('icon-resize-full').removeClass('icon-resize-small')
+    setTimeout(->
+      arcs.bus.trigger 'resourceResize'
+    , 1000)
 
   zoomIn: ->
     current = $('#resource img').data 'zoom'

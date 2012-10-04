@@ -160,18 +160,22 @@ class arcs.views.Viewer extends Backbone.View
     STANDALONE = 128
     COLLECTION = 204
     TAB_MARGIN = 75
+
     $resource = @$('#resource img')
+    $wrapping = @$('#wrapping')
+    $well = @$('.viewer-well')
+
     margin = if $('body').hasClass 'standalone' then STANDALONE else COLLECTION
     height = $(window).height() - margin
     zoomLevel = $resource.data 'zoom'
 
-    @$('.viewer-well').height height
-    $resource.height (height * zoomLevel)
-    @$('#wrapping').height(height).width @$('.viewer-well').width() - 36
+    $well.height(height)
+    $resource.height(height * zoomLevel)
+    $wrapping.height(height).width($well.width() - 36)
     @$('.tab-content').height height - TAB_MARGIN
-    if @$('#wrapping').data().kineticSettings?
-      @$('#wrapping').kinetic 'detach'
-    @$('#wrapping').kinetic() if zoomLevel > 1
+    if $wrapping.data().kineticSettings?
+      $wrapping.kinetic 'detach'
+    $wrapping.kinetic() if zoomLevel > 1
   
   # Render the resource.
   render: ->
