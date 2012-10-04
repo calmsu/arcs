@@ -23,4 +23,4 @@ $ ->
 
   $('body').delegate 'input[type="text"][id*="date"]', 'focus', (e) ->
     $(e.currentTarget).datepicker
-      format: 'dd/mm/yyyy'
+      format: 'yyyy/mm/dd'

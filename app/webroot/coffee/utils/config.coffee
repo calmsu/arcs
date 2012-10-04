@@ -3,8 +3,8 @@ arcs.config =
     'copyright'     : 'Who owns copyright on this resource?'
     'coverage'      : 'What area(s) does this resource concern'
     'creator'       : 'Person who made the physical resource'
-    'date-start'    : 'Date start'
-    'date-end'      : 'Date end'
+    'date'          : 'Date'
+    'date-modified' : 'Date modified'
     'description'   : 'Short description of the resource'
     'format'        : 'What kind of file is this resource?'
     'identifier'    : 'Dig-specific title for the resource (e.g. Identifier for ' +

@@ -25,7 +25,7 @@
     });
     return $('body').delegate('input[type="text"][id*="date"]', 'focus', function(e) {
       return $(e.currentTarget).datepicker({
-        format: 'dd/mm/yyyy'
+        format: 'yyyy/mm/dd'
       });
     });
   });

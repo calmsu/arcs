@@ -4374,10 +4374,22 @@ h4 {
   padding: 5px;
 }
 .datepicker .prev,
-.datepicker .next {
+.datepicker .next,
+.datepicker .switch {
   cursor: pointer;
 }
-.datepicker td.day {
+.datepicker .switch:hover {
+  background: #ddd;
+  cursor: pointer;
+}
+.datepicker .switch.active {
+  background: #08c;
+  color: #fff;
+  text-shadow: 0 1px 1px #333333;
+  text-shadow: 0 1px 1px #333333;
+}
+.datepicker td.day,
+.datepicker .table-condensed span {
   border-radius: 2px;
   -webkit-border-radius: 2px;
   -moz-border-radius: 2px;
@@ -4386,15 +4398,20 @@ h4 {
   -moz-border-radius: 2px;
   text-align: center;
 }
-.datepicker td.day:hover {
-  background: #eee;
+.datepicker td.day:hover,
+.datepicker .table-condensed span:hover {
+  background: #ddd;
   cursor: pointer;
 }
-.datepicker td.day.active {
+.datepicker td.day.active,
+.datepicker .table-condensed span.active {
   background: #08c;
   color: #fff;
   text-shadow: 0 1px 1px #333333;
   text-shadow: 0 1px 1px #333333;
+}
+.datepicker .table-condensed span {
+  padding: 4px;
 }
 .footer {
   background: url(img/linen-texture.jpg);
