@@ -27,6 +27,12 @@ class arcs.views.Carousel extends Backbone.View
         arcs.bus.trigger 'indexChange', $item.index(), noSlide: true
       onSlide: (first, last) =>
         unless _.isNaN(last)
+          if first > 1
+            # Bit of a hack, elastislide might decide to hide the left nav, so
+            # we need to correct that.
+            setTimeout => 
+              @$el.find('.es-nav-prev').show()
+            , 50
           if last > @options.nthumbs - 10
             @_addThumbs()
 

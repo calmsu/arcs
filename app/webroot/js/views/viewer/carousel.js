@@ -29,6 +29,11 @@
         },
         onSlide: function(first, last) {
           if (!_.isNaN(last)) {
+            if (first > 1) {
+              setTimeout(function() {
+                return _this.$el.find('.es-nav-prev').show();
+              }, 50);
+            }
             if (last > _this.options.nthumbs - 10) return _this._addThumbs();
           }
         }
