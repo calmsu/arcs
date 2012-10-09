@@ -28,7 +28,7 @@
       });
       return arcs.keys.map(this, {
         'ctrl+o': this.openSelected,
-        'ctrl+e': this.editSelected,
+        'ctrl+e': arcs.user.isLoggedIn() ? this.editSelected : function() {},
         space: this.previewSelected
       });
     };

@@ -17,7 +17,7 @@ class arcs.views.search.Actions extends arcs.views.BaseActions
 
     arcs.keys.map @,
       'ctrl+o': @openSelected
-      'ctrl+e': @editSelected
+      'ctrl+e': if arcs.user.isLoggedIn() then @editSelected else ->
       space: @previewSelected
 
   events:

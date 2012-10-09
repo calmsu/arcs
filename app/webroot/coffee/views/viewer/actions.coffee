@@ -9,7 +9,7 @@ class arcs.views.ViewerActions extends arcs.views.BaseActions
       @checkNav()
     @onNavKeyup = _.debounce @setNav, 1000
     arcs.keys.map @,
-      'ctrl+e': @edit
+      'ctrl+e': if arcs.user.isLoggedIn() then @edit else ->
       '-': @zoomOut
       '+': @zoomIn
       p: @onNavClick

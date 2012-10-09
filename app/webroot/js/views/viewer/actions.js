@@ -19,7 +19,7 @@
       });
       this.onNavKeyup = _.debounce(this.setNav, 1000);
       arcs.keys.map(this, {
-        'ctrl+e': this.edit,
+        'ctrl+e': arcs.user.isLoggedIn() ? this.edit : function() {},
         '-': this.zoomOut,
         '+': this.zoomIn,
         p: this.onNavClick
