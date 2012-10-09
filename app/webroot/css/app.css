@@ -4152,6 +4152,26 @@ a.thumbnail:hover {
   font-family: monospace;
   font-size: 90%;
 }
+::selection {
+  color: #ffffff;
+  background-color: #049cdb;
+  text-shadow: none;
+}
+::-moz-selection {
+  color: #ffffff;
+  background-color: #049cdb;
+  text-shadow: none;
+}
+::selection {
+  color: #ffffff;
+  background-color: #049cdb;
+  text-shadow: none;
+}
+::-moz-selection {
+  color: #ffffff;
+  background-color: #049cdb;
+  text-shadow: none;
+}
 html,
 body {
   height: 100%;
