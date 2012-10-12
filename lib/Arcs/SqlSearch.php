@@ -116,11 +116,13 @@ class SqlSearch {
             'joins' => array(
                 'memberships' => array(
                     'Resource' => 'id',
-                    'Membership' => 'resource_id'
+                    'Membership' => 'resource_id',
+                    'type' => 'LEFT OUTER JOIN'
                 ),
                 'collections' => array(
                     'Membership' => 'collection_id',
-                    'Collection' => 'id'
+                    'Collection' => 'id',
+                    'type' => 'LEFT OUTER JOIN'
                 )
             )
         ),
@@ -162,13 +164,6 @@ class SqlSearch {
     );
 
     /**
-     * Normally, results must match all of the supplied facets--the conditions
-     * are conjunctive. In some cases, this is undesirable. Set the operator to
-     * 'OR' for a disjunctive query.
-     */
-    public $operator = 'AND';
-
-    /**
      * Show only public resources.
      */
     public $publicFilter = true;
@@ -176,13 +171,16 @@ class SqlSearch {
     /**
      * The table and model values must be configured here.
      */
-    protected $table      = 'resources';
-    protected $model      = 'Resource';
+    protected $table         = 'resources';
+    protected $model         = 'Resource';
 
-    protected $values     = array();
-    protected $joins      = array();
-    protected $joined     = array();
-    protected $conditions = array();
+    protected $joins         = array();
+    protected $joined        = array();
+
+    protected $values        = array();
+
+    protected $andConditions = array();
+    protected $orConditions  = array();
 
     /**
      * Constructor
@@ -271,7 +269,7 @@ class SqlSearch {
      * @param string $value      facet value
      * @return bool             true on success, false otherwise.
      */
-    public function addFacet($category, $value) {
+    public function addFacet($category, $value, $type = 'and') {
 
         # We can't add facets that we don't know about.
         if (!array_key_exists($category, $this->mappings)) {
@@ -300,7 +298,7 @@ class SqlSearch {
             }
         }
 
-        return $this->_addCondition($model, $field, $value, $comp);
+        return $this->_addCondition($model, $field, $value, $comp, $type);
     }
 
     /**
@@ -342,10 +340,10 @@ class SqlSearch {
      *                       for a better description.
      * @return bool          true if all facets were added, false otherwise.
      */
-    private function _addFacets($facets) {
+    private function _addFacets($facets, $type = 'and') {
         $all = true;
         foreach($facets as $f) {
-            if (!$this->addFacet($f['category'], $f['value'])) {
+            if (!$this->addFacet($f['category'], $f['value'], $type)) {
                 $all = false;
             }
         }
@@ -353,11 +351,10 @@ class SqlSearch {
     }
 
     private function _all($value) {
-        $this->operator = 'OR';
         foreach ($this->mappings as $facet => $map) {
             if ($facet == 'access') continue;
             if (!isset($map['comparison']) ||  $map['comparison'] == 'equality')
-                $this->addFacet($facet, $value);
+                $this->addFacet($facet, $value, 'or');
         }
     }
 
@@ -368,11 +365,12 @@ class SqlSearch {
      * @param string $field       field (column) to use in the condition.
      * @param string $value       value to compare with.
      * @param string $comparison  comparison type
+     * @param string $type        'and' or 'or'
      *
      * @return mixed   Returns the condition (truthy) if one could be made and 
      *                 false otherwise.
      */
-    private function _addCondition($model, $field, $value, $comparison) {
+    private function _addCondition($model, $field, $value, $comparison, $type) {
         # We're using PDO::prepare to properly escape the values. Our statement
         # string contains :[name] parameters that will be substituted by PDO.
         #
@@ -381,9 +379,7 @@ class SqlSearch {
         $name = $field;
         $i = 1;
         while (array_key_exists($name, $this->values)) {
-            if ($i > 1) {
-                $name = substr($name, 0, -strlen($i));
-            }
+            if ($i > 1) $name = substr($name, 0, -strlen($i));
             $name .= $i;
             $i++;
         }
@@ -408,8 +404,11 @@ class SqlSearch {
 
         # Add the value and the condition. Return true.
         if (isset($cond)) {
+            if ($type == 'or')
+                $this->orConditions[] = $cond;
+            else
+                $this->andConditions[] = $cond;
             $this->values[$name] = $value;
-            $this->conditions[] = $cond;
             return true;
         } 
         # We couldn't match the comparison.
@@ -435,9 +434,10 @@ class SqlSearch {
         $aliases = array_keys($predicate);
         $fields = array_values($predicate);
         $alias = $aliases[1];
+        $joinType = isset($predicate['type']) ? $predicate['type'] : 'INNER JOIN';
 
         # Construct a join and add it to the joins array.
-        $join = " INNER JOIN `{$this->database}`.`{$table}` `$alias` ";
+        $join = " $joinType `{$this->database}`.`{$table}` `$alias` ";
         $join .= "ON `{$aliases[0]}`.`{$fields[0]}` = `{$aliases[1]}`.`{$fields[1]}` ";
         $this->joins[] = $join;
 
@@ -455,6 +455,7 @@ class SqlSearch {
      */
     private function _buildStatement($count=false, $options=array()) {
         $options = array_merge($this->options, $options);
+
         if ($count)
             $sql = "SELECT COUNT(`{$this->model}`.`id`) FROM ";
         else
@@ -462,12 +463,22 @@ class SqlSearch {
 
         $sql .= "`{$this->database}`.`{$this->table}` ";
         $sql .= "AS `{$this->model}`";
+
         foreach($this->joins as $j)
             $sql .= $j;
-        if ($this->conditions)
-            $sql .= " WHERE " . implode(" {$this->operator} ", $this->conditions);
+
+        if ($this->andConditions || $this->orConditions) {
+            $sql .= " WHERE ";
+            if ($this->andConditions)
+                $sql .= "(" . implode(" AND ", $this->andConditions) . ") ";
+            if ($this->andConditions && $this->orConditions)
+                $sql .= " AND ";
+            if ($this->orConditions)
+                $sql .= "(" . implode(" OR ", $this->orConditions) . ") ";
+        }
+
         if ($this->publicFilter) {
-            $where = $this->conditions ? " " : " WHERE ";
+            $where = strpos($sql, "WHERE") > 1 ? " " : " WHERE ";
             $sql .= "$where  AND  `Resource`.`public` = 1 ";
         }
 
