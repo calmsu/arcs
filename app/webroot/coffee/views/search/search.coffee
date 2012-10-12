@@ -43,15 +43,17 @@ class arcs.views.search.Search extends Backbone.View
       '?': @showHotkeys
       t: @scrollTop
 
+    @setupHelp()
+
   events:
-    'click img'              : 'toggle'
-    'click .result'          : 'maybeUnselectAll'
-    'click #search-results'  : 'maybeUnselectAll'
-    'click #grid-btn'        : 'toggleView'
-    'click #list-btn'        : 'toggleView'
-    'click #top-btn'         : 'scrollTop'
-    'click .sort-btn'        : 'setSort'
-    'click .dir-btn'         : 'setSortDir'
+    'click img'                : 'toggle'
+    'click .result'            : 'maybeUnselectAll'
+    'click #search-results'    : 'maybeUnselectAll'
+    'click #grid-btn'          : 'toggleView'
+    'click #list-btn'          : 'toggleView'
+    'click #top-btn'           : 'scrollTop'
+    'click .sort-btn'          : 'setSort'
+    'click .dir-btn'           : 'setSortDir'
 
   ### More involved setups run by the initialize method ###
 
@@ -89,6 +91,7 @@ class arcs.views.search.Search extends Backbone.View
         @router.navigate encodeURIComponent @search.query
         # Setup the endless scroll unless it's already been done.
         @setupScroll() and @scrollReady = true unless @scrollReady
+        @setupHelp(false)
         @render()
 
   # Setup the endless scroll. This is called after we've received our first set
@@ -120,6 +123,15 @@ class arcs.views.search.Search extends Backbone.View
     # Fix the toolbar width on resizes. 
     $window.resize ->
       $actions.width($results.width() + 23) if $window.scrollTop() > pos
+
+  setupHelp: (flash=true) ->
+    unless $('.search-help-btn').length
+      $('.VS-search-inner').append(arcs.tmpl 'search/help-toggle')
+      $('.search-help-btn').click(@showHelp)
+      $('.search-help-close').click(@closeHelp)
+    if flash
+      $('.search-help-btn').tooltip('show')
+      _.delay (=> $('.search-help-btn').tooltip 'hide'), 1500
 
   # Toggle between list and grid view.
   toggleView: ->
@@ -185,6 +197,12 @@ class arcs.views.search.Search extends Backbone.View
   showHotkeys: ->
     return $('.hotkeys-modal').remove() if $('.hotkeys-modal').length
     new arcs.views.Hotkeys template: 'search/hotkeys'
+
+  showHelp: ->
+    $('.search-help').show()
+
+  closeHelp: ->
+    $('.search-help').hide()
 
   ### Render the search results ###
   

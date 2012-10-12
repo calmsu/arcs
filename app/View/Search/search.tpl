@@ -1,4 +1,43 @@
 <div class="search-wrapper"></div>
+<div class="search-help" style="display:none">
+  <div class="search-help-arrow"></div>
+  <a class="search-help-close">close</a>
+  <div class="tips">
+    Use search facets to narrow down results. For example, 
+    <a href='type%3A%20"Photograph"'>type: Photograph</a>
+  </div>
+  <ul class="terms">
+    <li>collection</li>
+    <li>comment</li>
+    <li>filename</li>
+    <li>filetype</li>
+    <li>modified</li>
+  </ul>
+  <ul class="definitons">
+    <li>Filter by collection name</li>
+    <li>Filter by text in a resource comment</li>
+    <li>Filter by the original filename</li>
+    <li>Filter by the file type (e.g. pdf, jpeg, png)</li>
+    <li>Filter by last modified date</li>
+  </ul>
+  <ul class="terms">
+    <li>keyword</li>
+    <li>title</li>
+    <li>type</li>
+    <li>uploaded</li>
+    <li>user</li>
+  </ul>
+  <ul class="definitons">
+    <li>Filter by keyword</li>
+    <li>Filter by resource title</li>
+    <li>Filter by resource type (e.g. Notebook, Photograph)</li>
+    <li>Filter by uploaded date</li>
+    <li>Filter by uploader</li>
+  </ul>
+  <div>
+    For more search tips, see the <a href="../help/searching">Search</a> help page.
+  </div>
+</div>
 <div id="search-results-wrapper">
   <div id="search-actions" class="search-toolbar">
     <div id="action-buttons" class="btn-group">

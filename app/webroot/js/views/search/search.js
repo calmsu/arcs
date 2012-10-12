@@ -40,11 +40,12 @@
       if (!this.router.searched) this.search.run();
       this.search.results.on('change remove', this.render, this);
       arcs.bus.on('selection', this.afterSelection, this);
-      return arcs.keys.map(this, {
+      arcs.keys.map(this, {
         'ctrl+a': this.selectAll,
         '?': this.showHotkeys,
         t: this.scrollTop
       });
+      return this.setupHelp();
     };
 
     Search.prototype.events = {
@@ -98,6 +99,7 @@
           if (!_this.scrollReady) {
             _this.setupScroll() && (_this.scrollReady = true);
           }
+          _this.setupHelp(false);
           return _this.render();
         }
       });
@@ -137,6 +139,22 @@
           return $actions.width($results.width() + 23);
         }
       });
+    };
+
+    Search.prototype.setupHelp = function(flash) {
+      var _this = this;
+      if (flash == null) flash = true;
+      if (!$('.search-help-btn').length) {
+        $('.VS-search-inner').append(arcs.tmpl('search/help-toggle'));
+        $('.search-help-btn').click(this.showHelp);
+        $('.search-help-close').click(this.closeHelp);
+      }
+      if (flash) {
+        $('.search-help-btn').tooltip('show');
+        return _.delay((function() {
+          return $('.search-help-btn').tooltip('hide');
+        }), 1500);
+      }
     };
 
     Search.prototype.toggleView = function() {
@@ -209,6 +227,14 @@
       return new arcs.views.Hotkeys({
         template: 'search/hotkeys'
       });
+    };
+
+    Search.prototype.showHelp = function() {
+      return $('.search-help').show();
+    };
+
+    Search.prototype.closeHelp = function() {
+      return $('.search-help').hide();
     };
 
     /* Render the search results

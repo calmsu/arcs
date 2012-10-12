@@ -152,6 +152,7 @@ class SqlSearch {
     );
 
     /**
+     * Configure the result set.
      */
     public $options = array(
         'limit' => 30,
@@ -168,7 +169,7 @@ class SqlSearch {
     public $operator = 'AND';
 
     /**
-     *
+     * Show only public resources.
      */
     public $publicFilter = true;
 
@@ -381,7 +382,7 @@ class SqlSearch {
         $i = 1;
         while (array_key_exists($name, $this->values)) {
             if ($i > 1) {
-                $name = substr($name, -strlen($i), strlen($i));
+                $name = substr($name, 0, -strlen($i));
             }
             $name .= $i;
             $i++;

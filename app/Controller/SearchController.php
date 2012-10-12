@@ -94,9 +94,7 @@ class SearchController extends AppController {
             'order' => 'modified'
         );
         if (isset($params['order'])) {
-            $orderables = array(
-                'modified', 'created', 'title'
-            );
+            $orderables = array('modified', 'created', 'title');
             if (in_array($params['order'], $orderables)) 
                 $options['order'] = $params['order'];
         }

@@ -71,8 +71,10 @@ class arcs.utils.Search extends Backbone.View
     # Use this.options for default opts, but don't alter it.
     options = _.extend _.clone(@options), options
 
-    params = "?related&n=#{options.n}&page=#{options.page}" +
-      "&order=#{options.order}&direction=#{options.direction}"
+    params = "?related&n=#{options.n}" +
+      "&page=#{options.page}" +
+      "&order=#{options.order}" +
+      "&direction=#{options.direction}"
 
     query ?= @vs.searchQuery.toJSON()
     delete q.app for q in query

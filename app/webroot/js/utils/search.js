@@ -113,7 +113,7 @@
       var params, q, _i, _len,
         _this = this;
       options = _.extend(_.clone(this.options), options);
-      params = ("?related&n=" + options.n + "&page=" + options.page) + ("&order=" + options.order + "&direction=" + options.direction);
+      params = ("?related&n=" + options.n) + ("&page=" + options.page) + ("&order=" + options.order) + ("&direction=" + options.direction);
       if (query == null) query = this.vs.searchQuery.toJSON();
       for (_i = 0, _len = query.length; _i < _len; _i++) {
         q = query[_i];
