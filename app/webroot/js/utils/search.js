@@ -25,6 +25,28 @@
       error: function() {}
     };
 
+    Search.prototype.facets = {
+      id: [],
+      sha: [],
+      access: ['public', 'private'],
+      filetype: arcs.completeFacet,
+      filename: arcs.completeFacet,
+      title: arcs.completeFacet,
+      user: arcs.completeFacet,
+      keyword: arcs.completeFacet,
+      collection: arcs.completeFacet,
+      type: arcs.completeFacet,
+      created: function() {
+        return arcs.completeDate('resources/complete/created');
+      },
+      uploaded: function() {
+        return arcs.completeDate('resources/complete/created');
+      },
+      modified: function() {
+        return arcs.completeDate('resources/complete/modified');
+      }
+    };
+
     Search.prototype.initialize = function() {
       var _ref,
         _this = this;
@@ -37,7 +59,7 @@
           search: function(query, searchCollection) {
             _this.query = query;
             _this.options.onSearch(query);
-            return _this.run(searchCollection.toJSON());
+            return _this.run();
           },
           facetMatches: function(callback) {
             return callback(_.keys(_this.facets));
@@ -46,8 +68,7 @@
             var val;
             val = _this.facets[facet];
             if (typeof val === 'function') {
-              _this.facets[facet] = val();
-              return callback(_this.facets[facet]);
+              return callback(val(facet, encodeURIComponent(_this.query)));
             } else {
               return callback(val);
             }
@@ -61,71 +82,20 @@
       return this.vs.searchBox.setQuery(query);
     };
 
-    Search.prototype.facets = {
-      access: ['public', 'private'],
-      filetype: function() {
-        var k, v, _ref, _results;
-        _ref = arcs.utils.mime.types();
-        _results = [];
-        for (k in _ref) {
-          v = _ref[k];
-          _results.push({
-            value: k,
-            label: v
-          });
-        }
-        return _results;
-      },
-      filename: [],
-      id: [],
-      sha: [],
-      title: function() {
-        return arcs.complete('resources/complete/title');
-      },
-      user: function() {
-        return arcs.complete('users/complete');
-      },
-      keyword: function() {
-        return arcs.complete('keywords/complete');
-      },
-      collection: function() {
-        return arcs.complete('collections/complete');
-      },
-      created: function() {
-        return arcs.completeDate('resources/complete/created');
-      },
-      uploaded: function() {
-        return arcs.completeDate('resources/complete/created');
-      },
-      modified: function() {
-        return arcs.completeDate('resources/complete/modified');
-      },
-      type: function() {
-        return _.compact(_.keys(arcs.config.types));
-      }
-    };
-
     Search.prototype.getLast = function() {
       return this.results.last(this.results.length % this.options.n || this.options.n);
     };
 
     Search.prototype.run = function(query, options) {
-      var params, q, _i, _len,
+      var params,
         _this = this;
       options = _.extend(_.clone(this.options), options);
-      params = ("?related&n=" + options.n) + ("&page=" + options.page) + ("&order=" + options.order) + ("&direction=" + options.direction);
-      if (query == null) query = this.vs.searchQuery.toJSON();
-      for (_i = 0, _len = query.length; _i < _len; _i++) {
-        q = query[_i];
-        delete q.app;
-      }
+      if (query == null) query = this.vs.searchBox.value();
+      params = ("?q=" + (encodeURIComponent(query))) + ("&related&n=" + options.n) + ("&page=" + options.page) + ("&order=" + options.order) + ("&direction=" + options.direction);
       if (options.loader) arcs.loader.show();
       this.results.fetch({
         add: options.add,
-        data: JSON.stringify(query),
-        type: 'POST',
         url: this.results.url() + params,
-        contentType: 'application/json',
         success: function() {
           options.success();
           if (options.loader) return arcs.loader.hide();

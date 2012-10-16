@@ -1,157 +1,16 @@
 <?php
 
-/**
- * @namespace
- */
 namespace Arcs;
 
 require_once('Utilities.php');
+require_once('Search.php');
 
 /**
  * SqlSearch
  *
- * Instances of the Search class build SQL for faceted search queries, given 
- * an array of facets, and returns the IDs of matching rows.
+ * Generates SQL for facet searches. 
  */
-class SqlSearch {
-
-    /**
-     * Before we can use facets, they have be mapped to table columns. The
-     * `mappings` property of the Search class holds these associations. It
-     * also provides options for customizing how the facet 'works'. For example,
-     * some facets map to tables that need to be joined on. Some facets should
-     * be compared in a certain way (e.g. dates). These special behaviors are
-     * configured in each facet's options array.
-     *
-     * model        provide an alias that we'll use to refer to the table. This
-     *              will default to the $model property.
-     *
-     * field        field (or column) name that the facet corresponds to. This
-     *              option is required.
-     *
-     * joins        an array of table => predicate pairs which will be 
-     *              inner-joined, in the order that they are defined. The 
-     *              predicate must be a two-member associative array following 
-     *              the pattern:
-     *
-     *                  array(
-     *                      'TableA' => 'field',
-     *                      'TableB' => 'field'
-     *                  )
-     *
-     *              where TableA is the primary table (or another previously
-     *              joined), and TableB is the one being joined.
-     *
-     * comparison   string specifiying how the fields should be compared. By
-     *              default, the equality comparison is used. Others include:
-     *
-     *                date - uses the DATE() operator.
-     *                match - uses the MATCH() operator with IN BOOLEAN MODE.
-     *                like - uses the LIKE() operator.
-     *
-     * values       keyed array to use as a translation table for values when 
-     *              forming conditions. An example usage would be translating 
-     *              strings into booleans (e.g. 'public' => true) for comparing
-     *              on BOOL fields. If a translation is not found, the value will 
-     *              remain unchanged.
-     */
-    public $mappings = array(
-        'keyword' => array(
-            'model' => 'Keyword',
-            'field' => 'keyword',
-            'joins' => array(
-                'keywords' => array(
-                    'Resource' => 'id', 
-                    'Keyword' => 'resource_id'
-                )
-            )
-        ),
-        'user' => array(
-            'model' => 'User',
-            'field' => 'name',
-            'joins' => array(
-                'users' => array(
-                    'Resource' => 'user_id', 
-                    'User' => 'id'
-                )
-            )
-        ),
-        'modified' => array(
-            'field' => 'modified',
-            'comparison' => 'date'
-        ),
-        'created' => array(
-            'field' => 'created',
-            'comparison' => 'date'
-        ),
-        'uploaded' => array(
-            'field' => 'created',
-            'comparison' => 'date'
-        ),
-        'comment' => array(
-            'model' => 'Comment',
-            'field' => 'content',
-            'joins' => array(
-                'comments' => array(
-                    'Resource' => 'id', 
-                    'Comment' => 'resource_id'
-                )
-            ),
-            'comparison' => 'match'
-        ),
-        'transcription' => array(
-            'model' => 'Annotation',
-            'field' => 'description',
-            'joins' => array(
-                'hotspots' => array(
-                    'Resource' => 'id', 
-                    'Annotation' => 'resource_id'
-                )
-            ),
-            'comparison' => 'match'
-        ),
-        'collection' => array(
-            'model' => 'Collection',
-            'field' => 'title',
-            'joins' => array(
-                'memberships' => array(
-                    'Resource' => 'id',
-                    'Membership' => 'resource_id',
-                    'type' => 'LEFT OUTER JOIN'
-                ),
-                'collections' => array(
-                    'Membership' => 'collection_id',
-                    'Collection' => 'id',
-                    'type' => 'LEFT OUTER JOIN'
-                )
-            )
-        ),
-        'sha' => array(
-            'field' => 'sha'
-        ),
-        'title' => array(
-            'field' => 'title'
-        ),
-        'id' => array(
-            'field' => 'id'
-        ),
-        'type' => array(
-            'field' => 'type'
-        ),
-        'filetype' => array(
-            'field' => 'mime_type'
-        ),
-        'filename' => array(
-            'field' => 'file_name'
-        ),
-        'access' => array(
-            'field' => 'public',
-            'values' => array(
-                'public' => true,
-                'private' => false 
-            )
-        )
-    );
+class SqlSearch extends Search {
 
     /**
      * Configure the result set.
@@ -185,33 +44,6 @@ class SqlSearch {
     /**
      * Constructor
      *
-     * @param mixed $query     numerically indexed facets array containing 
-     *                         sub-arrays with 'category' and 'value' keys, 
-     *                         or a JSON query string that will be parsed into 
-     *                         facets. An example facet array is below:
-     *
-     *                           array(
-     *                               0 => array(
-     *                                   'category' => 'user',
-     *                                   'value' => 'Nick Reynolds'
-     *                               ),
-     *                               1 => array(
-     *                                   'category' => 'keyword',
-     *                                   'value' => 'East-Field'
-     *                               )
-     *                           )
-     *
-     *                         Facets are numerically indexed because there may
-     *                         be more than one value per category.
-     *
-     *                         The above can also be given in string format, 
-     *                         using JSON:
-     *
-     *                         { "user": "Nick Reynolds", "keyword": "East-Field" }
-     *
-     *                         A query string without any facets will default 
-     *                         to the special 'all' facet.
-     *
      * @param array $config    contains the database configuration, should contain
      *                         the following keys:
      *
@@ -224,7 +56,7 @@ class SqlSearch {
      *                         Because this is intended to work with ARCS, this
      *                         is based on CakePHP's DboSource config array.
      */
-    public function __construct($config, $query=null) {
+    public function __construct($config) {
 
         # Extract config details.
         $this->database = $db = $config['database'];
@@ -235,70 +67,6 @@ class SqlSearch {
 
         # Get a db connection using PDO
         $this->connection = new \PDO("$driver:$host;dbname:$db", $login, $pass);
-
-        # If given a facets array:
-        if (is_array($query)) {
-            $this->_addFacets($query);
-        # If given a JSON object
-        } else if (is_string($query)) {
-            # Decode it.
-            $parsed = json_decode($query, true);
-            # If we were given an array:
-            if (is_array($parsed)) {
-                # If it's associative (i.e. 1 facet), add the one.
-                if (array_key_exists('category', $parsed)) {
-                    $this->addFacet($parsed['category'], $parsed['value']);
-                # If it's numerically indexed, add them all.
-                } else {
-                    $this->_addFacets($parsed);
-                }
-            # If it's a string, use the special all facet.
-            } else if (is_string($parsed)) {
-                $this->_all($parsed);
-            }
-        }
-    }
-
-    /**
-     * Add a facet to the Search instance.
-     *
-     * Facets can be added incrementally to a live instance, even after a 
-     * search has already been made.
-     *
-     * @param string $category   facet category, returns false if not in mappings.
-     * @param string $value      facet value
-     * @return bool             true on success, false otherwise.
-     */
-    public function addFacet($category, $value, $type = 'and') {
-
-        # We can't add facets that we don't know about.
-        if (!array_key_exists($category, $this->mappings)) {
-            if ($category == 'text') return $this->_all($value);
-            return false;
-        }
-
-        # Look up the mapping.
-        $map = $this->mappings[$category];
-
-        $model = isset($map['model']) ? $map['model'] : $this->model;
-        $comp = isset($map['comparison']) ? $map['comparison'] : 'equality';
-        $field = $map['field'];
-
-        # Add any joins that were given.
-        if (isset($map['joins'])) {
-            foreach($map['joins'] as $table => $predicate) {
-                $this->_addJoin($table, $predicate);
-            }
-        }
-
-        # Perform a value translation, if instructed.
-        if (isset($map['values'])) {
-            if (array_key_exists($value, $map['values'])) {
-                $value = $map['values'][$value];
-            }
-        }
-
-        return $this->_addCondition($model, $field, $value, $comp, $type);
     }
 
     /**
@@ -308,11 +76,11 @@ class SqlSearch {
      */
     public function search($query=null, $options=array()) {
         $options = array_merge($this->options, $options);
-        if (is_array($query)) $this->_addFacets($query);
-        $sql = $this->_buildStatement(false, $options);
-        $count_sql = $this->_buildStatement(true);
-        $rows = $this->_execute($sql, $this->values);
-        $count = $this->_execute($count_sql, $this->values);
+        if (is_array($query)) $this->addFacets($query);
+        $sql = $this->buildStatement('results', $options);
+        $count_sql = $this->buildCountStatement();
+        $rows = $this->execute($sql, $this->values);
+        $count = $this->execute($count_sql, $this->values);
         return array(
             'total' => $count[0][0],
             'limit' => $options['limit'],
@@ -327,11 +95,96 @@ class SqlSearch {
         );
     }
 
-    public function getValues() {
-        return $this->values;
+    /**
+     * Run the query and return a completion array for a category.
+     *
+     * @return array     completion values
+     */
+    public function complete($category, $query=null, $options=array()) {
+        if (is_array($query)) $this->addFacets($query);
+        $map = $this->mappings[$category];
+        $sql = $this->buildCompleteStatement($category, $options);
+        $rows = $this->execute($sql, $this->values);
+        return array_unique(array_values(array_filter(\_\pluck($rows, $map['field']))));
     }
 
-    /* PRIVATE METHODS */
+    /**
+     * Parse category and value pairs from a query string.
+     *
+     * @param string $query    e.g. 'title: "East Field"' or 'East Field'
+     * @return array           parsed query array
+     */
+    public function parseQuery($query) {
+        $array = array();
+
+        preg_match_all('/(\w+):/', $query, $categories);
+        preg_match_all('/"([^"]+)"/', $query, $values);
+
+        $categories = array_pop($categories);
+        $values = array_pop($values);
+
+        foreach($categories as $i=>$cat)
+            array_push($array, array('category' => $cat, 'value' => $values[$i]));
+
+        if (empty($categories) && strlen($query) > 0)
+            $array[] = array('category' => 'text', 'value' => $query);
+
+        return $array;
+    }
+
+    /**
+     * Get the fully qualified database field name for a category
+     *
+     * @param string $category    collection
+     * @return string             Collection.title
+     */
+    public function getCategorySpecifier($category) {
+        if (isset($this->mappings[$category])) {
+            $map = $this->mappings[$category];
+            $model = isset($map['model']) ? $map['model'] : 'Resource';
+            return $model . '.' . $map['field'];
+        }
+        return null;
+    }
+
+    /**
+     * Add a facet to the Search instance.
+     *
+     * @param string $category   facet category, returns false if not in mappings.
+     * @param string $value      facet value
+     * @return bool             true on success, false otherwise.
+     */
+    public function addFacet($category, $value, $type = 'and') {
+
+        # We can't add facets that we don't know about.
+        if (!array_key_exists($category, $this->mappings)) {
+            if ($category == 'text') return $this->addAllFacet($value);
+            return false;
+        }
+
+        # Look up the mapping.
+        $map = $this->mappings[$category];
+
+        $model = isset($map['model']) ? $map['model'] : $this->model;
+        $comp = isset($map['comparison']) ? $map['comparison'] : 'equality';
+        $field = $map['field'];
+
+        # Add any joins that were given.
+        if (isset($map['joins'])) {
+            foreach($map['joins'] as $table => $predicate) {
+                $this->addJoin($table, $predicate);
+            }
+        }
+
+        # Perform a value translation, if instructed.
+        if (isset($map['values'])) {
+            if (array_key_exists($value, $map['values'])) {
+                $value = $map['values'][$value];
+            }
+        }
+
+        return $this->addCondition($model, $field, $value, $comp, $type);
+    }
 
     /**
      * Adds each facet in an array of facets.
@@ -340,7 +193,7 @@ class SqlSearch {
      *                       for a better description.
      * @return bool          true if all facets were added, false otherwise.
      */
-    private function _addFacets($facets, $type = 'and') {
+    private function addFacets($facets, $type = 'and') {
         $all = true;
         foreach($facets as $f) {
             if (!$this->addFacet($f['category'], $f['value'], $type)) {
@@ -350,12 +203,21 @@ class SqlSearch {
         return $all;
     }
 
-    private function _all($value) {
+    /**
+     * Adds the special 'text' facet, which searches all comparable fields.
+     *
+     * @param string $value    comparison value
+     */
+    private function addAllFacet($value) {
         foreach ($this->mappings as $facet => $map) {
             if ($facet == 'access') continue;
             if (!isset($map['comparison']) ||  $map['comparison'] == 'equality')
                 $this->addFacet($facet, $value, 'or');
         }
+    }
+
+    public function getValues() {
+        return $this->values;
     }
 
     /**
@@ -370,7 +232,7 @@ class SqlSearch {
      * @return mixed   Returns the condition (truthy) if one could be made and 
      *                 false otherwise.
      */
-    private function _addCondition($model, $field, $value, $comparison, $type) {
+    private function addCondition($model, $field, $value, $comparison, $type) {
         # We're using PDO::prepare to properly escape the values. Our statement
         # string contains :[name] parameters that will be substituted by PDO.
         #
@@ -423,7 +285,7 @@ class SqlSearch {
      * @param array $predicate
      * @return bool True if the table was joined, false otherwise.
      */
-    private function _addJoin($table, $predicate) {
+    private function addJoin($table, $predicate) {
         # Don't make duplicate joins. We'll keep track of the tables
         # we've joined.
         if (in_array($table, $this->joined)) {
@@ -434,7 +296,7 @@ class SqlSearch {
         $aliases = array_keys($predicate);
         $fields = array_values($predicate);
         $alias = $aliases[1];
-        $joinType = isset($predicate['type']) ? $predicate['type'] : 'INNER JOIN';
+        $joinType = isset($predicate['type']) ? $predicate['type'] : 'LEFT OUTER JOIN';
 
         # Construct a join and add it to the joins array.
         $join = " $joinType `{$this->database}`.`{$table}` `$alias` ";
@@ -447,19 +309,36 @@ class SqlSearch {
         return true;
     }
 
+    private function buildCountStatement($options=array()) {
+        return $this->buildStatement('count', $options);
+    }
+
+    private function buildCompleteStatement($category, $options=array()) {
+        $map = $this->mappings[$category];
+        $options['completionField'] = $this->getCategorySpecifier($category);
+        if (isset($map['joins'])) {
+            foreach($map['joins'] as $table => $predicate) {
+                $this->addJoin($table, $predicate);
+            }
+        }
+        return $this->buildStatement('complete', $options);
+    }
+
     /**
      * Generates the search SQL by concatenating the instance properties
      * into a valid SQL statement.
      *
      * @return string SQL statement
      */
-    private function _buildStatement($count=false, $options=array()) {
+    private function buildStatement($type='results', $options=array()) {
         $options = array_merge($this->options, $options);
 
-        if ($count)
+        if ($type == 'count')
             $sql = "SELECT COUNT(`{$this->model}`.`id`) FROM ";
-        else
+        if ($type == 'results')
             $sql = "SELECT `{$this->model}`.`id` FROM ";
+        if ($type == 'complete')
+            $sql = "SELECT {$options['completionField']} FROM ";
 
         $sql .= "`{$this->database}`.`{$this->table}` ";
         $sql .= "AS `{$this->model}`";
@@ -482,7 +361,7 @@ class SqlSearch {
             $sql .= "$where  AND  `Resource`.`public` = 1 ";
         }
 
-        if ($count) return $sql;
+        if ($type == 'count') return $sql;
 
         $sql .= " ORDER BY `{$this->model}`.`{$options['order']}` {$options['direction']}";
         $sql .= " LIMIT {$options['limit']}";
@@ -496,7 +375,7 @@ class SqlSearch {
      *
      * @return array result rows
      */
-    public function _execute($sql, $values) {
+    public function execute($sql, $values) {
         $query = $this->connection->prepare($sql, array(
             \PDO::ATTR_CURSOR => \PDO::CURSOR_FWDONLY
         ));

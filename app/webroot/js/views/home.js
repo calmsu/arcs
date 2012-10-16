@@ -36,15 +36,10 @@
     };
 
     Home.prototype.renderDetails = function($el) {
-      var data, type;
+      var query, type;
       type = $el.data('type');
-      data = [
-        {
-          category: 'type',
-          value: type
-        }
-      ];
-      return $.postJSON(arcs.baseURL + 'resources/search?n=12', data, function(response) {
+      query = encodeURIComponent('type: "' + type + '"');
+      return $.getJSON(arcs.baseURL + ("resources/search?n=12&q=" + query), function(response) {
         return $el.children('div').html(arcs.tmpl('home/details', {
           resources: response.results
         }));

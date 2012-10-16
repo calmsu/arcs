@@ -25,7 +25,7 @@ class arcs.views.Home extends Backbone.View
 
   renderDetails: ($el) ->
     type = $el.data('type') 
-    data = [{category: 'type', value: type}]
-    $.postJSON arcs.baseURL + 'resources/search?n=12', data, (response) ->
+    query = encodeURIComponent('type: "' + type + '"')
+    $.getJSON arcs.baseURL + "resources/search?n=12&q=#{query}", (response) ->
       $el.children('div').html arcs.tmpl 'home/details', 
         resources: response.results

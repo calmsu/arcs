@@ -1,6 +1,37 @@
 (function() {
+  var complete, completeFacet, memoize;
 
-  arcs.complete = function(url) {
+  memoize = function(f, expire) {
+    var cache;
+    cache = {};
+    return function() {
+      var args, key, res, time;
+      args = _.toArray(arguments);
+      key = args.join('');
+      time = Date.now();
+      if (key in cache && (time - cache[key][0] < expire)) return cache[key][1];
+      res = f.apply(this, args);
+      cache[key] = [time, res];
+      return res;
+    };
+  };
+
+  completeFacet = function(category, query) {
+    var result;
+    if (query == null) query = '';
+    result = [];
+    $.ajax({
+      url: arcs.baseURL + ("resources/complete?cat=" + category + "&q=" + query),
+      async: false,
+      dataType: 'json',
+      success: function(data) {
+        return result = _.compact(_.uniq(_.values(data)));
+      }
+    });
+    return result;
+  };
+
+  complete = function(url) {
     var result;
     result = [];
     $.ajax({
@@ -13,6 +44,10 @@
     });
     return result;
   };
+
+  arcs.completeFacet = memoize(completeFacet, 30000);
+
+  arcs.complete = memoize(complete, 30000);
 
   arcs.completeDate = function(url) {
     var aliases, d, dates, fmt, parseFmt, raw, _ref;

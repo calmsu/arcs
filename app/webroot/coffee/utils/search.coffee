@@ -17,6 +17,24 @@ class arcs.utils.Search extends Backbone.View
     success   : ->
     error     : ->
 
+  # Keys in the facets object are suggested as facets.  Values must be either
+  # an array, or a function that returns one. If it's a function, the search
+  # term will be given as an argument.
+  facets:
+    id         : []
+    sha        : []
+    access     : ['public', 'private']
+    filetype   : arcs.completeFacet
+    filename   : arcs.completeFacet
+    title      : arcs.completeFacet
+    user       : arcs.completeFacet
+    keyword    : arcs.completeFacet
+    collection : arcs.completeFacet
+    type       : arcs.completeFacet
+    created    : -> arcs.completeDate 'resources/complete/created'
+    uploaded   : -> arcs.completeDate 'resources/complete/created'
+    modified   : -> arcs.completeDate 'resources/complete/modified'
+
   initialize: ->
     [@query, @page] = [@options.query, @options.page]
     @collection = @results = new arcs.collections.ResultSet
@@ -27,14 +45,13 @@ class arcs.utils.Search extends Backbone.View
         search: (query, searchCollection) =>
           @query = query # Update our query value
           @options.onSearch query # Fire the onSearch cb
-          @run searchCollection.toJSON()
+          @run()
         facetMatches: (callback) =>
           callback _.keys @facets
         valueMatches: (facet, searchTerm, callback) =>
           val = @facets[facet]
           if typeof val == 'function'
-            @facets[facet] = val()
-            callback @facets[facet]
+            callback val(facet, encodeURIComponent(@query))
           else 
             callback val
     @run() if @options.run
@@ -42,24 +59,6 @@ class arcs.utils.Search extends Backbone.View
   # Convenience wrapper to call the VS.ui.SearchBox object's setQuery method.
   setQuery: (query) ->
     @vs.searchBox.setQuery query
-
-  # Keys in the facets object are suggested as facets.  Values must be either
-  # an array, or a function that returns one. If it's a function, the search
-  # term will be given as an argument.
-  facets:
-    access     : ['public', 'private']
-    filetype   : -> {value: k, label: v} for k,v of arcs.utils.mime.types()
-    filename   : []
-    id         : []
-    sha        : []
-    title      : -> arcs.complete 'resources/complete/title'
-    user       : -> arcs.complete 'users/complete'
-    keyword    : -> arcs.complete 'keywords/complete'
-    collection : -> arcs.complete 'collections/complete'
-    created    : -> arcs.completeDate 'resources/complete/created'
-    uploaded   : -> arcs.completeDate 'resources/complete/created'
-    modified   : -> arcs.completeDate 'resources/complete/modified'
-    type       : -> _.compact _.keys arcs.config.types
 
   getLast: ->
     @results.last (@results.length % @options.n or @options.n)
@@ -70,23 +69,19 @@ class arcs.utils.Search extends Backbone.View
   run: (query, options) ->
     # Use this.options for default opts, but don't alter it.
     options = _.extend _.clone(@options), options
+    query ?= @vs.searchBox.value()
 
-    params = "?related&n=#{options.n}" +
+    params = "?q=#{encodeURIComponent(query)}" +
+      "&related&n=#{options.n}" +
       "&page=#{options.page}" +
       "&order=#{options.order}" +
       "&direction=#{options.direction}"
-
-    query ?= @vs.searchQuery.toJSON()
-    delete q.app for q in query
 
     arcs.loader.show() if options.loader
 
     @results.fetch
       add: options.add
-      data: JSON.stringify query
-      type: 'POST'
       url: @results.url() + params
-      contentType: 'application/json'
       success: =>
         options.success()
         arcs.loader.hide() if options.loader

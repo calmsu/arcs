@@ -35,11 +35,18 @@ class SearchController extends AppController {
      */
     public function resources() {
         $options = $this->parseParams();
-        if (!$this->request->data) return $this->emptySearch($options);
+
+        if (!isset($this->request->query['q']))
+            return $this->emptySearch($options);
+
         $searcher = $this->getSearcher();
-        if ($this->Auth->loggedIn()) $searcher->publicFilter = false;
+        if ($this->Auth->loggedIn()) 
+            $searcher->publicFilter = false;
+        $query = $searcher->parseQuery($this->request->query['q']);
+
         # Get the result ids.
-        $response = $searcher->search($this->request->data, $options);
+        $response = $searcher->search($query, $options);
+
         if ($response['order'] == 'relevance') {
             $response['results'] = $this->Resource->findAllFromIds($response['results']);
         } else {
@@ -55,6 +62,22 @@ class SearchController extends AppController {
             unset($response['mode']);
         }
         $this->json(200, $response);
+    }
+
+    /**
+     * Complete a category given a query.
+     */
+    public function complete() {
+        $searcher = $this->getSearcher();
+        if ($this->Auth->loggedIn()) 
+            $searcher->publicFilter = false;
+
+        $category = $this->request->query['cat'];
+        $query = $searcher->parseQuery($this->request->query['q']);
+        $options = array('limit' => 100);
+        $results = $searcher->complete($category, $query, $options);
+
+        $this->json(200, $results);
     }
 
     /**

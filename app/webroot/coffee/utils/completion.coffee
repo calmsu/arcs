@@ -1,7 +1,33 @@
 # completion.coffee
 # -----------------
 
-arcs.complete = (url) ->
+# Return a memoized version of a function.  The expire parameter is the
+# time in milliseconds after which the cache will be considered expired.
+memoize = (f, expire) ->
+  cache = {}
+  ->
+    args = _.toArray(arguments)
+    key = args.join('')  # naive but suitable for ajax urls
+    time = Date.now()
+    if key of cache and (time - cache[key][0] < expire)
+      return cache[key][1]
+    res = f.apply(@, args)
+    cache[key] = [time, res]
+    res
+
+
+completeFacet = (category, query='') ->
+  result = []
+  $.ajax
+    url: arcs.baseURL + "resources/complete?cat=#{category}&q=#{query}"
+    async: false
+    dataType: 'json'
+    success: (data) ->
+      result = _.compact _.uniq _.values(data)
+  result
+
+
+complete = (url) ->
   result = []
   $.ajax
     url: arcs.baseURL + url
@@ -10,6 +36,11 @@ arcs.complete = (url) ->
     success: (data) ->
       result = _.compact _.uniq _.values(data)
   result
+
+
+arcs.completeFacet = memoize completeFacet, 30000
+arcs.complete = memoize complete, 30000
+
 
 # Get an array of dates from the server, reformat them, and add a few
 # aliases. Helper method for date-type facets.
@@ -22,6 +53,7 @@ arcs.completeDate = (url) ->
     {label:'yesterday', value: moment().subtract('days', 1).format(fmt)}
   ]
   _.union dates, aliases
+
 
 # The autocomplete method wraps jQueryUI's autocomplete and ensures
 # that the input field remains in focus. It can also handle multiple

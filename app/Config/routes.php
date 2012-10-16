@@ -74,10 +74,15 @@
     Router::connect('/search/**', 
         array('controller' => 'search', 'action' => 'search')
     );
+
     # We can access the JSON search through either /api/search or this:
     Router::connect('/resources/search', 
         array('controller' => 'search', 'action' => 'resources')
     );
+    Router::connect('/resources/complete', 
+        array('controller' => 'search', 'action' => 'complete')
+    );
+
     # Search must have a trailing slash, for the client-side code's sanity. 
     Router::redirect('/search', '/search/');
 
