@@ -338,7 +338,7 @@ class SqlSearch extends Search {
         if ($type == 'results')
             $sql = "SELECT `{$this->model}`.`id` FROM ";
         if ($type == 'complete')
-            $sql = "SELECT {$options['completionField']} FROM ";
+            $sql = "SELECT DISTINCT({$options['completionField']}) FROM ";
 
         $sql .= "`{$this->database}`.`{$this->table}` ";
         $sql .= "AS `{$this->model}`";
