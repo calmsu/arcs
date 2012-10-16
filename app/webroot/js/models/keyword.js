@@ -10,7 +10,10 @@
       Keyword.__super__.constructor.apply(this, arguments);
     }
 
-    Keyword.prototype.urlRoot = arcs.baseURL + 'keywords';
+    Keyword.prototype.url = function() {
+      if (this.isNew()) return arcs.baseURL + 'keywords';
+      return arcs.baseURL + ("keywords/" + this.id);
+    };
 
     return Keyword;
 

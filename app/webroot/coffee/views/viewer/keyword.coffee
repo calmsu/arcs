@@ -7,6 +7,7 @@ class arcs.views.Keyword extends Backbone.View
 
   events:
     'keydown #keyword-btn': 'saveKeyword'
+    'click .keyword-remove-btn': 'deleteKeyword'
 
   initialize: ->
     @collection = new arcs.collections.KeywordList
@@ -34,6 +35,14 @@ class arcs.views.Keyword extends Backbone.View
 
     # Return false to ensure the keydown doesn't bubble up.
     return false
+
+  deleteKeyword: (e) ->
+    $keyword = $(e.target).parent().find('.keyword-link')
+    keyword = @collection.get $keyword.data 'id'
+    return unless keyword
+    arcs.confirm 'Are you sure?', 
+      "This keyword will be deleted.", =>
+        keyword.destroy()
 
   render: ->
     @$('#keywords-wrapper').html arcs.tmpl 'viewer/keywords', 

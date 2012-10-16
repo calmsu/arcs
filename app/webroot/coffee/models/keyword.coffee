@@ -1,4 +1,7 @@
 # keyword.coffee
 # --------------
 class arcs.models.Keyword extends Backbone.Model
-  urlRoot: arcs.baseURL + 'keywords'
+
+  url: ->
+    return arcs.baseURL + 'keywords' if @isNew()
+    arcs.baseURL + "keywords/#{@id}"

@@ -1,7 +1,11 @@
 <ul class="keyword-list">
 <% _.each(keywords, function(k) { %>
-  <li><a class="keyword-link subtle" id="keyword-<%= k.id %>" href="<%= k.link %>">
-    <%- k.keyword %>
-  </a></li>
+  <li>
+    <a class="keyword-link subtle" id="keyword-<%= k.id %>" 
+      href="<%= k.link %>" data-id="<%= k.id %>"><%- k.keyword %></a>
+    <% if (arcs.user.is('Sr. Researcher') || k.user_id == arcs.user.id) { %>
+      <i class="keyword-remove-btn icon-remove"></i>
+    <% } %>
+  </li>
 <% }) %>
 </ul>

@@ -11,7 +11,8 @@
     }
 
     Keyword.prototype.events = {
-      'keydown #keyword-btn': 'saveKeyword'
+      'keydown #keyword-btn': 'saveKeyword',
+      'click .keyword-remove-btn': 'deleteKeyword'
     };
 
     Keyword.prototype.initialize = function() {
@@ -41,6 +42,17 @@
       keyword.save();
       this.collection.add(keyword);
       return false;
+    };
+
+    Keyword.prototype.deleteKeyword = function(e) {
+      var $keyword, keyword,
+        _this = this;
+      $keyword = $(e.target).parent().find('.keyword-link');
+      keyword = this.collection.get($keyword.data('id'));
+      if (!keyword) return;
+      return arcs.confirm('Are you sure?', "This keyword will be deleted.", function() {
+        return keyword.destroy();
+      });
     };
 
     Keyword.prototype.render = function() {

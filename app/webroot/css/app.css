@@ -5782,6 +5782,9 @@ ul.annotations li.annotation:hover {
 .keyword-list li {
   line-height: 22px;
 }
+.keyword-list li i:hover {
+  cursor: pointer;
+}
 .keyword-link {
   font-family: Monospace;
   padding: 1px;
