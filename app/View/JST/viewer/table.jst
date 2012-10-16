@@ -1,7 +1,10 @@
 <tr>
   <td>Title</td>
   <td>
-    <%- title %>
+    <a class="subtle" 
+      href='<%= arcs.url("search", "title:" + arcs.inflector.enquote(title, false)) %>'>
+      <%- title || '' %>
+    </a>
   </td>
 </tr>
 <tr>
@@ -15,7 +18,8 @@
 <tr>
   <td>Type</td>
   <td>
-    <a class="subtle" href="<%= arcs.url('search', 'type:' + arcs.inflector.enquote(type)) %>">
+    <a class="subtle" 
+      href='<%= arcs.url("search", "type:" + arcs.inflector.enquote(type, false)) %>'>
       <%- type || '' %>
     </a>
   </td>
@@ -36,11 +40,7 @@
 </tr>
 <tr>
   <td>File-type</td>
-  <td>
-    <a class="subtle" href="<%= arcs.url('search', 'filetype:' + mime_type) %>">
-      <%= mime_type %>
-    </a>
-  </td>
+  <td><%= mime_type %></td>
 </tr>
 <% _.each(metadata.attributes, function(v, k) { %>
   <% if (v) { %>
