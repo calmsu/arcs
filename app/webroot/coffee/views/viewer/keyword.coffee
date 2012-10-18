@@ -13,7 +13,7 @@ class arcs.views.Keyword extends Backbone.View
     @collection = new arcs.collections.KeywordList
 
     arcs.bus.on 'indexChange', => @collection.fetch()
-    @collection.on 'add remove reset', @render, @
+    @collection.on 'add remove reset sync', @render, @
 
     arcs.utils.autocomplete 
       sel: '#keyword-btn'

@@ -21,7 +21,7 @@
       arcs.bus.on('indexChange', function() {
         return _this.collection.fetch();
       });
-      this.collection.on('add remove reset', this.render, this);
+      this.collection.on('add remove reset sync', this.render, this);
       arcs.utils.autocomplete({
         sel: '#keyword-btn',
         source: arcs.complete('keywords/complete')

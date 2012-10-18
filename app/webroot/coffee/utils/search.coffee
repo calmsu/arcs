@@ -71,11 +71,13 @@ class arcs.utils.Search extends Backbone.View
     options = _.extend _.clone(@options), options
     query ?= @vs.searchBox.value()
 
-    params = "?q=#{encodeURIComponent(query)}" +
-      "&related&n=#{options.n}" +
+    params = "?related&n=#{options.n}" +
       "&page=#{options.page}" +
       "&order=#{options.order}" +
       "&direction=#{options.direction}"
+
+    if query 
+      params += "&q=#{encodeURIComponent(query)}"
 
     arcs.loader.show() if options.loader
 

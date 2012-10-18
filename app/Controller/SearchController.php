@@ -40,7 +40,7 @@ class SearchController extends AppController {
             return $this->emptySearch($options);
 
         $searcher = $this->getSearcher();
-        if ($this->Auth->loggedIn()) 
+        if ($this->Auth->loggedIn())
             $searcher->publicFilter = false;
         $query = $searcher->parseQuery($this->request->query['q']);
 

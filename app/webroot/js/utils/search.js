@@ -91,7 +91,8 @@
         _this = this;
       options = _.extend(_.clone(this.options), options);
       if (query == null) query = this.vs.searchBox.value();
-      params = ("?q=" + (encodeURIComponent(query))) + ("&related&n=" + options.n) + ("&page=" + options.page) + ("&order=" + options.order) + ("&direction=" + options.direction);
+      params = ("?related&n=" + options.n) + ("&page=" + options.page) + ("&order=" + options.order) + ("&direction=" + options.direction);
+      if (query) params += "&q=" + (encodeURIComponent(query));
       if (options.loader) arcs.loader.show();
       this.results.fetch({
         add: options.add,
