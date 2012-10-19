@@ -119,6 +119,17 @@ class Search {
                 )
             )
         ),
+        'metadata' => array(
+            'model' => 'Metadata',
+            'field' => 'value',
+            'field2' => 'attribute',
+            'joins' => array(
+                'metadata' => array(
+                    'Resource' => 'id', 
+                    'Metadata' => 'resource_id'
+                )
+            )
+        ),
         'sha' => array(
             'field' => 'sha'
         ),
@@ -143,6 +154,6 @@ class Search {
                 'public' => true,
                 'private' => false 
             )
-        )
+        ),
     );
 }

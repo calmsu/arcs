@@ -102,7 +102,12 @@ class SqlSearch extends Search {
      */
     public function complete($category, $query=null, $options=array()) {
         if (is_array($query)) $this->addFacets($query);
-        $map = $this->mappings[$category];
+        if (!isset($this->mappings[$category])) {
+            $map = $this->mappings['metadata'];
+            $this->addCondition($map['model'], $map['field2'], $category, 'equality', 'and');
+        } else {
+            $map = $this->mappings[$category];
+        }
         $sql = $this->buildCompleteStatement($category, $options);
         $rows = $this->execute($sql, $this->values);
         return array_unique(array_values(array_filter(\_\pluck($rows, $map['field']))));
@@ -117,14 +122,26 @@ class SqlSearch extends Search {
     public function parseQuery($query) {
         $array = array();
 
+        // Example query: 'title: "Boom" Boom'
+
+        // Find categories, e.g. title:
         preg_match_all('/(\w+):/', $query, $categories);
+        // Find quoted-values, e.g. "Boom"
         preg_match_all('/"([^"]+)"/', $query, $values);
+        // Find orphaned text values, e.g. Boom
+        preg_match_all('/\b(\w+)\b(?!:)(?=([^"]*"[^"]*")*[^"]*$)/', $query, $orphans);
 
         $categories = array_pop($categories);
         $values = array_pop($values);
 
         foreach($categories as $i=>$cat)
             array_push($array, array('category' => $cat, 'value' => $values[$i]));
+
+        if (!empty($orphans)) {
+            $orphans = array_shift($orphans);
+            foreach($orphans as $value)
+                array_push($array, array('category' => 'text', 'value' => $value));
+        }
 
         if (empty($categories) && strlen($query) > 0)
             $array[] = array('category' => 'text', 'value' => $query);
@@ -139,12 +156,12 @@ class SqlSearch extends Search {
      * @return string             Collection.title
      */
     public function getCategorySpecifier($category) {
-        if (isset($this->mappings[$category])) {
-            $map = $this->mappings[$category];
-            $model = isset($map['model']) ? $map['model'] : 'Resource';
-            return $model . '.' . $map['field'];
-        }
-        return null;
+        if (!isset($this->mappings[$category])) 
+            $category = 'metadata';
+
+        $map = $this->mappings[$category];
+        $model = isset($map['model']) ? $map['model'] : 'Resource';
+        return $model . '.' . $map['field'];
     }
 
     /**
@@ -156,10 +173,10 @@ class SqlSearch extends Search {
      */
     public function addFacet($category, $value, $type = 'and') {
 
-        # We can't add facets that we don't know about.
+        # Handle special facets:
         if (!array_key_exists($category, $this->mappings)) {
             if ($category == 'text') return $this->addAllFacet($value);
-            return false;
+            return $this->addMetaFacet($category, $value);
         }
 
         # Look up the mapping.
@@ -170,11 +187,7 @@ class SqlSearch extends Search {
         $field = $map['field'];
 
         # Add any joins that were given.
-        if (isset($map['joins'])) {
-            foreach($map['joins'] as $table => $predicate) {
-                $this->addJoin($table, $predicate);
-            }
-        }
+        $this->addJoins($category);
 
         # Perform a value translation, if instructed.
         if (isset($map['values'])) {
@@ -214,6 +227,18 @@ class SqlSearch extends Search {
             if (!isset($map['comparison']) ||  $map['comparison'] == 'equality')
                 $this->addFacet($facet, $value, 'or');
         }
+    }
+
+    /**
+     * Search ad-hoc metadata fields.
+     *
+     * @param string $attribute    comparison value
+     */
+    private function addMetaFacet($attribute, $value) {
+        $map = $this->mappings['metadata'];
+        $this->addJoins('metadata');
+        $this->addCondition($map['model'], $map['field'], $value, 'equality', 'and');
+        $this->addCondition($map['model'], $map['field2'], $attribute, 'equality', 'and');
     }
 
     public function getValues() {
@@ -278,6 +303,18 @@ class SqlSearch extends Search {
     }
 
     /**
+     * Add any necessary joins for a category.
+     */
+    private function addJoins($category) {
+        $map = $this->mappings[$category];
+        if (isset($map['joins'])) {
+            foreach($map['joins'] as $table => $predicate) {
+                $this->addJoin($table, $predicate);
+            }
+        }
+    }
+
+    /**
      * Adds an INNER JOIN to the joins property, and the joining table to the
      * joined property. If the table is already in joined, we won't do another.
      *
@@ -314,8 +351,10 @@ class SqlSearch extends Search {
     }
 
     private function buildCompleteStatement($category, $options=array()) {
-        $map = $this->mappings[$category];
         $options['completionField'] = $this->getCategorySpecifier($category);
+        if (!isset($this->mappings[$category]))
+            $category = 'metadata';
+        $map = $this->mappings[$category];
         if (isset($map['joins'])) {
             foreach($map['joins'] as $table => $predicate) {
                 $this->addJoin($table, $predicate);
