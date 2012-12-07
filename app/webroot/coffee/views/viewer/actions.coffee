@@ -12,6 +12,7 @@ class arcs.views.ViewerActions extends arcs.views.BaseActions
       'ctrl+e': if arcs.user.isLoggedIn() then @edit else ->
       '-': @zoomOut
       '+': @zoomIn
+      '0': -> @zoomTo 1
       p: @onNavClick
     if screenfull
       screenfull.onchange = _.bind(@onFullScreenChange, @)
@@ -174,6 +175,12 @@ class arcs.views.ViewerActions extends arcs.views.BaseActions
     setTimeout(->
       arcs.bus.trigger 'resourceResize'
     , 1000)
+
+  zoomTo: (level) ->
+    $('#resource img').data 'zoom', level
+    @viewer.resize()
+    @_checkZoom()
+    arcs.bus.trigger 'resourceReloaded'
 
   zoomIn: ->
     current = $('#resource img').data 'zoom'

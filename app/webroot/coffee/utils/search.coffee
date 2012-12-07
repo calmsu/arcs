@@ -8,7 +8,7 @@ class arcs.utils.Search extends Backbone.View
     query     : ''
     loader    : false
     order     : 'modified'
-    direction : 'desc'
+    direction : 'asc'
     page      : 1
     n         : 30
     add       : false
@@ -23,7 +23,15 @@ class arcs.utils.Search extends Backbone.View
   facets:
     id         : []
     sha        : []
+    text       : []
     access     : ['public', 'private']
+    # identifier : arcs.completeFacet
+    # language   : arcs.completeFacet
+    # location   : arcs.completeFacet
+    # subject    : arcs.completeFacet
+    # medium     : arcs.completeFacet
+    # format     : arcs.completeFacet
+    # creator    : arcs.completeFacet
     filetype   : arcs.completeFacet
     filename   : arcs.completeFacet
     title      : arcs.completeFacet

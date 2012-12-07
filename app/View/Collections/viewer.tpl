@@ -78,6 +78,9 @@
       <li class="active" id="information-btn">
         <a data-toggle="tab" href="#information">Info</a>
       </li>
+      <li id="notations-btn">
+        <a data-toggle="tab" href="#notations">Notations</a>
+      </li>
       <li id="discussion-btn">
         <a data-toggle="tab" href="#discussion">Discussion</a>
       </li>
@@ -90,7 +93,8 @@
         <h3>Resource</h3>
         <table id="resource-details" 
             class="details table table-striped table-bordered"></table>
-        <hr>
+      </div>
+      <div class="tab-pane" id="notations">
         <h3>Annotations</h3>
         <div id="annotations-wrapper"></div>
         <hr>

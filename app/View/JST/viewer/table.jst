@@ -46,7 +46,16 @@
   <% if (v) { %>
   <tr>
     <td><%- k.charAt(0).toUpperCase() + k.substr(1) %></td>
-    <td><%- v %></td>
+    <td>
+    <% if (k.match(/date/i)) { %>
+      <%- v %>
+    <% } else { %>
+      <a class="subtle"
+        href='<%= arcs.url("search", k + ":" + arcs.inflector.enquote(v, false)) %>'>
+        <%- v %>
+      </a>
+    <% } %>
+    </td>
   </tr>
   <% } %>
 <% }) %>

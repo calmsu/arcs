@@ -40,7 +40,7 @@
         el: $('#discussion')
       });
       this.keywords = new arcs.views.Keyword({
-        el: $('#information')
+        el: $('#notations')
       });
       this.annotations = new arcs.views.Annotation({
         el: $('#viewer')

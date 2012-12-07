@@ -22,6 +22,9 @@
         'ctrl+e': arcs.user.isLoggedIn() ? this.edit : function() {},
         '-': this.zoomOut,
         '+': this.zoomIn,
+        '0': function() {
+          return this.zoomTo(1);
+        },
         p: this.onNavClick
       });
       if (screenfull) {
@@ -232,6 +235,13 @@
       return setTimeout(function() {
         return arcs.bus.trigger('resourceResize');
       }, 1000);
+    };
+
+    ViewerActions.prototype.zoomTo = function(level) {
+      $('#resource img').data('zoom', level);
+      this.viewer.resize();
+      this._checkZoom();
+      return arcs.bus.trigger('resourceReloaded');
     };
 
     ViewerActions.prototype.zoomIn = function() {

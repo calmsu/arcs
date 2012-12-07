@@ -15,7 +15,7 @@
       query: '',
       loader: false,
       order: 'modified',
-      direction: 'desc',
+      direction: 'asc',
       page: 1,
       n: 30,
       add: false,
@@ -28,6 +28,7 @@
     Search.prototype.facets = {
       id: [],
       sha: [],
+      text: [],
       access: ['public', 'private'],
       filetype: arcs.completeFacet,
       filename: arcs.completeFacet,

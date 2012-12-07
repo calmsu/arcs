@@ -102,18 +102,18 @@
     </div>
     <div id="sort-buttons" class="btn-group actions-right">
       <button id="sort-btn" class="btn dropdown-toggle" data-toggle="dropdown">
-        Sort by <span id="sort-by">modified</span>
+        Sort by <span id="sort-by">title</span>
         <span class="caret"></span>
       </button>
       <ul class="dropdown-menu">
-        <li><a class="sort-btn" id="sort-title-btn">title&nbsp;</a></li>
-        <li><a class="sort-btn" id="sort-modified-btn">modified&nbsp;
+        <li><a class="sort-btn" id="sort-title-btn">title&nbsp;
           <i class="icon-ok"></i></a></li>
+        <li><a class="sort-btn" id="sort-modified-btn">modified&nbsp;</a></li>
         <li><a class="sort-btn" id="sort-created-btn">created&nbsp;</a></li>
         <li class="divider"></li>
-        <li><a class="dir-btn" id="dir-asc-btn">ascending&nbsp;</a></li>
-        <li><a class="dir-btn" id="dir-desc-btn">descending&nbsp;
+        <li><a class="dir-btn" id="dir-asc-btn">ascending&nbsp;
           <i class="icon-ok"></i></a></li>
+        <li><a class="dir-btn" id="dir-desc-btn">descending&nbsp;</a></li>
       </ul>
     </div>
     <div id="open-buttons" class="btn-group actions-right">

@@ -14,8 +14,8 @@
     }
 
     Search.prototype.options = {
-      sort: 'modified',
-      sortDir: 'desc',
+      sort: 'title',
+      sortDir: 'asc',
       grid: true,
       url: arcs.baseURL + 'search/'
     };
@@ -37,7 +37,12 @@
         pushState: true,
         root: this.options.url
       });
-      if (!this.router.searched) this.search.run();
+      if (!this.router.searched) {
+        this.search.run(null, {
+          order: this.options.sort,
+          direction: this.options.sortDir
+        });
+      }
       this.search.results.on('change remove', this.render, this);
       arcs.bus.on('selection', this.afterSelection, this);
       arcs.keys.map(this, {

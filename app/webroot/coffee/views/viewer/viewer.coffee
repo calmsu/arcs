@@ -33,7 +33,7 @@ class arcs.views.Viewer extends Backbone.View
     @discussion = new arcs.views.DiscussionTab
       el: $('#discussion')
     @keywords = new arcs.views.Keyword
-      el: $('#information')
+      el: $('#notations')
     @annotations = new arcs.views.Annotation
       el: $('#viewer')
     @carousel = new arcs.views.Carousel

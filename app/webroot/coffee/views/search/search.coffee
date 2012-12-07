@@ -5,8 +5,8 @@ arcs.views.search ?= {}
 class arcs.views.search.Search extends Backbone.View
 
   options:
-    sort: 'modified'
-    sortDir: 'desc'
+    sort: 'title'
+    sortDir: 'asc'
     grid: true
     url: arcs.baseURL + 'search/'
 
@@ -31,7 +31,10 @@ class arcs.views.search.Search extends Backbone.View
       root: @options.url
 
     # Search unless the Router already delegated it.
-    @search.run() unless @router.searched
+    unless @router.searched 
+      @search.run null,
+        order: @options.sort
+        direction: @options.sortDir
 
     # Set up some event bindings.
     @search.results.on 'change remove', @render, @
