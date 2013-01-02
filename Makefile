@@ -36,13 +36,13 @@ HEADER="/**\n\
   * Copyright 2012, Michigan State University Board of Trustees\n\
   */\n"
 
+.PHONY: docs
+
+default: coffee less
+
 # Compile coffee in webroot/coffee to webroot/js
 coffee:
 	coffee --compile --output $(JS) $(COFFEE)
-
-# Compile less in (and included in) css/app.less to css/app.css
-less:
-	cd $(CSS); lessc app.less > app.css
 
 # Concatenate and minify javascript.
 js: coffee
@@ -50,15 +50,19 @@ js: coffee
 	$(foreach script, $(SCRIPTS), uglifyjs -nc $(JS)/$(script) >> $(ASSETS)/arcs.js;)
 	cat $(ASSETS)/templates.js >> $(ASSETS)/arcs.js
 
+# Compile less in (and included in) css/app.less to css/app.css
+less:
+	cd $(CSS); lessc app.less > app.css
+
 # Concatenate and minify css.
 css: less
 	echo $(HEADER) > $(ASSETS)/arcs.css
 	$(foreach style, $(STYLESHEETS), cleancss $(CSS)/$(style) >> $(ASSETS)/arcs.css;)
 
 # Convert user documentation from Markdown and put it in the View directory.
-doc: 
+docs: 
 	$(foreach doc, $(DOCS), markdown_py -x tables -x headerid $(doc) > \
 		app/View/Help/$(notdir $(basename $(doc))).ctp;)
 
 # Make everything.
-all: js css doc
+all: js css docs
