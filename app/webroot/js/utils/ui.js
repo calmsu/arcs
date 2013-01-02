@@ -1,5 +1,9 @@
 (function() {
 
+  if (!('open' in document.createElement('details'))) {
+    document.documentElement.className += ' no-details';
+  }
+
   $(function() {
     $('body').on('focus', 'input[placeholder]', function(e) {
       var $el;

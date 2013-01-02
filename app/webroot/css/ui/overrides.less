@@ -169,3 +169,28 @@ h4 {
     padding: 4px;
   }
 }
+
+.no-details details {
+  > * {
+    position: absolute;
+    visibility: hidden;
+  }
+
+  > summary, &[open] > * {
+    position: static;
+    visibility: visible;
+  }
+
+  > summary {
+    display: block;
+    &:before {
+      content: "►";
+      padding-right: 5px;
+      font-size: 11px;
+    }
+  }
+
+  &[open] > summary:before {
+    content:"▼"
+  }
+}

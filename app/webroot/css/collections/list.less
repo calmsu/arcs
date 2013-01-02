@@ -1,0 +1,72 @@
+// home.less
+// ---------
+
+.collection-list-wrapper {
+  .unselectable;
+
+  h2 {
+    img {
+      display: inline;
+      background: white;
+    }
+    display: inline;
+    height: 60px;
+  }
+
+  .collection-list {
+    padding: 20px;
+    details {
+      padding: 10px;
+      background: #ddd;
+      margin: 0 10px;
+      border: 1px solid #ccc;
+      border-top-color: #eee;
+
+      &.open {
+        background: #ccc;
+        border-color: #999;
+        border-top-color: #eee;
+      }
+
+      &.closed:hover {
+        background: #d5d5d5;
+        cursor: pointer;
+      }
+
+      &:first-child {
+        border-top-color: #ccc;
+      }
+
+      &.open:first-child {
+        border-top-color: #999;
+      }
+
+      summary {
+        &:hover {
+          cursor: pointer;
+        }
+        h3,
+        h4,
+        h5 {
+          display: inline;
+          margin-right: 7px;
+        }
+        h5 {
+          color: 555;
+          font-weight: 200;
+        }
+        outline: none;
+      }
+
+      .actions {
+        float: right;
+        position: relative;
+        bottom: 30px;
+        a {
+          margin-left: 5px;
+        }
+      }
+    }
+
+  }
+}

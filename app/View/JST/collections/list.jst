@@ -1,0 +1,36 @@
+<% _.each(collections, function(c, i) { %>
+<% if (i == 0) { %>
+  <details data-id="<%= c.id %>" class="open" open="open">
+<% } else { %>
+  <details data-id="<%= c.id %>" class="closed">
+<% } %>
+    <summary>
+      <h3><%= c.title %></h3>
+      <h4><%= c.description %></h4>
+      <h5><%= relativeDate(new Date(c.modified)) %></h5>
+    </summary>
+    <div class="actions">
+        <div class="btn-group">
+          <button class="btn no-rounded" data-toggle="dropdown">
+            <i class="icon-cog"></i>
+            <span class="caret"></span>
+          </button>
+          <ul class="dropdown-menu pull-right">
+          <li>
+            <a class="subtle" href="<%= arcs.url('collection', c.id) %>">Open</a>
+          </li>
+          <% if (c.pdf) { %>
+            <li>
+              <a class="subtle" href="<%= arcs.url('resource', c.pdf) %>">View Source PDF</a>
+              <a class="subtle" 
+                href="<%= arcs.url('resources', 'download', c.pdf) %>">Download PDF</a>
+            </li>
+          <% } if (arcs.user.isAdmin()) { %>
+            <li><a id="delete-btn">Delete</a></li>
+          <% } %>
+          </ul>
+        </div>
+    </div>
+    <div class="results"></div>
+  </details>
+<% }) %>

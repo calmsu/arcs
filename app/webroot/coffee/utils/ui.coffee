@@ -2,6 +2,10 @@
 # ---------
 # Miscellaneous UI logic (e.g. placeholder support for older browsers).
 
+# Test for details and summary support
+if 'open' not of document.createElement('details')
+  document.documentElement.className += ' no-details'
+
 $ ->
   $('body').on 'focus', 'input[placeholder]', (e) ->
     $el = $(e.currentTarget)

@@ -11,5 +11,16 @@ class arcs.models.Collection extends Backbone.Model
     public: false
     members: []
 
+  constructor: (attributes) ->
+    super @parse attributes
+
   # TODO: fix base url
   urlRoot: arcs.baseURL + 'collections/add'
+
+  parse: (c) ->
+    # Flatten an HABTM object.
+    if c.Collection?
+      for k, v of c.Collection
+        c[k] = v
+      delete c.Collection
+    c

@@ -9,7 +9,8 @@
     <?php if ($user['loggedIn']): ?>
     <div class="btn-group toolbar-btn">
         <a class="btn" href="<?php echo $this->Html->url('/user/' . $user['username']) ?>">
-            <i class="icon-user"></i> <?php echo $user['name'] ?> 
+            <img src="http://gravatar.com/avatar/<?php echo $user['gravatar'] ?>?s=15"/>
+            <?php echo $user['name'] ?> 
         </a>
         <button class="btn dropdown-toggle" data-toggle="dropdown">
             <span class="caret"></span>
@@ -38,6 +39,10 @@
             <i class="icon-white icon-upload"></i> Upload
         </a>
         <?php endif ?>
+        <a class="btn btn-dark"
+            href="<?php echo $this->Html->url('/collections')?>">
+            <i class="icon-white icon-folder-open"></i> Collections
+        </a>
         <a class="btn btn-dark"
             href="<?php echo $this->Html->url('/search')?>">
             <i class="icon-white icon-search"></i> Search

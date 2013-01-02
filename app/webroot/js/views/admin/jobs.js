@@ -125,7 +125,7 @@
     Jobs.prototype.render = function() {
       var filtered, m,
         _this = this;
-      filtered = this.collection.filter(function(m) {
+      filtered = this.collection.filter(m)(function() {
         return m.get('status').match(_this.filter) || m.get('name').match(_this.filter);
       });
       this.$('#jobs').html(arcs.tmpl('admin/jobs', {

@@ -13,9 +13,13 @@
   </li>
 <% } else { %>
   <li class="resource-thumb">
-    <a href='<%= arcs.baseURL + 'search/type:"' + resources[0].type + '"' %>'>
-      <i class="icon-share-alt"></i> Show all
-    </a>
+    <% if (typeof searchURL != "undefined") { %>
+      <a href='<%= searchURL %>'><i class="icon-share-alt"></i> Show all</a>
+    <% } else { %>
+      <a href='<%= arcs.baseURL + 'search/type:"' + resources[0].type + '"' %>'>
+        <i class="icon-share-alt"></i> Show all
+      </a>
+    <% } %>
   </li>
 <% } %>
 </ul>

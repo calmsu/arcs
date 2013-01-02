@@ -4437,6 +4437,26 @@ h4 {
 .datepicker .table-condensed span {
   padding: 4px;
 }
+.no-details details > * {
+  position: absolute;
+  visibility: hidden;
+}
+.no-details details > summary,
+.no-details details[open] > * {
+  position: static;
+  visibility: visible;
+}
+.no-details details > summary {
+  display: block;
+}
+.no-details details > summary:before {
+  content: "►";
+  padding-right: 5px;
+  font-size: 11px;
+}
+.no-details details[open] > summary:before {
+  content: "▼";
+}
 .footer {
   background: url(img/linen-texture.jpg);
   text-align: center;
@@ -6334,6 +6354,73 @@ ul.resource-thumbs li.resource-thumb:hover {
 }
 ul.resource-thumbs li.resource-thumb:hover a {
   text-decoration: underline;
+}
+.collection-list-wrapper {
+  -moz-user-select: none;
+  -khtml-user-select: none;
+  -webkit-user-select: none;
+  user-select: none;
+  -moz-user-select: none;
+  -khtml-user-select: none;
+  -webkit-user-select: none;
+  user-select: none;
+}
+.collection-list-wrapper h2 {
+  display: inline;
+  height: 60px;
+}
+.collection-list-wrapper h2 img {
+  display: inline;
+  background: white;
+}
+.collection-list-wrapper .collection-list {
+  padding: 20px;
+}
+.collection-list-wrapper .collection-list details {
+  padding: 10px;
+  background: #ddd;
+  margin: 0 10px;
+  border: 1px solid #ccc;
+  border-top-color: #eee;
+}
+.collection-list-wrapper .collection-list details.open {
+  background: #ccc;
+  border-color: #999;
+  border-top-color: #eee;
+}
+.collection-list-wrapper .collection-list details.closed:hover {
+  background: #d5d5d5;
+  cursor: pointer;
+}
+.collection-list-wrapper .collection-list details:first-child {
+  border-top-color: #ccc;
+}
+.collection-list-wrapper .collection-list details.open:first-child {
+  border-top-color: #999;
+}
+.collection-list-wrapper .collection-list details summary {
+  outline: none;
+}
+.collection-list-wrapper .collection-list details summary:hover {
+  cursor: pointer;
+}
+.collection-list-wrapper .collection-list details summary h3,
+.collection-list-wrapper .collection-list details summary h4,
+.collection-list-wrapper .collection-list details summary h5 {
+  display: inline;
+  margin-right: 7px;
+}
+.collection-list-wrapper .collection-list details summary h5 {
+  color: 555;
+  font-weight: 200;
+}
+.collection-list-wrapper .collection-list details .actions {
+  float: right;
+  position: relative;
+  bottom: 30px;
+}
+.collection-list-wrapper .collection-list details .actions a {
+  margin-left: 5px;
 }
 .about {
   background: #eee;

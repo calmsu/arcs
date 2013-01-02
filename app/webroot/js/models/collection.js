@@ -6,10 +6,6 @@
 
     __extends(Collection, _super);
 
-    function Collection() {
-      Collection.__super__.constructor.apply(this, arguments);
-    }
-
     Collection.prototype.defaults = {
       id: null,
       title: 'Temporary Collection',
@@ -18,7 +14,24 @@
       members: []
     };
 
+    function Collection(attributes) {
+      Collection.__super__.constructor.call(this, this.parse(attributes));
+    }
+
     Collection.prototype.urlRoot = arcs.baseURL + 'collections/add';
+
+    Collection.prototype.parse = function(c) {
+      var k, v, _ref;
+      if (c.Collection != null) {
+        _ref = c.Collection;
+        for (k in _ref) {
+          v = _ref[k];
+          c[k] = v;
+        }
+        delete c.Collection;
+      }
+      return c;
+    };
 
     return Collection;
 

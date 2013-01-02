@@ -12,15 +12,22 @@ class CollectionsController extends AppController {
 
     public function beforeFilter() {
         parent::beforeFilter();
-        $this->Auth->allow('viewer', 'create', 'complete');
+        $this->Auth->allow('viewer', 'index', 'create', 'complete');
     }
 
     /**
      * Display all collections.
      */
     public function index() {
-        $this->set('collections', $this->Collection->find('all'));
-        $this->set('_serialize', 'collections');
+        $this->Collection->recursive = -1;
+        $this->set('collections', $this->Collection->find('all', array(
+            'order' => 'Collection.modified DESC'
+        )));
+        if ($this->Auth->loggedIn())
+            $this->set('user_collections', $this->Collection->find('all', array(
+                'conditions' => array('Collection.user_id' => $this->Auth->user('id')),
+                'order' => 'Collection.modified DESC'
+            )));
     }
 
     /**

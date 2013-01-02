@@ -34,7 +34,8 @@ class AppController extends Controller {
                 'email' => $this->Auth->user('email'),
                 'role' => $this->Auth->loggedIn() ? 
                     intVal($this->Auth->user('role')) : 3,
-                'username' => $this->Auth->user('username')
+                'username' => $this->Auth->user('username'),
+                'gravatar' => md5(strtolower($this->Auth->user('email')))
             ),
             'toolbar' => array(
                 'logo' => true,
