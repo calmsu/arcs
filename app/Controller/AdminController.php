@@ -13,7 +13,7 @@ App::uses('ConnectionManager', 'Model');
  */
 class AdminController extends AppController {
     public $name = 'Admin';
-    public $uses = array('User', 'Job');
+    public $uses = array('User', 'Flag', 'Job');
 
     public function beforeFilter() {
         parent::beforeFilter();
@@ -70,11 +70,24 @@ class AdminController extends AppController {
     }
 
     /**
+     * View resource and collection flags.
+     */
+    public function flags() {
+        $this->set('flags', $this->Flag->find('all'));
+    }
+
+    /**
      * View and re-run jobs.
      */
     public function jobs() {
         $this->set('jobs', $this->Job->find('all', array(
             'order' => 'Job.created DESC'
         )));
+    }
+
+    /**
+     * Additional admin tools
+     */
+    public function tools() {
     }
 }

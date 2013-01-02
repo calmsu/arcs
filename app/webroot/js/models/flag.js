@@ -6,11 +6,32 @@
 
     __extends(Flag, _super);
 
-    function Flag() {
-      Flag.__super__.constructor.apply(this, arguments);
+    Flag.prototype.urlRoot = arcs.baseURL + 'flags';
+
+    function Flag(attributes) {
+      Flag.__super__.constructor.call(this, this.parse(attributes));
     }
 
-    Flag.prototype.urlRoot = arcs.baseURL + 'flags';
+    Flag.prototype.parse = function(f) {
+      var k, v, _ref;
+      if (f.Flag != null) {
+        _ref = f.Flag;
+        for (k in _ref) {
+          v = _ref[k];
+          f[k] = v;
+          delete f.Flag;
+        }
+        if (f.User != null) {
+          f.user = f.User;
+          delete f.User;
+        }
+        if (f.Resource != null) {
+          f.resource = f.Resource;
+          delete f.Resource;
+        }
+      }
+      return f;
+    };
 
     return Flag;
 
