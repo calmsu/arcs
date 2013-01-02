@@ -119,6 +119,20 @@ class Search {
                 )
             )
         ),
+        'collection_id' => array(
+            'model' => 'Collection',
+            'field' => 'id',
+            'joins' => array(
+                'memberships' => array(
+                    'Resource' => 'id',
+                    'Membership' => 'resource_id'
+                ),
+                'collections' => array(
+                    'Membership' => 'collection_id',
+                    'Collection' => 'id'
+                )
+            )
+        ),
         'metadata' => array(
             'model' => 'Metadata',
             'field' => 'value',
