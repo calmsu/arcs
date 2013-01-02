@@ -104,7 +104,7 @@
           if (!_this.scrollReady) {
             _this.setupScroll() && (_this.scrollReady = true);
           }
-          _this.setupHelp(false);
+          _this.setupHelp();
           return _this.render();
         }
       });
@@ -146,19 +146,11 @@
       });
     };
 
-    Search.prototype.setupHelp = function(flash) {
-      var _this = this;
-      if (flash == null) flash = true;
+    Search.prototype.setupHelp = function() {
       if (!$('.search-help-btn').length) {
         $('.VS-search-inner').append(arcs.tmpl('search/help-toggle'));
         $('.search-help-btn').click(this.showHelp);
-        $('.search-help-close').click(this.closeHelp);
-      }
-      if (flash) {
-        $('.search-help-btn').tooltip('show');
-        return _.delay((function() {
-          return $('.search-help-btn').tooltip('hide');
-        }), 1500);
+        return $('.search-help-close').click(this.closeHelp);
       }
     };
 

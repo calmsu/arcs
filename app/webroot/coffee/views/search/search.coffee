@@ -94,7 +94,7 @@ class arcs.views.search.Search extends Backbone.View
         @router.navigate encodeURIComponent @search.query
         # Setup the endless scroll unless it's already been done.
         @setupScroll() and @scrollReady = true unless @scrollReady
-        @setupHelp(false)
+        @setupHelp()
         @render()
 
   # Setup the endless scroll. This is called after we've received our first set
@@ -127,14 +127,11 @@ class arcs.views.search.Search extends Backbone.View
     $window.resize ->
       $actions.width($results.width() + 23) if $window.scrollTop() > pos
 
-  setupHelp: (flash=true) ->
+  setupHelp: ->
     unless $('.search-help-btn').length
       $('.VS-search-inner').append(arcs.tmpl 'search/help-toggle')
       $('.search-help-btn').click(@showHelp)
       $('.search-help-close').click(@closeHelp)
-    if flash
-      $('.search-help-btn').tooltip('show')
-      _.delay (=> $('.search-help-btn').tooltip 'hide'), 1500
 
   # Toggle between list and grid view.
   toggleView: ->
