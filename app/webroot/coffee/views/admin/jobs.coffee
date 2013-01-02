@@ -84,7 +84,7 @@ class arcs.views.admin.Jobs extends Backbone.View
         @lastUpdated = new Date()
 
   render: ->
-    filtered = @collection.filter(m) =>
+    filtered = @collection.filter (m) =>
       m.get('status').match(@filter) or m.get('name').match(@filter)
     @$('#jobs').html arcs.tmpl 'admin/jobs', 
       jobs: (m.toJSON() for m in filtered)
