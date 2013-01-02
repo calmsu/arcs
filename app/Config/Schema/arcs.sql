@@ -137,5 +137,7 @@ CREATE TABLE IF NOT EXISTS flags (
     resource_id CHAR(36),
     user_id CHAR(36),
     reason VARCHAR(100),
-    explanation TEXT
+    explanation TEXT,
+    created DATETIME DEFAULT NULL,
+    modified DATETIME DEFAULT NULL
 );

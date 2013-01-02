@@ -73,7 +73,9 @@ class AdminController extends AppController {
      * View resource and collection flags.
      */
     public function flags() {
-        $this->set('flags', $this->Flag->find('all'));
+        $this->set('flags', $this->Flag->find('all', array(
+            'order' => 'Flag.created DESC'
+        )));
     }
 
     /**

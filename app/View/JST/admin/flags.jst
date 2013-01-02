@@ -3,16 +3,20 @@
     <th>Resource</th>
     <th>Reason</th>
     <th>Explanation</th>
-    <th>Flagged by</th>
-    <th>Flagged on</th>
+    <th>Flagger</th>
+    <th>Flagged</th>
     <th>Status</th>
   </tr>
 <% _.each(flags, function(f, i) { %>
   <tr>
     <td>
+      <% if (f.resource.title) { %>
       <a href="<%= arcs.url('resource', f.resource.id) %>">
         <%= f.resource.title %>
       </a>
+      <% } else { %>
+      (deleted)
+      <% } %>
     </td>
     <td><%= f.reason %></td>
     <td><%= f.explanation %></td>
@@ -21,7 +25,7 @@
         <%= f.user.name %>
       </a>
     </td>
-    <td><%= relativeDate(new Date()) %></td>
+    <td><%= relativeDate(new Date(f.created)) %></td>
     <td><span class="label label-important">Unresolved</span></td>
   </tr>
 <% }) %>
