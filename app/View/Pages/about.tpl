@@ -13,7 +13,7 @@
       <p>ARCS is an open-source web platform that enables individuals to 
       collaborate in creating and relating digitized primary evidence when conducting 
       research in the humanities.
-      <p>{{ html.image('about/main.png', {'width': '640', 'class': 'shadow'}) }}
+      <p>{{ html.image('about/main.jpg', {'width': '640', 'class': 'shadow'}) }}
     </section>
     <div class="spacer spacer-left"></div>
     <section class="feature feature-right">
