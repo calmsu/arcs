@@ -16,6 +16,9 @@
         <a class="btn <?php echo $active == 'logs' ? 'active' : '' ?>" 
             href="<?php echo $this->Html->url(
             array('action' => 'logs')) ?>"><i class="icon-book"></i> Logs</a>
+        <a class="btn <?php echo $active == 'stats' ? 'active' : '' ?>" 
+            href="<?php echo $this->Html->url(
+            array('action' => 'stats')) ?>"><i class="icon-star"></i> Stats</a>
         <a class="btn <?php echo $active == 'tools' ? 'active' : '' ?>" 
             href="<?php echo $this->Html->url(
             array('action' => 'tools')) ?>"><i class="icon-fire"></i> Tools</a>

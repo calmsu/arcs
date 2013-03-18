@@ -13,7 +13,17 @@ App::uses('ConnectionManager', 'Model');
  */
 class AdminController extends AppController {
     public $name = 'Admin';
-    public $uses = array('User', 'Flag', 'Job');
+    public $uses = array(
+        'User', 
+        'Flag', 
+        'Job', 
+        'Resource', 
+        'Collection',
+        'Metadatum', 
+        'Comment',
+        'Keyword', 
+        'Annotation'
+    );
 
     public function beforeFilter() {
         parent::beforeFilter();
@@ -85,6 +95,22 @@ class AdminController extends AppController {
         $this->set('jobs', $this->Job->find('all', array(
             'order' => 'Job.created DESC'
         )));
+    }
+
+    /**
+     * Stats
+     */
+    public function stats() {
+        $this->set(array(
+            'user_count' => $this->User->find('count'),
+            'resource_count' => $this->Resource->find('count'),
+            'collection_count' => $this->Collection->find('count'),
+            'metadatum_count' => $this->Metadatum->find('count'),
+            'comment_count' => $this->Comment->find('count'),
+            'annotation_count' => $this->Annotation->find('count'),
+            'keyword_count' => $this->Keyword->find('count'),
+            'flag_count' => $this->Flag->find('count')
+        ));
     }
 
     /**
