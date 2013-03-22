@@ -3,3 +3,4 @@ app/webroot/uploads/
 lib/Cake/Console/Templates/skel/tmp/
 .DS_Store
 .htaccess
+fabfile.py
