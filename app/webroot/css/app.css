@@ -4264,15 +4264,14 @@ div ::-webkit-scrollbar-thumb {
   border: 1px solid #999;
 }
 .btn-dark {
-  text-shadow: 0 1px 1px #333333;
-  text-shadow: 0 1px 1px #333333;
+  text-shadow: none;
   background: #777777;
-  background: -webkit-gradient(linear, left top, left bottom, from(#777777), to(#555555));
-  background: -moz-linear-gradient(center bottom, #555555, #777777);
+  background: -webkit-gradient(linear, left top, left bottom, from(#777777), to(#666666));
+  background: -moz-linear-gradient(center bottom, #666666, #777777);
   filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#dddddd', endColorstr='#bbbbbb');
   background: #777777;
-  background: -webkit-gradient(linear, left top, left bottom, from(#777777), to(#555555));
-  background: -moz-linear-gradient(center bottom, #555555, #777777);
+  background: -webkit-gradient(linear, left top, left bottom, from(#777777), to(#666666));
+  background: -moz-linear-gradient(center bottom, #666666, #777777);
   filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#dddddd', endColorstr='#bbbbbb');
   border: 1px solid #444;
   color: #eee;
@@ -4458,16 +4457,15 @@ h4 {
   content: "▼";
 }
 .footer {
-  background: url(img/linen-texture.jpg);
+  background: #333;
   text-align: center;
-  color: #bbb;
-  padding: 15px;
+  color: #888;
+  font-weight: 200;
+  font-size: 15px;
+  padding: 30px;
   padding-bottom: 13px;
-  margin-top: -113px;
-  text-shadow: 0 1px 1px #222222;
-  text-shadow: 0 1px 1px #222222;
-  border-top: 1px solid #555;
-  outline: 1px solid #222;
+  margin-top: -110px;
+  border-top: 15px solid #444;
 }
 .footer img {
   height: 35px;
@@ -4475,99 +4473,16 @@ h4 {
   margin-right: 15px;
 }
 .footer hr {
-  border-bottom: 1px solid #222;
-  border-top: 1px solid #888;
-  margin: 5px;
+  border: 2px solid #444;
+  color: #444;
+  margin: 10px;
 }
 .footer a {
-  color: #bbb;
+  color: #ddd;
 }
 .footer span.disclaimer {
   font-size: 80%;
-}
-footer#credits {
-  color: #999999;
-  margin-top: 25px;
-  background-color: #555555;
-  min-height: 170px;
-  padding: 10px 0 8px;
-  margin-top: -90px;
-  text-shadow: 0 1px 1px #222222;
-  text-shadow: 0 1px 1px #222222;
-  border-top: 1px solid #555;
-  outline: 1px solid #222;
-}
-footer#credits img {
-  display: inline;
-  clear: none;
-}
-footer#credits a {
-  color: #999999;
-}
-footer#credits ul {
-  list-style: none;
-  margin: 0;
-}
-footer#credits ul li {
-  display: inline;
-}
-footer#credits .row {
-  margin-left: 0;
-  margin-bottom: 10px;
-}
-footer#credits h3 {
-  color: #999999;
-  font-size: 14px;
-}
-footer#credits #about-arcs-footer p {
-  color: #eeeeee;
-  font-size: 13px;
-  line-height: 15px;
-}
-footer#credits a.credit-links {
-  display: block;
-}
-footer#credits .disclaimer {
-  font-size: 11px;
-  line-height: 13px;
-}
-footer#credits #neh_logo {
-  width: 150px;
-}
-footer#credits #msu_wordmark,
-footer#credits #cal_logo,
-footer#credits #ce_logo {
-  max-height: 30px;
-}
-footer#credits #copyright-and-credits {
-  width: 100%;
-}
-footer#credits #copyright-and-credits p {
-  text-align: center;
-  width: 100%;
-  line-height: 16px;
-  margin-bottom: 0;
-  font-size: 10px;
-}
-footer#credits #quick-links a {
-  padding: 2px 5px;
-  color: #eeeeee !important;
-}
-footer#credits #quick-links a:hover {
-  color: #eeeeee;
-}
-footer#credits #quick-links ul li {
-  border-right: solid thin #999999;
-}
-footer#credits #quick-links ul li:last-child {
-  border: none;
-}
-.label-footer:last-child {
-  border-right: none;
-}
-.label-footer:hover {
-  text-decoration: underline;
-  color: #999999;
+  margin: 10px;
 }
 .modal .modal-header {
   background-color: #ddd;
@@ -5079,14 +4994,7 @@ footer#credits #quick-links ul li:last-child {
   }
 }
 div#toolbar {
-  background: #cccccc;
-  background: -webkit-gradient(linear, left top, left bottom, from(#cccccc), to(#bbbbbb));
-  background: -moz-linear-gradient(center bottom, #bbbbbb, #cccccc);
-  filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#dddddd', endColorstr='#bbbbbb');
-  background: #cccccc;
-  background: -webkit-gradient(linear, left top, left bottom, from(#cccccc), to(#bbbbbb));
-  background: -moz-linear-gradient(center bottom, #bbbbbb, #cccccc);
-  filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#dddddd', endColorstr='#bbbbbb');
+  background: #ccc;
   border: 1px solid #888;
   margin-bottom: 10px;
   margin-left: -10px;
@@ -5101,8 +5009,7 @@ div#toolbar a#logo-wrapper:hover {
 div#toolbar h1#logo {
   display: inline;
   font-size: 18.2px;
-  font-weight: normal;
-  text-shadow: 0 1px 1px #fff;
+  font-weight: 200;
   padding-left: 45px;
   padding-bottom: 5px;
   color: #444;
@@ -5274,10 +5181,10 @@ div#search-results-wrapper {
   min-height: 70%;
 }
 div#search-results-wrapper div#search-results {
-  min-height: 910px;
+  min-height: 400px;
   border: 1px solid #888;
-  background: #bbb;
-  color: #222;
+  background: #cbcbcb;
+  color: #444;
   text-align: left;
   padding: 10px;
   overflow: auto;
@@ -5329,8 +5236,8 @@ div#search-results-wrapper .toolbar-fixed {
   margin: 20% auto;
   width: 100px;
   font-size: 120%;
-  text-shadow: 0 2px 2px #ffffff;
-  text-shadow: 0 2px 2px #ffffff;
+  font-weight: 300;
+  color: #444;
 }
 .result {
   border-collapse: separate;
@@ -5373,8 +5280,11 @@ div#search-results-wrapper .toolbar-fixed {
   margin: 1px;
 }
 .result div {
-  text-shadow: 0 1px 1px #ffffff;
-  text-shadow: 0 1px 1px #ffffff;
+  font-weight: 200;
+}
+.result div strong {
+  color: #333;
+  font-weight: 200;
 }
 .result img {
   padding: 1px;
