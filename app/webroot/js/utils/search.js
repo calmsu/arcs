@@ -17,7 +17,7 @@
       order: 'modified',
       direction: 'asc',
       page: 1,
-      n: 30,
+      n: 25,
       add: false,
       run: true,
       onSearch: function() {},
@@ -98,7 +98,8 @@
       this.results.fetch({
         add: options.add,
         url: this.results.url() + params,
-        success: function() {
+        success: function(set, res) {
+          _this.results.query = res;
           options.success();
           if (options.loader) return arcs.loader.hide();
         },

@@ -16,6 +16,8 @@
 
     Search.prototype.routes = {
       '': 'root',
+      'p:page': 'emptyWithPage',
+      ':query/p:page': 'doSearch',
       ':query': 'doSearch'
     };
 
@@ -24,6 +26,7 @@
     };
 
     Search.prototype.navigate = function(fragment, options) {
+      arcs.log('navigate', fragment);
       options || (options = {});
       if (!this.hasTrailing) {
         options.replace = true;
@@ -32,16 +35,26 @@
       return Search.__super__.navigate.call(this, fragment, options);
     };
 
-    Search.prototype.doSearch = function(query) {
+    Search.prototype.emptyWithPage = function(page) {
+      if (/\d+/.test(page)) {
+        return this.doSearch('', page);
+      } else {
+        return this.doSearch(page);
+      }
+    };
+
+    Search.prototype.doSearch = function(query, page) {
       if (query == null) query = '';
+      if (page == null) page = 1;
       if (query === 'search') {
-        return this.navigate('/', {
+        return this.navigate('//p1', {
           replace: true
         });
       }
       this.search.setQuery(query);
+      this.search.options.page = parseInt(page);
       this.search.run();
-      this.navigate(encodeURIComponent(this.search.query));
+      this.navigate("" + (encodeURIComponent(this.search.query)) + "/p" + page);
       return this.searched = true;
     };
 

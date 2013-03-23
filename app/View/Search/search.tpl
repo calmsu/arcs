@@ -144,6 +144,7 @@
     </button>
   </div>
   <div id="search-results"></div>
+  <div id="search-pagination"></div>
 </div>
 
 <script>
