@@ -62,7 +62,7 @@
       'click #top-btn': 'scrollTop',
       'click .sort-btn': 'setSort',
       'click .dir-btn': 'setSortDir',
-      'click .search-page-btn': 'changePage'
+      'click .search-page-btn': 'setPage'
     };
 
     /* More involved setups run by the initialize method
