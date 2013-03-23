@@ -61,7 +61,8 @@
       'click #list-btn': 'toggleView',
       'click #top-btn': 'scrollTop',
       'click .sort-btn': 'setSort',
-      'click .dir-btn': 'setSortDir'
+      'click .dir-btn': 'setSortDir',
+      'click .search-page-btn': 'changePage'
     };
 
     /* More involved setups run by the initialize method
@@ -100,7 +101,7 @@
         run: false,
         loader: true,
         success: function() {
-          _this.router.navigate(encodeURIComponent(_this.search.query));
+          _this.router.navigate("" + (encodeURIComponent(_this.search.query)) + "/p" + _this.search.page);
           if (!_this.scrollReady) {
             _this.setupScroll() && (_this.scrollReady = true);
           }
@@ -119,24 +120,10 @@
       $window.scroll(function() {
         if ($window.scrollTop() > pos) {
           $actions.addClass('toolbar-fixed').width($results.width() + 22);
-          _this.$('#top-btn').show();
+          return _this.$('#top-btn').show();
         } else {
           $actions.removeClass('toolbar-fixed').width('auto');
-          _this.$('#top-btn').hide();
-        }
-        if ($window.scrollTop() === $(document).height() - $window.height()) {
-          if (!(_this.search.results.length < _this.search.results.metadata.total)) {
-            return;
-          }
-          return _this.search.run(null, {
-            add: true,
-            page: _this.search.page += 1,
-            order: _this.options.sort,
-            direction: _this.options.sortDir,
-            success: function() {
-              return _this.append();
-            }
-          });
+          return _this.$('#top-btn').hide();
         }
       });
       return $window.resize(function() {
@@ -144,6 +131,14 @@
           return $actions.width($results.width() + 23);
         }
       });
+    };
+
+    Search.prototype.changePage = function(e) {
+      var $el;
+      e.preventDefault();
+      $el = $(e.currentTarget);
+      this.search.options.page = $el.data('page');
+      return this.search.run();
     };
 
     Search.prototype.setupHelp = function() {
@@ -265,9 +260,16 @@
     };
 
     Search.prototype.render = function() {
-      return this._render({
+      var data;
+      this._render({
         results: this.search.results.toJSON()
       });
+      data = this.search.results.query;
+      data.page = this.search.page;
+      data.query = encodeURIComponent(this.search.query);
+      return $('#search-pagination').html(arcs.tmpl('search/paginate', {
+        results: data
+      }));
     };
 
     Search.prototype._render = function(results, append) {

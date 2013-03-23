@@ -24,7 +24,6 @@ class SearchController extends AppController {
      * Display the search page
      */
     public function search($query='') {
-        $this->set('footer', false);
         $title = 'Search';
         if ($query) $title .= ' - ' . urldecode($query);
         $this->set('title_for_layout', $title);
@@ -99,7 +98,11 @@ class SearchController extends AppController {
             'mode' => 'no_search',
             'offset' => $options['offset'],
             'direction' => $options['direction'],
-            'total' => $this->Resource->find('count')
+            'total' => $this->Resource->find('count', array(
+                'conditions' => $this->Auth->loggedIn() ? 
+                    null: array('Resource.public' => 1)
+                )
+            )
         ));
     }
 

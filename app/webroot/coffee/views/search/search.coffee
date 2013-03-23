@@ -57,6 +57,7 @@ class arcs.views.search.Search extends Backbone.View
     'click #top-btn'           : 'scrollTop'
     'click .sort-btn'          : 'setSort'
     'click .dir-btn'           : 'setSortDir'
+    'click .search-page-btn'   : 'changePage'
 
   ### More involved setups run by the initialize method ###
 
@@ -91,7 +92,7 @@ class arcs.views.search.Search extends Backbone.View
       loader: true
       # This callback will be fired each time a search is done.
       success: =>
-        @router.navigate encodeURIComponent @search.query
+        @router.navigate "#{encodeURIComponent(@search.query)}/p#{@search.page}"
         # Setup the endless scroll unless it's already been done.
         @setupScroll() and @scrollReady = true unless @scrollReady
         @setupHelp()
@@ -108,24 +109,18 @@ class arcs.views.search.Search extends Backbone.View
       # Toggle the toolbar's fixed position
       if $window.scrollTop() > pos
         $actions.addClass('toolbar-fixed').width $results.width() + 22
-        @$('#top-btn').show()
       else
         $actions.removeClass('toolbar-fixed').width 'auto'
-        @$('#top-btn').hide()
-
-      # If the scroll position is at the bottom, get the more results.
-      if $window.scrollTop() == $(document).height() - $window.height()
-        return unless @search.results.length < @search.results.metadata.total
-        @search.run null,
-          add: true
-          page: @search.page += 1
-          order: @options.sort
-          direction: @options.sortDir
-          success: => @append()
 
     # Fix the toolbar width on resizes. 
     $window.resize ->
       $actions.width($results.width() + 23) if $window.scrollTop() > pos
+
+  changePage: (e) ->
+    e.preventDefault()
+    $el = $(e.currentTarget)
+    @search.options.page = $el.data('page')
+    @search.run()
 
   setupHelp: ->
     unless $('.search-help-btn').length
@@ -233,12 +228,16 @@ class arcs.views.search.Search extends Backbone.View
   # Render the results.
   render: ->
     @_render results: @search.results.toJSON()
+    data = @search.results.query
+    data.page = @search.page
+    data.query = encodeURIComponent @search.query
+    $('#search-pagination').html arcs.tmpl('search/paginate', results: data)
 
   # Actually render the results. Can append or replace.
   # If there are no results, adds a 'No Results' message.
   _render: (results, append=false) ->
     $results = $('#search-results')
     template = if @options.grid then 'search/grid' else 'search/list'
-    $results[if append then 'append' else 'html'] arcs.tmpl template, results
-    unless @search.results.length
+    $results[if append then 'append' else 'html'] arcs.tmpl(template, results)
+    if not @search.results.length
       $results.html @make 'div', id:'no-results', 'No Results'

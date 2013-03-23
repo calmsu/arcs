@@ -10,7 +10,7 @@ class arcs.utils.Search extends Backbone.View
     order     : 'modified'
     direction : 'asc'
     page      : 1
-    n         : 30
+    n         : 25 
     add       : false
     run       : true
     onSearch  : ->
@@ -52,6 +52,7 @@ class arcs.utils.Search extends Backbone.View
       callbacks:
         search: (query, searchCollection) =>
           @query = query # Update our query value
+          @options.page = 1
           @options.onSearch query # Fire the onSearch cb
           @run()
         facetMatches: (callback) =>
@@ -92,7 +93,8 @@ class arcs.utils.Search extends Backbone.View
     @results.fetch
       add: options.add
       url: @results.url() + params
-      success: =>
+      success: (set, res) =>
+        @results.query = res
         options.success()
         arcs.loader.hide() if options.loader
       error: =>
