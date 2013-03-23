@@ -116,12 +116,6 @@ class arcs.views.search.Search extends Backbone.View
     $window.resize ->
       $actions.width($results.width() + 23) if $window.scrollTop() > pos
 
-  changePage: (e) ->
-    e.preventDefault()
-    $el = $(e.currentTarget)
-    @search.options.page = $el.data('page')
-    @search.run()
-
   setupHelp: ->
     unless $('.search-help-btn').length
       $('.VS-search-inner').append(arcs.tmpl 'search/help-toggle')
@@ -160,6 +154,13 @@ class arcs.views.search.Search extends Backbone.View
     @search.run null,
       order: @options.sort
       direction: @options.sortDir
+
+  # Set the current search result page
+  setPage: (e) ->
+    e.preventDefault()
+    $el = $(e.currentTarget)
+    @search.options.page = $el.data('page')
+    @search.run()
 
   unselectAll: (trigger=true) -> 
     @$('.result').removeClass('selected')

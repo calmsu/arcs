@@ -119,11 +119,9 @@
       pos = $actions.offset().top - 10;
       $window.scroll(function() {
         if ($window.scrollTop() > pos) {
-          $actions.addClass('toolbar-fixed').width($results.width() + 22);
-          return _this.$('#top-btn').show();
+          return $actions.addClass('toolbar-fixed').width($results.width() + 22);
         } else {
-          $actions.removeClass('toolbar-fixed').width('auto');
-          return _this.$('#top-btn').hide();
+          return $actions.removeClass('toolbar-fixed').width('auto');
         }
       });
       return $window.resize(function() {
@@ -131,14 +129,6 @@
           return $actions.width($results.width() + 23);
         }
       });
-    };
-
-    Search.prototype.changePage = function(e) {
-      var $el;
-      e.preventDefault();
-      $el = $(e.currentTarget);
-      this.search.options.page = $el.data('page');
-      return this.search.run();
     };
 
     Search.prototype.setupHelp = function() {
@@ -187,6 +177,14 @@
         order: this.options.sort,
         direction: this.options.sortDir
       });
+    };
+
+    Search.prototype.setPage = function(e) {
+      var $el;
+      e.preventDefault();
+      $el = $(e.currentTarget);
+      this.search.options.page = $el.data('page');
+      return this.search.run();
     };
 
     Search.prototype.unselectAll = function(trigger) {

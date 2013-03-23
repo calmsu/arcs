@@ -5294,6 +5294,21 @@ div#search-results-wrapper .toolbar-fixed {
 .result img:hover {
   cursor: pointer;
 }
+#search-pagination {
+  padding-top: 15px;
+}
+#search-pagination .search-pages {
+  padding-top: 15px;
+  display: inline;
+}
+#search-pagination .search-description {
+  color: #555;
+  margin-left: 20px;
+  position: relative;
+  top: 6px;
+  vertical-align: top;
+  display: inline;
+}
 body.viewer {
   background: #fff;
 }
