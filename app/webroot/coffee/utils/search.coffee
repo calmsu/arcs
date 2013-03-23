@@ -52,6 +52,7 @@ class arcs.utils.Search extends Backbone.View
       callbacks:
         search: (query, searchCollection) =>
           @query = query # Update our query value
+          @options.page = 1
           @options.onSearch query # Fire the onSearch cb
           @run()
         facetMatches: (callback) =>

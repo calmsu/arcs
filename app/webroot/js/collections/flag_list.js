@@ -18,7 +18,6 @@
 
     FlagList.prototype.parse = function(response) {
       var r, _i, _len, _results;
-      console.log('boom');
       _results = [];
       for (_i = 0, _len = response.length; _i < _len; _i++) {
         r = response[_i];

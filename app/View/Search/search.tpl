@@ -139,9 +139,6 @@
         <li><a id="zipped-btn">Download as zipfile</a></li>
       </ul>
     </div>
-    <button id="top-btn" class="btn actions-right" style="margin-right:10px; display:none;">
-      <i class="icon-arrow-up"></i> Back to Top
-    </button>
   </div>
   <div id="search-results"></div>
   <div id="search-pagination"></div>

@@ -59,6 +59,7 @@
         callbacks: {
           search: function(query, searchCollection) {
             _this.query = query;
+            _this.options.page = 1;
             _this.options.onSearch(query);
             return _this.run();
           },

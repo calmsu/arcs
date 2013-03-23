@@ -57,6 +57,7 @@ class arcs.views.search.Search extends Backbone.View
     'click #top-btn'           : 'scrollTop'
     'click .sort-btn'          : 'setSort'
     'click .dir-btn'           : 'setSortDir'
+    'click .search-page-btn'   : 'changePage'
 
   ### More involved setups run by the initialize method ###
 
@@ -108,14 +109,18 @@ class arcs.views.search.Search extends Backbone.View
       # Toggle the toolbar's fixed position
       if $window.scrollTop() > pos
         $actions.addClass('toolbar-fixed').width $results.width() + 22
-        @$('#top-btn').show()
       else
         $actions.removeClass('toolbar-fixed').width 'auto'
-        @$('#top-btn').hide()
 
     # Fix the toolbar width on resizes. 
     $window.resize ->
       $actions.width($results.width() + 23) if $window.scrollTop() > pos
+
+  changePage: (e) ->
+    e.preventDefault()
+    $el = $(e.currentTarget)
+    @search.options.page = $el.data('page')
+    @search.run()
 
   setupHelp: ->
     unless $('.search-help-btn').length
@@ -226,9 +231,7 @@ class arcs.views.search.Search extends Backbone.View
     data = @search.results.query
     data.page = @search.page
     data.query = encodeURIComponent @search.query
-    console.log data
-    pagination = arcs.tmpl('search/paginate', results: data)
-    $('#search-pagination').html pagination
+    $('#search-pagination').html arcs.tmpl('search/paginate', results: data)
 
   # Actually render the results. Can append or replace.
   # If there are no results, adds a 'No Results' message.

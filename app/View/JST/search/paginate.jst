@@ -3,7 +3,8 @@
   <div class="search-pages btn-toolbar">
     <% if (results.page != 1) {%>
       <div class="btn-group">
-        <a class="search-page-btn btn" href="<%= arcs.url('search', results.query, 'p' + (results.page - 1)) %>">
+        <a class="search-page-btn btn" data-page="<%= results.page - 1 %>" 
+          href="<%= arcs.url('search', results.query, 'p' + (results.page - 1)) %>">
           &larr;
         </a>
       </div>
@@ -13,13 +14,14 @@
       <% var pages = _.range(1, _.range(0, results.total, results.limit).length + 1) %>
       <% _.each(_.surrounding(pages, results.page - 1, 10), function(p) { %>
         <a class="search-page-btn btn <%= (p == results.page) ? "active" : "" %>" 
-          href="<%= arcs.url('search', results.query, 'p' + p) %>"><%= p %></a>
+          data-page="<%= p %>" href="<%= arcs.url('search', results.query, 'p' + p) %>"><%= p %></a>
       <% }) %>
     </div>
 
     <% if (results.num_results == results.limit) { %>
       <div class="btn-group">
-        <a class="search-page-btn btn" href="<%= arcs.url('search', results.query, 'p' + (results.page + 1)) %>">
+        <a class="search-page-btn btn" data-page="<%= results.page + 1 %>" 
+          href="<%= arcs.url('search', results.query, 'p' + (results.page + 1)) %>">
           &rarr;
         </a>
       </div>
@@ -27,7 +29,8 @@
   </div>
 
   <div class="search-description">
-    <%= results.offset + 1 %> - <%= results.offset + results.num_results %>
+    <%= results.offset + 1 %> &mdash;
+    <%= results.offset + results.num_results %>
     of <%= results.total %> resources
   </div>
 

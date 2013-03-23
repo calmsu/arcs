@@ -8,5 +8,4 @@ class arcs.collections.FlagList extends Backbone.Collection
     arcs.baseURL + "resources/flags/" + arcs.resource.id
 
   parse: (response) ->
-    console.log('boom')
     r.Flag for r in response

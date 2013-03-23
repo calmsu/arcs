@@ -61,7 +61,8 @@
       'click #list-btn': 'toggleView',
       'click #top-btn': 'scrollTop',
       'click .sort-btn': 'setSort',
-      'click .dir-btn': 'setSortDir'
+      'click .dir-btn': 'setSortDir',
+      'click .search-page-btn': 'changePage'
     };
 
     /* More involved setups run by the initialize method
@@ -130,6 +131,14 @@
           return $actions.width($results.width() + 23);
         }
       });
+    };
+
+    Search.prototype.changePage = function(e) {
+      var $el;
+      e.preventDefault();
+      $el = $(e.currentTarget);
+      this.search.options.page = $el.data('page');
+      return this.search.run();
     };
 
     Search.prototype.setupHelp = function() {
@@ -251,18 +260,16 @@
     };
 
     Search.prototype.render = function() {
-      var data, pagination;
+      var data;
       this._render({
         results: this.search.results.toJSON()
       });
       data = this.search.results.query;
       data.page = this.search.page;
       data.query = encodeURIComponent(this.search.query);
-      console.log(data);
-      pagination = arcs.tmpl('search/paginate', {
+      return $('#search-pagination').html(arcs.tmpl('search/paginate', {
         results: data
-      });
-      return $('#search-pagination').html(pagination);
+      }));
     };
 
     Search.prototype._render = function(results, append) {
