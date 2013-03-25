@@ -33,7 +33,7 @@ HEADER="/**\n\
   * $(VERSION)\n\
   * Generated on $(BUILT_ON) with $(BUILT_WITH)\n\
   *\n\
-  * Copyright 2012, Michigan State University Board of Trustees\n\
+  * Copyright 2012-2013, Michigan State University Board of Trustees\n\
   */\n"
 
 .PHONY: docs

@@ -27,5 +27,5 @@ Any views, findings, conclusions, or recommendations expressed in this website d
     <?php echo $this->Html->link('Help', '/help') ?> /
     <?php echo $this->Html->link('Login', '/login') ?>
     &nbsp;&nbsp;
-    &copy; 2012 Michigan State University Board of Trustees
+    &copy; 2012-2013 Michigan State University Board of Trustees
 </div>

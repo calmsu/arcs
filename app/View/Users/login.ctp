@@ -29,7 +29,7 @@
     <?php echo $this->Html->link('Home', '/'); ?> |
     <?php echo $this->Html->link('Search', '/search/'); ?> | 
     <?php echo $this->Html->link('Help', '/help/'); ?>
-    <span style="color:#666">&copy; 2012 MSU</span>
+    <span style="color:#666">&copy; 2012-2013 MSU</span>
 </div>
 
 <script type="text/javascript">
