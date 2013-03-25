@@ -37,7 +37,7 @@ class arcs.utils.Search extends Backbone.View
     title      : arcs.completeFacet
     user       : arcs.completeFacet
     keyword    : arcs.completeFacet
-    collection : arcs.completeFacet
+    #collection : arcs.completeFacet
     type       : arcs.completeFacet
     created    : -> arcs.completeDate 'resources/complete/created'
     uploaded   : -> arcs.completeDate 'resources/complete/created'

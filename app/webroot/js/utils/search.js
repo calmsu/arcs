@@ -35,7 +35,6 @@
       title: arcs.completeFacet,
       user: arcs.completeFacet,
       keyword: arcs.completeFacet,
-      collection: arcs.completeFacet,
       type: arcs.completeFacet,
       created: function() {
         return arcs.completeDate('resources/complete/created');
